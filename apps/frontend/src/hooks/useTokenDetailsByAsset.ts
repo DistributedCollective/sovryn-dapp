@@ -1,29 +1,27 @@
 import { useEffect, useState } from 'react';
 
-import {
-  getTokenDetails,
-  SupportedTokens,
-  TokenDetailsData,
-} from '@sovryn/contracts';
+import { AssetDetailsData, getAssetData } from '@sovryn/contracts';
 
-import { defaultChainId } from '../config/chains';
+import { RSK_CHAIN_ID } from '../config/chains';
 
-export const useTokenDetailsByAsset = (asset?: SupportedTokens) => {
-  const [token, setToken] = useState<TokenDetailsData | undefined>();
+import { useIsMounted } from './useIsMounted';
+
+export const useTokenDetailsByAsset = (
+  asset?: string,
+  chainId = RSK_CHAIN_ID,
+): AssetDetailsData | undefined => {
+  const isMounted = useIsMounted();
+  const [token, setToken] = useState<AssetDetailsData | undefined>();
 
   useEffect(() => {
-    const getTokenDetail = () => {
-      getTokenDetails(asset!, defaultChainId)
+    if (asset && isMounted()) {
+      getAssetData(asset!, chainId)
         .then(setToken)
         .catch(e => {
-          console.error('token not found?', e);
+          console.error('token not found?', asset, chainId, e);
         });
-    };
-
-    if (asset) {
-      getTokenDetail();
     }
-  }, [asset]);
+  }, [asset, chainId, isMounted]);
 
   return token;
 };

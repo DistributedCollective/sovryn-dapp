@@ -5,14 +5,8 @@ import { useCallback } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { t } from 'i18next';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenDetails,
-} from '@sovryn/contracts';
+import { getAssetData, getProtocolContract } from '@sovryn/contracts';
 import { PermitTransactionResponse, SwapRoute } from '@sovryn/sdk';
-
-import { defaultChainId } from '../../../../config/chains';
 
 import {
   Transaction,
@@ -23,7 +17,9 @@ import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { translations } from '../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import {
   DEFAULT_SIGNATURE,
   EMPTY_PERMIT_TRANSFER_FROM,
@@ -37,30 +33,31 @@ import {
 import { getRouteContract } from '../ConvertPage.utils';
 
 export const useHandleConversion = (
-  sourceToken: SupportedTokens,
-  destinationToken: SupportedTokens,
+  sourceToken: string,
+  destinationToken: string,
   weiAmount: BigNumber,
   route: SwapRoute | undefined,
   slippageTolerance: string,
   onComplete: () => void,
 ) => {
+  const currentChainId = useCurrentChain();
   const { account, signer } = useAccount();
 
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const getMassetManager = useCallback(async () => {
     const { address: massetManagerAddress, abi: massetManagerAbi } =
-      await getProtocolContract('massetManager', defaultChainId);
+      await getProtocolContract('massetManager', currentChainId);
 
     return new ethers.Contract(massetManagerAddress, massetManagerAbi, signer);
-  }, [signer]);
+  }, [currentChainId, signer]);
 
   const getWithdrawTokensTransactions = useCallback(async () => {
     const massetManager = await getMassetManager();
 
-    const { address: bassetAddress } = await getTokenDetails(
+    const { address: bassetAddress } = await getAssetData(
       destinationToken,
-      defaultChainId,
+      currentChainId,
     );
 
     return [
@@ -79,20 +76,21 @@ export const useHandleConversion = (
       },
     ] as Transaction[];
   }, [
-    account,
-    destinationToken,
     getMassetManager,
+    destinationToken,
+    currentChainId,
     sourceToken,
     weiAmount,
+    account,
     onComplete,
   ]);
 
   const getDepositTokenTransactions = useCallback(async () => {
     const massetManager = await getMassetManager();
 
-    const { address: bassetAddress, abi: bassetAbi } = await getTokenDetails(
+    const { address: bassetAddress, abi: bassetAbi } = await getAssetData(
       sourceToken,
-      defaultChainId,
+      currentChainId,
     );
 
     const bassetToken = new ethers.Contract(bassetAddress, bassetAbi, signer);
@@ -125,7 +123,15 @@ export const useHandleConversion = (
     });
 
     return transactions;
-  }, [account, getMassetManager, signer, sourceToken, weiAmount, onComplete]);
+  }, [
+    getMassetManager,
+    sourceToken,
+    currentChainId,
+    signer,
+    weiAmount,
+    account,
+    onComplete,
+  ]);
 
   const handleSubmit = useCallback(async () => {
     if (!route || !signer) {
@@ -136,8 +142,8 @@ export const useHandleConversion = (
       !!route && ['ZeroRedemption', 'MocIntegration'].includes(route.name);
 
     const [sourceTokenDetails, destinationTokenDetails] = await Promise.all([
-      getTokenDetails(sourceToken, defaultChainId),
-      getTokenDetails(destinationToken, defaultChainId),
+      getAssetData(sourceToken, currentChainId),
+      getAssetData(destinationToken, currentChainId),
     ]);
 
     const approveTxData = await route.approve(
@@ -151,7 +157,7 @@ export const useHandleConversion = (
 
     if (requiresPermit2) {
       const approveTx = await prepareApproveTransaction({
-        token: SupportedTokens.dllr,
+        token: COMMON_SYMBOLS.DLLR,
         spender: PERMIT2_ADDRESS,
         amount: weiAmount,
         signer,
@@ -294,6 +300,7 @@ export const useHandleConversion = (
     setIsOpen(true);
   }, [
     account,
+    currentChainId,
     destinationToken,
     onComplete,
     route,

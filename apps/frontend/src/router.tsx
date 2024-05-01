@@ -16,6 +16,7 @@ import { EmailUnsubscribedPage } from './app/5_pages/EmailUnsubscribedPage/Email
 import { EmailVerifiedPage } from './app/5_pages/EmailVerifiedPage/EmailVerifiedPage';
 import { ErrorPage } from './app/5_pages/ErrorPage/ErrorPage';
 import { zeroPageLoader } from './app/5_pages/ZeroPage/loader';
+import { CrocContextProvider } from './contexts/CrocContext';
 import { isIPFSBuild } from './utils/helpers';
 import { loadable } from './utils/loadable';
 
@@ -65,6 +66,10 @@ const LeaderboardPage = loadable(
   () => import('./app/5_pages/LeaderboardPage/LeaderboardPage'),
 );
 
+const ClaimLpPage = loadable(
+  () => import('./app/5_pages/ClaimLpPage/ClaimLpPage'),
+);
+
 const routes = [
   {
     path: '/',
@@ -108,7 +113,11 @@ const routes = [
       },
       {
         path: '/earn/market-making',
-        element: <MarketMakingPage />,
+        element: (
+          <CrocContextProvider>
+            <MarketMakingPage />
+          </CrocContextProvider>
+        ),
       },
       {
         path: '/earn',
@@ -133,7 +142,11 @@ const routes = [
       },
       {
         path: '/portfolio',
-        element: <PortfolioPage />,
+        element: (
+          <CrocContextProvider>
+            <PortfolioPage />
+          </CrocContextProvider>
+        ),
         loader: zeroPageLoader,
       },
       {
@@ -147,6 +160,10 @@ const routes = [
       {
         path: '/stats',
         element: <ProtocolDataPage />,
+      },
+      {
+        path: '/claim-lp',
+        element: <ClaimLpPage />,
       },
     ],
   },

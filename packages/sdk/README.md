@@ -30,7 +30,7 @@ const amount = 100;
 // Get the best swap route for a token pair
 // result contains the best route and the amount of tokens we will get
 // { route: SwapRoute, quote: BigNumber }
-const result = await smartRouter.getBestQuote(xusdToken, sovToken, amount);
+const result = await smartRouter.getBestQuote(ChainIds.RSK_MAINNET, xusdToken, sovToken, amount);
 
 // Check if we need to approve xusd token to be able to swap
 // approveTxData will return the transaction data to be signed by the user

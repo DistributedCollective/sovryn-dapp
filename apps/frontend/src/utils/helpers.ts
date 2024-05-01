@@ -5,23 +5,24 @@ import dayjs from 'dayjs';
 import { BigNumber, providers } from 'ethers';
 import resolveConfig from 'tailwindcss/resolveConfig';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { EIP1193Provider } from '@sovryn/onboard-common';
 import tailwindConfig from '@sovryn/tailwindcss-config';
 import { Decimalish } from '@sovryn/utils';
 import { Decimal } from '@sovryn/utils';
 
-import { BITCOIN } from '../constants/currencies';
+import { RSK_CHAIN_ID } from '../config/chains';
+
 import { MS } from '../constants/general';
 import {
   AMM_SERVICE,
-  BTC_EXPLORER,
   GRAPH_WRAPPER,
-  RSK_EXPLORER,
   SERVICES_CONFIG,
 } from '../constants/infrastructure';
+import { BTC } from '../constants/infrastructure/btc';
+import { RSK } from '../constants/infrastructure/rsk';
 import { ALPHA_LINKS, BITOCRACY_LINKS, GITHUB_LINKS } from '../constants/links';
 import { Environments } from '../types/global';
+import { COMMON_SYMBOLS, findAsset } from './asset';
 import { decimalic } from './math';
 
 export const prettyTx = (
@@ -55,10 +56,10 @@ export const getServicesConfig = () =>
   SERVICES_CONFIG[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
 export const getRskExplorerUrl = () =>
-  RSK_EXPLORER[isMainnet() ? 'mainnet' : 'testnet'];
+  RSK.explorer[isMainnet() ? 'mainnet' : 'testnet'];
 
 export const getBtcExplorerUrl = () =>
-  BTC_EXPLORER[isMainnet() ? 'mainnet' : 'testnet'];
+  BTC.explorer[isMainnet() ? 'mainnet' : 'testnet'];
 
 export const getD1Url = () =>
   isStaging()
@@ -81,7 +82,7 @@ export const getAmmServiceUrl = () =>
 
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * MS, 'UTC');
-  return stamp.format(`YYYY-MM-DD HH:MM:ss +UTC`);
+  return stamp.format(`YYYY-MM-DD HH:mm:ss +UTC`);
 };
 
 export const getNextDay = (day: number) => {
@@ -178,14 +179,12 @@ export const removeTrailingZerosFromString = (value: string) =>
   value.includes('.') ? value.replace(/\.?0+$/, '') : value;
 
 export const isBtcBasedAsset = (asset: string) =>
-  asset.toLowerCase() === SupportedTokens.rbtc ||
-  asset.toLowerCase() === SupportedTokens.wrbtc ||
-  asset.toUpperCase() === BITCOIN;
+  [COMMON_SYMBOLS.BTC, COMMON_SYMBOLS.WBTC, 'RBTC', 'WRBTC'].includes(
+    asset.toUpperCase(),
+  );
 
 export const isBitpro = (asset: string) =>
-  asset.toLowerCase() === 'bitpro' ||
-  asset.toLowerCase() === 'bitp' ||
-  asset.toLowerCase() === SupportedTokens.bpro;
+  [COMMON_SYMBOLS.BPRO, 'BITPRO', 'BITP'].includes(asset.toUpperCase());
 
 export const areValuesIdentical = (
   firstValue: Decimal,
@@ -196,20 +195,8 @@ export const areValuesIdentical = (
   return Math.abs(firstValue.sub(secondValue).toNumber()) < epsilon;
 };
 
-export const normalizeToken = (token: string): SupportedTokens => {
-  if (isBtcBasedAsset(token)) {
-    return SupportedTokens.rbtc;
-  }
-
-  if (isBitpro(token)) {
-    return SupportedTokens.bpro;
-  }
-
-  return SupportedTokens[token] || token;
-};
-
 export const renderTokenSymbol = (token: string) =>
-  normalizeToken(token).toUpperCase();
+  findAsset(token, RSK_CHAIN_ID).symbol;
 
 export const generateNonce = () =>
   BigNumber.from(Math.floor(Date.now() + Math.random() * 100));

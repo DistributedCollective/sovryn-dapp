@@ -24,6 +24,7 @@ export interface IAccordionProps {
   dataAttribute?: string;
   style?: AccordionStyle;
   flatMode?: boolean;
+  alwaysMounted?: boolean;
 }
 
 export const Accordion: FC<IAccordionProps> = ({
@@ -37,6 +38,7 @@ export const Accordion: FC<IAccordionProps> = ({
   labelClassName,
   style = AccordionStyle.primary,
   flatMode,
+  alwaysMounted = false,
 }) => {
   const onClickCallback = useCallback(
     () => !disabled && !flatMode && onClick?.(!open),
@@ -75,9 +77,18 @@ export const Accordion: FC<IAccordionProps> = ({
           </div>
         )}
       </button>
-      {open && (
+      {alwaysMounted && (
         <div
-          className={styles.content}
+          className={classNames(styles.content, open && styles.isOpen)}
+          {...applyDataAttr(`${dataAttribute}-content`)}
+        >
+          {children}
+        </div>
+      )}
+
+      {!alwaysMounted && open && (
+        <div
+          className={classNames(styles.content, styles.isOpen)}
           {...applyDataAttr(`${dataAttribute}-content`)}
         >
           {children}

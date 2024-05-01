@@ -1,8 +1,7 @@
 import { isValidChecksumAddress } from 'ethereumjs-util';
 import { ethers } from 'ethers';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
+import { COMMON_SYMBOLS } from '../../../../../../../../../utils/asset';
 import { decimalic, toWei } from '../../../../../../../../../utils/math';
 import { ProposalCreationParameter } from '../../../../../../contexts/ProposalContext.types';
 
@@ -26,7 +25,7 @@ export const renderCalldata = (
 };
 
 export const renderSignature = (token: string) => {
-  return token === SupportedTokens.rbtc
+  return token === COMMON_SYMBOLS.BTC
     ? 'transferRbtc(address,uint256)'
     : 'transferTokens(address,address,uint256)';
 };

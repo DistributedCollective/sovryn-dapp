@@ -1,0 +1,121 @@
+import { constants } from 'ethers';
+
+import { AssetDetails } from '../../types';
+
+export const rsk: Array<AssetDetails> = [
+  {
+    symbol: 'BTC',
+    address: constants.AddressZero,
+    name: 'Bitcoin',
+    isNative: true,
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/rbtc')).default,
+    description: 'Rootstock Bitcoin',
+  },
+  {
+    symbol: 'SOV',
+    address: '0xEFc78fc7d48b64958315949279Ba181c2114ABBd',
+    name: 'Sovryn',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/sov')).default,
+    description: 'Sovryn Token',
+  },
+  {
+    symbol: 'OSSOV',
+    address: '0x6F6f88Ac9f8a1f0b2863aFb3b705487d07A78151',
+    name: 'Sovryn',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/sov')).default,
+    description: '',
+  },
+  {
+    symbol: 'WBTC',
+    address: '0x542fDA317318eBF1d3DEAf76E0b632741A7e677d',
+    name: 'Wrapped Bitcoin',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/rbtc')).default,
+  },
+  {
+    symbol: 'XUSD',
+    address: '0xb5999795BE0EbB5bAb23144AA5FD6A02D080299F',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/xusd')).default,
+  },
+  {
+    symbol: 'DLLR',
+    address: '0xc1411567d2670e24d9C4DaAa7CdA95686e1250AA',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/dllr')).default,
+  },
+  {
+    symbol: 'DOC',
+    address: '0xe700691da7b9851f2f35f8b8182c69c53ccad9db',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/doc')).default,
+  },
+  {
+    symbol: 'rDOC',
+    address: '0x2d919f19D4892381d58EdEbEcA66D5642ceF1A1F',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/doc')).default,
+  },
+  {
+    symbol: 'ZUSD',
+    address: '0xdB107FA69E33f05180a4C2cE9c2E7CB481645C2d',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/zusd')).default,
+  },
+  {
+    symbol: 'BNB',
+    address: '0x6D9659bdF5b1A1dA217f7BbAf7dBAF8190E2e71B',
+    name: 'Binance Coin (Bridged)',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/bnbs')).default,
+  },
+  {
+    symbol: 'ETH',
+    address: '0x1D931Bf8656d795E50eF6D639562C5bD8Ac2B78f',
+    name: 'Ethereum (Bridged)',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/eths')).default,
+  },
+  {
+    symbol: 'FISH',
+    address: '0x055A902303746382FBB7D18f6aE0df56eFDc5213',
+    name: 'BabelFish',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/fish')).default,
+  },
+  {
+    symbol: 'MOC',
+    address: '0x9aC7Fe28967b30e3a4E6E03286D715B42B453d10',
+    name: 'Money On Chain',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/moc')).default,
+  },
+  {
+    symbol: 'RIF',
+    address: '0x2acc95758f8b5f583470ba265eb685a8f45fc9d5',
+    name: 'Rootstock Infrastructure Framework',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/rif')).default,
+  },
+  {
+    symbol: 'BPRO',
+    address: '0x440cd83c160de5c96ddb20246815ea44c7abbca8',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/bpro')).default,
+  },
+  {
+    symbol: 'RUSDT',
+    address: '0xEf213441a85DF4d7acBdAe0Cf78004E1e486BB96',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/rusdt')).default,
+  },
+  {
+    symbol: 'MYNT',
+    address: '0x2e6B1d146064613E8f521Eb3c6e65070af964EbB',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/mynt')).default,
+  },
+];

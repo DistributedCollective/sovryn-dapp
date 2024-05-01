@@ -117,9 +117,9 @@ export type TransactionReceipt = {
   response?: string | PermitTransactionResponse;
 };
 
-// should be kept compatible with TokenDetailsData from @sovryn/contracts
+// should be kept compatible with AssetDetails from @sovryn/contracts
 export interface TokenDetails {
   address: string;
   symbol: string;
-  decimalPrecision: number;
+  decimals: number;
 }

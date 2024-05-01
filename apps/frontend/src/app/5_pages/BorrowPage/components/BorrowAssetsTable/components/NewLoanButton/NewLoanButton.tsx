@@ -11,6 +11,7 @@ import {
   DialogSize,
 } from '@sovryn/ui';
 
+import { useRequiredChain } from '../../../../../../../hooks/chain/useRequiredChain';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { LendingPool } from '../../../../../../../utils/LendingPool';
@@ -22,6 +23,7 @@ type NewLoanButtonProps = {
 
 export const NewLoanButton: FC<NewLoanButtonProps> = ({ pool }) => {
   const { account } = useAccount();
+  const { invalidChain } = useRequiredChain();
   const [openNewLoanDialog, toggleNewLoanDialog] = useReducer(v => !v, false);
 
   const onSuccess = useCallback(
@@ -35,7 +37,7 @@ export const NewLoanButton: FC<NewLoanButtonProps> = ({ pool }) => {
         text={t(translations.fixedInterestPage.borrowAssetsTable.action)}
         style={ButtonStyle.primary}
         onClick={toggleNewLoanDialog}
-        disabled={!account}
+        disabled={!account || invalidChain}
         dataAttribute="new-loan-button"
         className="w-full lg:w-auto"
       />

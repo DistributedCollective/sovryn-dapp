@@ -5,21 +5,26 @@ import { t } from 'i18next';
 import { Paragraph } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { BITCOIN } from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
-import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
+import { useGetNativeTokenPrice } from '../../../../../hooks/useGetNativeTokenPrice';
 import { translations } from '../../../../../locales/i18n';
 import { ProtocolTypes, PoolValues } from './ProtocolSection.types';
+import { getNativeToken } from './ProtocolSection.utils';
 import { ProtocolDepositSection } from './components/ProtocolDepositSection/ProtocolDepositSection';
 import { ProtocolRewardsSection } from './components/ProtocolRewardsSection/ProtocolRewardsSection';
 import { ProtocolTotalSection } from './components/ProtocolTotalSection/ProtocolTotalSection';
 
 export const ProtocolSection: FC = () => {
   const { account } = useAccount();
-  const [selectedCurrency, setSelectedCurrency] = useState(BITCOIN);
+  const chainId = useCurrentChain();
+  const [selectedCurrency, setSelectedCurrency] = useState(
+    getNativeToken(chainId),
+  );
   const [value, setValue] = useState(Decimal.ZERO);
   const [protocolValues, setProtocolValues] = useState<PoolValues>({});
-  const { price: btcPrice } = useGetRBTCPrice();
+
+  const { price: nativeTokenPrice } = useGetNativeTokenPrice();
 
   const handleValueUpdate = useCallback(
     (newBalance: Decimal, protocolIdentifier: ProtocolTypes) => {
@@ -57,24 +62,30 @@ export const ProtocolSection: FC = () => {
     }
   }, [account]);
 
+  useEffect(() => {
+    setProtocolValues({});
+    setValue(Decimal.ZERO);
+    setSelectedCurrency(getNativeToken(chainId));
+  }, [chainId]);
+
   return (
     <div className="flex flex-col gap-3">
       <ProtocolTotalSection
         totalValue={value}
         selectedCurrency={selectedCurrency}
-        btcPrice={btcPrice}
+        nativeTokenPrice={nativeTokenPrice}
         onCurrencyChange={setSelectedCurrency}
       />
       <ProtocolRewardsSection
         selectedCurrency={selectedCurrency}
-        btcPrice={btcPrice}
+        btcPrice={nativeTokenPrice}
       />
       <Paragraph className="text-gray-30 font-medium">
         {t(translations.portfolioPage.protocolSection.depositValue)}
       </Paragraph>
       <ProtocolDepositSection
         selectedCurrency={selectedCurrency}
-        btcPrice={btcPrice}
+        nativeTokenPrice={nativeTokenPrice}
         onValueChange={handleValueUpdate}
       />
     </div>

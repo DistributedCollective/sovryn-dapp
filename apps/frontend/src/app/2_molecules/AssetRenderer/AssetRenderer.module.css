@@ -7,5 +7,5 @@
 }
 
 .asset {
-  @apply uppercase font-semibold text-xs;
+  @apply font-semibold text-xs;
 }

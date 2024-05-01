@@ -1,9 +1,11 @@
 import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
+import { Trans } from 'react-i18next';
 
-import { Accordion, Paragraph } from '@sovryn/ui';
+import { Accordion, Link, Paragraph } from '@sovryn/ui';
 
+import { BOB_DOCS_LINK, ROOTSTOCK_LINK } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
 
 const pageTranslations = translations.landingPage.faqSection;
@@ -15,7 +17,23 @@ const faqData = [
   },
   {
     title: t(pageTranslations.list.second.title),
-    description: t(pageTranslations.list.second.description),
+    description: (
+      <Trans
+        i18nKey={t(pageTranslations.list.second.description)}
+        components={[
+          <Link
+            text={t(pageTranslations.list.second.cta)}
+            href={BOB_DOCS_LINK}
+            openNewTab
+          />,
+          <Link
+            text={t(pageTranslations.list.second.cta2)}
+            href={ROOTSTOCK_LINK}
+            openNewTab
+          />,
+        ]}
+      />
+    ),
   },
   {
     title: t(pageTranslations.list.third.title),
@@ -36,6 +54,14 @@ export const FaqSection: FC = () => {
     null,
   );
 
+  const renderDescription = useCallback(item => {
+    if (typeof item.description === 'string') {
+      return <Trans i18nKey={item.description} />;
+    } else {
+      return item.description;
+    }
+  }, []);
+
   const onClick = useCallback((index: number) => {
     setOpenAccordionIndex(prevIndex => (prevIndex === index ? null : index));
   }, []);
@@ -54,7 +80,7 @@ export const FaqSection: FC = () => {
             children={
               <div className="bg-gray-70 px-4 py-3 -mt-3 rounded-b">
                 <Paragraph className="text-gray-40 text-xs font-medium">
-                  {item.description}
+                  {renderDescription(item)}
                 </Paragraph>
               </div>
             }

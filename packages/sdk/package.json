@@ -27,15 +27,17 @@
   ],
   "dependencies": {
     "@sovryn-zero/lib-ethers": "0.2.5",
+    "@sovryn/sdex": "*",
     "@sovryn/contracts": "*",
     "@sovryn/ethers-provider": "*",
+    "@sovryn/utils": "^0.0.1",
     "rxjs": "7.5.6"
   },
   "peerDependencies": {
-    "ethers": "*",
     "@ethersproject/abstract-provider": "*",
     "@ethersproject/providers": "*",
     "@sovryn-zero/lib-base": "*",
-    "@sovryn/contracts": "*"
+    "@sovryn/contracts": "*",
+    "ethers": "*"
   }
 }

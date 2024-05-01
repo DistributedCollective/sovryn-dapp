@@ -27,13 +27,13 @@
     "@pinata/sdk": "^2.1.0",
     "@sovryn/eslint-config-custom": "*",
     "@trivago/prettier-plugin-sort-imports": "3.3.0",
+    "cross-env": "7.0.3",
+    "dotenv-cra": "3.0.2",
     "husky": "8.0.1",
     "lint-staged": "13.0.3",
     "prettier": "2.7.1",
     "turbo": "latest",
-    "typescript": "4.8.4",
-    "cross-env": "7.0.3",
-    "dotenv-cra": "3.0.2"
+    "typescript": "4.8.4"
   },
   "engines": {
     "npm": ">=7.0.0",

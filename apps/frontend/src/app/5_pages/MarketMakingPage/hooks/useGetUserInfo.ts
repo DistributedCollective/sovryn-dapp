@@ -2,17 +2,19 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { Contract, ethers } from 'ethers';
 
-import { SupportedTokens, getProtocolContract } from '@sovryn/contracts';
+import { getProtocolContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import { useAccount } from '../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import {
   useGetProtocolContract,
   useGetTokenContract,
 } from '../../../../hooks/useGetContract';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
 export const useGetUserInfo = (pool: AmmLiquidityPool) => {
@@ -23,12 +25,13 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
   const [loadingA, setLoadingA] = useState(false);
   const [balanceB, setBalanceB] = useState<Decimal>(Decimal.ZERO);
   const [loadingB, setLoadingB] = useState(false);
-  const liquidityMiningProxy = useGetProtocolContract('liquidityMiningProxy');
-  const contractTokenA = useGetTokenContract(assetA, defaultChainId);
-  const contractTokenB = useGetTokenContract(
-    SupportedTokens.wrbtc,
-    defaultChainId,
+  const chainId = useCurrentChain();
+  const liquidityMiningProxy = useGetProtocolContract(
+    'liquidityMiningProxy',
+    chainId,
   );
+  const contractTokenA = useGetTokenContract(assetA, chainId);
+  const contractTokenB = useGetTokenContract(COMMON_SYMBOLS.WBTC, chainId);
 
   const getUserInfo = useCallback(
     async (token: string) =>
@@ -65,12 +68,12 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
 
       const { abi } = await getProtocolContract(
         'babelfishAggregator',
-        defaultChainId,
+        RSK_CHAIN_ID,
       );
       const contract = new ethers.Contract(
         poolTokenA,
         abi,
-        getProvider(defaultChainId),
+        getProvider(RSK_CHAIN_ID),
       );
 
       const totalSupply = await contract

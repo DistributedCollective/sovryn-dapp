@@ -34,7 +34,8 @@ export const useGetData = () => {
       })
       .then(result => {
         setLockedData(result.data);
-      });
+      })
+      .catch(() => {});
   }, []);
 
   const fetchVolumeData = useCallback(() => {
@@ -62,7 +63,8 @@ export const useGetData = () => {
           btc: result.data?.total_volume_btc || 0,
           usd: result.data?.total_volume_usd || 0,
         });
-      });
+      })
+      .catch(() => {});
   }, []);
 
   useInterval(

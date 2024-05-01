@@ -22,7 +22,7 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { chains, defaultChainId } from '../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -39,6 +39,7 @@ import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
+import { getChainById } from '../../../../../utils/chain';
 import { rskClient } from '../../../../../utils/clients';
 import {
   Borrow_OrderBy,
@@ -54,7 +55,7 @@ export const NewLoanHistoryFrame: FC<PropsWithChildren> = ({ children }) => {
   const { addNotification } = useNotificationContext();
 
   const [page, setPage] = useState(0);
-  const chain = chains.find(chain => chain.id === defaultChainId);
+  const chain = getChainById(RSK_CHAIN_ID);
 
   const { value: block } = useBlockNumber();
 

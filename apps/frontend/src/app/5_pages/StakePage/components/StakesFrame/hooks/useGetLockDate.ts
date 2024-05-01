@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 
 export const useGetLockDate = (timestamp: number) => {
-  const stakingContract = useGetProtocolContract('staking');
+  const chainId = useCurrentChain();
+  const stakingContract = useGetProtocolContract('staking', chainId);
   const [lockDate, setLockDate] = useState(0);
 
   useEffect(() => {

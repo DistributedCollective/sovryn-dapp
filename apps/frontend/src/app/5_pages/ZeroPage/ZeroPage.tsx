@@ -25,8 +25,11 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
 import { withDeferredLoaderData } from '../../0_meta/DeferredDataLoader/withDeferredRouterData';
 import { LOCStatus } from '../../2_molecules/LOCStatus/LOCStatus';
+import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import { SystemStats } from '../../2_molecules/SystemStats/SystemStats';
 import { GettingStartedPopup } from '../../3_organisms/GettingStartedPopup/GettingStartedPopup';
 import { LOCChart } from '../../3_organisms/LOCChart/LOCChart';
@@ -143,103 +146,109 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
       <Helmet>
         <title>{t(translations.zeroPage.meta.title)}</title>
       </Helmet>
-      <div className="px-0 container max-w-[100rem] mb-7">
-        {!account && <div className="mt-6 lg:mt-12"></div>}
-        {account && !showWelcomeBanner && !isLoading && (
-          <LOCStatus
-            className="mt-4 mb-6"
-            collateral={collateral}
-            debt={debt}
-            cRatio={getRatio(price)}
-            debtSymbol={getTokenDisplayName(DEBT_TOKEN)}
-            onAdjust={toggle}
-            onClose={toggleClosePopup}
-            withdrawalSurplus={collateralSurplusBalance}
-            onWithdraw={claimCollateralSurplus}
-          />
-        )}
-        {account && showWelcomeBanner && !isLoading && !openLocLocked && (
-          <div className="mt-6 lg:mt-12">
-            <OpenLocButton openLOC={toggle} className="mb-10 md:mb-4" />
-          </div>
-        )}
-
-        {openLocLocked && !hasLoc && !isLoading && (
-          <div className="my-2 flex justify-center">
-            <ErrorBadge
-              className="px-8"
-              level={ErrorLevel.Warning}
-              message={t(translations.maintenanceMode.openingLOC)}
+      <div className="px-0 container lg:mx-8 mb-7">
+        <NetworkBanner requiredChainId={RSK_CHAIN_ID}>
+          {!account && <div className="mt-6 lg:mt-12"></div>}
+          {account && !showWelcomeBanner && !isLoading && (
+            <LOCStatus
+              className="mt-4 mb-6"
+              collateral={collateral}
+              debt={debt}
+              cRatio={getRatio(price)}
+              debtSymbol={getTokenDisplayName(DEBT_TOKEN)}
+              onAdjust={toggle}
+              onClose={toggleClosePopup}
+              withdrawalSurplus={collateralSurplusBalance}
+              onWithdraw={claimCollateralSurplus}
             />
-          </div>
-        )}
-        <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-4 md:bg-gray-90 rounded gap-9 md:gap-20">
-          <div className="md:min-w-[23rem] min-w-auto">
-            <SystemStats />
-          </div>
-          <div className="flex-1 flex flex-col">
-            <Paragraph
-              size={ParagraphSize.base}
-              style={ParagraphStyle.normal}
-              className="mb-3 md:mb-6"
-            >
-              {t(translations.chart.systemLinesCredit)}
-            </Paragraph>
+          )}
+          {account && showWelcomeBanner && !isLoading && !openLocLocked && (
+            <div className="mt-6 lg:mt-12">
+              <OpenLocButton openLOC={toggle} className="mb-10 md:mb-4" />
+            </div>
+          )}
 
-            <div className="h-80 md:flex-1 bg-gray-80 rounded pt-2 pr-2 flex items-center">
-              <LOCChart hasUserClosedTrove={hasUserClosedTrove} />
+          {openLocLocked && !hasLoc && !isLoading && (
+            <div className="my-2 flex justify-center">
+              <ErrorBadge
+                className="px-8"
+                level={ErrorLevel.Warning}
+                message={t(translations.maintenanceMode.openingLOC)}
+              />
+            </div>
+          )}
+          <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-4 md:bg-gray-90 rounded gap-9 md:gap-20">
+            <div className="md:min-w-[23rem] min-w-auto">
+              <SystemStats />
+            </div>
+            <div className="flex-1 flex flex-col">
+              <Paragraph
+                size={ParagraphSize.base}
+                style={ParagraphStyle.normal}
+                className="mb-3 md:mb-6"
+              >
+                {t(translations.chart.systemLinesCredit)}
+              </Paragraph>
+
+              <div className="h-80 md:flex-1 bg-gray-80 rounded pt-2 pr-2 flex items-center">
+                <LOCChart hasUserClosedTrove={hasUserClosedTrove} />
+              </div>
             </div>
           </div>
-        </div>
 
-        <Dialog width={DialogSize.md} isOpen={open} disableFocusTrap>
-          <DialogHeader
-            title={
-              !hasLoc
-                ? t(translations.zeroPage.loc.open)
-                : t(translations.zeroPage.loc.adjust)
-            }
-            onClose={toggle}
-          />
-          <DialogBody>
-            {open && !hasLoc && (
-              <OpenCreditLine
-                onSubmit={handleTroveSubmit}
-                rbtcPrice={price}
-                borrowingRate={minBorrowingFeeRate}
-              />
-            )}
-            {open && hasLoc && (
-              <AdjustCreditLine
-                existingCollateral={collateral}
-                existingDebt={debt}
-                rbtcPrice={price}
-                borrowingRate={minBorrowingFeeRate}
-                onSubmit={handleTroveSubmit}
-              />
-            )}
-          </DialogBody>
-        </Dialog>
-
-        <GettingStartedPopup
-          isOpen={openStartedPopup && !isTxOpen}
-          onConfirm={toggleStartedPopup}
-        />
-
-        <Dialog width={DialogSize.md} isOpen={openClosePopup} disableFocusTrap>
-          <DialogHeader
-            title={t(translations.zeroPage.loc.close)}
-            onClose={toggleClosePopup}
-          />
-          <DialogBody>
-            <CloseCreditLine
-              onSubmit={handleTroveClose}
-              creditValue={debt.sub(LIQUIDATION_RESERVE_AMOUNT)}
-              collateralValue={collateral}
-              rbtcPrice={price}
+          <Dialog width={DialogSize.md} isOpen={open} disableFocusTrap>
+            <DialogHeader
+              title={
+                !hasLoc
+                  ? t(translations.zeroPage.loc.open)
+                  : t(translations.zeroPage.loc.adjust)
+              }
+              onClose={toggle}
             />
-          </DialogBody>
-        </Dialog>
+            <DialogBody>
+              {open && !hasLoc && (
+                <OpenCreditLine
+                  onSubmit={handleTroveSubmit}
+                  rbtcPrice={price}
+                  borrowingRate={minBorrowingFeeRate}
+                />
+              )}
+              {open && hasLoc && (
+                <AdjustCreditLine
+                  existingCollateral={collateral}
+                  existingDebt={debt}
+                  rbtcPrice={price}
+                  borrowingRate={minBorrowingFeeRate}
+                  onSubmit={handleTroveSubmit}
+                />
+              )}
+            </DialogBody>
+          </Dialog>
+
+          <GettingStartedPopup
+            isOpen={openStartedPopup && !isTxOpen}
+            onConfirm={toggleStartedPopup}
+          />
+
+          <Dialog
+            width={DialogSize.md}
+            isOpen={openClosePopup}
+            disableFocusTrap
+          >
+            <DialogHeader
+              title={t(translations.zeroPage.loc.close)}
+              onClose={toggleClosePopup}
+            />
+            <DialogBody>
+              <CloseCreditLine
+                onSubmit={handleTroveClose}
+                creditValue={debt.sub(LIQUIDATION_RESERVE_AMOUNT)}
+                collateralValue={collateral}
+                rbtcPrice={price}
+              />
+            </DialogBody>
+          </Dialog>
+        </NetworkBanner>
       </div>
     </>
   );

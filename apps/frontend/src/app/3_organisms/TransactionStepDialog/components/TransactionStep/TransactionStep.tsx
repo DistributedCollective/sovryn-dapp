@@ -3,10 +3,15 @@ import { MaxAllowanceTransferAmount } from '@uniswap/permit2-sdk';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
+import { BigNumber } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { getTokenDetailsByAddress, findContract } from '@sovryn/contracts';
+import {
+  findContract,
+  getAssetDataByAddress,
+  AssetDetailsData,
+} from '@sovryn/contracts';
 import {
   Accordion,
   AmountInput,
@@ -21,25 +26,22 @@ import {
   SimpleTableRow,
   StatusItem,
   StatusType,
+  noop,
 } from '@sovryn/ui';
-
-import { chains, defaultChainId } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
-import {
-  BITCOIN,
-  BTC_RENDER_PRECISION,
-} from '../../../../../constants/currencies';
+import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { APPROVAL_FUNCTION } from '../../../../../constants/general';
-import { tokensDisplayName } from '../../../../../constants/tokens';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
+import { findNativeAsset } from '../../../../../utils/asset';
+import { getChainById } from '../../../../../utils/chain';
 import { fromWei, toWei } from '../../../../../utils/math';
 import {
   Transaction,
   TransactionConfig,
   TransactionReceipt,
-  TokenDetails,
 } from '../../TransactionStepDialog.types';
 import {
   isSignTransactionDataRequest,
@@ -57,8 +59,6 @@ export type TransactionStepProps = {
   isLoading: boolean;
 };
 
-const chain = chains.find(chain => chain.id === defaultChainId);
-
 export const TransactionStep: FC<TransactionStepProps> = ({
   step,
   status,
@@ -69,32 +69,38 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   updateConfig,
   isLoading,
 }) => {
+  const chainId = useCurrentChain();
+  const chain = useMemo(() => getChainById(chainId), [chainId]);
+
   const { request, title, subtitle } = transaction;
-  const [token, setToken] = useState<TokenDetails | undefined>();
+  const [token, setToken] = useState<AssetDetailsData | undefined>();
 
   useEffect(() => {
     const updateToken = (address: string) => {
-      if (isTransactionRequest(request) && request.tokenDetails) {
-        if (request.tokenDetails.address === address) {
-          setToken(request.tokenDetails);
-          return;
-        } else {
-          console.warn(
-            "Supplied token details address %s doesn't match address %s",
-            request.tokenDetails.address,
-            address,
-          );
-        }
-      }
-      findContract(address).then(result => {
-        if (result.group === 'tokens') {
-          getTokenDetailsByAddress(address)
-            .then(setToken)
-            .catch(e => {
-              console.error('token not found?', result, e);
-            });
-        }
-      });
+      //FIXME: this logic needs to be updated to handle new typings, and matched with fixes to TransactionStepDialog.types.ts
+      //   if (isTransactionRequest(request) && request.tokenDetails) {
+      //     if (request.tokenDetails.address === address) {
+      //       setToken(request.tokenDetails);
+      //       return;
+      //     } else {
+      //       console.warn(
+      //         "Supplied token details address %s doesn't match address %s",
+      //         request.tokenDetails.address,
+      //         address,
+      //       );
+      //     }
+      //   }
+      findContract(address, chainId)
+        .then(result => {
+          if (result.group === 'assets') {
+            getAssetDataByAddress(address, chainId)
+              .then(setToken)
+              .catch(e => {
+                console.error('token not found?', result, e);
+              });
+          }
+        })
+        .catch(noop);
     };
 
     if (isTransactionRequest(request)) {
@@ -104,7 +110,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
       const { to } = request;
       updateToken(to);
     }
-  }, [request]);
+  }, [chainId, request]);
 
   const resetConfig = useCallback(async () => {
     if (isTransactionRequest(request)) {
@@ -115,12 +121,15 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           args,
           gasLimit: requestGasLimit,
           gasPrice: requestGasPrice,
+          value,
         } = request;
         const gasLimit =
           requestGasLimit ??
-          (await contract.estimateGas[fnName](...args).then(gas =>
-            gas.toString(),
-          ));
+          (await contract.estimateGas[fnName](
+            ...[...args, { value: value ?? 0 }],
+          )
+            .then(gas => gas.toString())
+            .catch(() => BigNumber.from(6_000_000).toString()));
 
         updateConfig({
           unlimitedAmount: false,
@@ -139,15 +148,19 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           to,
           gasLimit: requestGasLimit,
           gasPrice: requestGasPrice,
+          value,
         } = request;
 
         const gasLimit =
           requestGasLimit ??
           (
-            await signer.estimateGas({
-              to,
-              data,
-            })
+            await signer
+              .estimateGas({
+                to,
+                data,
+                value: value ?? 0,
+              })
+              .catch(() => BigNumber.from(6_000_000))
           ).toString();
 
         updateConfig({
@@ -161,20 +174,20 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   }, [gasPrice, request, updateConfig]);
 
   const parsedAmount = useMemo(() => {
-    return token?.decimalPrecision && config.amount !== undefined
-      ? formatUnits(config.amount?.toString(), token?.decimalPrecision)
+    return token?.decimals && config.amount !== undefined
+      ? formatUnits(config.amount?.toString(), token?.decimals)
       : '';
-  }, [config.amount, token?.decimalPrecision]);
+  }, [config.amount, token?.decimals]);
 
   const minAmount = useMemo(() => {
     if (isTransactionRequest(request)) {
       const { fnName, args } = request;
       return fnName === APPROVAL_FUNCTION
-        ? formatUnits(args[1], token?.decimalPrecision)
+        ? formatUnits(args[1], token?.decimals)
         : '0';
     }
     return '0';
-  }, [request, token?.decimalPrecision]);
+  }, [request, token?.decimals]);
 
   const amountOptions = useMemo(
     () => [
@@ -193,10 +206,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             onChange={e =>
               updateConfig({
                 ...config,
-                amount: parseUnits(
-                  String(e.target.value),
-                  token?.decimalPrecision,
-                ),
+                amount: parseUnits(String(e.target.value), token?.decimals),
               })
             }
           />
@@ -210,14 +220,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
         helper: t(translations.transactionStep.unlimitedAmountTooltip),
       },
     ],
-    [
-      config,
-      minAmount,
-      parsedAmount,
-      step,
-      token?.decimalPrecision,
-      updateConfig,
-    ],
+    [config, minAmount, parsedAmount, step, token?.decimals, updateConfig],
   );
 
   const [advanced, setAdvanced] = useState(false);
@@ -244,6 +247,11 @@ export const TransactionStep: FC<TransactionStepProps> = ({
         ).toFixed(8)
       : '';
   }, [config.gasLimit, config.gasPrice]);
+
+  const gasFeeSuffix = useMemo(
+    () => findNativeAsset(chainId).symbol,
+    [chainId],
+  );
 
   return (
     <div className="flex flex-col">
@@ -277,10 +285,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                     ) : (
                       <AmountRenderer
                         value={parsedAmount}
-                        suffix={
-                          tokensDisplayName[token?.symbol || ''] ||
-                          token?.symbol
-                        }
+                        suffix={token?.symbol}
                       />
                     )
                   }
@@ -297,7 +302,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                 value={
                   <AmountRenderer
                     value={estimatedGasFee}
-                    suffix={BITCOIN}
+                    suffix={gasFeeSuffix}
                     precision={BTC_RENDER_PRECISION}
                   />
                 }

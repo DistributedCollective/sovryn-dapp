@@ -5,6 +5,9 @@ import { Helmet } from 'react-helmet-async';
 
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
+import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import {
   SECTION_LINKS_LABELS,
   pageTranslations,
@@ -54,28 +57,33 @@ const ProtocolDataPage: FC = () => {
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
 
-      <div className="w-full grid grid-cols-1 justify-center text-gray-10 md:mx-9 mx-0 md:mb-2 md:mt-7 mt-4 mb-7 max-w-6xl">
-        <Heading className="text-center mb-3 lg:text-2xl text-base font-medium">
-          {t(pageTranslations.title)}
-        </Heading>
-
-        <Paragraph
-          className="text-center mb-6 lg:mb-9 font-semibold px-4 sm:px-0"
-          size={ParagraphSize.base}
+      <div className="w-full  text-gray-10 md:mx-9 mx-0 md:mb-2 md:mt-7 mt-4 mb-7 max-w-6xl">
+        <NetworkBanner
+          requiredChainId={RSK_CHAIN_ID}
+          childClassName="grid grid-cols-1 justify-center"
         >
-          {t(pageTranslations.subtitle)}
-        </Paragraph>
+          <Heading className="text-center mb-3 lg:text-2xl text-base font-medium">
+            {t(pageTranslations.title)}
+          </Heading>
 
-        <SectionLinks
-          refs={Object.values(refs)}
-          labels={SECTION_LINKS_LABELS}
-        />
+          <Paragraph
+            className="text-center mb-6 lg:mb-9 font-semibold px-4 sm:px-0"
+            size={ParagraphSize.base}
+          >
+            {t(pageTranslations.subtitle)}
+          </Paragraph>
 
-        {sections.map((section, index) => (
-          <div key={index} ref={section.ref}>
-            {section.content}
-          </div>
-        ))}
+          <SectionLinks
+            refs={Object.values(refs)}
+            labels={SECTION_LINKS_LABELS}
+          />
+
+          {sections.map((section, index) => (
+            <div key={index} ref={section.ref}>
+              {section.content}
+            </div>
+          ))}
+        </NetworkBanner>
       </div>
     </>
   );

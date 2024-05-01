@@ -6,6 +6,7 @@
   "dependencies": {
     "@apollo/client": "3.7.1",
     "@apollo/react-hooks": "4.0.0",
+    "@sovryn/sdex": "*",
     "@loadable/component": "5.15.2",
     "@sovryn-zero/lib-base": "0.2.1",
     "@sovryn-zero/lib-ethers": "0.2.5",
@@ -23,6 +24,7 @@
     "@sovryn/tailwindcss-config": "*",
     "@sovryn/ui": "*",
     "@sovryn/utils": "0.0.1",
+    "@uniswap/permit2-sdk": "1.2.0",
     "bitcoin-address-validation": "2.2.1",
     "chart.js": "4.1.1",
     "classnames": "2.3.2",
@@ -34,6 +36,7 @@
     "graphql": "16.6.0",
     "i18next": "22.0.4",
     "i18next-browser-languagedetector": "7.0.0",
+    "immer": "^10.0.3",
     "lodash.get": "4.4.2",
     "lodash.set": "4.3.2",
     "nanoid": "4.0.0",
@@ -56,7 +59,8 @@
     "sanitize-html": "2.11.0",
     "socket.io-client": "4.5.4",
     "utf8": "^3.0.0",
-    "@uniswap/permit2-sdk": "1.2.0"
+    "zustand": "^4.5.1",
+    "react-slider": "2.0.6"
   },
   "devDependencies": {
     "@babel/core": "7.18.2",

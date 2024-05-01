@@ -11,8 +11,8 @@ import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { translations } from '../../../../../../locales/i18n';
 import { toWei } from '../../../../../../utils/math';
 import {
-  TransactionType,
   TokenDetails,
+  TransactionType,
 } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 import { GAS_LIMIT_RUNE_BRIDGE_WITHDRAW } from '../../../constants';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
@@ -72,7 +72,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     const tokenDetails: TokenDetails = {
       address: selectedToken.tokenContractAddress,
       symbol: selectedToken.symbol,
-      decimalPrecision: selectedToken.decimals,
+      decimals: selectedToken.decimals,
     };
     if (!signer) {
       throw new Error('Signer not found');

@@ -2,7 +2,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   ButtonStyle,
   ButtonSize,
@@ -14,8 +13,11 @@ import { Decimal } from '@sovryn/utils';
 
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../hooks/useBlockNumber';
+import { useCurrentChain } from '../../../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
+import { getChainById } from '../../../../../../../utils/chain';
 import { useCheckPoolMaintenance } from '../../../../hooks/useCheckPoolMaintenance';
 import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
@@ -26,6 +28,10 @@ type PoolsTableActionProps = {
 };
 
 export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
+  const chainId = useCurrentChain();
+  const chain = useMemo(() => getChainById(chainId), [chainId]);
+  const isBobChain = useMemo(() => chain?.label === 'BOB', [chain?.label]);
+
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
 
@@ -38,10 +44,7 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
     refetch,
   } = useGetUserInfo(pool);
 
-  const isMynt = useMemo(
-    () => pool.assetA === SupportedTokens.mynt,
-    [pool.assetA],
-  );
+  const isMynt = useMemo(() => pool.assetA === 'MYNT', [pool.assetA]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInitialDeposit, setIsInitialDeposit] = useState(true);
@@ -112,7 +115,11 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
                 <Button
                   style={ButtonStyle.primary}
                   size={ButtonSize.small}
-                  text={t(translations.common.deposit)}
+                  text={
+                    isBobChain && pool.assetA === COMMON_SYMBOLS.SOV
+                      ? t(translations.common.withdraw)
+                      : t(translations.common.deposit)
+                  }
                   dataAttribute="pools-table-deposit-button"
                   className="w-full lg:w-auto prevent-row-click"
                   disabledStyle={actionLocked}
@@ -137,7 +144,11 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
       />
 
       <AdjustAndDepositModal
-        isOpen={isModalOpen}
+        isOpen={
+          isModalOpen &&
+          isBobChain &&
+          ![COMMON_SYMBOLS.DLLR, COMMON_SYMBOLS.SOV].includes(pool.assetA)
+        }
         onClose={handleClose}
         pool={pool}
         isInitialDeposit={isInitialDeposit}

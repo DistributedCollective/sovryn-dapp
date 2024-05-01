@@ -3,7 +3,6 @@ import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -16,7 +15,7 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
 import {
@@ -28,6 +27,7 @@ import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 import { fromWei, toWei } from '../../../../../../utils/math';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
 import {
@@ -43,12 +43,12 @@ export const AmountForm: React.FC = () => {
   const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
 
   const { bigNumberBalance: maxAmountWei } = useMaxAssetBalance(
-    SupportedTokens.rbtc,
+    COMMON_SYMBOLS.BTC,
   );
 
   const { bigNumberBalance: rbtcWeiBalance } = useAssetBalance(
-    SupportedTokens.rbtc,
-    defaultChainId,
+    COMMON_SYMBOLS.BTC,
+    RSK_CHAIN_ID,
   );
 
   const [value, setValue] = useState(amount || '0');
@@ -116,7 +116,7 @@ export const AmountForm: React.FC = () => {
           <MaxButton
             onClick={onMaximumAmountClick}
             value={fromWei(maxAmount)}
-            token={SupportedTokens.rbtc}
+            token={COMMON_SYMBOLS.BTC}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="funding-send-amount-max"
           />

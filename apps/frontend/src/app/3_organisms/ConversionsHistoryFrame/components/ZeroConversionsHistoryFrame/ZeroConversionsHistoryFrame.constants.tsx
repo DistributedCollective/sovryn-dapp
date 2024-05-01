@@ -2,8 +2,6 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import {
@@ -12,6 +10,7 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { Redemption } from '../../../../../utils/graphql/zero/generated';
 import { dateFormat } from '../../../../../utils/helpers';
 import { renderRedemptionFee } from './ZeroConversionsHistoryFrame.utils';
@@ -37,7 +36,7 @@ export const COLUMNS_CONFIG = [
       redemption.tokensActuallyRedeemed.length ? (
         <AmountRenderer
           value={redemption.tokensActuallyRedeemed}
-          suffix={SupportedTokens.zusd}
+          suffix={COMMON_SYMBOLS.ZUSD}
           precision={TOKEN_RENDER_PRECISION}
           dataAttribute="redemption-history-zusd-redeemed"
         />

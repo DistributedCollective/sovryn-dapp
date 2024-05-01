@@ -2,7 +2,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -29,8 +28,10 @@ import { useHandleStake } from '../../../../5_pages/StakePage/hooks/useHandleSta
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { decimalic, fromWei } from '../../../../../utils/math';
 import { StakeFormProps } from '../../StakeForm.types';
 import { StakeDatePicker } from '../StakeDatePicker/StakeDatePicker';
@@ -43,7 +44,8 @@ export const AddStakeForm: FC<StakeFormProps> = ({
   const [amount, setAmount] = useState('');
   const [unlockDate, setUnlockDate] = useState(0);
 
-  const { balance } = useAssetBalance(SupportedTokens.sov);
+  const chainId = useCurrentChain();
+  const { balance } = useAssetBalance(COMMON_SYMBOLS.SOV, chainId);
   const { balance: stakedValue } = useGetStakingBalanceOf(account);
   const totalVestingsBalance = useGetTotalVestingsBalance();
 
@@ -92,7 +94,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({
       ) : (
         <AmountRenderer
           value={totalStakedValue.add(amount)}
-          suffix={SupportedTokens.sov}
+          suffix={COMMON_SYMBOLS.SOV}
           precision={TOKEN_RENDER_PRECISION}
         />
       ),
@@ -168,7 +170,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({
             <div className="text-sm font-semibold">
               <AmountRenderer
                 value={totalStakedValue}
-                suffix={SupportedTokens.sov}
+                suffix={COMMON_SYMBOLS.SOV}
                 precision={TOKEN_RENDER_PRECISION}
                 dataAttribute="create-stake-staked-sov-amount"
               />
@@ -198,7 +200,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({
         <MaxButton
           onClick={onMaximumAmountClick}
           value={balance}
-          token={SupportedTokens.sov}
+          token={COMMON_SYMBOLS.SOV}
           dataAttribute="create-stake-amount-max"
         />
       </div>

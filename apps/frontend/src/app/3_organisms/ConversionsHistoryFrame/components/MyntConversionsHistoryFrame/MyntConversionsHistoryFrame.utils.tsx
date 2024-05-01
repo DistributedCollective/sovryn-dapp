@@ -5,7 +5,7 @@ import { t } from 'i18next';
 import { Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { masset } from '../../../../5_pages/ConvertPage/ConvertPage.types';
+import { MASSET } from '../../../../5_pages/ConvertPage/ConvertPage.constants';
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
 import {
@@ -32,7 +32,7 @@ export const sentAmountRenderer = (item: Conversion) => {
     : item.massetQuantity;
   const asset = isIncomingTransaction
     ? item.bAsset.symbol
-    : masset.toUpperCase();
+    : MASSET.toUpperCase();
 
   return <AmountRenderer value={amount} suffix={asset!} />;
 };
@@ -44,7 +44,7 @@ export const receivedAmountRenderer = (item: Conversion) => {
     ? item.massetQuantity
     : item.bassetQuantity;
   const asset = isIncomingTransaction
-    ? masset.toUpperCase()
+    ? MASSET.toUpperCase()
     : item.bAsset.symbol;
 
   return (

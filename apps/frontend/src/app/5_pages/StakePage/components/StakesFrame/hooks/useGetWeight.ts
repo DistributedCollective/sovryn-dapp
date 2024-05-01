@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { MS } from '../../../../../../constants/general';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 import { useGetLockDate } from './useGetLockDate';
 
 export const useGetWeight = (unlockDate: number) => {
-  const stakingContract = useGetProtocolContract('staking');
+  const chainId = useCurrentChain();
+  const stakingContract = useGetProtocolContract('staking', chainId);
   const [weight, setWeight] = useState(1);
   const currentDate = useMemo(() => Math.ceil(new Date().getTime() / MS), []);
 

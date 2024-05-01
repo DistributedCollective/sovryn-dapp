@@ -2,10 +2,9 @@ import { useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import {
   Transaction,
@@ -17,16 +16,17 @@ import { useTransactionContext } from '../../../../../../contexts/TransactionCon
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useLoadContract } from '../../../../../../hooks/useLoadContract';
 import { translations } from '../../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 import { toWei } from '../../../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
 
 export const useExtendLoan = (
   loan: LoanItem,
-  debtToken: SupportedTokens,
+  debtToken: string,
   nextRollover: string | number,
   useCollateral: boolean,
 ) => {
-  const contract = useLoadContract('protocol', 'protocol', defaultChainId);
+  const contract = useLoadContract('protocol', 'protocol', RSK_CHAIN_ID);
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
   const { account, signer } = useAccount();
 
@@ -49,7 +49,7 @@ export const useExtendLoan = (
     const transactions: Transaction[] = [];
 
     const weiDepositAmount = toWei(depositAmount);
-    if (!useCollateral && debtToken !== SupportedTokens.rbtc) {
+    if (!useCollateral && debtToken !== COMMON_SYMBOLS.BTC) {
       const approve = await prepareApproveTransaction({
         token: debtToken,
         amount: weiDepositAmount,

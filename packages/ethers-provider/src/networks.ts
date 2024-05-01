@@ -8,4 +8,7 @@ export const networkMap = {
   [ChainIds.SEPOLIA]: 'sepolia',
   [ChainIds.BSC_MAINNET]: 'bsc',
   [ChainIds.BSC_TESTNET]: 'bscTestnet',
+  [ChainIds.BOB_MAINNET]: 'bob',
+  [ChainIds.BOB_TESTNET]: 'bobTestnet',
+  [ChainIds.FORK]: 'fork',
 } as const;

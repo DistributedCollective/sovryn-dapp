@@ -4,7 +4,7 @@ import { t } from 'i18next';
 import { Trans } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { getTokenDetailsByAddress } from '@sovryn/contracts';
+import { getAssetDataByAddress } from '@sovryn/contracts';
 import {
   Button,
   ButtonStyle,
@@ -14,6 +14,8 @@ import {
   SimpleTableRow,
   Table,
 } from '@sovryn/ui';
+
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -69,7 +71,7 @@ export const PricesBy24hChange: FC = () => {
   const convert = useCallback(
     async (tokenAddress: string) => {
       try {
-        const token = await getTokenDetailsByAddress(tokenAddress);
+        const token = await getAssetDataByAddress(tokenAddress, RSK_CHAIN_ID);
         navigate('/convert?from=' + token.symbol);
       } catch (error) {}
     },

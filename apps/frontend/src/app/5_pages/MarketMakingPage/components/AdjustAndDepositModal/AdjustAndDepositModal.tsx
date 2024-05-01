@@ -2,7 +2,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   Dialog,
   DialogHeader,
@@ -44,6 +43,7 @@ import {
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
 import { useGetMaxDeposit } from './hooks/useGetMaxDeposit';
 import { useGetPoolBalance } from './hooks/useGetPoolBalance';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 const pageTranslations = translations.marketMakingPage.adjustAndDepositModal;
 
@@ -350,7 +350,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
                   label={t(translations.common.amount)}
                   value={expectedTokenAmount.toString()}
                   className="max-w-none mt-6"
-                  unit={<AssetRenderer asset={SupportedTokens.rbtc} />}
+                  unit={<AssetRenderer asset={COMMON_SYMBOLS.BTC} />}
                   readOnly
                 />
               )}

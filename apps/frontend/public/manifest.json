@@ -3,12 +3,12 @@
   "name": "Sovryn dapp",
   "icons": [
     {
-      "src": "65f8461a5e19e361750f0b25_Pic.png",
+      "src": "sovryn_favicon.png",
       "type": "image/png",
       "sizes": "32x32"
     },
     {
-      "src": "660572553f6c84fdff7a5928_256.png",
+      "src": "sovryn_favicon_256.png",
       "type": "image/png",
       "sizes": "256x256"
     }

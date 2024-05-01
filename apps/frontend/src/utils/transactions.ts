@@ -10,10 +10,12 @@ import dayjs, { ManipulateType } from 'dayjs';
 import { BigNumber, BigNumberish, constants, ethers } from 'ethers';
 import { t } from 'i18next';
 
-import { getTokenContract, SupportedTokens } from '@sovryn/contracts';
+import { getAssetData } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
 import { PermitTransactionResponse } from '@sovryn/sdk';
 import { Decimal } from '@sovryn/utils';
+
+import { RSK_CHAIN_ID } from '../config/chains';
 
 import {
   Transaction,
@@ -23,9 +25,8 @@ import {
   TransactionType,
 } from '../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { APPROVAL_FUNCTION } from '../constants/general';
-import { getTokenDisplayName } from '../constants/tokens';
 import { translations } from '../locales/i18n';
-import { getRskChainId } from './chain';
+import { COMMON_SYMBOLS, findAsset, findAssetByAddress } from './asset';
 import { generateNonce } from './helpers';
 
 export const prepareDeadline = (
@@ -55,7 +56,7 @@ export const DEFAULT_SIGNATURE =
   '0x86638c772f972d496f6671bc8157498b853ef064f134e813ddd25269c6a01a385ed8032201f3b91a84b46d75bb3ea50c919a576927975bab5b91829833eb8e111c';
 
 type PreparePermitTransactionOptions = {
-  token: SupportedTokens;
+  token: string;
   signer: JsonRpcSigner;
   spender: string;
   value?: string;
@@ -65,21 +66,21 @@ type PreparePermitTransactionOptions = {
 };
 
 export const preparePermitTransaction = async ({
-  token = SupportedTokens.dllr,
-  chain = getRskChainId(),
+  token = COMMON_SYMBOLS.DLLR,
+  chain = RSK_CHAIN_ID,
   signer,
   spender,
   value,
   deadline = prepareDeadline(),
   nonce,
 }: PreparePermitTransactionOptions): Promise<Transaction> => {
-  const { address: tokenAddress } = await getTokenContract(token, chain);
+  const { address: tokenAddress, symbol } = findAsset(token, chain);
   return {
     title: t(translations.common.tx.signPermitTitle, {
-      symbol: getTokenDisplayName(token),
+      symbol,
     }),
     subtitle: t(translations.common.tx.signPermitSubtitle, {
-      symbol: getTokenDisplayName(token),
+      symbol,
     }),
     request: {
       type: TransactionType.signPermit,
@@ -101,15 +102,17 @@ export const preparePermit2Transaction = async (
   const { domain, types, values } = SignatureTransfer.getPermitData(
     permit,
     PERMIT2_ADDRESS,
-    parseInt(getRskChainId()),
+    parseInt(RSK_CHAIN_ID),
   );
+
+  const { symbol } = findAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID);
 
   return {
     title: t(translations.common.tx.signPermitTitle, {
-      symbol: getTokenDisplayName(SupportedTokens.dllr),
+      symbol,
     }),
     subtitle: t(translations.common.tx.signPermitSubtitle, {
-      symbol: getTokenDisplayName(SupportedTokens.dllr),
+      symbol,
     }),
     request: {
       type: TransactionType.signTypedData,
@@ -124,12 +127,9 @@ export const preparePermit2Transaction = async (
 export const getPermitTransferFrom = async (
   spender: string,
   amount: string,
-  token = SupportedTokens.dllr,
+  token = COMMON_SYMBOLS.DLLR,
 ): Promise<PermitTransferFrom> => {
-  const { address: tokenAddress } = await getTokenContract(
-    token,
-    getRskChainId(),
-  );
+  const { address: tokenAddress } = findAsset(token, RSK_CHAIN_ID);
 
   const nonce = generateNonce();
 
@@ -147,7 +147,7 @@ export const getPermitTransferFrom = async (
 };
 
 type PrepareApproveTransactionOptions = {
-  token: SupportedTokens;
+  token: string;
   chain?: ChainId;
   spender: string;
   amount?: BigNumberish;
@@ -157,8 +157,8 @@ type PrepareApproveTransactionOptions = {
 };
 
 export const prepareApproveTransaction = async ({
-  token = SupportedTokens.dllr,
-  chain = getRskChainId(),
+  token = COMMON_SYMBOLS.DLLR,
+  chain = RSK_CHAIN_ID,
   spender,
   amount = '0',
   signer,
@@ -169,11 +169,8 @@ export const prepareApproveTransaction = async ({
     if (contract) {
       return contract;
     } else if (signer) {
-      const { address: tokenAddress, abi } = await getTokenContract(
-        token,
-        chain,
-      );
-      return new ethers.Contract(tokenAddress, abi, signer);
+      const { contract } = await getAssetData(token, chain);
+      return contract(signer);
     }
 
     throw new Error('signer or contract must provided, but not both.');
@@ -183,14 +180,16 @@ export const prepareApproveTransaction = async ({
   const owner = await tokenContract.signer.getAddress();
 
   const allowance = await tokenContract.allowance(owner, spender);
+  const symbol =
+    findAsset(token, chain)?.symbol ?? findAssetByAddress(token, chain)?.symbol;
 
   if (BigNumber.from(allowance).lt(amount)) {
     return {
       title: t(translations.common.tx.signApproveTitle, {
-        symbol: getTokenDisplayName(token),
+        symbol,
       }),
       subtitle: t(translations.common.tx.signApproveSubtitle, {
-        symbol: getTokenDisplayName(token),
+        symbol,
       }),
       request: {
         type: TransactionType.signTransaction,

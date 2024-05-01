@@ -1,13 +1,13 @@
-import { SupportedTokens } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
 
+import { COMMON_SYMBOLS } from '../../../utils/asset';
 import { PromotionData } from './MarketMakingPage.types';
 import { AmmLiquidityPool } from './utils/AmmLiquidityPool';
 
 export const MAINNET_AMM = [
   new AmmLiquidityPool(
-    SupportedTokens.dllr,
-    SupportedTokens.rbtc,
+    COMMON_SYMBOLS.DLLR,
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_MAINNET,
     '0xe81373285eb8cdee2e0108e98c5aa022948da9d2',
@@ -15,8 +15,8 @@ export const MAINNET_AMM = [
   ),
 
   new AmmLiquidityPool(
-    SupportedTokens.sov,
-    SupportedTokens.rbtc,
+    COMMON_SYMBOLS.SOV,
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_MAINNET,
     '0xe76Ea314b32fCf641C6c57f14110c5Baa1e45ff4',
@@ -26,8 +26,8 @@ export const MAINNET_AMM = [
     '0x88a67a0e79e311fe93c6e2101d55d6d2ae3a7e94',
   ]),
   new AmmLiquidityPool(
-    SupportedTokens.fish,
-    SupportedTokens.rbtc,
+    'FISH',
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_MAINNET,
     '0xdeb0894196863dbb2f2d4c683f6d33a2197056b5',
@@ -37,8 +37,8 @@ export const MAINNET_AMM = [
     '0x832769cc15dbdd6814819988c7a875ec2cb943e8',
   ]),
   new AmmLiquidityPool(
-    SupportedTokens.moc,
-    SupportedTokens.rbtc,
+    'MOC',
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_MAINNET,
     '0xe321442DC4793c17F41Fe3fB192a856A4864cEAF',
@@ -50,8 +50,8 @@ export const MAINNET_AMM = [
       '0x60cc333072f16d5f4cb2bc36d6aa1f00381e22c2',
     ]),
   new AmmLiquidityPool(
-    SupportedTokens.rif,
-    SupportedTokens.rbtc,
+    'RIF',
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_MAINNET,
     '0x65528e06371635a338ca804cd65958a11cb11009',
@@ -61,16 +61,16 @@ export const MAINNET_AMM = [
     '0xf6377dec9ce79b5bc0576618a5cd3e95f49f9ace',
   ]),
   new AmmLiquidityPool(
-    SupportedTokens.mynt,
-    SupportedTokens.rbtc,
+    'MYNT',
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_MAINNET,
     '0x3a18e61d9c9f1546dea013478dd653c793098f17',
     '0x36263AC99ecDcf1aB20513D580B7d8D32D3C439d',
   ).setPreviousConverters(['0x25B8D024B39174824424f032423E03dd7dcCF044']),
   new AmmLiquidityPool(
-    SupportedTokens.xusd,
-    SupportedTokens.rbtc,
+    COMMON_SYMBOLS.XUSD,
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_MAINNET,
     '0xa9c3d9681215ef7623dc28ea6b75bf87fdf285d9',
@@ -80,8 +80,8 @@ export const MAINNET_AMM = [
     '0x34163bb263ac77e9d6315676a2b9624cfc5ff861',
   ]),
   new AmmLiquidityPool(
-    SupportedTokens.rusdt,
-    SupportedTokens.rbtc,
+    COMMON_SYMBOLS.RUSDT,
+    COMMON_SYMBOLS.BTC,
     2,
     ChainIds.RSK_MAINNET,
     '0x448c2474b255576554EeD36c24430ccFac131cE3',
@@ -89,8 +89,8 @@ export const MAINNET_AMM = [
     '0x9c4017D1C04cFa0F97FDc9505e33a0D8ac84817F',
   ),
   new AmmLiquidityPool(
-    SupportedTokens.bnbs,
-    SupportedTokens.rbtc,
+    'BNB',
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_MAINNET,
     '0x1684b871ec5f93de142e79a670b541d75be07ead',
@@ -100,8 +100,8 @@ export const MAINNET_AMM = [
     '0x150bc1f9f1020255d44385865928aadc6b7ad9f3',
   ]),
   new AmmLiquidityPool(
-    SupportedTokens.eths,
-    SupportedTokens.rbtc,
+    'ETH',
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_MAINNET,
     '0xa57ec11497f45fe86eca50f4f1c9e75c8016a1af',
@@ -111,8 +111,8 @@ export const MAINNET_AMM = [
     '0xd8397c1944862b6a9674c85a5496c208dc9417bb',
   ]),
   new AmmLiquidityPool(
-    SupportedTokens.doc,
-    SupportedTokens.rbtc,
+    'DOC',
+    COMMON_SYMBOLS.BTC,
     2,
     ChainIds.RSK_MAINNET,
     '0xd715192612F03D20BaE53a5054aF530C9Bb0fA3f',
@@ -120,8 +120,8 @@ export const MAINNET_AMM = [
     '0x840437BdE7346EC13B5451417Df50586F4dAF836',
   ),
   new AmmLiquidityPool(
-    SupportedTokens.bpro,
-    SupportedTokens.rbtc,
+    'BPRO',
+    COMMON_SYMBOLS.BTC,
     2,
     ChainIds.RSK_MAINNET,
     '0x26463990196B74aD5644865E4d4567E4A411e065',
@@ -132,32 +132,32 @@ export const MAINNET_AMM = [
 
 export const TESTNET_AMM = [
   new AmmLiquidityPool(
-    SupportedTokens.dllr,
-    SupportedTokens.rbtc,
+    COMMON_SYMBOLS.DLLR,
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_TESTNET,
     '0x5fc0b3ac4683bd8af8e244e646d897a2c3f2a6ac',
     '0x64B1aC8301f64c92721804ed78f2ee6025aaf7cE',
   ),
   new AmmLiquidityPool(
-    SupportedTokens.sov,
-    SupportedTokens.rbtc,
+    COMMON_SYMBOLS.SOV,
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_TESTNET,
     '0xc2d05263318e2304fc7cdad40eea6a091b310080',
     '0xdF298421CB18740a7059b0Af532167fAA45e7A98',
   ).setPreviousConverters(['0xaBAABc2191A23D6Bb2cfa973892062c131cb7647']),
   new AmmLiquidityPool(
-    SupportedTokens.fish,
-    SupportedTokens.rbtc,
+    'FISH',
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_TESTNET,
     '0x4265d4f55219a4BDe9f1DE1348dA1f0b504849b4',
     '0xe41E262889f89b9a6331680606D9e9AabD01743e',
   ).setPreviousConverters(['0x5871040a14331c0f7AB5390A3Df16D271b0936ef']),
   new AmmLiquidityPool(
-    SupportedTokens.moc,
-    SupportedTokens.rbtc,
+    'MOC',
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_TESTNET,
     '0x2cb88F02cCA4dddBE8C41a6920853838Ada09F8b',
@@ -166,24 +166,24 @@ export const TESTNET_AMM = [
     .setSovRewards(false)
     .setPreviousConverters(['0x3D18E1EC60c9725494252A835593aa90Da777E15']),
   new AmmLiquidityPool(
-    SupportedTokens.rif,
-    SupportedTokens.rbtc,
+    'RIF',
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_TESTNET,
     '0xA82881bceb367f8653559937A6eFBFffBF2E06DD',
     '0x67fAA17ce83b14B2EA0e643A9030B133edD3Cc43',
   ),
   new AmmLiquidityPool(
-    SupportedTokens.mynt,
-    SupportedTokens.rbtc,
+    'MYNT',
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_TESTNET,
     '0x84953dAF0E7a9fFb8B4fDf7F948185e1cF85852e',
     '0xB12FA09a50c56e9a0C826b98e76DA7645017AB4D',
   ),
   new AmmLiquidityPool(
-    SupportedTokens.xusd,
-    SupportedTokens.rbtc,
+    COMMON_SYMBOLS.XUSD,
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_TESTNET,
     '0xD877fd00ECF08eD78BF549fbc74bac3001aBBb07',
@@ -193,8 +193,8 @@ export const TESTNET_AMM = [
     '0xe5e750ead0e564e489b0776273e4a10f3f3d4028',
   ]),
   new AmmLiquidityPool(
-    SupportedTokens.rusdt,
-    SupportedTokens.rbtc,
+    COMMON_SYMBOLS.RUSDT,
+    COMMON_SYMBOLS.BTC,
     2,
     ChainIds.RSK_TESTNET,
     '0x133eBE9c8bA524C9B1B601E794dF527f390729bF',
@@ -202,24 +202,24 @@ export const TESTNET_AMM = [
     '0xfFBBF93Ecd27C8b500Bd35D554802F7F349A1E9B',
   ),
   new AmmLiquidityPool(
-    SupportedTokens.bnbs,
-    SupportedTokens.rbtc,
+    'BNB',
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_TESTNET,
     '0x20d5c55c92615d416d73b34c8afed99288e99be1',
     '0xf97A3589c3fE2059fA3AB4819317B77b4BC6c9A8',
   ).setPreviousConverters(['0xA8D7FDd2f67273F178EFe731d4becd38E2A94E11']),
   new AmmLiquidityPool(
-    SupportedTokens.eths,
-    SupportedTokens.rbtc,
+    'ETH',
+    COMMON_SYMBOLS.BTC,
     1,
     ChainIds.RSK_TESTNET,
     '0x9f570ffe6c421e2c7611aaea14770b807e9fb424',
     '0xBb5B900EDa0F1459F582aB2436EA825a927f5bA2',
   ).setPreviousConverters(['0x4c493276E14791472633B55aaD82E49D28540bC6']),
   new AmmLiquidityPool(
-    SupportedTokens.doc,
-    SupportedTokens.rbtc,
+    'DOC',
+    COMMON_SYMBOLS.BTC,
     2,
     ChainIds.RSK_TESTNET,
     '0x497b0517dd24f66c456e93bc0adbb2a2bf159ec4',
@@ -227,8 +227,8 @@ export const TESTNET_AMM = [
     '0x7F433CC76298bB5099c15C1C7C8f2e89A8370111',
   ),
   new AmmLiquidityPool(
-    SupportedTokens.bpro,
-    SupportedTokens.rbtc,
+    'BPRO',
+    COMMON_SYMBOLS.BTC,
     2,
     ChainIds.RSK_TESTNET,
     '0xe4E467D8B5f61b5C83048d857210678eB86730A4',
@@ -245,8 +245,8 @@ export const PLACEHOLDER_PROMOTION: PromotionData = {
   rewardAmount: 0,
   type: 'AMM',
   poolTokenA: '',
-  asset1: SupportedTokens.sov,
-  asset2: SupportedTokens.rbtc,
+  asset1: COMMON_SYMBOLS.SOV,
+  asset2: COMMON_SYMBOLS.BTC,
   ammData: {
     pool: '',
     data: {},

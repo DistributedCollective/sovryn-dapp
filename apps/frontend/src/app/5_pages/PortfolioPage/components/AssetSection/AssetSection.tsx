@@ -1,41 +1,48 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Paragraph } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { BITCOIN } from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
-import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
+import { useGetNativeTokenPrice } from '../../../../../hooks/useGetNativeTokenPrice';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
+import { getNativeToken } from '../ProtocolSection/ProtocolSection.utils';
 import { ProtocolTotalSection } from '../ProtocolSection/components/ProtocolTotalSection/ProtocolTotalSection';
-import { initialUsdValues, availableTokens } from './AssetSection.constants';
+import { getAvailableTokens } from './AssetSection.constants';
 import { AssetBalanceRow } from './components/AssetBalanceRow/AssetBalanceRow';
 import { AssetSectionActions } from './components/AssetSectionActions/AssetSectionActions';
 
 export const AssetSection: FC = () => {
   const { account } = useAccount();
-  const { price: btcPrice } = useGetRBTCPrice();
-  const [selectedCurrency, setSelectedCurrency] = useState(BITCOIN);
-  const [usdValues, setUsdValues] = useState(initialUsdValues);
+  const chainId = useCurrentChain();
 
-  const updateUsdValue = useCallback(
-    (token: SupportedTokens, usdValue: string) => {
-      setUsdValues(prevUsdValues => {
-        if (prevUsdValues[token] === usdValue) {
-          return prevUsdValues;
-        }
-        return {
-          ...prevUsdValues,
-          [token]: usdValue,
-        };
-      });
-    },
-    [],
+  const [selectedCurrency, setSelectedCurrency] = useState(
+    getNativeToken(chainId),
   );
+  const [usdValues, setUsdValues] = useState({});
+  const { price: nativeTokenPrice } = useGetNativeTokenPrice();
+  const availableTokens = useMemo(() => getAvailableTokens(chainId), [chainId]);
+
+  useEffect(() => {
+    setUsdValues({});
+    setSelectedCurrency(getNativeToken(chainId));
+  }, [chainId]);
+
+  const updateUsdValue = useCallback((token: string, usdValue: string) => {
+    setUsdValues(prevUsdValues => {
+      if (prevUsdValues[token] === usdValue) {
+        return prevUsdValues;
+      }
+      return {
+        ...prevUsdValues,
+        [token]: usdValue,
+      };
+    });
+  }, []);
 
   const totalUsdValue = useMemo(
     () =>
@@ -48,8 +55,8 @@ export const AssetSection: FC = () => {
   );
 
   const totalValue = useMemo(
-    () => decimalic(totalUsdValue.div(btcPrice).toString()),
-    [totalUsdValue, btcPrice],
+    () => decimalic(totalUsdValue.div(nativeTokenPrice).toString()),
+    [totalUsdValue, nativeTokenPrice],
   );
 
   return (
@@ -57,7 +64,7 @@ export const AssetSection: FC = () => {
       <ProtocolTotalSection
         totalValue={totalValue}
         selectedCurrency={selectedCurrency}
-        btcPrice={btcPrice}
+        nativeTokenPrice={nativeTokenPrice}
         onCurrencyChange={setSelectedCurrency}
         title={t(translations.portfolioPage.assetSection.totalAssets)}
         className="md:max-w-sm"
@@ -79,7 +86,7 @@ export const AssetSection: FC = () => {
         </div>
         {availableTokens.map(token => (
           <AssetBalanceRow
-            key={token}
+            key={`${token}-${chainId}`}
             token={token}
             updateUsdValue={(usdValue: string) =>
               updateUsdValue(token, usdValue)

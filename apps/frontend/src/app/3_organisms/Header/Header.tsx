@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useReducer } from 'react';
 
 import { t } from 'i18next';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Button,
@@ -11,16 +12,20 @@ import {
 } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
+import { NetworkPicker } from '../../2_molecules/NetworkPicker/NetworkPicker';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
-import { GOBOB_LINK } from '../../../constants/links';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
+import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
+import { isBobChain } from '../../../utils/chain';
 import { menuItemsMapping } from './Header.constants';
 import { BridgeMenuItem } from './components/BridgeMenuItem/BridgeMenuItem';
 import { NavItem } from './components/NavItem/NavItem';
 import { ProductLinks } from './components/ProductLinks/ProductLinks';
 
 export const Header: FC = () => {
+  const chainId = useCurrentChain();
+  const navigate = useNavigate();
   const [isOpen, toggle] = useReducer(v => !v, false);
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
@@ -64,16 +69,19 @@ export const Header: FC = () => {
               </li>
             ))}
             <ProductLinks />
-            <Button
-              text={t(translations.header.nav.bob)}
-              style={ButtonStyle.primary}
-              className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
-              onClick={() => window.open(GOBOB_LINK, '_blank')}
-            />
+            {isBobChain(chainId) && (
+              <Button
+                text={t(translations.header.nav.claimLp)}
+                style={ButtonStyle.primary}
+                className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
+                onClick={() => navigate('/claim-lp')}
+              />
+            )}
           </ol>
         }
         secondaryContent={
-          <div className="relative">
+          <div className="relative flex flex-row gap-4">
+            <NetworkPicker />
             <ConnectWalletButton
               onConnect={connectWallet}
               onDisconnect={disconnectWallet}

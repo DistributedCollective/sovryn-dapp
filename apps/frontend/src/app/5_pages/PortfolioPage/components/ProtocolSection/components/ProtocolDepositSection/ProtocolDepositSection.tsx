@@ -3,11 +3,15 @@ import React, { FC, useMemo } from 'react';
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
 
+import { ChainIds } from '@sovryn/ethers-provider';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
+import { useCurrentChain } from '../../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../../locales/i18n';
+import { isBobChain } from '../../../../../../../utils/chain';
 import { ProtocolSectionProps } from '../../ProtocolSection.types';
 import { DepositRow } from '../DepositRow/DepositRow';
+import { AmbientMarketMakingTotalValue } from './components/AmbientMarketMakingTotalValue/AmbientMarketMakingTotalValue';
 import { LendingTotalValue } from './components/LendingTotalValue/LendingTotalValue';
 import { MarketMakingTotalValue } from './components/MarketMakingTotalValue/MarketMakingTotalValue';
 import { StabilityPoolTotalValue } from './components/StabilityPoolTotalValue/StabilityPoolTotalValue';
@@ -16,22 +20,30 @@ import { ZeroLineTotalValue } from './components/ZeroLineTotalValue/ZeroLineTota
 
 export const ProtocolDepositSection: FC<ProtocolSectionProps> = ({
   selectedCurrency,
-  btcPrice,
+  nativeTokenPrice,
   onValueChange,
 }) => {
   const navigate = useNavigate();
+  const chainId = useCurrentChain();
 
   const items = useMemo(
     () => [
       {
         title: t(translations.portfolioPage.protocolSection.marketMaking),
-        value: (
-          <MarketMakingTotalValue
-            selectedCurrency={selectedCurrency}
-            btcPrice={btcPrice}
-            onValueChange={onValueChange}
-          />
-        ),
+        value:
+          isBobChain(chainId) || chainId === ChainIds.SEPOLIA ? (
+            <AmbientMarketMakingTotalValue
+              selectedCurrency={selectedCurrency}
+              nativeTokenPrice={nativeTokenPrice}
+              onValueChange={onValueChange}
+            />
+          ) : (
+            <MarketMakingTotalValue
+              selectedCurrency={selectedCurrency}
+              nativeTokenPrice={nativeTokenPrice}
+              onValueChange={onValueChange}
+            />
+          ),
         cta: (
           <Button
             style={ButtonStyle.ghost}
@@ -46,7 +58,7 @@ export const ProtocolDepositSection: FC<ProtocolSectionProps> = ({
         value: (
           <StabilityPoolTotalValue
             selectedCurrency={selectedCurrency}
-            btcPrice={btcPrice}
+            nativeTokenPrice={nativeTokenPrice}
             onValueChange={onValueChange}
           />
         ),
@@ -64,7 +76,7 @@ export const ProtocolDepositSection: FC<ProtocolSectionProps> = ({
         value: (
           <ZeroLineTotalValue
             selectedCurrency={selectedCurrency}
-            btcPrice={btcPrice}
+            nativeTokenPrice={nativeTokenPrice}
             onValueChange={onValueChange}
           />
         ),
@@ -82,7 +94,7 @@ export const ProtocolDepositSection: FC<ProtocolSectionProps> = ({
         value: (
           <LendingTotalValue
             selectedCurrency={selectedCurrency}
-            btcPrice={btcPrice}
+            nativeTokenPrice={nativeTokenPrice}
             onValueChange={onValueChange}
           />
         ),
@@ -100,7 +112,7 @@ export const ProtocolDepositSection: FC<ProtocolSectionProps> = ({
         value: (
           <StakingTotalValue
             selectedCurrency={selectedCurrency}
-            btcPrice={btcPrice}
+            nativeTokenPrice={nativeTokenPrice}
             onValueChange={onValueChange}
           />
         ),
@@ -114,7 +126,7 @@ export const ProtocolDepositSection: FC<ProtocolSectionProps> = ({
         ),
       },
     ],
-    [navigate, selectedCurrency, btcPrice, onValueChange],
+    [chainId, selectedCurrency, nativeTokenPrice, onValueChange, navigate],
   );
 
   return (

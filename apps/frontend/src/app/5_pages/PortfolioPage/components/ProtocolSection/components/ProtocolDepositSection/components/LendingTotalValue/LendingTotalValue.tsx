@@ -1,11 +1,14 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { ChainIds } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../../../hooks/useBlockNumber';
+import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
 import { LendingPoolDictionary } from '../../../../../../../../../utils/LendingPoolDictionary';
+import { isBobChain } from '../../../../../../../../../utils/chain';
 import {
   ProtocolTypes,
   PoolValues,
@@ -21,11 +24,12 @@ const lendPools = LendingPoolDictionary.list();
 
 export const LendingTotalValue: FC<ProtocolSectionProps> = ({
   selectedCurrency,
-  btcPrice,
+  nativeTokenPrice,
   onValueChange,
 }) => {
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
+  const chainId = useCurrentChain();
 
   const [poolValues, setPoolValues] = useState<PoolValues>({});
   const [addedPools, setAddedPools] = useState<Set<string>>(new Set());
@@ -55,10 +59,11 @@ export const LendingTotalValue: FC<ProtocolSectionProps> = ({
               Decimal.ZERO,
             ),
             selectedCurrency,
-            btcPrice,
+            nativeTokenPrice,
+            chainId,
           )
         : 0,
-    [poolValues, selectedCurrency, btcPrice, account],
+    [account, poolValues, selectedCurrency, nativeTokenPrice, chainId],
   );
 
   const totalBalance = useMemo(
@@ -74,6 +79,16 @@ export const LendingTotalValue: FC<ProtocolSectionProps> = ({
     onValueChange(totalBalance, ProtocolTypes.LENDING);
   }, [onValueChange, block, totalBalance]);
 
+  if (isBobChain(chainId) || chainId === ChainIds.SEPOLIA) {
+    return (
+      <AmountRenderer
+        value={0}
+        suffix={selectedCurrency}
+        precision={getCurrencyPrecision(selectedCurrency)}
+        isAnimated
+      />
+    );
+  }
   return (
     <>
       {lendPools.map((pool, index) => (

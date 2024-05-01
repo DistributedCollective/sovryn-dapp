@@ -22,9 +22,10 @@ import {
 } from '../../../../../constants/general';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
-import { rskClient } from '../../../../../utils/clients';
+import { SubgraphType, getSubgraphClient } from '../../../../../utils/clients';
 import {
   useGetExtendedStakingDurationsLazyQuery,
   V2ExtendedStakingDuration_OrderBy,
@@ -62,8 +63,9 @@ export const StakingExtendedDuration: FC<StakingHistoryProps> = ({
     orderOptions,
   );
 
+  const chainId = useCurrentChain();
   const [getStakes] = useGetExtendedStakingDurationsLazyQuery({
-    client: rskClient,
+    client: getSubgraphClient(SubgraphType.STAKING, chainId),
   });
 
   const onPageChange = useCallback(

@@ -5702,6 +5702,360 @@ export enum MarginOrderFilled_OrderBy {
   Transaction = 'transaction',
 }
 
+export type MultisigConfirmation = {
+  __typename?: 'MultisigConfirmation';
+  id: Scalars['ID'];
+  multisigTransaction: MultisigTransaction;
+  signer: User;
+  timestamp: Scalars['Int'];
+  transaction: Transaction;
+};
+
+export type MultisigConfirmation_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  multisigTransaction?: InputMaybe<Scalars['String']>;
+  multisigTransaction_?: InputMaybe<MultisigTransaction_Filter>;
+  multisigTransaction_contains?: InputMaybe<Scalars['String']>;
+  multisigTransaction_contains_nocase?: InputMaybe<Scalars['String']>;
+  multisigTransaction_ends_with?: InputMaybe<Scalars['String']>;
+  multisigTransaction_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  multisigTransaction_gt?: InputMaybe<Scalars['String']>;
+  multisigTransaction_gte?: InputMaybe<Scalars['String']>;
+  multisigTransaction_in?: InputMaybe<Array<Scalars['String']>>;
+  multisigTransaction_lt?: InputMaybe<Scalars['String']>;
+  multisigTransaction_lte?: InputMaybe<Scalars['String']>;
+  multisigTransaction_not?: InputMaybe<Scalars['String']>;
+  multisigTransaction_not_contains?: InputMaybe<Scalars['String']>;
+  multisigTransaction_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  multisigTransaction_not_ends_with?: InputMaybe<Scalars['String']>;
+  multisigTransaction_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  multisigTransaction_not_in?: InputMaybe<Array<Scalars['String']>>;
+  multisigTransaction_not_starts_with?: InputMaybe<Scalars['String']>;
+  multisigTransaction_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  multisigTransaction_starts_with?: InputMaybe<Scalars['String']>;
+  multisigTransaction_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  signer?: InputMaybe<Scalars['String']>;
+  signer_?: InputMaybe<User_Filter>;
+  signer_contains?: InputMaybe<Scalars['String']>;
+  signer_contains_nocase?: InputMaybe<Scalars['String']>;
+  signer_ends_with?: InputMaybe<Scalars['String']>;
+  signer_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  signer_gt?: InputMaybe<Scalars['String']>;
+  signer_gte?: InputMaybe<Scalars['String']>;
+  signer_in?: InputMaybe<Array<Scalars['String']>>;
+  signer_lt?: InputMaybe<Scalars['String']>;
+  signer_lte?: InputMaybe<Scalars['String']>;
+  signer_not?: InputMaybe<Scalars['String']>;
+  signer_not_contains?: InputMaybe<Scalars['String']>;
+  signer_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  signer_not_ends_with?: InputMaybe<Scalars['String']>;
+  signer_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  signer_not_in?: InputMaybe<Array<Scalars['String']>>;
+  signer_not_starts_with?: InputMaybe<Scalars['String']>;
+  signer_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  signer_starts_with?: InputMaybe<Scalars['String']>;
+  signer_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  timestamp?: InputMaybe<Scalars['Int']>;
+  timestamp_gt?: InputMaybe<Scalars['Int']>;
+  timestamp_gte?: InputMaybe<Scalars['Int']>;
+  timestamp_in?: InputMaybe<Array<Scalars['Int']>>;
+  timestamp_lt?: InputMaybe<Scalars['Int']>;
+  timestamp_lte?: InputMaybe<Scalars['Int']>;
+  timestamp_not?: InputMaybe<Scalars['Int']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  transaction?: InputMaybe<Scalars['String']>;
+  transaction_?: InputMaybe<Transaction_Filter>;
+  transaction_contains?: InputMaybe<Scalars['String']>;
+  transaction_contains_nocase?: InputMaybe<Scalars['String']>;
+  transaction_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_gt?: InputMaybe<Scalars['String']>;
+  transaction_gte?: InputMaybe<Scalars['String']>;
+  transaction_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_lt?: InputMaybe<Scalars['String']>;
+  transaction_lte?: InputMaybe<Scalars['String']>;
+  transaction_not?: InputMaybe<Scalars['String']>;
+  transaction_not_contains?: InputMaybe<Scalars['String']>;
+  transaction_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  transaction_not_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_not_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_not_starts_with?: InputMaybe<Scalars['String']>;
+  transaction_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_starts_with?: InputMaybe<Scalars['String']>;
+  transaction_starts_with_nocase?: InputMaybe<Scalars['String']>;
+};
+
+export enum MultisigConfirmation_OrderBy {
+  Id = 'id',
+  MultisigTransaction = 'multisigTransaction',
+  Signer = 'signer',
+  Timestamp = 'timestamp',
+  Transaction = 'transaction',
+}
+
+export type MultisigContract = {
+  __typename?: 'MultisigContract';
+  id: Scalars['ID'];
+  owners: Array<User>;
+  required: Scalars['Int'];
+  timestamp: Scalars['Int'];
+  transaction: Transaction;
+  transactions: Array<MultisigTransaction>;
+};
+
+export type MultisigContractOwnersArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<User_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<User_Filter>;
+};
+
+export type MultisigContractTransactionsArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<MultisigTransaction_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<MultisigTransaction_Filter>;
+};
+
+export type MultisigContract_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  owners?: InputMaybe<Array<Scalars['String']>>;
+  owners_?: InputMaybe<User_Filter>;
+  owners_contains?: InputMaybe<Array<Scalars['String']>>;
+  owners_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
+  owners_not?: InputMaybe<Array<Scalars['String']>>;
+  owners_not_contains?: InputMaybe<Array<Scalars['String']>>;
+  owners_not_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
+  required?: InputMaybe<Scalars['Int']>;
+  required_gt?: InputMaybe<Scalars['Int']>;
+  required_gte?: InputMaybe<Scalars['Int']>;
+  required_in?: InputMaybe<Array<Scalars['Int']>>;
+  required_lt?: InputMaybe<Scalars['Int']>;
+  required_lte?: InputMaybe<Scalars['Int']>;
+  required_not?: InputMaybe<Scalars['Int']>;
+  required_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  timestamp?: InputMaybe<Scalars['Int']>;
+  timestamp_gt?: InputMaybe<Scalars['Int']>;
+  timestamp_gte?: InputMaybe<Scalars['Int']>;
+  timestamp_in?: InputMaybe<Array<Scalars['Int']>>;
+  timestamp_lt?: InputMaybe<Scalars['Int']>;
+  timestamp_lte?: InputMaybe<Scalars['Int']>;
+  timestamp_not?: InputMaybe<Scalars['Int']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  transaction?: InputMaybe<Scalars['String']>;
+  transaction_?: InputMaybe<Transaction_Filter>;
+  transaction_contains?: InputMaybe<Scalars['String']>;
+  transaction_contains_nocase?: InputMaybe<Scalars['String']>;
+  transaction_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_gt?: InputMaybe<Scalars['String']>;
+  transaction_gte?: InputMaybe<Scalars['String']>;
+  transaction_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_lt?: InputMaybe<Scalars['String']>;
+  transaction_lte?: InputMaybe<Scalars['String']>;
+  transaction_not?: InputMaybe<Scalars['String']>;
+  transaction_not_contains?: InputMaybe<Scalars['String']>;
+  transaction_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  transaction_not_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_not_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_not_starts_with?: InputMaybe<Scalars['String']>;
+  transaction_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_starts_with?: InputMaybe<Scalars['String']>;
+  transaction_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  transactions_?: InputMaybe<MultisigTransaction_Filter>;
+};
+
+export enum MultisigContract_OrderBy {
+  Id = 'id',
+  Owners = 'owners',
+  Required = 'required',
+  Timestamp = 'timestamp',
+  Transaction = 'transaction',
+  Transactions = 'transactions',
+}
+
+export type MultisigTransaction = {
+  __typename?: 'MultisigTransaction';
+  confirmations: Array<MultisigConfirmation>;
+  data: Scalars['Bytes'];
+  destination: Scalars['Bytes'];
+  id: Scalars['ID'];
+  multisigContract: MultisigContract;
+  status: MultisigTransactionStatus;
+  submitter: User;
+  timestamp: Scalars['Int'];
+  transaction: Transaction;
+  transactionId: Scalars['Int'];
+  value: Scalars['BigInt'];
+};
+
+export type MultisigTransactionConfirmationsArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<MultisigConfirmation_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<MultisigConfirmation_Filter>;
+};
+
+export enum MultisigTransactionStatus {
+  Executed = 'EXECUTED',
+  Failed = 'FAILED',
+  Submitted = 'SUBMITTED',
+}
+
+export type MultisigTransaction_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  confirmations_?: InputMaybe<MultisigConfirmation_Filter>;
+  data?: InputMaybe<Scalars['Bytes']>;
+  data_contains?: InputMaybe<Scalars['Bytes']>;
+  data_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  data_not?: InputMaybe<Scalars['Bytes']>;
+  data_not_contains?: InputMaybe<Scalars['Bytes']>;
+  data_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  destination?: InputMaybe<Scalars['Bytes']>;
+  destination_contains?: InputMaybe<Scalars['Bytes']>;
+  destination_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  destination_not?: InputMaybe<Scalars['Bytes']>;
+  destination_not_contains?: InputMaybe<Scalars['Bytes']>;
+  destination_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  multisigContract?: InputMaybe<Scalars['String']>;
+  multisigContract_?: InputMaybe<MultisigContract_Filter>;
+  multisigContract_contains?: InputMaybe<Scalars['String']>;
+  multisigContract_contains_nocase?: InputMaybe<Scalars['String']>;
+  multisigContract_ends_with?: InputMaybe<Scalars['String']>;
+  multisigContract_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  multisigContract_gt?: InputMaybe<Scalars['String']>;
+  multisigContract_gte?: InputMaybe<Scalars['String']>;
+  multisigContract_in?: InputMaybe<Array<Scalars['String']>>;
+  multisigContract_lt?: InputMaybe<Scalars['String']>;
+  multisigContract_lte?: InputMaybe<Scalars['String']>;
+  multisigContract_not?: InputMaybe<Scalars['String']>;
+  multisigContract_not_contains?: InputMaybe<Scalars['String']>;
+  multisigContract_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  multisigContract_not_ends_with?: InputMaybe<Scalars['String']>;
+  multisigContract_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  multisigContract_not_in?: InputMaybe<Array<Scalars['String']>>;
+  multisigContract_not_starts_with?: InputMaybe<Scalars['String']>;
+  multisigContract_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  multisigContract_starts_with?: InputMaybe<Scalars['String']>;
+  multisigContract_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<MultisigTransactionStatus>;
+  status_in?: InputMaybe<Array<MultisigTransactionStatus>>;
+  status_not?: InputMaybe<MultisigTransactionStatus>;
+  status_not_in?: InputMaybe<Array<MultisigTransactionStatus>>;
+  submitter?: InputMaybe<Scalars['String']>;
+  submitter_?: InputMaybe<User_Filter>;
+  submitter_contains?: InputMaybe<Scalars['String']>;
+  submitter_contains_nocase?: InputMaybe<Scalars['String']>;
+  submitter_ends_with?: InputMaybe<Scalars['String']>;
+  submitter_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  submitter_gt?: InputMaybe<Scalars['String']>;
+  submitter_gte?: InputMaybe<Scalars['String']>;
+  submitter_in?: InputMaybe<Array<Scalars['String']>>;
+  submitter_lt?: InputMaybe<Scalars['String']>;
+  submitter_lte?: InputMaybe<Scalars['String']>;
+  submitter_not?: InputMaybe<Scalars['String']>;
+  submitter_not_contains?: InputMaybe<Scalars['String']>;
+  submitter_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  submitter_not_ends_with?: InputMaybe<Scalars['String']>;
+  submitter_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  submitter_not_in?: InputMaybe<Array<Scalars['String']>>;
+  submitter_not_starts_with?: InputMaybe<Scalars['String']>;
+  submitter_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  submitter_starts_with?: InputMaybe<Scalars['String']>;
+  submitter_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  timestamp?: InputMaybe<Scalars['Int']>;
+  timestamp_gt?: InputMaybe<Scalars['Int']>;
+  timestamp_gte?: InputMaybe<Scalars['Int']>;
+  timestamp_in?: InputMaybe<Array<Scalars['Int']>>;
+  timestamp_lt?: InputMaybe<Scalars['Int']>;
+  timestamp_lte?: InputMaybe<Scalars['Int']>;
+  timestamp_not?: InputMaybe<Scalars['Int']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  transaction?: InputMaybe<Scalars['String']>;
+  transactionId?: InputMaybe<Scalars['Int']>;
+  transactionId_gt?: InputMaybe<Scalars['Int']>;
+  transactionId_gte?: InputMaybe<Scalars['Int']>;
+  transactionId_in?: InputMaybe<Array<Scalars['Int']>>;
+  transactionId_lt?: InputMaybe<Scalars['Int']>;
+  transactionId_lte?: InputMaybe<Scalars['Int']>;
+  transactionId_not?: InputMaybe<Scalars['Int']>;
+  transactionId_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  transaction_?: InputMaybe<Transaction_Filter>;
+  transaction_contains?: InputMaybe<Scalars['String']>;
+  transaction_contains_nocase?: InputMaybe<Scalars['String']>;
+  transaction_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_gt?: InputMaybe<Scalars['String']>;
+  transaction_gte?: InputMaybe<Scalars['String']>;
+  transaction_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_lt?: InputMaybe<Scalars['String']>;
+  transaction_lte?: InputMaybe<Scalars['String']>;
+  transaction_not?: InputMaybe<Scalars['String']>;
+  transaction_not_contains?: InputMaybe<Scalars['String']>;
+  transaction_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  transaction_not_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_not_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_not_starts_with?: InputMaybe<Scalars['String']>;
+  transaction_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_starts_with?: InputMaybe<Scalars['String']>;
+  transaction_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  value?: InputMaybe<Scalars['BigInt']>;
+  value_gt?: InputMaybe<Scalars['BigInt']>;
+  value_gte?: InputMaybe<Scalars['BigInt']>;
+  value_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  value_lt?: InputMaybe<Scalars['BigInt']>;
+  value_lte?: InputMaybe<Scalars['BigInt']>;
+  value_not?: InputMaybe<Scalars['BigInt']>;
+  value_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+};
+
+export enum MultisigTransaction_OrderBy {
+  Confirmations = 'confirmations',
+  Data = 'data',
+  Destination = 'destination',
+  Id = 'id',
+  MultisigContract = 'multisigContract',
+  Status = 'status',
+  Submitter = 'submitter',
+  Timestamp = 'timestamp',
+  Transaction = 'transaction',
+  TransactionId = 'transactionId',
+  Value = 'value',
+}
+
 export enum Network {
   Mainnet = 'Mainnet',
   Testnet = 'Testnet',
@@ -8016,6 +8370,12 @@ export type Query = {
   marginOrderCanceleds: Array<MarginOrderCanceled>;
   marginOrderFilled?: Maybe<MarginOrderFilled>;
   marginOrderFilleds: Array<MarginOrderFilled>;
+  multisigConfirmation?: Maybe<MultisigConfirmation>;
+  multisigConfirmations: Array<MultisigConfirmation>;
+  multisigContract?: Maybe<MultisigContract>;
+  multisigContracts: Array<MultisigContract>;
+  multisigTransaction?: Maybe<MultisigTransaction>;
+  multisigTransactions: Array<MultisigTransaction>;
   newBitcoinTransferIncoming?: Maybe<NewBitcoinTransferIncoming>;
   newBitcoinTransferIncomings: Array<NewBitcoinTransferIncoming>;
   orderCanceled?: Maybe<OrderCanceled>;
@@ -8631,6 +8991,54 @@ export type QueryMarginOrderFilledsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<MarginOrderFilled_Filter>;
+};
+
+export type QueryMultisigConfirmationArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryMultisigConfirmationsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<MultisigConfirmation_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<MultisigConfirmation_Filter>;
+};
+
+export type QueryMultisigContractArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryMultisigContractsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<MultisigContract_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<MultisigContract_Filter>;
+};
+
+export type QueryMultisigTransactionArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryMultisigTransactionsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<MultisigTransaction_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<MultisigTransaction_Filter>;
 };
 
 export type QueryNewBitcoinTransferIncomingArgs = {
@@ -10364,6 +10772,12 @@ export type Subscription = {
   marginOrderCanceleds: Array<MarginOrderCanceled>;
   marginOrderFilled?: Maybe<MarginOrderFilled>;
   marginOrderFilleds: Array<MarginOrderFilled>;
+  multisigConfirmation?: Maybe<MultisigConfirmation>;
+  multisigConfirmations: Array<MultisigConfirmation>;
+  multisigContract?: Maybe<MultisigContract>;
+  multisigContracts: Array<MultisigContract>;
+  multisigTransaction?: Maybe<MultisigTransaction>;
+  multisigTransactions: Array<MultisigTransaction>;
   newBitcoinTransferIncoming?: Maybe<NewBitcoinTransferIncoming>;
   newBitcoinTransferIncomings: Array<NewBitcoinTransferIncoming>;
   orderCanceled?: Maybe<OrderCanceled>;
@@ -10979,6 +11393,54 @@ export type SubscriptionMarginOrderFilledsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<MarginOrderFilled_Filter>;
+};
+
+export type SubscriptionMultisigConfirmationArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionMultisigConfirmationsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<MultisigConfirmation_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<MultisigConfirmation_Filter>;
+};
+
+export type SubscriptionMultisigContractArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionMultisigContractsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<MultisigContract_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<MultisigContract_Filter>;
+};
+
+export type SubscriptionMultisigTransactionArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionMultisigTransactionsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<MultisigTransaction_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<MultisigTransaction_Filter>;
 };
 
 export type SubscriptionNewBitcoinTransferIncomingArgs = {

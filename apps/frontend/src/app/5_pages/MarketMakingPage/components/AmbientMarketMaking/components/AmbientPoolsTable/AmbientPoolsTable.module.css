@@ -1,0 +1,3 @@
+.table tbody tr {
+  @apply bg-gray-80;
+}

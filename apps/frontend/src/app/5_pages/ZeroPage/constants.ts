@@ -1,3 +1,3 @@
-import { SupportedTokens } from '@sovryn/contracts';
+import { COMMON_SYMBOLS } from '../../../utils/asset';
 
-export const BORROW_ASSETS = [SupportedTokens.dllr, SupportedTokens.zusd];
+export const BORROW_ASSETS = [COMMON_SYMBOLS.DLLR, COMMON_SYMBOLS.ZUSD];

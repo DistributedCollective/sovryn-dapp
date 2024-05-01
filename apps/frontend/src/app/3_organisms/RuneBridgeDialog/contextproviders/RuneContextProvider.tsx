@@ -4,6 +4,7 @@ import { ethers } from 'ethers';
 
 import { useCacheCall } from '../../../../hooks';
 import { useAccount } from '../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { useInterval } from '../../../../hooks/useInterval';
 import {
@@ -25,9 +26,12 @@ export const RuneContextProvider: React.FC<RuneContextProviderProps> = ({
 
   const { provider, account } = useAccount();
   const runeBridgeContract = useGetProtocolContract('runeBridge');
+  const chainId = useCurrentChain();
 
-  const { value: listTokens } = useCacheCall('runeBridge/tokens', async () =>
-    runeBridgeContract?.listTokens(),
+  const { value: listTokens } = useCacheCall(
+    'runeBridge/tokens',
+    chainId,
+    async () => runeBridgeContract?.listTokens(),
   );
 
   const requestTokenBalances = React.useCallback(async () => {

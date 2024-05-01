@@ -22,9 +22,10 @@ import {
 } from '../../../../../constants/general';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
-import { rskClient } from '../../../../../utils/clients';
+import { SubgraphType, getSubgraphClient } from '../../../../../utils/clients';
 import {
   useGetStakingWithdrawsLazyQuery,
   V2StakingWithdrawn_OrderBy,
@@ -42,6 +43,7 @@ export const StakingWithdraws: FC<StakingHistoryProps> = ({
   onChangeHistoryType,
   selectedHistoryType,
 }) => {
+  const chainId = useCurrentChain();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
 
@@ -63,7 +65,7 @@ export const StakingWithdraws: FC<StakingHistoryProps> = ({
   );
 
   const [getStakes] = useGetStakingWithdrawsLazyQuery({
-    client: rskClient,
+    client: getSubgraphClient(SubgraphType.STAKING, chainId),
   });
 
   const onPageChange = useCallback(

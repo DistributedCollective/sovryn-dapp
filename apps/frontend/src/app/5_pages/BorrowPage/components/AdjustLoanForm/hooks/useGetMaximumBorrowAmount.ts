@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import { LoanItem } from '../../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
@@ -9,6 +8,10 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../../constants/lending';
 import { useQueryRate } from '../../../../../../hooks/useQueryRate';
+import {
+  COMMON_SYMBOLS,
+  maybeWrappedAsset,
+} from '../../../../../../utils/asset';
 import {
   calculatePrepaidInterestFromTargetDate,
   normalizeToken,
@@ -46,7 +49,10 @@ export const useGetMaximumBorrowAmount = (
 
   const debt = useMemo(() => loan.debt, [loan.debt]);
 
-  const { borrowApr } = useGetBorrowingAPR(borrowToken, Decimal.from(debt));
+  const { borrowApr } = useGetBorrowingAPR(
+    maybeWrappedAsset(borrowToken),
+    Decimal.from(debt),
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [collateralPriceInLoanAsset, precision, loadingRates] = useQueryRate(
@@ -56,7 +62,7 @@ export const useGetMaximumBorrowAmount = (
 
   const minimumCollateralRatio = useMemo(
     () =>
-      collateralToken === SupportedTokens.sov
+      collateralToken === COMMON_SYMBOLS.SOV
         ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
         : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
     [collateralToken],

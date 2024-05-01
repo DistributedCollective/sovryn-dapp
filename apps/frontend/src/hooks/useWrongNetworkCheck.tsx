@@ -2,34 +2,40 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { Paragraph, NotificationType, Button, ButtonStyle } from '@sovryn/ui';
+import {
+  Paragraph,
+  NotificationType,
+  Button,
+  ButtonStyle,
+  Link,
+} from '@sovryn/ui';
 
-import { chains, defaultChainId } from '../config/chains';
-
+import { WIKI_LINKS } from '../constants/links';
 import { useNotificationContext } from '../contexts/NotificationContext';
+import { getChainById } from '../utils/chain';
+import { useCurrentChain } from './useChainStore';
 import { useWalletConnect } from './useWalletConnect';
-
-const defaultChain = chains.find(chain => chain.id === defaultChainId);
 
 const WrongNetworkSwitcherId = 'WrongNetworkSwitcher';
 
 export const useWrongNetworkCheck = () => {
+  const chainId = useCurrentChain();
   const { addNotification, removeNotification } = useNotificationContext();
   const { wallets, switchNetwork } = useWalletConnect();
 
   const isWrongChain = useMemo(() => {
     return (
-      wallets[0]?.accounts[0]?.address &&
-      wallets[0].chains[0].id !== defaultChainId
+      wallets[0]?.accounts[0]?.address && wallets[0].chains[0].id !== chainId
     );
-  }, [wallets]);
+  }, [wallets, chainId]);
 
   const switchChain = useCallback(() => {
-    switchNetwork(defaultChainId);
-  }, [switchNetwork]);
+    switchNetwork(chainId);
+  }, [chainId, switchNetwork]);
 
   useEffect(() => {
     if (isWrongChain) {
+      const expectedChain = getChainById(chainId);
       addNotification(
         {
           type: NotificationType.warning,
@@ -38,11 +44,17 @@ export const useWrongNetworkCheck = () => {
             <>
               <Paragraph>
                 {t('wrongNetworkSwitcher.description', {
-                  network: defaultChain?.label,
+                  network: expectedChain?.label,
                 })}
               </Paragraph>
+              <Link
+                text={t('wrongNetworkSwitcher.learnMore')}
+                href={WIKI_LINKS.WALLET_SETUP}
+                openNewTab
+                className="block mt-1"
+              />
               <Button
-                className="mb-2 mt-7"
+                className="mb-2 mt-3"
                 style={ButtonStyle.secondary}
                 text={t('common.buttons.switch')}
                 onClick={switchChain}

@@ -1,25 +1,8 @@
-import { SupportedTokens } from '@sovryn/contracts';
-import { Decimal } from '@sovryn/utils';
+import { contracts } from '@sovryn/contracts';
+import { getNetworkByChainId } from '@sovryn/ethers-provider';
 
-export const availableTokens = [
-  SupportedTokens.rbtc,
-  SupportedTokens.sov,
-  SupportedTokens.ossov,
-  SupportedTokens.dllr,
-  SupportedTokens.zusd,
-  SupportedTokens.xusd,
-  SupportedTokens.fish,
-  SupportedTokens.moc,
-  SupportedTokens.rif,
-  SupportedTokens.doc,
-  SupportedTokens.mynt,
-  SupportedTokens.rusdt,
-  SupportedTokens.bnbs,
-  SupportedTokens.eths,
-  SupportedTokens.bpro,
-];
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
-export const initialUsdValues = availableTokens.reduce(
-  (obj, token) => ({ ...obj, [token]: Decimal.ZERO }),
-  {},
-);
+export const getAvailableTokens = (chainId: string = RSK_CHAIN_ID) =>
+  contracts.assets[getNetworkByChainId(chainId)]?.map(item => item.symbol) ??
+  [];

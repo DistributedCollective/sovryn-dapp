@@ -5,8 +5,11 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 
-import { getTokenDetails, SupportedTokens } from '@sovryn/contracts';
+import { getAssetData } from '@sovryn/contracts';
+import { ChainId } from '@sovryn/ethers-provider';
+import { getProvider } from '@sovryn/ethers-provider';
 import { SwapRoute } from '@sovryn/sdk';
+import { SmartRouter } from '@sovryn/sdk';
 import {
   Accordion,
   AmountInput,
@@ -29,8 +32,6 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../config/chains';
-
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
@@ -38,12 +39,18 @@ import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../hooks/useChainStore';
 import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
+import { COMMON_SYMBOLS, listAssetsOfChain } from '../../../utils/asset';
 import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei } from '../../../utils/math';
 import { FIXED_MYNT_RATE, FIXED_RATE_ROUTES } from './ConvertPage.constants';
-import { smartRouter, stableCoins } from './ConvertPage.types';
+import {
+  DEFAULT_SWAP_ENTRIES,
+  SMART_ROUTER_STABLECOINS,
+  SWAP_ROUTES,
+} from './ConvertPage.constants';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
@@ -51,33 +58,47 @@ import { useHandleConversion } from './hooks/useHandleConversion';
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
 
-const tokensToOptions = (
-  addresses: string[],
-  callback: (options: SelectOption<SupportedTokens>[]) => void,
-) =>
-  Promise.all(
-    addresses.map(address => smartRouter.getTokenDetails(address)),
-  ).then(tokens =>
-    callback(
-      tokens.map(token => ({
-        value: token.symbol,
-        label: (
-          <AssetRenderer
-            showAssetLogo
-            asset={token.symbol}
-            assetClassName="font-medium"
-          />
-        ),
-      })),
-    ),
-  );
+const MYNT_TOKEN = 'MYNT';
 
 const ConvertPage: FC = () => {
+  const currentChainId = useCurrentChain();
+
+  const smartRouter = useMemo(
+    () => new SmartRouter(getProvider(currentChainId), SWAP_ROUTES),
+    [currentChainId],
+  );
+
+  const tokensToOptions = useCallback(
+    (
+      addresses: string[],
+      chain: ChainId,
+      callback: (options: SelectOption<string>[]) => void,
+    ) =>
+      Promise.all(
+        addresses.map(address => smartRouter.getTokenDetails(address, chain)),
+      ).then(tokens =>
+        callback(
+          tokens.map(token => ({
+            value: token.symbol,
+            label: (
+              <AssetRenderer
+                showAssetLogo
+                asset={token.symbol}
+                chainId={chain}
+                assetClassName="font-medium"
+              />
+            ),
+          })),
+        ),
+      ),
+    [smartRouter],
+  );
+
   const { account } = useAccount();
   const [searchParams, setSearchParams] = useSearchParams();
   const fromToken = searchParams.get('from') || '';
   const toToken = searchParams.get('to') || '';
-  const { balance: myntBalance } = useAssetBalance(SupportedTokens.mynt);
+  const { balance: myntBalance } = useAssetBalance(MYNT_TOKEN);
 
   const [slippageTolerance, setSlippageTolerance] = useState('0.5');
 
@@ -90,69 +111,74 @@ const ConvertPage: FC = () => {
 
   const defaultSourceToken = useMemo(() => {
     if (fromToken) {
-      const key = Object.keys(SupportedTokens).find(
-        key => SupportedTokens[key] === fromToken,
+      const item = listAssetsOfChain(currentChainId).find(
+        item => item.symbol.toLowerCase() === fromToken.toLowerCase(),
       );
 
-      if (key) {
-        return SupportedTokens[key];
+      if (item) {
+        return item.symbol;
       }
     }
-    return SupportedTokens.dllr;
-  }, [fromToken]);
+    return DEFAULT_SWAP_ENTRIES[currentChainId] ?? COMMON_SYMBOLS.ETH;
+  }, [currentChainId, fromToken]);
 
-  const [sourceToken, setSourceToken] =
-    useState<SupportedTokens>(defaultSourceToken);
+  const [sourceToken, setSourceToken] = useState<string>(defaultSourceToken);
 
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
-  const [tokenOptions, setTokenOptions] = useState<
-    SelectOption<SupportedTokens>[]
-  >([]);
+  const [tokenOptions, setTokenOptions] = useState<SelectOption<string>[]>([]);
 
   const [destinationTokenOptions, setDestinationTokenOptions] = useState<
-    SelectOption<SupportedTokens>[]
+    SelectOption<string>[]
   >([]);
+
+  useEffect(() => {
+    const newToken = DEFAULT_SWAP_ENTRIES[currentChainId];
+    if (!!newToken) {
+      setAmount('');
+      setSourceToken(newToken);
+    }
+  }, [currentChainId, setAmount]);
 
   useEffect(() => {
     smartRouter
-      .getEntries()
-      .then(tokens => tokensToOptions(tokens, setTokenOptions));
-  }, []);
+      .getEntries(currentChainId)
+      .then(tokens => tokensToOptions(tokens, currentChainId, setTokenOptions));
+  }, [currentChainId, smartRouter, tokensToOptions]);
 
   useEffect(() => {
     (async () => {
-      const sourceTokenDetails = await getTokenDetails(
+      const sourceTokenDetails = await getAssetData(
         sourceToken,
-        defaultChainId,
+        currentChainId,
       );
-      smartRouter.getDestination(sourceTokenDetails.address).then(tokens => {
-        tokensToOptions(tokens, setDestinationTokenOptions);
-      });
+      smartRouter
+        .getDestination(currentChainId, sourceTokenDetails.address)
+        .then(tokens => {
+          tokensToOptions(tokens, currentChainId, setDestinationTokenOptions);
+        });
 
-      if (sourceToken === SupportedTokens.mynt) {
-        setDestinationToken(SupportedTokens.sov);
+      if (sourceToken === MYNT_TOKEN) {
+        setDestinationToken(COMMON_SYMBOLS.SOV);
       }
     })();
-  }, [sourceToken]);
+  }, [currentChainId, smartRouter, sourceToken, tokensToOptions]);
 
   const sourceTokenOptions = useMemo(
     () =>
       hasMyntBalance
         ? tokenOptions
-        : tokenOptions.filter(option => option.value !== SupportedTokens.mynt),
+        : tokenOptions.filter(option => option.value !== MYNT_TOKEN),
     [hasMyntBalance, tokenOptions],
   );
 
-  const [destinationToken, setDestinationToken] = useState<
-    SupportedTokens | ''
-  >('');
+  const [destinationToken, setDestinationToken] = useState<string | ''>('');
 
   const onTransactionSuccess = useCallback(() => setAmount(''), [setAmount]);
 
   const maximumAmountToConvert = useGetMaximumAvailableAmount(
     sourceToken,
-    destinationToken as SupportedTokens as SupportedTokens,
+    destinationToken,
   );
 
   const isValidAmount = useMemo(
@@ -180,11 +206,14 @@ const ConvertPage: FC = () => {
       .toString();
   }, [quote, route, slippageTolerance]);
 
-  const priceToken = useMemo<SupportedTokens>(() => {
+  const priceToken = useMemo<string>(() => {
     if (!destinationToken) {
       return sourceToken;
     }
-    if (priceInQuote || stableCoins.find(token => token === destinationToken)) {
+    if (
+      priceInQuote ||
+      SMART_ROUTER_STABLECOINS.find(token => token === destinationToken)
+    ) {
       return destinationToken;
     }
     return sourceToken;
@@ -228,11 +257,12 @@ const ConvertPage: FC = () => {
       }
 
       const [sourceTokenDetails, destinationTokenDetails] = await Promise.all([
-        getTokenDetails(sourceToken, defaultChainId),
-        getTokenDetails(destinationToken, defaultChainId),
+        getAssetData(sourceToken, currentChainId),
+        getAssetData(destinationToken, currentChainId),
       ]);
 
       const result = await smartRouter.getBestQuote(
+        currentChainId,
         sourceTokenDetails.address,
         destinationTokenDetails.address,
         weiAmount,
@@ -244,7 +274,7 @@ const ConvertPage: FC = () => {
       );
       setQuote(quote);
     })();
-  }, [sourceToken, destinationToken, weiAmount]);
+  }, [sourceToken, destinationToken, weiAmount, currentChainId, smartRouter]);
 
   const onMaximumAmountClick = useCallback(
     () => setAmount(maximumAmountToConvert.toString()),
@@ -254,18 +284,18 @@ const ConvertPage: FC = () => {
   const onSwitchClick = useCallback(() => {
     if (destinationToken) {
       setDestinationToken(sourceToken);
-      setSourceToken(destinationToken as SupportedTokens);
+      setSourceToken(destinationToken);
       setAmount('');
     }
     if (destinationToken) {
       setDestinationToken(sourceToken);
-      setSourceToken(destinationToken as SupportedTokens);
+      setSourceToken(destinationToken);
       setAmount('');
     }
   }, [destinationToken, setAmount, sourceToken]);
 
   const onSourceTokenChange = useCallback(
-    (value: SupportedTokens) => {
+    (value: string) => {
       setSourceToken(value);
       setAmount('');
     },
@@ -273,15 +303,20 @@ const ConvertPage: FC = () => {
   );
 
   const getAssetRenderer = useCallback(
-    (token: SupportedTokens) => (
-      <AssetRenderer showAssetLogo asset={token} assetClassName="font-medium" />
+    (token: string) => (
+      <AssetRenderer
+        showAssetLogo
+        asset={token}
+        chainId={currentChainId}
+        assetClassName="font-medium"
+      />
     ),
-    [],
+    [currentChainId],
   );
 
   const { handleSubmit } = useHandleConversion(
     sourceToken,
-    destinationToken as SupportedTokens,
+    destinationToken,
     weiAmount,
     route,
     slippageTolerance,
@@ -290,7 +325,7 @@ const ConvertPage: FC = () => {
 
   const isInMaintenance = useConversionMaintenance(
     sourceToken,
-    destinationToken as SupportedTokens,
+    destinationToken,
     route,
   );
 
@@ -339,18 +374,18 @@ const ConvertPage: FC = () => {
 
   useEffect(() => {
     if (fromToken) {
-      setSourceToken(fromToken as SupportedTokens);
+      setSourceToken(fromToken);
     }
     if (toToken) {
-      setDestinationToken(toToken as SupportedTokens);
+      setDestinationToken(toToken);
     }
   }, [fromToken, toToken]);
 
   useEffect(() => {
-    if (hasMyntBalance && fromToken === SupportedTokens.mynt) {
-      setSourceToken(SupportedTokens.mynt);
-    } else if (!hasMyntBalance && fromToken === SupportedTokens.mynt) {
-      setSourceToken(SupportedTokens.dllr);
+    if (hasMyntBalance && fromToken === MYNT_TOKEN) {
+      setSourceToken(MYNT_TOKEN);
+    } else if (!hasMyntBalance && fromToken === MYNT_TOKEN) {
+      setSourceToken(COMMON_SYMBOLS.DLLR);
     }
   }, [hasMyntBalance, fromToken]);
 
@@ -408,6 +443,7 @@ const ConvertPage: FC = () => {
                 value={maximumAmountToConvert}
                 token={sourceToken}
                 dataAttribute="convert-from-max"
+                chainId={currentChainId}
               />
             </div>
 

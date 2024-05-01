@@ -3,8 +3,6 @@ import { useCallback } from 'react';
 import { constants } from 'ethers';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import {
   Transaction,
   TransactionType,
@@ -12,8 +10,10 @@ import {
 import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { translations } from '../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import { toWei } from '../../../../utils/math';
 import { prepareApproveTransaction } from '../../../../utils/transactions';
 
@@ -24,8 +24,9 @@ export const useHandleStake = (
 ) => {
   const { signer, account } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+  const chainId = useCurrentChain();
 
-  const stakingContract = useGetProtocolContract('staking');
+  const stakingContract = useGetProtocolContract('staking', chainId);
 
   const stake = useCallback(async () => {
     if (!signer || !stakingContract) {
@@ -36,10 +37,11 @@ export const useHandleStake = (
     const transactions: Transaction[] = [];
 
     const approveTx = await prepareApproveTransaction({
-      token: SupportedTokens.sov,
+      token: COMMON_SYMBOLS.SOV,
       spender: stakingContract.address,
       amount: weiAmount,
       signer,
+      chain: chainId,
     });
 
     if (approveTx) {
@@ -66,12 +68,13 @@ export const useHandleStake = (
     signer,
     stakingContract,
     amount,
+    chainId,
     timestamp,
+    account,
     onComplete,
     setTransactions,
     setTitle,
     setIsOpen,
-    account,
   ]);
 
   const handleSubmit = useCallback(() => stake(), [stake]);

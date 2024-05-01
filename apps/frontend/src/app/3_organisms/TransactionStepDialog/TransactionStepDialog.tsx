@@ -10,6 +10,7 @@ import {
 
 import { useNotificationContext } from '../../../contexts/NotificationContext';
 import { useTransactionContext } from '../../../contexts/TransactionContext';
+import { useCurrentChain } from '../../../hooks/useChainStore';
 import { useGasPrice } from '../../../hooks/useGasPrice';
 import { TransactionSteps } from './components/TransactionSteps/TransactionSteps';
 import { renderNotification } from './utils';
@@ -23,10 +24,11 @@ export const TransactionStepDialog: FC<TransactionStepDialogProps> = ({
   onSuccess,
   disableFocusTrap = true,
 }) => {
+  const chainId = useCurrentChain();
   const { transactions, isOpen, setIsOpen, title } = useTransactionContext();
   const onClose = useCallback(() => setIsOpen(false), [setIsOpen]);
   const [txStatus, setTxStatus] = useState<StatusType | null>(null);
-  const gasPrice = useGasPrice();
+  const gasPrice = useGasPrice(chainId);
 
   const { addNotification } = useNotificationContext();
 

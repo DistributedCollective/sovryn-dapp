@@ -16,7 +16,7 @@ import {
   NotificationType,
 } from '@sovryn/ui';
 
-import { masset } from '../../../../5_pages/ConvertPage/ConvertPage.types';
+import { MASSET } from '../../../../5_pages/ConvertPage/ConvertPage.constants';
 import {
   DEFAULT_HISTORY_FRAME_PAGE_SIZE,
   EXPORT_RECORD_LIMIT,
@@ -106,14 +106,14 @@ export const MyntConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
       sentToken:
         tx.type === ConversionType.Incoming
           ? getTokenDisplayName(tx.bAsset.symbol || '')
-          : masset.toUpperCase(),
+          : MASSET.toUpperCase(),
       received:
         tx.type === ConversionType.Incoming
           ? tx.massetQuantity
           : tx.bassetQuantity,
       receivedToken:
         tx.type === ConversionType.Incoming
-          ? masset.toUpperCase()
+          ? MASSET.toUpperCase()
           : getTokenDisplayName(tx.bAsset.symbol || ''),
       TXID: tx.transaction.id,
     }));

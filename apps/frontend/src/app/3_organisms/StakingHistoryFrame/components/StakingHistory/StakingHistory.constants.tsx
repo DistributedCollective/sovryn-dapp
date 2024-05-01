@@ -2,12 +2,12 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
+import { getCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { dateFormat } from '../../../../../utils/helpers';
 import { StakingHistoryItem } from './StakingHistory.types';
 
@@ -30,7 +30,7 @@ export const COLUMNS_CONFIG = [
       <AmountRenderer
         value={tx.amount || 0}
         prefix="+"
-        suffix={getTokenDisplayName(SupportedTokens.sov)}
+        suffix={getTokenDisplayName(COMMON_SYMBOLS.SOV)}
       />
     ),
     sortable: true,
@@ -49,6 +49,7 @@ export const COLUMNS_CONFIG = [
       <TransactionIdRenderer
         hash={item.id.split('-')[0]}
         dataAttribute="staking-history-tx-hash"
+        chainId={getCurrentChain()}
       />
     ),
   },

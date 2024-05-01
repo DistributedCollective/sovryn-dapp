@@ -2,7 +2,6 @@ import React, { FC, useCallback } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Paragraph, ParagraphSize, Button, ButtonStyle } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -13,6 +12,7 @@ import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
 import { getNextDay } from '../../../../../utils/helpers';
 import { useGetPromotionsData } from '../../hooks/useGetPromotionsData';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 type PromotionsProps = {
   setActivePool: (poolKey: string) => void;
@@ -63,7 +63,7 @@ export const Promotions: FC<PromotionsProps> = ({ setActivePool, onClick }) => {
               child1={
                 <AmountRenderer
                   value={item.rewardAmount}
-                  suffix={getTokenDisplayName(SupportedTokens.sov)}
+                  suffix={getTokenDisplayName(COMMON_SYMBOLS.SOV)}
                   isAnimated
                   precision={0}
                 />

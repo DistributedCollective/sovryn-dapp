@@ -2,11 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 
-import { SupportedTokens, getTokenDetailsByAddress } from '@sovryn/contracts';
+import { getAssetDataByAddress } from '@sovryn/contracts';
 import { noop } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
@@ -32,7 +32,7 @@ export const useGetOpenLoans = () => {
   const { account } = useAccount();
   const { value: blockNumber } = useBlockNumber();
   const [processedBlock, setProcessedBlock] = useState<number | undefined>();
-  const contract = useLoadContract('protocol', 'protocol', defaultChainId);
+  const contract = useLoadContract('protocol', 'protocol', RSK_CHAIN_ID);
   const [loadingLoans, setLoadingLoans] = useState(false);
   const [loanItemsSmartContract, setLoanItemsSmartContract] = useState<
     LoanItem[]
@@ -78,8 +78,10 @@ export const useGetOpenLoans = () => {
         .map(item => {
           const rate = rates.find(
             rate =>
-              rate.loanTokenAddress === item.loanToken &&
-              rate.collateralTokenAddress === item.collateralToken,
+              rate.loanTokenAddress.toLowerCase() ===
+                item.loanToken.toLowerCase() &&
+              rate.collateralTokenAddress.toLowerCase() ===
+                item.collateralToken.toLowerCase(),
           );
 
           if (!rate) {
@@ -171,17 +173,19 @@ const mapRates = async (
       collateralTokenAddress: item.collateralToken,
       loanTokenAddress: item.loanToken,
       collateralToken: (
-        await getTokenDetailsByAddress(item.collateralToken).catch(noop)
+        await getAssetDataByAddress(item.collateralToken, RSK_CHAIN_ID).catch(
+          noop,
+        )
       )?.symbol,
       loanToken: (
-        await getTokenDetailsByAddress(item.loanToken).catch(noop)
+        await getAssetDataByAddress(item.loanToken, RSK_CHAIN_ID).catch(noop)
       )?.symbol,
     })),
   ).then(
     items =>
       items.filter(item => item.collateralToken && item.loanToken) as {
-        collateralToken: SupportedTokens;
-        loanToken: SupportedTokens;
+        collateralToken: string;
+        loanToken: string;
         collateralTokenAddress: string;
         loanTokenAddress: string;
       }[],

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
+import { Badge, BadgeStyle, Button, ButtonStyle, Paragraph } from '@sovryn/ui';
 
 type CTAProps = {
   index: number;
@@ -9,6 +9,8 @@ type CTAProps = {
   description: string;
   action: string;
   navigateTo: () => void;
+  badges?: string[];
+  disableCTA?: boolean;
 };
 
 export const CTA: FC<CTAProps> = ({
@@ -18,11 +20,25 @@ export const CTA: FC<CTAProps> = ({
   description,
   action,
   navigateTo,
+  badges,
+  disableCTA = false,
 }) => (
   <div
     key={index}
-    className="relative p-4 md:p-6 bg-gray-70 rounded flex flex-col md:items-start justify-end md:min-h-60 min-h-40"
+    className="relative px-4 py-6 md:p-6 bg-gray-70 rounded flex flex-col md:items-start justify-end md:min-h-60 min-h-40"
   >
+    {badges && badges.length > 0 && (
+      <div className="absolute md:left-6 left-4 md:top-4 top-2 flex items-center">
+        {badges?.map((badge, index) => (
+          <Badge
+            key={index}
+            content={badge.toUpperCase()}
+            className="flex justify-center items-center mr-1.5 h-[0.875rem] min-w-[1.438rem] rounded font-medium text-[0.563rem] py-1"
+            style={BadgeStyle.teal}
+          />
+        ))}
+      </div>
+    )}
     <img
       src={backgroundImage}
       alt={title}
@@ -41,6 +57,7 @@ export const CTA: FC<CTAProps> = ({
       text={action}
       onClick={navigateTo}
       style={ButtonStyle.secondary}
+      disabled={disableCTA}
     />
   </div>
 );

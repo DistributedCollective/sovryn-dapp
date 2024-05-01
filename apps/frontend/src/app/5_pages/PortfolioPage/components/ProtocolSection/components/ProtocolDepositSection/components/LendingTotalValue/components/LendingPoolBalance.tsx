@@ -1,9 +1,8 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 
-import { SupportedTokens, getTokenDetails } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../../../../../config/chains';
 
 import { LendingPool } from '../../../../../../../../../../utils/LendingPool';
 import { removeTrailingZerosFromString } from '../../../../../../../../../../utils/helpers';
@@ -12,8 +11,10 @@ import {
   fromWei,
   toWei,
 } from '../../../../../../../../../../utils/math';
-import { smartRouter } from '../../../../../../../../ConvertPage/ConvertPage.types';
+import { SMART_ROUTER_RSK } from '../../../../../../../../ConvertPage/ConvertPage.constants';
 import { useGetAssetBalanceOf } from '../../../../../../../../LendPage/components/LendFrame/components/LendFrameBalance/hooks/useGetAssetBalanceOf';
+import { getAssetData } from '@sovryn/contracts';
+import { COMMON_SYMBOLS } from '../../../../../../../../../../utils/asset';
 
 type LendingPoolBalanceProps = {
   pool: LendingPool;
@@ -29,7 +30,7 @@ export const LendingPoolBalance: FC<LendingPoolBalanceProps> = ({
   const asset = useMemo(() => pool.getAsset(), [pool]);
   const { assetBalance } = useGetAssetBalanceOf(asset);
   const [balance, setBalance] = useState(Decimal.ZERO);
-  const isNativeAsset = useMemo(() => asset === SupportedTokens.rbtc, [asset]);
+  const isNativeAsset = useMemo(() => pool.getAssetDetails()?.isNative, [pool]);
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -43,12 +44,13 @@ export const LendingPoolBalance: FC<LendingPoolBalanceProps> = ({
       } else {
         const [sourceTokenDetails, destinationTokenDetails] = await Promise.all(
           [
-            getTokenDetails(asset, defaultChainId),
-            getTokenDetails(SupportedTokens.rbtc, defaultChainId),
+            getAssetData(asset, RSK_CHAIN_ID),
+            getAssetData(COMMON_SYMBOLS.BTC, RSK_CHAIN_ID),
           ],
         );
 
-        const result = await smartRouter.getBestQuote(
+        const result = await SMART_ROUTER_RSK.getBestQuote(
+          RSK_CHAIN_ID,
           sourceTokenDetails.address,
           destinationTokenDetails.address,
           toWei(assetBalance),

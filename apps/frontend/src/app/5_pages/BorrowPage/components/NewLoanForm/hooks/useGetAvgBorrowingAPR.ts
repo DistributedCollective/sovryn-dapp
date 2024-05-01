@@ -8,7 +8,7 @@ import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 export const useGetAvgBorrowingAPR = (borrowToken: string) => {
   const [borrowApr, setBorrowApr] = useState(BigNumber.from(0));
 
-  const assetContract = useLoadContract(borrowToken, 'lendTokens');
+  const assetContract = useLoadContract(borrowToken, 'loanTokens');
 
   const updateAPR = useCallback(async () => {
     if (!assetContract) {

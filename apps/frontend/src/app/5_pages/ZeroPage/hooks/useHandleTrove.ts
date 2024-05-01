@@ -7,7 +7,8 @@ import { t } from 'i18next';
 
 import { Decimalish, TroveAdjustmentParams } from '@sovryn-zero/lib-base';
 import { getContract } from '@sovryn/contracts';
-import { SupportedTokens } from '@sovryn/contracts';
+
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import {
   Transaction,
@@ -20,7 +21,7 @@ import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
-import { getRskChainId } from '../../../../utils/chain';
+import { COMMON_SYMBOLS, compareAssets } from '../../../../utils/asset';
 import { loadLiquity } from '../../../../utils/liquity';
 import { toWei } from '../../../../utils/math';
 import {
@@ -107,7 +108,7 @@ export const useHandleTrove = (
         const { address, abi } = await getContract(
           'borrowerOperations',
           'zero',
-          getRskChainId(),
+          RSK_CHAIN_ID,
         );
 
         const contract = new Contract(address, abi, signer);
@@ -133,7 +134,7 @@ export const useHandleTrove = (
             params.withdrawCollateral = value.withdrawCollateral;
           }
 
-          const isDllr = value.token === SupportedTokens.dllr;
+          const isDllr = compareAssets(value.token, COMMON_SYMBOLS.DLLR);
           const transactions: Transaction[] = [];
           let permitTransferFrom: PermitTransferFrom;
 
@@ -141,7 +142,7 @@ export const useHandleTrove = (
             const value = toWei(params.repayZUSD.toString()).toString();
 
             const approveTx = await prepareApproveTransaction({
-              token: SupportedTokens.dllr,
+              token: COMMON_SYMBOLS.DLLR,
               spender: PERMIT2_ADDRESS,
               amount: value,
               signer,
@@ -239,7 +240,7 @@ export const useHandleTrove = (
         const { address, abi } = await getContract(
           'borrowerOperations',
           'zero',
-          getRskChainId(),
+          RSK_CHAIN_ID,
         );
 
         const contract = new Contract(address, abi, signer);
@@ -265,14 +266,14 @@ export const useHandleTrove = (
             params.withdrawCollateral = value.withdrawCollateral;
           }
 
-          const isDllr = value.token === SupportedTokens.dllr;
+          const isDllr = value.token.toUpperCase() === COMMON_SYMBOLS.DLLR;
           const transactions: Transaction[] = [];
 
           if (isDllr && params.repayZUSD) {
             transactions.push(
               await preparePermitTransaction({
                 signer,
-                token: SupportedTokens.dllr,
+                token: COMMON_SYMBOLS.DLLR,
                 spender: address,
                 value: toWei(params.repayZUSD.toString()).toString(),
               }),
@@ -351,15 +352,15 @@ export const useHandleTrove = (
   );
 
   const handleTroveClose = useCallback(
-    async (token: SupportedTokens) => {
+    async (token: string) => {
       if (signer && provider) {
         const { address, abi } = await getContract(
           'borrowerOperations',
           'zero',
-          getRskChainId(),
+          RSK_CHAIN_ID,
         );
         const contract = new Contract(address, abi, signer);
-        const isDllr = token === SupportedTokens.dllr;
+        const isDllr = compareAssets(token, COMMON_SYMBOLS.DLLR);
 
         if (isDllr) {
           const { liquity } = await loadLiquity();
@@ -375,7 +376,7 @@ export const useHandleTrove = (
           const transactions: Transaction[] = [];
 
           const approveTx = await prepareApproveTransaction({
-            token: SupportedTokens.dllr,
+            token: COMMON_SYMBOLS.DLLR,
             spender: PERMIT2_ADDRESS,
             amount: value,
             signer,
@@ -409,7 +410,7 @@ export const useHandleTrove = (
           });
 
           setTransactions(transactions);
-        } else if (token === SupportedTokens.zusd) {
+        } else if (compareAssets(token, COMMON_SYMBOLS.ZUSD)) {
           setTransactions([
             {
               title: t(baseTranslationPath.close),
@@ -446,15 +447,15 @@ export const useHandleTrove = (
   // in case we deploy FE and contracts on other chains than RSK
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleTroveCloseLegacy = useCallback(
-    async (token: SupportedTokens) => {
+    async (token: string) => {
       if (signer) {
         const { address, abi } = await getContract(
           'borrowerOperations',
           'zero',
-          getRskChainId(),
+          RSK_CHAIN_ID,
         );
         const contract = new Contract(address, abi, signer);
-        const isDllr = token === SupportedTokens.dllr;
+        const isDllr = token.toUpperCase() === COMMON_SYMBOLS.DLLR;
 
         if (isDllr) {
           const { liquity } = await loadLiquity();
@@ -465,7 +466,7 @@ export const useHandleTrove = (
           setTransactions([
             await preparePermitTransaction({
               signer,
-              token: SupportedTokens.dllr,
+              token: COMMON_SYMBOLS.DLLR,
               spender: address,
               value,
             }),
@@ -487,7 +488,7 @@ export const useHandleTrove = (
               }),
             },
           ]);
-        } else if (token === SupportedTokens.zusd) {
+        } else if (token.toUpperCase() === COMMON_SYMBOLS.ZUSD) {
           setTransactions([
             {
               title: t(baseTranslationPath.close),

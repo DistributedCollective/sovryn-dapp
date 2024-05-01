@@ -1,5 +1,6 @@
 import React, { FC, PropsWithChildren, useCallback } from 'react';
 
+import classNames from 'classnames';
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 import { Link } from 'react-router-dom';
@@ -13,8 +14,10 @@ import {
 } from '@sovryn/ui';
 
 import { useNotificationContext } from '../../../contexts/NotificationContext';
+import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
+import { isRskChain } from '../../../utils/chain';
 
 type ConnectWalletButtonProps = {
   onConnect: () => void;
@@ -36,6 +39,7 @@ export const ConnectWalletButton: FC<
   dataAttribute,
 }) => {
   const { addNotification } = useNotificationContext();
+  const chainId = useCurrentChain();
 
   const onCopyAddress = useCallback(() => {
     addNotification({
@@ -71,6 +75,7 @@ export const ConnectWalletButton: FC<
           address={address}
           dataAttribute={dataAttribute}
           className={className}
+          dropdownClassName="z-[10000000]"
           content={
             <Menu className="mb-4">
               <Link to="/portfolio" className="no-underline">
@@ -97,6 +102,9 @@ export const ConnectWalletButton: FC<
                 text={t(translations.connectWalletButton.notifications)}
                 onClick={handleSettingsClick}
                 dataAttribute={`${dataAttribute}-menu-notifications`}
+                className={classNames({
+                  hidden: !isRskChain(chainId),
+                })}
               />
             </Menu>
           }

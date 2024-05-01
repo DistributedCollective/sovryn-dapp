@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { SupportedTokens, getTokenContract } from '@sovryn/contracts';
+import { getAssetData } from '@sovryn/contracts';
 
-import { defaultChainId } from '../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
+import { useAccount } from '../../../../hooks/useAccount';
 import { useGetTokenPrice } from './useGetTokenPrice';
 
 export const useGetCollateralAssetPrice = (
-  borrowToken: SupportedTokens,
-  collateralToken: SupportedTokens,
+  borrowToken: string,
+  collateralToken: string,
 ) => {
+  const { signer } = useAccount();
   const [borrowPriceUsd, setBorrowPriceUsd] = useState('0');
   const [collateralPriceUsd, setCollateralPriceUsd] = useState('0');
 
@@ -17,14 +19,14 @@ export const useGetCollateralAssetPrice = (
   const [collateralAddress, setCollateralAddress] = useState('');
 
   const getBorrowTokenContract = useCallback(async () => {
-    const contract = await getTokenContract(borrowToken, defaultChainId);
-    return contract;
-  }, [borrowToken]);
+    const { contract } = await getAssetData(borrowToken, RSK_CHAIN_ID);
+    return contract(signer);
+  }, [borrowToken, signer]);
 
   const getCollateralTokenContract = useCallback(async () => {
-    const contract = await getTokenContract(collateralToken, defaultChainId);
-    return contract;
-  }, [collateralToken]);
+    const { contract } = await getAssetData(collateralToken, RSK_CHAIN_ID);
+    return contract(signer);
+  }, [collateralToken, signer]);
 
   const borrowTokenAddress = useCallback(async () => {
     try {

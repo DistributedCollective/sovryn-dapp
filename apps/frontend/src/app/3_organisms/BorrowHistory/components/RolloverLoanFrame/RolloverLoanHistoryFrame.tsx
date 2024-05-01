@@ -20,7 +20,7 @@ import {
   Table,
 } from '@sovryn/ui';
 
-import { chains, defaultChainId } from '../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -31,6 +31,7 @@ import { DEFAULT_HISTORY_FRAME_PAGE_SIZE } from '../../../../../constants/genera
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
+import { getChainById } from '../../../../../utils/chain';
 import { dateFormat } from '../../../../../utils/helpers';
 import { useGetRolloverLoans } from './hooks/useGetRolloverLoans';
 
@@ -40,7 +41,7 @@ export const RolloverLoanHistoryFrame: FC<PropsWithChildren> = ({
   children,
 }) => {
   const [page, setPage] = useState(0);
-  const chain = chains.find(chain => chain.id === defaultChainId);
+  const chain = getChainById(RSK_CHAIN_ID);
 
   const { value: block } = useBlockNumber();
 

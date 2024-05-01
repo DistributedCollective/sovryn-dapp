@@ -1,11 +1,10 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   Button,
   ErrorBadge,
@@ -17,8 +16,10 @@ import {
 
 import { APPROVAL_FUNCTION } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
-import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
+import { useNativeAssetBalance } from '../../../../../hooks/useNativeAssetBalance';
 import { translations } from '../../../../../locales/i18n';
+import { findNativeAsset } from '../../../../../utils/asset';
 import { sleep } from '../../../../../utils/helpers';
 import { fromWei, toWei } from '../../../../../utils/math';
 import { signERC2612Permit } from '../../../../../utils/permit/permit';
@@ -54,19 +55,20 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   gasPrice,
   onTxStatusChange,
 }) => {
+  const chainId = useCurrentChain();
   const [stepData, setStepData] = useState<TransactionStepData[]>([]);
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
   const [estimatedGasFee, setEstimatedGasFee] = useState(0);
-  const { balance: rbtcBalance, loading } = useAssetBalance(
-    SupportedTokens.rbtc,
-  );
+  const { balance: nativeBalance, loading } = useNativeAssetBalance(chainId);
   const { account } = useAccount();
 
   const hasEnoughBalance = useMemo(
-    () => account && !loading && rbtcBalance.sub(estimatedGasFee).gt(0),
-    [account, loading, rbtcBalance, estimatedGasFee],
+    () => account && !loading && nativeBalance.sub(estimatedGasFee).gt(0),
+    [account, loading, nativeBalance, estimatedGasFee],
   );
+
+  const nativeAsset = useMemo(() => findNativeAsset(chainId), [chainId]);
 
   useEffect(() => {
     const initialize = async () => {
@@ -84,16 +86,25 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         };
 
         if (isTransactionRequest(request)) {
-          const { contract, fnName, args: requestArgs, gasLimit } = request;
+          const {
+            contract,
+            fnName,
+            args: requestArgs,
+            gasLimit,
+            value,
+          } = request;
           const args = [...requestArgs];
           if (fnName === APPROVAL_FUNCTION) {
             args[1] = ethers.constants.MaxUint256;
           }
+
           item.config.gasLimit =
             gasLimit ??
-            (await contract.estimateGas[fnName](...args).then(gas =>
-              gas.toString(),
-            ));
+            (await contract.estimateGas[fnName](
+              ...[...args, { value: value ?? 0 }],
+            )
+              .then(gas => gas.toString())
+              .catch(() => BigNumber.from(6_000_000).toString()));
 
           item.config.gasLimit &&
             setEstimatedGasFee(
@@ -111,15 +122,18 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             fnName === APPROVAL_FUNCTION ? false : undefined;
           item.config.gasPrice = request.gasPrice ?? gasPrice;
         } else if (isSignTransactionDataRequest(request)) {
-          const { signer, data, to, gasLimit } = request;
+          const { signer, data, to, gasLimit, value } = request;
 
           item.config.gasLimit =
             gasLimit ??
             (
-              await signer.estimateGas({
-                to,
-                data,
-              })
+              await signer
+                .estimateGas({
+                  to,
+                  data,
+                  value: value ?? 0,
+                })
+                .catch(() => BigNumber.from(6_000_000))
             ).toString();
 
           item.config.gasPrice = request.gasPrice ?? gasPrice;
@@ -340,7 +354,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
       setStep(transactions.length);
     } catch (error) {
       onTxStatusChange?.(StatusType.error);
-      console.log('error:', error);
+      console.error('error:', error);
 
       transactions[0].onChangeStatus?.(StatusType.error);
 
@@ -429,7 +443,9 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           {!hasEnoughBalance && (
             <ErrorBadge
               level={ErrorLevel.Critical}
-              message={t(translations.transactionStep.notEnoughBalance)}
+              message={t(translations.transactionStep.notEnoughBalance, {
+                asset: nativeAsset.symbol,
+              })}
             />
           )}
         </>

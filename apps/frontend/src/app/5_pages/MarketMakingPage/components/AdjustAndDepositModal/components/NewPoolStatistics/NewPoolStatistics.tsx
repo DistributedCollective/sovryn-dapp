@@ -21,6 +21,7 @@ import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 import { AdjustType } from '../../AdjustAndDepositModal.types';
 import { useGetPoolBalanceAndRewards } from '../../hooks/useGetPoolBalanceAndRewards';
+import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
 
 const pageTranslations =
   translations.marketMakingPage.adjustAndDepositModal.newPoolStatistics;
@@ -135,7 +136,7 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
           value={
             <AmountRenderer
               value={reward}
-              suffix={SupportedTokens.sov}
+              suffix={COMMON_SYMBOLS.SOV}
               precision={TOKEN_RENDER_PRECISION}
             />
           }

@@ -7,7 +7,7 @@ import { applyDataAttr } from '@sovryn/ui';
 
 import { DappLocked } from '../../1_atoms/DappLocked/DappLocked';
 import { Header, Footer } from '../../3_organisms';
-import { useMaintenance } from '../../../hooks/useMaintenance';
+import { useIsDappLocked } from '../../../hooks/maintenances/useIsDappLocked';
 
 type PageContainerProps = {
   className?: string;
@@ -20,9 +20,7 @@ export const PageContainer: FC<PageContainerProps> = ({
   contentClassName,
   dataAttribute,
 }) => {
-  const { checkMaintenance, States } = useMaintenance();
-  const dappLocked = checkMaintenance(States.FULLD2);
-
+  const dappLocked = useIsDappLocked();
   return (
     <div
       className={classNames('flex flex-col flex-grow', className)}

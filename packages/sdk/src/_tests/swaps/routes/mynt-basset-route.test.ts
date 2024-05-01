@@ -1,8 +1,6 @@
 import { constants } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { myntBassetRoute } from '../../../swaps/smart-router/routes/mynt-basset-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
 import { makeChainFixture } from '../../_fixtures/chain';
@@ -20,9 +18,9 @@ describe('Mynt bAsset Route', () => {
   beforeAll(async () => {
     const fixture = await makeChainFixture();
     route = myntBassetRoute(fixture.provider);
-    rbtc = await makeTokenAddress(SupportedTokens.rbtc);
-    dllr = await makeTokenAddress(SupportedTokens.dllr);
-    zusd = await makeTokenAddress(SupportedTokens.zusd);
+    rbtc = await makeTokenAddress('BTC');
+    dllr = await makeTokenAddress('DLLR');
+    zusd = await makeTokenAddress('ZUSD');
   });
 
   it('has correct name', () => {

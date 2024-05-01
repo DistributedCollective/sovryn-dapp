@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 
 const useGetFilteredDates = (vestingAddresses: string[]) => {
   const { account } = useAccount();
-  const stakingContract = useGetProtocolContract('staking');
+  const chainId = useCurrentChain();
+  const stakingContract = useGetProtocolContract('staking', chainId);
   const [filteredDates, setFilteredDates] = useState<string[]>([]);
 
   useEffect(() => {

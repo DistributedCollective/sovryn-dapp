@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Decimal } from '@sovryn/utils';
 
 import { useAccount } from '../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 
 export const useGetLiquidSovClaimAmount = () => {
@@ -13,8 +14,9 @@ export const useGetLiquidSovClaimAmount = () => {
   });
 
   const { account } = useAccount();
-  const staking = useGetProtocolContract('staking');
-  const stakingRewards = useGetProtocolContract('stakingRewards');
+  const chainId = useCurrentChain();
+  const staking = useGetProtocolContract('staking', chainId);
+  const stakingRewards = useGetProtocolContract('stakingRewards', chainId);
 
   const getRewards = useCallback(async () => {
     if (!account || !staking || !stakingRewards) {

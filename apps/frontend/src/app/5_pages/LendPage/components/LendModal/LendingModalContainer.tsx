@@ -4,15 +4,14 @@ import { Contract } from 'ethers';
 import { t } from 'i18next';
 
 import {
-  SupportedTokens,
-  TokenDetailsData,
+  AssetDetailsData,
+  getAssetData,
   getLoanTokenContract,
-  getTokenDetails,
 } from '@sovryn/contracts';
 import { Dialog, DialogBody, DialogHeader, DialogSize } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
@@ -24,17 +23,17 @@ import { CurrentStats } from './CurrentStats';
 import { LendingForm } from './LendingForm';
 
 export type LendingModalProps = {
-  onDeposit: (amount: Decimal, token: TokenDetailsData, pool: Contract) => void;
+  onDeposit: (amount: Decimal, token: AssetDetailsData, pool: Contract) => void;
   onClose: () => void;
   isOpen: boolean;
 };
 
 export type FullLendingModalState = {
-  token: SupportedTokens;
+  token: string;
   apr: Decimal;
   poolTokenContract: Contract;
   tokenContract: Contract;
-  tokenDetails: TokenDetailsData;
+  tokenDetails: AssetDetailsData;
 };
 
 export const LendingModalContainer: FC<LendingModalProps> = ({
@@ -43,7 +42,7 @@ export const LendingModalContainer: FC<LendingModalProps> = ({
   isOpen,
 }) => {
   const { subscribe, push } = useMemo(
-    () => eventDriven<Nullable<SupportedTokens>>(LendModalAction.Lend),
+    () => eventDriven<Nullable<string>>(LendModalAction.Lend),
     [],
   );
 
@@ -58,13 +57,13 @@ export const LendingModalContainer: FC<LendingModalProps> = ({
         return;
       }
 
-      const poolToken = await getLoanTokenContract(value, defaultChainId);
+      const poolToken = await getLoanTokenContract(value, RSK_CHAIN_ID);
       if (!poolToken) {
         setState(null);
         return;
       }
 
-      const tokenDetails = await getTokenDetails(value, defaultChainId);
+      const tokenDetails = await getAssetData(value, RSK_CHAIN_ID);
 
       const poolTokenContract = new Contract(
         poolToken.address,

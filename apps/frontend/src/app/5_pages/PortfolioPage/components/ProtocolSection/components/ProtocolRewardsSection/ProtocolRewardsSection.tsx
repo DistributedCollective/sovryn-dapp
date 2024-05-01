@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { Paragraph } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { useCurrentChain } from '../../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../../utils/math';
 import { useTotalStakingRewards } from '../../../../../RewardsPage/components/TotalRewardsEarned/hooks/useTotalStakingRewards';
@@ -24,6 +25,7 @@ export const ProtocolRewardsSection: FC<ProtocolRewardsSectionProps> = ({
   selectedCurrency,
   btcPrice,
 }) => {
+  const chainId = useCurrentChain();
   const navigate = useNavigate();
   const { totalStakingRewards } = useTotalStakingRewards();
   const renderRewardsClassName = useMemo(
@@ -44,6 +46,7 @@ export const ProtocolRewardsSection: FC<ProtocolRewardsSectionProps> = ({
             decimalic(totalStakingRewards),
             selectedCurrency,
             btcPrice,
+            chainId,
           )}
           useTooltip={false}
           suffix={selectedCurrency}

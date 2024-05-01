@@ -2,17 +2,20 @@ import React, { FC, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Paragraph, Table } from '@sovryn/ui';
+
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import {
   BITCOIN,
   TOKEN_RENDER_PRECISION,
 } from '../../../../../constants/currencies';
+import { useRequiredChain } from '../../../../../hooks/chain/useRequiredChain';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS, findAsset } from '../../../../../utils/asset';
 import { columns } from './LiquidityMining.constants';
 import { LiquidityMiningAction } from './components/LiquidityMiningAction/LiquidityMiningAction';
 import { LiquidityMiningMobile } from './components/LiquidityMiningMobile/LiquidityMiningMobile';
@@ -26,6 +29,7 @@ const pageTranslations = translations.rewardPage.liquidityMining;
 export const LiquidityMining: FC = () => {
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
+  const { invalidChain } = useRequiredChain();
   const { vestedRewards, liquidRewards, loading } =
     useGetLiquidityRewards(account);
   const {
@@ -48,17 +52,24 @@ export const LiquidityMining: FC = () => {
         vestedRewards.isZero() &&
         lendingRewards.isZero() &&
         availableTradingRewards === '0') ||
+      invalidChain ||
       isLoading
     );
   }, [
     liquidRewards,
     vestedRewards,
-    availableTradingRewards,
     lendingRewards,
+    availableTradingRewards,
+    invalidChain,
     isLoading,
   ]);
 
   const handleRewards = useHandleRewards();
+
+  const sovSuffix = useMemo(
+    () => findAsset(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID).symbol,
+    [],
+  );
 
   const rows = useMemo(() => {
     if (claimDisabled) {
@@ -103,7 +114,7 @@ export const LiquidityMining: FC = () => {
               {liquidRewards && (
                 <AmountRenderer
                   value={liquidRewards}
-                  suffix={SupportedTokens.sov}
+                  suffix={sovSuffix}
                   precision={TOKEN_RENDER_PRECISION}
                   dataAttribute="liquidity-mining-amm-lp-rewards-liquid-amount"
                 />
@@ -111,7 +122,7 @@ export const LiquidityMining: FC = () => {
               {vestedRewards && (
                 <AmountRenderer
                   value={vestedRewards}
-                  suffix={SupportedTokens.sov}
+                  suffix={sovSuffix}
                   precision={TOKEN_RENDER_PRECISION}
                   dataAttribute="liquidity-mining-amm-lp-rewards-vested-amount"
                 />
@@ -120,7 +131,7 @@ export const LiquidityMining: FC = () => {
             {lendingRewards && (
               <AmountRenderer
                 value={lendingRewards}
-                suffix={SupportedTokens.sov}
+                suffix={sovSuffix}
                 precision={TOKEN_RENDER_PRECISION}
                 dataAttribute="liquidity-mining-lending-rewards-vested-amount"
               />
@@ -128,7 +139,7 @@ export const LiquidityMining: FC = () => {
             {availableTradingRewards && (
               <AmountRenderer
                 value={availableTradingRewards}
-                suffix={SupportedTokens.sov}
+                suffix={sovSuffix}
                 precision={TOKEN_RENDER_PRECISION}
                 dataAttribute="liquidity-mining-trading-fee-rebate-vested-amount"
               />
@@ -148,7 +159,9 @@ export const LiquidityMining: FC = () => {
             {lendingRewards && (
               <Paragraph
                 dataAttribute="liquidity-mining-lending-rewards-vested-pool"
-                children={`${SupportedTokens.dllr.toLocaleUpperCase()}, ${BITCOIN.toLocaleUpperCase()}`}
+                children={`${
+                  findAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID).symbol
+                }, ${BITCOIN.toLocaleUpperCase()}`}
               />
             )}
             {availableTradingRewards && (
@@ -171,11 +184,12 @@ export const LiquidityMining: FC = () => {
       },
     ];
   }, [
+    claimDisabled,
     liquidRewards,
     vestedRewards,
-    availableTradingRewards,
     lendingRewards,
-    claimDisabled,
+    availableTradingRewards,
+    sovSuffix,
     handleRewards,
   ]);
 

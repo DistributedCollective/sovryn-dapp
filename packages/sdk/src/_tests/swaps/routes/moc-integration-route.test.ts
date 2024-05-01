@@ -1,11 +1,7 @@
 import { BigNumber, constants, Contract } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenContract,
-} from '@sovryn/contracts';
+import { getAssetContract, getProtocolContract } from '@sovryn/contracts';
 
 import { mocIntegrationSwapRoute } from '../../../swaps/smart-router/routes/moc-integration-swap-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
@@ -31,10 +27,10 @@ describe('Moc Integration Route', () => {
   beforeAll(async () => {
     const fixture = await makeChainFixture();
     route = mocIntegrationSwapRoute(fixture.provider);
-    dllr = await makeTokenAddress(SupportedTokens.dllr);
-    moc = await makeTokenAddress(SupportedTokens.moc);
+    dllr = await makeTokenAddress('DLLR');
+    moc = await makeTokenAddress('MOC');
     masset = (await getProtocolContract('massetManager')).address;
-    const { address, abi } = await getTokenContract(SupportedTokens.doc);
+    const { address, abi } = await getAssetContract('DOC');
     doc = new Contract(address, abi, fixture.provider);
 
     balance = await doc.balanceOf(masset);

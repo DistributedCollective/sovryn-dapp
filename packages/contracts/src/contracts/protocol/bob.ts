@@ -1,8 +1,8 @@
 import { AsyncContractConfigData } from '../../types';
 
-export const bobTestnet: Record<string, AsyncContractConfigData> = {
+export const bob: Record<string, AsyncContractConfigData> = {
   staking: {
-    address: '0x5fA95212825a474E2C75676e8D833330F261CaeD',
+    address: '0xc17C6462cEAFE9A8819258c6bA168BEF5544Fc21',
     getAbi: async () => (await import('../../abis/staking.json')).default,
   },
   runeBridge: {

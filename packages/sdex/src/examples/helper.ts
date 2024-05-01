@@ -1,6 +1,7 @@
 import { parseUnits } from 'ethers/lib/utils';
 
 import { CrocEnv } from '../croc';
+import { priceToTick } from '../utils/price';
 
 export interface IBurnAmbientLiquidity {
   base: string;
@@ -41,6 +42,7 @@ export interface CreateConcentratedPositionProps {
   rangeMultipliers: number[];
   price: number;
   slippageTolerancePercentage: number;
+  tickGrid: number;
 }
 
 type PriceRange = [number, number];
@@ -220,13 +222,20 @@ export async function createPositionConcentratedLiquidity(
     price,
     slippageTolerancePercentage,
     rangeMultipliers,
+    tickGrid,
   }: CreateConcentratedPositionProps,
 ) {
   const pool = env.pool(base, quote, poolIndex);
-  //   const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
-  const range: TickRange = rangeMultipliers.map(m => m * price) as TickRange;
+  //   const [base, quote] = base < quote ? [base, quote] : [quote, base];
+  const range: TickRange = rangeMultipliers
+    .map(m => priceToTick(m * price)) // convert to ticks
+    .map(
+      x => x + (x % tickGrid > 0 ? tickGrid - (x % tickGrid) : 0), // adjust to the tickGrid - must be a multiple if it
+    ) as TickRange;
 
   const poolPrice = await pool.displayPrice();
+  console.log('pool price:', poolPrice);
+  console.log('price:', price);
 
   checkWithinSlippageTolerancePercentage(
     poolPrice,
@@ -255,19 +264,27 @@ export async function createPositionConcentratedLiquidity(
     decimals: decimals,
   });
 
-  const mintData = await (!expectedBase
-    ? pool.mintRangeBase(amount, range, [limits.min, limits.max], {
-        surplus: [false, false],
-      })
-    : pool.mintRangeQuote(amount, range, [limits.min, limits.max], {
-        surplus: [false, false],
-      }));
+  const mintData = await pool.mintRangeQuote(
+    amount,
+    range,
+    [limits.min, limits.max],
+    {
+      surplus: [false, false],
+    },
+  );
+  // const mintData = await (!expectedBase
+  //   ? pool.mintRangeBase(amount, range, [limits.min, limits.max], {
+  //       surplus: [false, false],
+  //     })
+  //   : pool.mintRangeQuote(amount, range, [limits.min, limits.max], {
+  //       surplus: [false, false],
+  //     }));
 
   // const data = mintData.contract.interface.encodeFunctionData('userCmd', [
   //   mintData.path,
   //   mintData.calldata,
   // ]);
-
+  console.log('expectedBase:', expectedBase);
   console.log('to', mintData.contract.address);
   // console.log('data', data);
   console.log('calldata', mintData.calldata);

@@ -132,7 +132,7 @@ async function demo() {
   //     slippageTolerancePercentage,
   //   });
   // }
-
+  const tickGrid = 4;
   for (const poolConfig of bobMainnetMockConcentratedPoolConfigs) {
     console.log(
       `Processing concentrated pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
@@ -143,9 +143,10 @@ async function demo() {
       quote: poolConfig.quoteToken.tokenAddress,
       poolIndex: poolConfig.poolIdx,
       amountInBase: poolConfig.amountInBase, // decimal not yet considered here
-      rangeMultipliers: poolConfig.rangeMultipliers,
       price: price, // price
       slippageTolerancePercentage,
+      rangeMultipliers: poolConfig.rangeMultipliers,
+      tickGrid: tickGrid,
     });
   }
 

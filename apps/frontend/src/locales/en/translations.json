@@ -495,6 +495,26 @@
                 "title": "Borrow with Sovryn",
                 "description": "Borrow against your assets in Sovryn’s lending pools.",
                 "action": "Borrow with Sovryn"
+            },
+            "stake_BOB": {
+                "title": "Stake SOV",
+                "description": "Stake SOV and earn Runes & Spice points.",
+                "action": "Stake SOV"
+            },
+            "runes_BOB": {
+                "title": "Trade Runes",
+                "description": "The hottest tokens now trading on Sovryn.",
+                "action": "Coming soon"
+            },
+            "earnYield_BOB": {
+                "title": "Passive Yield",
+                "description": "Earn Spice, Rune points & trading fees in the Sovryn AMM.",
+                "action": "Deposit in AMM"
+            },
+            "soon_BOB": {
+                "title": "Soon on BOB",
+                "description": "Lending, Borrowing, Bitocracy voting & more.",
+                "action": "Coming soon"
             }
         },
         "promotions": {

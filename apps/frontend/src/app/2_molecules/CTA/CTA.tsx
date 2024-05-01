@@ -10,6 +10,7 @@ type CTAProps = {
   action: string;
   navigateTo: () => void;
   badges?: string[];
+  disableCTA?: boolean;
 };
 
 export const CTA: FC<CTAProps> = ({
@@ -20,6 +21,7 @@ export const CTA: FC<CTAProps> = ({
   action,
   navigateTo,
   badges,
+  disableCTA = false,
 }) => (
   <div
     key={index}
@@ -55,6 +57,7 @@ export const CTA: FC<CTAProps> = ({
       text={action}
       onClick={navigateTo}
       style={ButtonStyle.secondary}
+      disabled={disableCTA}
     />
   </div>
 );

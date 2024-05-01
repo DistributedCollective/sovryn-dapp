@@ -149,24 +149,24 @@ export const bobMainnetMockAmbientPoolConfigs = [
 const stablesRangeMultipliers = [0.99044, 1.01288];
 export const bobMainnetMockConcentratedPoolConfigs = [
   // Additional pairs
-  //   {
-  //     baseToken: {
-  //       tokenSymbol: 'DLLR',
-  //       tokenDeploymentName: 'MOCK_DLLR',
-  //       isNativeToken: false,
-  //       tokenAddress: '0xf545c0d1BaAAF7De1d2E0B2d2c1D59a0338ecCC2',
-  //     },
-  //     quoteToken: {
-  //       tokenSymbol: 'SOV',
-  //       tokenDeploymentName: 'MOCK_SOV',
-  //       isNativeToken: false,
-  //       tokenAddress: '0x93A37dDD1860a14C2d740f576C6BE5502A1ef06b',
-  //     },
-  //     price: 0.47,
-  //     poolIdx: 410,
-  //     amountInBase: 1000,
-  //     rangeMultipliers: [0.2, 5], // [-80%, + 5X]
-  //   },
+  {
+    baseToken: {
+      tokenSymbol: 'DLLR',
+      tokenDeploymentName: 'MOCK2_DLLR',
+      isNativeToken: false,
+      tokenAddress: '0xdc313cb8225d0B06B8c1F82501ED339d16e2e4e0',
+    },
+    quoteToken: {
+      tokenSymbol: 'SOV',
+      tokenDeploymentName: 'MOCK_SOV',
+      isNativeToken: false,
+      tokenAddress: '0x93A37dDD1860a14C2d740f576C6BE5502A1ef06b',
+    },
+    price: 0.47,
+    poolIdx: 400,
+    amountInBase: 25000,
+    rangeMultipliers: [0.2, 5], // [-80%, + 5X]
+  },
   {
     baseToken: {
       tokenSymbol: 'USDC',

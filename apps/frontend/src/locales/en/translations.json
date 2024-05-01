@@ -125,7 +125,8 @@
                     "ercBridge": "ERC-20",
                     "ercBridgeDescription": "Transfer between BOB and other chains"
                 }
-            }
+            },
+            "claimPowa": "Claim POWA"
         }
     },
     "footer": {
@@ -1927,29 +1928,53 @@
         }
     },
     "claimLpPage": {
-      "meta": {
-        "title": "Claim LP - Sovryn"
-      },
-      "title": "Claim LP deposits",
-      "subtitle": "Claim your LP tokens from Sovryn & BOB liquidity campaign",
-      "aboutCampaign": "About Extra Spice and Runes campaign",
-      "longDescription": "Your deposits were transferred into the Sovryn AMM pools on BOB. Deposit represents 50% of the value of your original token and 50% in SOV. Trading fees will begin accruing immediately.",
-      "eSovDescription": "For eSOV Depositors:<br/>If you deposited eSOV via Sovryn’s referral link, please move your eSOV to BOB and stake them in Sovryn on BOB. This action must be done by <0>2024-05-10 12:00:00 UTC</0> to be eligible for Extra Spice. <1>Read more</1>",
-      "claimWarning": "Please note that users claiming from the distributor contract prior to <0>2024-05-31 12:00:00 UTC</0> will not be eligible to Extra Spice, and claiming prior to <1>2024-06-30 12:00:00 UTC</1> will not be eligible to Rune points.",
-      "disclaimer": "I understand that by claiming deposits now I will lose eligibility for the additional rewards",
-      "descriptionValues": {
-        "amm": "Marked Making page"
-      },
-      "originalDeposit": "Original deposit",
-      "claimableTitle": "AMM pool",
-      "claimable1": "50% original tokens",
-      "claimable2": "50% SOV",
-      "cta": "Claim deposits",
-      "readMore": "Read more about LP tokens",
-      "claimTx": {
+        "meta": {
+            "title": "Claim LP - Sovryn"
+        },
         "title": "Claim LP deposits",
-        "description": "Claim your LP tokens from Sovryn & BOB liquidity campaign"
-      },
-      "ammCta": "Claim LP tokens"
+        "subtitle": "Claim your LP tokens from Sovryn & BOB liquidity campaign",
+        "aboutCampaign": "About Extra Spice and Runes campaign",
+        "longDescription": "Your deposits were transferred into the Sovryn AMM pools on BOB. Deposit represents 50% of the value of your original token and 50% in SOV. Trading fees will begin accruing immediately.",
+        "eSovDescription": "For eSOV Depositors:<br/>If you deposited eSOV via Sovryn’s referral link, please move your eSOV to BOB and stake them in Sovryn on BOB. This action must be done by <0>2024-05-10 12:00:00 UTC</0> to be eligible for Extra Spice. <1>Read more</1>",
+        "claimWarning": "Please note that users claiming from the distributor contract prior to <0>2024-05-31 12:00:00 UTC</0> will not be eligible to Extra Spice, and claiming prior to <1>2024-06-30 12:00:00 UTC</1> will not be eligible to Rune points.",
+        "disclaimer": "I understand that by claiming deposits now I will lose eligibility for the additional rewards",
+        "descriptionValues": {
+            "amm": "Marked Making page"
+        },
+        "originalDeposit": "Original deposit",
+        "claimableTitle": "AMM pool",
+        "claimable1": "50% original tokens",
+        "claimable2": "50% SOV",
+        "cta": "Claim deposits",
+        "readMore": "Read more about LP tokens",
+        "claimTx": {
+            "title": "Claim LP deposits",
+            "description": "Claim your LP tokens from Sovryn & BOB liquidity campaign"
+        },
+        "ammCta": "Claim LP tokens"
+    },
+    "claimPowaPage": {
+        "meta": {
+            "title": "Claim your POWA - Sovryn"
+        },
+        "title": "Claim your POWA",
+        "subtitle": "Claim POWA points ",
+        "aboutCampaign": "About POWA campaign",
+        "claimDeposits": "Claim deposits",
+        "readMore": "Read more about Runes",
+        "descriptionValues": {
+            "aboutClaiming": "Claim your POWA points to get a airdrop of POWA - the Rune memecoin. After claiming you will be received POWA token to your RSK wallet address. POWA token tokens will be distributed in 3 batches:",
+            "firstAirdrop": "First airdrop: {{firstAirdropDate}}",
+            "secondAirdrop": "Second airdrop: {{secondAirdropDate}}",
+            "finalAirdrop": "Final airdrop: {{finalAirdropDate}}",
+            "rskAddress": "Haven’t provided your RSK wallet address yet?<br /><0>Submit you wallet address</0> for the airdrop before {{date}}.",
+            "rskAddressCTA": "Submit you wallet address"
+        },
+        "longDescription": "Some other important information here if we have something to add. Lorem bitcoinae dollar situs ametus, consensusium adipiscing elitum, sed  do proofus-of-workium tempor incididunt ut blockchainus et dollar magna  aliqua.Ut miningus ad minim veniamus, quis nodus exercitationus  walletus.",
+        "claimTx": {
+            "title": "Claim POWA deposits",
+            "description": "Claim your POWA points"
+        },
+        "disclaimer": "I understand that by claiming deposits now I will lose eligibility for the additional rewards"
     }
 }

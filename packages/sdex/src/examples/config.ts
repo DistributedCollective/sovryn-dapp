@@ -222,3 +222,150 @@ export const bobMainnetMockConcentratedPoolConfigs = [
     rangeMultipliers: stablesRangeMultipliers,
   },
 ];
+
+export const bobMainnetAmbientPoolConfigs = [
+  {
+    baseToken: {
+      tokenSymbol: 'USDT',
+      tokenDeploymentName: 'USDT',
+      isNativeToken: false,
+      tokenAddress: '0x05d032ac25d322df992303dca074ee7392c117b9',
+    },
+    quoteToken: {
+      tokenSymbol: 'SOV',
+      tokenDeploymentName: 'SOV',
+      isNativeToken: false,
+      tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+    },
+    price: 0.47,
+    poolIdx: 410,
+    amountInBase: 28231,
+    lpConduit: '',
+  },
+  {
+    baseToken: {
+      tokenSymbol: 'USDC',
+      tokenDeploymentName: 'USDC',
+      isNativeToken: false,
+      tokenAddress: '0xe75D0fB2C24A55cA1e3F96781a2bCC7bdba058F0',
+    },
+    quoteToken: {
+      tokenSymbol: 'SOV',
+      tokenDeploymentName: 'SOV',
+      isNativeToken: false,
+      tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+    },
+    price: 0.47,
+    poolIdx: 410,
+    amountInBase: 161363.4,
+    lpConduit: '',
+  },
+  {
+    baseToken: {
+      tokenSymbol: 'DAI',
+      tokenDeploymentName: 'DAI',
+      isNativeToken: false,
+      tokenAddress: '0x6c851f501a3f24e29a8e39a29591cddf09369080',
+    },
+    quoteToken: {
+      tokenSymbol: 'SOV',
+      tokenDeploymentName: 'SOV',
+      isNativeToken: false,
+      tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+    },
+    price: 0.47,
+    poolIdx: 410,
+    amountInBase: 1000,
+    lpConduit: '',
+  },
+  {
+    baseToken: {
+      tokenSymbol: 'WBTC',
+      tokenDeploymentName: 'WBTC',
+      isNativeToken: false,
+      tokenAddress: '0x03c7054bcb39f7b2e5b2c7acb37583e32d70cfa3',
+    },
+    quoteToken: {
+      tokenSymbol: 'SOV',
+      tokenDeploymentName: 'SOV',
+      isNativeToken: false,
+      tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+    },
+    price: 31330,
+    poolIdx: 410,
+    amountInBase: 33.46968694,
+    lpConduit: '',
+  },
+  {
+    baseToken: {
+      tokenSymbol: 'TBTC',
+      tokenDeploymentName: 'tBTC',
+      isNativeToken: false,
+      tokenAddress: '0xBBa2eF945D523C4e2608C9E1214C2Cc64D4fc2e2',
+    },
+    quoteToken: {
+      tokenSymbol: 'SOV',
+      tokenDeploymentName: 'SOV',
+      isNativeToken: false,
+      tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+    },
+    price: 25369,
+    poolIdx: 410,
+    amountInBase: '5.71385253021192418', //'5.713852530211924187'
+    lpConduit: '',
+  },
+  {
+    baseToken: {
+      tokenSymbol: 'ETH',
+      tokenDeploymentName: 'ETH',
+      isNativeToken: true,
+      tokenAddress: '0x0000000000000000000000000000000000000000',
+    },
+    quoteToken: {
+      tokenSymbol: 'SOV',
+      tokenDeploymentName: 'SOV',
+      isNativeToken: false,
+      tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+    },
+    price: 1522,
+    poolIdx: 410,
+    amountInBase: 1000,
+    lpConduit: '',
+  },
+  {
+    baseToken: {
+      tokenSymbol: 'wstETH',
+      tokenDeploymentName: 'WSTETH',
+      isNativeToken: false,
+      tokenAddress: '0x85008aE6198BC91aC0735CB5497CF125ddAAc528',
+    },
+    quoteToken: {
+      tokenSymbol: 'SOV',
+      tokenDeploymentName: 'SOV',
+      isNativeToken: false,
+      tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+    },
+    price: 1522,
+    poolIdx: 410,
+    amountInBase: 1000,
+    lpConduit: '',
+  },
+  {
+    baseToken: {
+      tokenSymbol: 'rETH',
+      tokenDeploymentName: 'rETH',
+      isNativeToken: false,
+      tokenAddress: '0xb5686c4f60904ec2bda6277d6fe1f7caa8d1b41a',
+    },
+    quoteToken: {
+      tokenSymbol: 'SOV',
+      tokenDeploymentName: 'SOV',
+      isNativeToken: false,
+      tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+    },
+    price: 1522,
+    poolIdx: 410,
+    amountInBase: 1000,
+    lpConduit: '',
+  },
+];

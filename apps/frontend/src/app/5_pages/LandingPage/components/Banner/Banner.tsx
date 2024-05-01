@@ -9,14 +9,16 @@ import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
 import { GOBOB_LINK } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
-import { sharedState } from '../../../../../store/rxjs/shared-state';
 import styles from './Banner.module.css';
 import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard';
 
 export const Banner: FC = () => {
   const navigate = useNavigate();
   const handleRunesClick = useCallback(() => {
-    sharedState.actions.openRuneBridgeDialog();
+    window.open(
+      'https://sovryn.com/all-things-sovryn/bitcoin-runes-tokens',
+      '_blank',
+    );
   }, []);
   return (
     <div className="w-full relative pb-16">

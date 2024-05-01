@@ -54,8 +54,8 @@ export const Staking: FC = () => {
   );
 
   const noRewards = useMemo(
-    () => (!hasEarnedFees && !hasLiquidSov) || !account,
-    [hasEarnedFees, hasLiquidSov, account],
+    () => (!hasEarnedFees && !hasLiquidSov && !hasLiquidOsSov) || !account,
+    [hasEarnedFees, hasLiquidSov, hasLiquidOsSov, account],
   );
 
   const earnedFeesSum = useMemo(() => {

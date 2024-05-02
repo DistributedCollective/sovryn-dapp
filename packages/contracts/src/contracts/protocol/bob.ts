@@ -11,7 +11,7 @@ export const bob: Record<string, AsyncContractConfigData> = {
       (await import('../../abis/merkleDistributor.json')).default,
   },
   runeBridge: {
-    address: '',
+    address: '0x8989E07E565966463C73dadE4c095DaC991e1dD2',
     getAbi: async () => (await import('../../abis/RuneBridge.json')).default,
   },
 };

@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 
-import { ChainId, getProvider } from '@sovryn/ethers-provider';
+import { BigNumber } from 'ethers';
+import { formatUnits } from 'ethers/lib/utils';
+
+import { ChainId, ChainIds, getProvider } from '@sovryn/ethers-provider';
 import { SmartRouter } from '@sovryn/sdk';
+import { Decimal } from '@sovryn/utils';
 
 import {
   SWAP_ROUTES,
@@ -9,10 +13,18 @@ import {
 } from '../app/5_pages/ConvertPage/ConvertPage.constants';
 import { COMMON_SYMBOLS } from '../utils/asset';
 import { isRskChain } from '../utils/chain';
-import { decimalic, fromWei, toWei } from '../utils/math';
+import { fromWei, toWei } from '../utils/math';
 import { useCacheCall } from './useCacheCall';
 import { useCurrentChain } from './useChainStore';
 import { useTokenDetailsByAsset } from './useTokenDetailsByAsset';
+
+const STABLECOINS: Partial<Record<ChainIds, string[]>> = {
+  [ChainIds.MAINNET]: ['USDT', 'USDC', 'DAI'],
+  [ChainIds.BOB_MAINNET]: ['DLLR', 'USDT', 'USDC', 'DAI'],
+  [ChainIds.BOB_TESTNET]: ['DLLR', 'USDT', 'USDC', 'DAI'],
+  [ChainIds.RSK_MAINNET]: ['DLLR', 'XUSD', 'ZUSD', 'DOC', 'RUSDT'],
+  [ChainIds.RSK_TESTNET]: ['DLLR', 'XUSD', 'ZUSD', 'DOC', 'RUSDT'],
+};
 
 export function useDollarValue(
   asset: string,
@@ -22,29 +34,41 @@ export function useDollarValue(
   const currentChainId = useCurrentChain();
   const chain = chainId || currentChainId;
 
-  if (asset.toUpperCase() === COMMON_SYMBOLS.ZUSD) {
-    if (isRskChain(chain)) {
-      asset = COMMON_SYMBOLS.XUSD;
-    } else {
-      asset = 'USDT';
-    }
-  } else if (asset.toLocaleLowerCase() === 'weth') {
-    asset = COMMON_SYMBOLS.ETH;
-  }
-  const assetDetails = useTokenDetailsByAsset(asset, chain);
-  const dllrDetails = useTokenDetailsByAsset(
-    COMMON_SYMBOLS.DLLR, // todo: define USD equivalent token for all chains in config
-    chain,
+  const destination = useMemo(
+    () => (STABLECOINS[chain]?.[0] ?? COMMON_SYMBOLS.DLLR).toUpperCase(),
+    [chain],
   );
 
+  const entry = useMemo(() => {
+    if (isRskChain(chain)) {
+      if (asset.toUpperCase() === COMMON_SYMBOLS.ZUSD) {
+        return COMMON_SYMBOLS.XUSD;
+      } else if (asset.toLocaleLowerCase() === 'weth') {
+        return COMMON_SYMBOLS.ETH;
+      }
+    }
+    return asset.toUpperCase();
+  }, [asset, chain]);
+
+  const assetDetails = useTokenDetailsByAsset(entry, chain);
+  const destinationDetails = useTokenDetailsByAsset(destination, chain);
+
   const { value: usdPrice, loading } = useCacheCall(
-    `dollarValue/${chain}/${asset}`,
+    `dollarValue/${chain}/${entry}`,
     chain,
     async () => {
       if (
+        entry === destination ||
+        (STABLECOINS[chain]?.includes(entry) &&
+          STABLECOINS[chain]?.includes(destination))
+      ) {
+        return formatUnits('1', destinationDetails?.decimals || 18);
+      }
+
+      if (
         !assetDetails?.address ||
-        !dllrDetails?.address ||
-        SMART_ROUTER_STABLECOINS.includes(asset)
+        !destinationDetails?.address ||
+        SMART_ROUTER_STABLECOINS.includes(entry)
       ) {
         return '0';
       }
@@ -54,40 +78,38 @@ export function useDollarValue(
       const result = await smartRouter.getBestQuote(
         chain,
         assetDetails?.address,
-        dllrDetails?.address,
+        destinationDetails?.address,
         toWei('0.01'),
       );
 
-      return fromWei(
-        decimalic(result.quote.toString() || '0')
-          .mul(100)
-          .toString(),
-      );
+      return BigNumber.from(result.quote.toString() || '0')
+        .mul(Math.pow(10, 18 - (destinationDetails?.decimals || 18)))
+        .toString();
     },
     [
       weiAmount,
       assetDetails?.address,
-      dllrDetails?.address,
+      destinationDetails?.address,
       assetDetails,
-      dllrDetails,
-      asset,
+      destinationDetails,
       chain,
     ],
     '0',
   );
 
   const usdValue = useMemo(() => {
-    const decimals = assetDetails?.decimals || 18;
-
-    if (SMART_ROUTER_STABLECOINS.includes(asset)) {
+    if (
+      entry === destination ||
+      (STABLECOINS[chain]?.includes(entry) &&
+        STABLECOINS[chain]?.includes(destination))
+    ) {
       return fromWei(weiAmount);
     } else {
-      return decimalic(weiAmount)
-        .mul(usdPrice)
-        .div(10 ** decimals)
+      return Decimal.fromBigNumberString(weiAmount)
+        .mul(fromWei(usdPrice))
         .toString();
     }
-  }, [assetDetails?.decimals, asset, weiAmount, usdPrice]);
+  }, [entry, destination, chain, weiAmount, usdPrice]);
 
   return {
     loading,

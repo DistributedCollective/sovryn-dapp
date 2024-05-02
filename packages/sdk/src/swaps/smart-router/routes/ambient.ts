@@ -411,6 +411,14 @@ const calculateImpact = async (
     .abs()
     .toBigNumber();
 
+  console.table({
+    base: pool.baseToken.tokenAddr,
+    quote: pool.quoteToken.tokenAddr,
+    baseFlow: impact.baseFlow.toString(),
+    quoteFlow: impact.quoteFlow.toString(),
+    finalPrice: impact.finalPrice.toString(),
+  });
+
   return { amount: entryOut, isBuy, impact };
 };
 

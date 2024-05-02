@@ -112,6 +112,8 @@ export const ambientRoute: SwapRouteFunction = (
         );
         const impact = await plan.impact;
 
+        console.table(impact);
+
         return utils.parseEther(impact.buyQty);
       } else {
         // otherwise, use long form orders to build multi-hop swaps

@@ -21,7 +21,7 @@ export const bobMainnet: AmbientLiquidityPool[] = [
     'DLLR',
     'SOV',
     ChainIds.BOB_MAINNET,
-    410,
+    400,
     '0x0034a1EaCDa61619Bd9D1CEDA101189A0EF871F9',
   ),
   new AmbientLiquidityPool(

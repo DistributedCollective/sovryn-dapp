@@ -150,7 +150,7 @@ export const fetchPoolsFromIndexer = async (chainId: ChainId) => {
   return items;
 };
 
-const POOLS = {
+const POOLS: Partial<Record<ChainIds, PoolWithIndex[]>> = {
   [ChainIds.BOB_MAINNET]: [
     // real tokens
     ['USDC', 'USDT', 400],
@@ -159,7 +159,7 @@ const POOLS = {
     ['TBTC', 'wBTC', 400],
     ['RETH', 'ETH', 400],
     ['WSTETH', 'ETH', 400],
-    ['DLLR', 'SOV', 410],
+    ['DLLR', 'SOV', 400],
     ['USDT', 'SOV', 410],
     ['USDC', 'SOV', 410],
     ['DAI', 'SOV', 410],

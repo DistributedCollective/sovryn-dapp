@@ -18,6 +18,7 @@ import {
   GRAPH_WRAPPER,
   SERVICES_CONFIG,
 } from '../constants/infrastructure';
+import { BOB } from '../constants/infrastructure/bob';
 import { BTC } from '../constants/infrastructure/btc';
 import { RSK } from '../constants/infrastructure/rsk';
 import { ALPHA_LINKS, BITOCRACY_LINKS, GITHUB_LINKS } from '../constants/links';
@@ -57,6 +58,9 @@ export const getServicesConfig = () =>
 
 export const getRskExplorerUrl = () =>
   RSK.explorer[isMainnet() ? 'mainnet' : 'testnet'];
+
+export const getBobExplorerUrl = () =>
+  BOB.explorer[isMainnet() ? 'mainnet' : 'testnet'];
 
 export const getBtcExplorerUrl = () =>
   BTC.explorer[isMainnet() ? 'mainnet' : 'testnet'];

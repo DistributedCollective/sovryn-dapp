@@ -17,13 +17,14 @@ import {
 
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
 import { TOKEN_RENDER_PRECISION } from '../../../../../../constants/currencies';
-import { BITCOIN } from '../../../../../../constants/currencies';
+import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
 import { translations } from '../../../../../../locales/i18n';
 import { fromWei, toWei } from '../../../../../../utils/math';
 import { GAS_LIMIT_RUNE_BRIDGE_WITHDRAW } from '../../../constants';
 import { useRuneContext } from '../../../contexts/rune';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
+import { useChainDetails } from '../../../hooks/useChainDetails';
 import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
 import { TransferPolicies } from '../../TransferPolicies';
 
@@ -31,7 +32,9 @@ export const AmountForm: React.FC = () => {
   const { amount, limits, selectedToken, set } = useContext(SendFlowContext);
   const { tokenBalances } = useRuneContext();
   const runeBridgeLocked = useRuneBridgeLocked();
-  const runeBridgeContract = useGetProtocolContract('runeBridge');
+  const chainId = useCurrentChain();
+  const runeBridgeContract = useGetProtocolContract('runeBridge', chainId);
+  const { baseCurrency } = useChainDetails();
 
   const [value, setValue] = useState(amount || '');
 
@@ -204,7 +207,7 @@ export const AmountForm: React.FC = () => {
                   ? `${limits.flatFeeTokens} ${selectedToken.symbol}`
                   : '',
                 limits.flatFeeBaseCurrency
-                  ? `${limits.flatFeeBaseCurrency} ${BITCOIN}`
+                  ? `${limits.flatFeeBaseCurrency} ${baseCurrency}`
                   : '',
               ]
                 .filter(x => x)

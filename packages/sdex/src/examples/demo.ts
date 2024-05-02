@@ -5,11 +5,10 @@ import { ethers } from 'ethers';
 import { CrocEnv } from '../croc';
 import {
   // bobMainnetMockAmbientPoolConfigs,
-  bobMainnetMockConcentratedPoolConfigs, //bobMainnetMockConcentratedPoolConfigs,
+  bobMainnetAmbientPoolConfigs, //bobMainnetConcentratedPoolConfigs, // bobMainnetMockConcentratedPoolConfigs,
 } from './config';
 import {
-  // createPositionAmbientLiquidity,
-  createPositionConcentratedLiquidity, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
+  createPositionAmbientLiquidity, //createPositionConcentratedLiquidity, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
 } from './helper';
 
 // import { priceToTick } from '../utils/price';
@@ -43,63 +42,63 @@ async function demo() {
 
   const croc = new CrocEnv('bob', wallet);
 
-  const mockTokens = {
-    ETH: AddressZero,
-    WBTC: '0xF40A3C629661AF37010FAFbACA2eb4aA37d9abAa',
-    tBTC: '0x42527B3ba7100ECA14c9405016752B6121328582',
-    rETH: '0x0458b6a3b20a20D263df49D72dA928BfFe4473F3',
-    USDT: '0x26bF6A30286cE03176BF3B026Aa1f87b566ca891',
-    DAI: '0x9FF262Fe3CB0c5AeDF081c580067BA846881Ed3C',
-    SOV: '0x93A37dDD1860a14C2d740f576C6BE5502A1ef06b',
-    ALEX: '0x41aBc192389aC3B63BBb5751984956eD8B2AB4A9',
-    USDC: '0xBd95925809F916eCFe140f6Ef70eA43185c0ECD9',
-    DLLR: '0xf545c0d1BaAAF7De1d2E0B2d2c1D59a0338ecCC2',
-    POWA: '0x4Ad48819AB9f6601849dD4b73DF9b115C4AeFa3a',
-    WSTETH: '0x7fA3A90d5B19E6E4Bf4FD6F64904f2F953F30eaf',
-  };
-
-  //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  const [SOV, DAI, USDT, USDC, DLLR, tBTC, WBTC] = [
-    // @todo replace with real tokens - NOT MOCKED!
-    mockTokens.SOV,
-    mockTokens.DAI,
-    mockTokens.USDT,
-    mockTokens.USDC,
-    mockTokens.DLLR,
-    mockTokens.tBTC,
-    mockTokens.WBTC,
-  ];
-
-  // const bobMainnetTokens = {
+  // const mockTokens = {
   //   ETH: AddressZero,
-  //   WBTC: '0x03c7054bcb39f7b2e5b2c7acb37583e32d70cfa3',
-  //   tBTC: '0xBBa2eF945D523C4e2608C9E1214C2Cc64D4fc2e2',
-  //   rETH: '0xb5686c4f60904ec2bda6277d6fe1f7caa8d1b41a',
-  //   USDT: '0x05d032ac25d322df992303dca074ee7392c117b9',
-  //   DAI: '0x6c851f501a3f24e29a8e39a29591cddf09369080',
-  //   SOV: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
-  //   USDC: '0xe75D0fB2C24A55cA1e3F96781a2bCC7bdba058F0',
-  //   DLLR: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
-  //   POWA: '0xd0C2f08a873186db5cFB7b767dB62BEF9e495BFF',
-  //   wstETH: '0x85008aE6198BC91aC0735CB5497CF125ddAAc528',
+  //   WBTC: '0xF40A3C629661AF37010FAFbACA2eb4aA37d9abAa',
+  //   tBTC: '0x42527B3ba7100ECA14c9405016752B6121328582',
+  //   rETH: '0x0458b6a3b20a20D263df49D72dA928BfFe4473F3',
+  //   USDT: '0x26bF6A30286cE03176BF3B026Aa1f87b566ca891',
+  //   DAI: '0x9FF262Fe3CB0c5AeDF081c580067BA846881Ed3C',
+  //   SOV: '0x93A37dDD1860a14C2d740f576C6BE5502A1ef06b',
+  //   ALEX: '0x41aBc192389aC3B63BBb5751984956eD8B2AB4A9',
+  //   USDC: '0xBd95925809F916eCFe140f6Ef70eA43185c0ECD9',
+  //   DLLR: '0xf545c0d1BaAAF7De1d2E0B2d2c1D59a0338ecCC2',
+  //   POWA: '0x4Ad48819AB9f6601849dD4b73DF9b115C4AeFa3a',
+  //   WSTETH: '0x7fA3A90d5B19E6E4Bf4FD6F64904f2F953F30eaf',
   // };
 
   //eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  // const [ETH, WBTC, tBTC, rETH, USDT, DAI, SOV, USDC, DLLR, POWA, wstETH] = [
-  //   bobMainnetTokens.ETH,
-  //   bobMainnetTokens.WBTC,
-  //   bobMainnetTokens.tBTC,
-  //   bobMainnetTokens.rETH,
-  //   bobMainnetTokens.USDT,
-  //   bobMainnetTokens.DAI,
-  //   bobMainnetTokens.SOV,
-  //   bobMainnetTokens.USDC,
-  //   bobMainnetTokens.DLLR,
-  //   bobMainnetTokens.POWA,
-  //   bobMainnetTokens.wstETH,
+  // const [SOV, DAI, USDT, USDC, DLLR, tBTC, WBTC] = [
+  //   // @todo replace with real tokens - NOT MOCKED!
+  //   mockTokens.SOV,
+  //   mockTokens.DAI,
+  //   mockTokens.USDT,
+  //   mockTokens.USDC,
+  //   mockTokens.DLLR,
+  //   mockTokens.tBTC,
+  //   mockTokens.WBTC,
   // ];
+
+  const bobMainnetTokens = {
+    ETH: AddressZero,
+    WBTC: '0x03c7054bcb39f7b2e5b2c7acb37583e32d70cfa3',
+    tBTC: '0xBBa2eF945D523C4e2608C9E1214C2Cc64D4fc2e2',
+    rETH: '0xb5686c4f60904ec2bda6277d6fe1f7caa8d1b41a',
+    USDT: '0x05d032ac25d322df992303dca074ee7392c117b9',
+    DAI: '0x6c851f501a3f24e29a8e39a29591cddf09369080',
+    SOV: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+    USDC: '0xe75D0fB2C24A55cA1e3F96781a2bCC7bdba058F0',
+    DLLR: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
+    POWA: '0xd0C2f08a873186db5cFB7b767dB62BEF9e495BFF',
+    wstETH: '0x85008aE6198BC91aC0735CB5497CF125ddAAc528',
+  };
+
+  //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  const [ETH, WBTC, tBTC, rETH, USDT, DAI, SOV, USDC, DLLR, POWA, wstETH] = [
+    bobMainnetTokens.ETH,
+    bobMainnetTokens.WBTC,
+    bobMainnetTokens.tBTC,
+    bobMainnetTokens.rETH,
+    bobMainnetTokens.USDT,
+    bobMainnetTokens.DAI,
+    bobMainnetTokens.SOV,
+    bobMainnetTokens.USDC,
+    bobMainnetTokens.DLLR,
+    bobMainnetTokens.POWA,
+    bobMainnetTokens.wstETH,
+  ];
 
   // ----- AMBIENT LIQUIDITY -----
   // USDT/SOV
@@ -117,37 +116,37 @@ async function demo() {
 
   const slippageTolerancePercentage = 10; // 10%
 
-  // for (const poolConfig of bobMainnetMockAmbientPoolConfigs) {
-  //   console.log(
-  //     `Processing ambient pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
-  //   );
-  //   const price = poolConfig.price;
-  //   await createPositionAmbientLiquidity(croc, {
-  //     base: poolConfig.baseToken.tokenAddress,
-  //     quote: poolConfig.quoteToken.tokenAddress,
-  //     poolIndex: poolConfig.poolIdx,
-  //     amountInBase: poolConfig.amountInBase, // decimal not yet considered here
-  //     lpConduit: poolConfig.lpConduit,
-  //     price: price, // price
-  //     slippageTolerancePercentage,
-  //   });
-  // }
-
-  for (const poolConfig of bobMainnetMockConcentratedPoolConfigs) {
+  for (const poolConfig of bobMainnetAmbientPoolConfigs) {
     console.log(
-      `Processing concentrated pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
+      `Processing ambient pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
     );
     const price = poolConfig.price;
-    await createPositionConcentratedLiquidity(croc, {
+    await createPositionAmbientLiquidity(croc, {
       base: poolConfig.baseToken.tokenAddress,
       quote: poolConfig.quoteToken.tokenAddress,
       poolIndex: poolConfig.poolIdx,
       amountInBase: poolConfig.amountInBase, // decimal not yet considered here
+      lpConduit: poolConfig.lpConduit,
       price: price, // price
       slippageTolerancePercentage,
-      rangeMultipliers: poolConfig.rangeMultipliers,
     });
   }
+
+  // for (const poolConfig of bobMainnetConcentratedPoolConfigs) {
+  //   console.log(
+  //     `Processing concentrated pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
+  //   );
+  //   const price = poolConfig.price;
+  //   await createPositionConcentratedLiquidity(croc, {
+  //     base: poolConfig.baseToken.tokenAddress,
+  //     quote: poolConfig.quoteToken.tokenAddress,
+  //     poolIndex: poolConfig.poolIdx,
+  //     amountInBase: poolConfig.amountInBase, // decimal not yet considered here
+  //     price: price, // price
+  //     slippageTolerancePercentage,
+  //     rangeMultipliers: poolConfig.rangeMultipliers,
+  //   });
+  // }
 
   // await burnAmbientLiquidity(croc, {
   //   base: USDT,
@@ -168,29 +167,31 @@ async function demo() {
   //   price: price, // price
   //   slippageTolerancePercentage,
   // });
-  const lpConduit = '0x1e894177d9f28CC3150ECB30E458bD9438D6C46e';
-  const SLIPPAGE_TORELANCE = 0.05; // 0.05%
-  type PriceRange = [number, number];
-  const pool = croc.pool(USDT, SOV, 410);
-  const poolPrice = await pool.displayPrice();
-  const limits: PriceRange = [
-    poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
-    poolPrice * (1 + SLIPPAGE_TORELANCE / 100),
-  ];
-  console.log(`burning from USDT - SOV 0.01 LP token USDT`);
-  console.log('pool price:', poolPrice);
-  console.log(
-    'encoded_data: ',
-    //await pool.burnAmbientLiq(ethers.utils.parseEther('0.0193363'), limits, {
-    await pool.burnAmbientLiq(
-      ethers.utils.parseEther('0.01'), //909.944828342431797637
-      limits,
-      {
-        lpConduit: lpConduit,
-      },
-    ),
-    console.log('-'.repeat(50)),
-  );
+
+  //BURN EXAMPLE
+  // const lpConduit = '0x1e894177d9f28CC3150ECB30E458bD9438D6C46e';
+  // const SLIPPAGE_TORELANCE = 0.05; // 0.05%
+  // type PriceRange = [number, number];
+  // const pool = croc.pool(USDT, SOV, 410);
+  // const poolPrice = await pool.displayPrice();
+  // const limits: PriceRange = [
+  //   poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
+  //   poolPrice * (1 + SLIPPAGE_TORELANCE / 100),
+  // ];
+  // console.log(`burning from USDT - SOV 0.01 LP token USDT`);
+  // console.log('pool price:', poolPrice);
+  // console.log(
+  //   'encoded_data: ',
+  //   //await pool.burnAmbientLiq(ethers.utils.parseEther('0.0193363'), limits, {
+  //   await pool.burnAmbientLiq(
+  //     ethers.utils.parseEther('0.01'), //909.944828342431797637
+  //     limits,
+  //     {
+  //       lpConduit: lpConduit,
+  //     },
+  //   ),
+  //   console.log('-'.repeat(50)),
+  // );
 
   // // USDC/SOV
   // spotPrice = await croc.pool(USDC, SOV, 410).spotPrice();

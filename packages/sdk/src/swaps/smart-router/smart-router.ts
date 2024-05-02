@@ -60,9 +60,7 @@ export class SmartRouter {
 
     const quotes = await Promise.all(
       routes.map(async route => {
-        const quote = await route
-          .quote(entry, destination, amount)
-          .catch(console.error);
+        const quote = await route.quote(entry, destination, amount).catch();
         if (!quote) {
           return { route, quote: BigNumber.from(0) };
         }

@@ -19,7 +19,7 @@ export const BOB = {
   },
   bridge: {
     [Environments.Mainnet]: 'https://app.gobob.xyz/bridge',
-    [Environments.Testnet]: 'https://app.gobob.xyz/bridge',
+    [Environments.Testnet]: 'https://testnet.gobob.xyz',
   },
   subgraph: {
     [Environments.Mainnet]:

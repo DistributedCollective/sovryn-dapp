@@ -32,7 +32,12 @@ export const useLoadContract = (
           setAbi(result.abi);
         }
       })
-      .catch(console.warn);
+      .catch(e => {
+        console.warn(
+          `Failed to load contract ${contractName} from group ${group} on chain ${chain}`,
+          e,
+        );
+      });
   }, [chain, contractName, group, isMounted]);
 
   return useMemo(() => {

@@ -1,5 +1,17 @@
 # @sovryn/contracts
 
+## 1.1.0
+
+### Minor Changes
+
+- 0cfa22b0: Major refactoring for BOB chain launch
+- 0cfa22b0: Major refactoring to support multichain functionality
+  BoB chain contract definitions
+
+### Patch Changes
+
+- a65dbc6f: SOV-4023: Rune Bridge BOB support
+
 ## 1.0.20
 
 ### Patch Changes

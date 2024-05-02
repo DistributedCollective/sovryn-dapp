@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "1.0.57",
+  "version": "1.1.0",
   "homepage": ".",
   "private": true,
   "dependencies": {
@@ -23,7 +23,7 @@
     "@sovryn/sdk": "*",
     "@sovryn/tailwindcss-config": "*",
     "@sovryn/ui": "*",
-    "@sovryn/utils": "0.0.1",
+    "@sovryn/utils": "0.0.2",
     "@uniswap/permit2-sdk": "1.2.0",
     "bitcoin-address-validation": "2.2.1",
     "chart.js": "4.1.1",

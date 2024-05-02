@@ -1,5 +1,21 @@
 # @sovryn/sdk
 
+## 1.0.0
+
+### Minor Changes
+
+- 0cfa22b0: Major refactoring for BOB chain launch
+- 0cfa22b0: feat: allow multichain for smart router
+
+### Patch Changes
+
+- Updated dependencies [a65dbc6f]
+- Updated dependencies [0cfa22b0]
+- Updated dependencies [0cfa22b0]
+- Updated dependencies [0cfa22b0]
+  - @sovryn/contracts@1.1.0
+  - @sovryn/utils@0.0.2
+
 ## 0.0.8
 
 ### Patch Changes

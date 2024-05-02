@@ -10,8 +10,8 @@ import styles from './CurrentStatistics.module.css';
 export type CurrentStatisticsProps = {
   symbol: string;
   symbol2?: string;
-  label1?: string;
-  label2?: string;
+  label1?: React.ReactNode;
+  label2?: React.ReactNode;
   value1?: React.ReactNode;
   value2?: React.ReactNode;
   className?: string;

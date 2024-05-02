@@ -11,6 +11,7 @@ import {
   DialogHeader,
   ErrorBadge,
   ErrorLevel,
+  HelperButton,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -253,7 +254,25 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
           <CurrentStatistics
             symbol={pool.base}
             symbol2={pool.quote}
-            label1={t(pageTranslations.returnRate)}
+            label1={
+              <>
+                {t(pageTranslations.returnRate)}
+                <div className="inline-block h-full ml-1">
+                  <div className="flex-row justify-end h-full">
+                    <HelperButton
+                      content={
+                        <>
+                          {t(
+                            translations.ambientMarketMaking.positionsTable
+                              .aprInfo,
+                          )}
+                        </>
+                      }
+                    />
+                  </div>
+                </div>
+              </>
+            }
             label2={t(pageTranslations.currentBalance)}
             value1={<AmountRenderer value={position.aprEst * 100} suffix="%" />}
             value2={<AmbientPositionBalance pool={pool} position={position} />}

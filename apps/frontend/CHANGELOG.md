@@ -1,5 +1,27 @@
 # frontend
 
+## 1.1.0
+
+### Minor Changes
+
+- 0cfa22b0: BOB chain Market Making and Swaps
+
+### Patch Changes
+
+- d006ef6a: SOV-4063: Fix bitcoin os rewards visibility
+- a65dbc6f: SOV-4023: Rune Bridge BOB support
+- Updated dependencies [a65dbc6f]
+- Updated dependencies [0cfa22b0]
+- Updated dependencies [0cfa22b0]
+- Updated dependencies [0cfa22b0]
+- Updated dependencies [0cfa22b0]
+- Updated dependencies [0cfa22b0]
+- Updated dependencies [0cfa22b0]
+  - @sovryn/contracts@1.1.0
+  - @sovryn/sdk@1.0.0
+  - @sovryn/utils@0.0.2
+  - @sovryn/ui@1.0.24
+
 ## 1.0.57
 
 ### Patch Changes

@@ -20,6 +20,7 @@ import { BOB_CHAIN_ID } from '../../../config/chains';
 import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import { useAccount } from '../../../hooks/useAccount';
 import { useCurrentChain } from '../../../hooks/useChainStore';
+import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { ABOUT_LP_URL, CAMPAIGN_URL } from './ClaimLpPage.constants';
 import { Claim, useClaimLp } from './hooks/useClaimLp';
@@ -33,14 +34,23 @@ const ClaimLpPage: FC = () => {
     useState(false);
 
   const { claim, getUnclaimed } = useClaimLp();
+  const { checkMaintenance, States } = useMaintenance();
+  const isClaimLocked = checkMaintenance(States.BOB_CLAIM_LP_DEPOSIT);
 
   const canClaim = useMemo(
     () =>
       chainId === BOB_CHAIN_ID &&
       claimable.length > 0 &&
       !loading &&
+      hasDisclaimerBeenChecked &&
+      !isClaimLocked,
+    [
+      chainId,
+      claimable.length,
+      loading,
       hasDisclaimerBeenChecked,
-    [chainId, claimable.length, loading, hasDisclaimerBeenChecked],
+      isClaimLocked,
+    ],
   );
 
   const handleClaim = useCallback(() => {

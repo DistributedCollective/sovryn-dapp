@@ -155,6 +155,7 @@ enum States {
   BOB_DEPOSIT_LIQUIDITY = 'd2BobDepositLiquidity',
   BOB_WITHDRAW_LIQUIDITY = 'd2BobWithdrawLiquidity',
   BOB_CLAIM_AMM_FEES = 'd2BobClaimAMMFees',
+  BOB_CLAIM_LP_DEPOSIT = 'd2BobClaimLPDeposit',
 }
 
 type MaintenanceResult = {

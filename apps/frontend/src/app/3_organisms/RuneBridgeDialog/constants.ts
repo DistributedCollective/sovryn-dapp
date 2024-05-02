@@ -10,12 +10,12 @@ export const GAS_LIMIT_RUNE_BRIDGE_WITHDRAW = 200000;
 
 export const ORD_WALLET_LINK = 'https://github.com/ordinals/ord';
 
-export const depositAddressPath = 'deposit-addresses/';
+export const DEPOSIT_ADDRESS_PATH = 'deposit-addresses/';
 
-export const lastScannedBtcBlockPath = 'last-scanned-btc-block/';
+export const LAST_SCANNED_BTC_BLOCK_PATH = 'last-scanned-btc-block/';
 
-export const depositsPath = 'deposits';
+export const DEPOSITS_PATH = 'deposits';
 
-export const runesRskBridgeName = 'runes';
+export const RUNES_RSK_BRIDGE_NAME = 'runes';
 
-export const runesBobBridgeName = 'runesbob';
+export const RUNES_BOB_BRIDGE_NAME = 'runesbob';

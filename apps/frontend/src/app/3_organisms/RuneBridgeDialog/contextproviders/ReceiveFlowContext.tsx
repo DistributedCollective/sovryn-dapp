@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { RequestOpts } from '../api/RuneBridgeClient';
-import { depositsPath, lastScannedBtcBlockPath } from '../constants';
+import { DEPOSITS_PATH, LAST_SCANNED_BTC_BLOCK_PATH } from '../constants';
 import {
   ReceiveFlowContext,
   defaultValue,
@@ -24,13 +24,13 @@ export const ReceiveFlowContextProvider: React.FC<
       method: 'GET',
     };
     return await runeBridgeApiClient.request(
-      lastScannedBtcBlockPath,
+      LAST_SCANNED_BTC_BLOCK_PATH,
       reqOptions,
     );
   }, [runeBridgeApiClient]);
   const getRuneDepositStatus = useCallback(
     async (userEvmAddress: string, lastScannedBlockHash: string) => {
-      const path = `${depositsPath}/${userEvmAddress}/${lastScannedBlockHash}`;
+      const path = `${DEPOSITS_PATH}/${userEvmAddress}/${lastScannedBlockHash}`;
       const reqOptions: RequestOpts = {
         method: 'GET',
       };

@@ -2,4 +2,4 @@
 '@sovryn/ui': patch
 ---
 
-fix: accordion unmounting stuff
+Multiple minor updates to component props

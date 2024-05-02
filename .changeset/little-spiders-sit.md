@@ -1,5 +1,6 @@
 ---
-"frontend": patch
+=======
+"frontend": minor
 ---
 
-3932: Ambient Market Making
+BOB chain Market Making and Swaps

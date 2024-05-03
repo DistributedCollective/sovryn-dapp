@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 
-import { BigNumber } from 'ethers';
 import { formatUnits } from 'ethers/lib/utils';
 
 import { ChainId, ChainIds, getProvider } from '@sovryn/ethers-provider';
+import { toDisplayPrice } from '@sovryn/sdex';
 import { SmartRouter } from '@sovryn/sdk';
 import { Decimal } from '@sovryn/utils';
 
@@ -82,8 +82,14 @@ export function useDollarValue(
         toWei('0.01'),
       );
 
-      return BigNumber.from(result.quote.toString() || '0')
-        .mul(Math.pow(10, 18 - (destinationDetails?.decimals || 18)))
+      return toWei(
+        toDisplayPrice(
+          Decimal.fromBigNumberString(result.quote.toString()).toNumber(),
+          assetDetails?.decimals || 18,
+          destinationDetails?.decimals || 18,
+        ),
+      )
+        .mul(100)
         .toString();
     },
     [
@@ -105,11 +111,25 @@ export function useDollarValue(
     ) {
       return fromWei(weiAmount);
     } else {
-      return Decimal.fromBigNumberString(weiAmount)
+      const amount = Decimal.fromBigNumberString(weiAmount)
         .mul(fromWei(usdPrice))
-        .toString();
+        .toNumber();
+
+      return toDisplayPrice(
+        amount,
+        destinationDetails?.decimals || 18,
+        assetDetails?.decimals || 18,
+      ).toString();
     }
-  }, [entry, destination, chain, weiAmount, usdPrice]);
+  }, [
+    entry,
+    destination,
+    chain,
+    weiAmount,
+    usdPrice,
+    assetDetails?.decimals,
+    destinationDetails?.decimals,
+  ]);
 
   return {
     loading,

@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.24
+
+### Patch Changes
+
+- 0cfa22b0: Multiple minor updates to component props
+
 ## 1.0.23
 
 ### Patch Changes

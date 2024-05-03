@@ -102,30 +102,26 @@ export const ambientRoute: SwapRouteFunction = (
 
       const pair = findPair(chainId, entry, destination);
 
-      console.log('pair', [entry, destination], pair);
-
       if (pair) {
-        console.log('is direct swap');
         const plan = await makePlan(
           entry,
           destination,
           pair[2],
           BigNumber.from(amount),
-          0.3,
+          1,
         );
         const impact = await plan.impact;
 
+        console.table(impact);
+
         return utils.parseEther(impact.buyQty);
       } else {
-        console.log('is multi-hop swap');
         // otherwise, use long form orders to build multi-hop swaps
 
         const graph = constructGraph(pools.map(p => [p[0], p[1]]));
         const path = bfsShortestPath(graph, entry, destination);
 
         const poolCount = Math.ceil((path?.length ?? 0) / 2);
-
-        console.log('path', path, poolCount);
 
         if (poolCount < 1) {
           throw makeError(
@@ -144,13 +140,15 @@ export const ambientRoute: SwapRouteFunction = (
           return [item[0], item[1], index] as PoolWithIndex;
         });
 
+        console.log('pathsToPoolsWithIndexes', pathsToPoolsWithIndexes);
+
         const ambientPools = await Promise.all(
           pathsToPoolsWithIndexes.map(item =>
             env.pool(item[0], item[1], item[2]),
           ),
         );
 
-        console.log('pools', ambientPools);
+        console.log('ambientPools', ambientPools);
 
         if (ambientPools.length === 0) {
           throw makeError(
@@ -174,8 +172,6 @@ export const ambientRoute: SwapRouteFunction = (
           return { amount: BigNumber.from(0), isBuy: true, impact: {} };
         });
 
-        console.log('firstOut', lastOut);
-
         for (let i = 1; i < ambientPools.length; i++) {
           const pool = ambientPools[i];
           const poolPath = groupedPath[i];
@@ -189,15 +185,13 @@ export const ambientRoute: SwapRouteFunction = (
             poolPath[0],
             prev.amount,
           ).catch(e => {
-            console.error('Error calculating impact', i, e, [
+            console.warn('Error calculating impact', i, e, [
               pool,
               poolPath[0],
               prev.amount,
             ]);
             return { amount: BigNumber.from(0), isBuy: true, impact: {} };
           });
-
-          console.log('lastOut', i, lastOut);
         }
 
         const decimals = await env.tokens.materialize(destination).decimals;
@@ -240,8 +234,7 @@ export const ambientRoute: SwapRouteFunction = (
     },
     permit: async () => Promise.resolve(undefined),
     swap: async (entry, destination, amount, from, options, overrides) => {
-      console.log('prepare swap', '-'.repeat(50));
-      const slippage = Number(options?.slippage ?? 10) / 1000;
+      const slippage = Number(options?.slippage ?? 50) / 1000;
 
       const pools = await loadPools();
       const chainId = await getChainId();
@@ -255,6 +248,7 @@ export const ambientRoute: SwapRouteFunction = (
           destination,
           pair[2],
           BigNumber.from(amount),
+          slippage,
         );
         const txData = await plan.generateSwapData({ from: from });
 
@@ -271,8 +265,6 @@ export const ambientRoute: SwapRouteFunction = (
         const path = bfsShortestPath(graph, entry, destination);
 
         const poolCount = Math.ceil((path?.length ?? 0) / 2);
-
-        console.log('path length', path?.length, 'pool count', poolCount);
 
         if (poolCount < 1) {
           throw makeError(
@@ -342,35 +334,6 @@ export const ambientRoute: SwapRouteFunction = (
           entryHop.settlement.useSurplus = baseIsEntry;
         }
 
-        console.log(
-          'openSurplus',
-          order.open.useSurplus,
-          ambientPools[0].baseToken.tokenAddr,
-        );
-        console.log(
-          'entrySurplus',
-          entryHop.settlement.useSurplus,
-          ambientPools[0].quoteToken.tokenAddr,
-        );
-
-        console.log(
-          'first item',
-          'inBaseQty',
-          lastOut.orderPool.swap.inBaseQty,
-          'isBuy',
-          lastOut.orderPool.swap.isBuy,
-          'useTrueBase',
-          ambientPools[0].useTrueBase,
-          'amount',
-          lastOut.entryOut.toString(),
-          'impact:baseflow',
-          lastOut.impact.baseFlow.toString(),
-          'impact:quoteFlow',
-          lastOut.impact.quoteFlow.toString(),
-          'impact:finalPrice',
-          lastOut.impact.finalPrice.toString(),
-        );
-
         for (let i = 1; i < ambientPools.length; i++) {
           const pool = ambientPools[i];
           const poolPath = groupedPath[i];
@@ -396,50 +359,16 @@ export const ambientRoute: SwapRouteFunction = (
           quoteHop.settlement.useSurplus = true;
 
           const isLastPool = i === ambientPools.length - 1;
-          console.log('isLastPool', isLastPool);
           if (isLastPool) {
             const isBaseDestination =
               destination.toLowerCase() ===
               pool.baseToken.tokenAddr.toLowerCase();
-            console.log('isBaseDestination', isBaseDestination);
 
             // works for DLLR -> USDT -> USDC swap
             baseHop.settlement.useSurplus = !isBaseDestination;
             quoteHop.settlement.useSurplus = isBaseDestination;
           }
-
-          console.log(
-            'baseSurplus',
-            baseHop.settlement.useSurplus,
-            pool.baseToken.tokenAddr,
-          );
-          console.log(
-            'quoteSurplus',
-            quoteHop.settlement.useSurplus,
-            pool.quoteToken.tokenAddr,
-          );
-
-          console.log(
-            'step',
-            i,
-            'inBaseQty',
-            lastOut.orderPool.swap.inBaseQty,
-            'isBuy',
-            lastOut.orderPool.swap.isBuy,
-            'useTrueBase',
-            pool.useTrueBase,
-            'amount',
-            lastOut.entryOut.toString(),
-            'impact:baseflow',
-            lastOut.impact.baseFlow.toString(),
-            'impact:quoteFlow',
-            lastOut.impact.quoteFlow.toString(),
-            'impact:finalPrice',
-            lastOut.impact.finalPrice.toString(),
-          );
         }
-
-        console.log('order', order);
 
         const data = context.dex.interface.encodeFunctionData('userCmd', [
           proxyPath,
@@ -476,13 +405,19 @@ const calculateImpact = async (
     amount,
   );
 
-  console.log('impact', impact);
-
   const entryOut = Decimal.fromBigNumberString(
     isBuy ? impact.quoteFlow : impact.baseFlow,
   )
     .abs()
     .toBigNumber();
+
+  console.table({
+    base: pool.baseToken.tokenAddr,
+    quote: pool.quoteToken.tokenAddr,
+    baseFlow: impact.baseFlow.toString(),
+    quoteFlow: impact.quoteFlow.toString(),
+    finalPrice: impact.finalPrice.toString(),
+  });
 
   return { amount: entryOut, isBuy, impact };
 };

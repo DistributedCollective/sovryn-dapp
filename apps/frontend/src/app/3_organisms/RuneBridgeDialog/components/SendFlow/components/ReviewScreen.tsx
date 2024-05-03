@@ -13,17 +13,14 @@ import {
 
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { translations } from '../../../../../../locales/i18n';
-import {
-  getBtcExplorerUrl,
-  getRskExplorerUrl,
-} from '../../../../../../utils/helpers';
+import { getBtcExplorerUrl } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
 import { useSendFlowContext } from '../../../contexts/sendflow';
+import { useChainDetails } from '../../../hooks/useChainDetails';
 import { useRuneBridgeLocked } from '../../../hooks/useRuneBridgeLocked';
 
 const translation = translations.runeBridge.send.confirmationScreens;
 
-const rskExplorerUrl = getRskExplorerUrl();
 const btcExplorerUrl = getBtcExplorerUrl();
 
 type FeesPaid = {
@@ -50,7 +47,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
 }) => {
   const runeBridgeLocked = useRuneBridgeLocked();
   const { selectedToken } = useSendFlowContext();
-
+  const { explorerUrl, baseCurrency } = useChainDetails();
   const items = useMemo(
     () => [
       {
@@ -58,7 +55,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         value: (
           <TxIdWithNotification
             value={from}
-            href={`${rskExplorerUrl}/address/${from}`}
+            href={`${explorerUrl}/address/${from}`}
           />
         ),
       },
@@ -84,7 +81,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         value: (
           <>
             {formatValue(feesPaid.rune, 8)} {selectedToken.symbol} +{' '}
-            {formatValue(feesPaid.baseCurrency, 8)} BTC
+            {formatValue(feesPaid.baseCurrency, 8)} {baseCurrency}
           </>
         ),
       },
@@ -97,7 +94,17 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         ),
       },
     ],
-    [amount, feesPaid, from, receiveAmount, selectedToken.symbol, to],
+    [
+      amount,
+      baseCurrency,
+      feesPaid.baseCurrency,
+      feesPaid.rune,
+      from,
+      receiveAmount,
+      selectedToken.symbol,
+      to,
+      explorerUrl,
+    ],
   );
 
   return (

@@ -8,23 +8,38 @@ import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
 import { ReactComponent as ConvertIcon } from '../../../../../../../assets/images/convert.svg';
 import { ReactComponent as DepositIcon } from '../../../../../../../assets/images/deposit.svg';
 import { ReactComponent as WithdrawIcon } from '../../../../../../../assets/images/withdraw.svg';
+import { BOB } from '../../../../../../../constants/infrastructure/bob';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../../locales/i18n';
 import { sharedState } from '../../../../../../../store/rxjs/shared-state';
+import { Environments } from '../../../../../../../types/global';
 import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
+import { isBobChain, isRskChain } from '../../../../../../../utils/chain';
+import { isMainnet } from '../../../../../../../utils/helpers';
 
 export const AssetSectionActions: FC = () => {
   const navigate = useNavigate();
+  const chainId = useCurrentChain();
   const { account } = useAccount();
 
-  const { balance } = useAssetBalance(COMMON_SYMBOLS.BTC);
-  const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
-
-  const handleFundWallet = useCallback(
-    () => sharedState.actions.openFastBtcDialog(!hasRbtcBalance),
-    [hasRbtcBalance],
+  const { balance: rbtcBalance } = useAssetBalance(COMMON_SYMBOLS.BTC, chainId);
+  const hasRbtcBalance = useMemo(
+    () => Number(rbtcBalance) !== 0,
+    [rbtcBalance],
   );
+
+  const handleFundWallet = useCallback(() => {
+    if (isRskChain(chainId)) {
+      sharedState.actions.openFastBtcDialog(!hasRbtcBalance);
+    } else if (isBobChain(chainId)) {
+      window.open(
+        BOB.bridge[isMainnet() ? Environments.Mainnet : Environments.Testnet],
+        '_blank',
+      );
+    }
+  }, [chainId, hasRbtcBalance]);
 
   const handleRuneBridge = useCallback(
     () => sharedState.actions.openRuneBridgeDialog(),

@@ -63,6 +63,8 @@ const MYNT_TOKEN = 'MYNT';
 const ConvertPage: FC = () => {
   const currentChainId = useCurrentChain();
 
+  const [hasQuoteError, setHasQuoteError] = useState(false);
+
   const smartRouter = useMemo(
     () => new SmartRouter(getProvider(currentChainId), SWAP_ROUTES),
     [currentChainId],
@@ -256,23 +258,29 @@ const ConvertPage: FC = () => {
         return;
       }
 
-      const [sourceTokenDetails, destinationTokenDetails] = await Promise.all([
-        getAssetData(sourceToken, currentChainId),
-        getAssetData(destinationToken, currentChainId),
-      ]);
+      try {
+        const [sourceTokenDetails, destinationTokenDetails] = await Promise.all(
+          [
+            getAssetData(sourceToken, currentChainId),
+            getAssetData(destinationToken, currentChainId),
+          ],
+        );
 
-      const result = await smartRouter.getBestQuote(
-        currentChainId,
-        sourceTokenDetails.address,
-        destinationTokenDetails.address,
-        weiAmount,
-      );
+        const result = await smartRouter.getBestQuote(
+          currentChainId,
+          sourceTokenDetails.address,
+          destinationTokenDetails.address,
+          weiAmount,
+        );
 
-      setRoute(result.route);
-      const quote = removeTrailingZerosFromString(
-        fromWei(result.quote.toString()),
-      );
-      setQuote(quote);
+        setRoute(result.route);
+        const quote = removeTrailingZerosFromString(
+          fromWei(result.quote.toString()),
+        );
+        setQuote(quote);
+      } catch {
+        setHasQuoteError(true);
+      }
     })();
   }, [sourceToken, destinationToken, weiAmount, currentChainId, smartRouter]);
 
@@ -285,11 +293,13 @@ const ConvertPage: FC = () => {
     if (destinationToken) {
       setDestinationToken(sourceToken);
       setSourceToken(destinationToken);
+      setHasQuoteError(false);
       setAmount('');
     }
     if (destinationToken) {
       setDestinationToken(sourceToken);
       setSourceToken(destinationToken);
+      setHasQuoteError(false);
       setAmount('');
     }
   }, [destinationToken, setAmount, sourceToken]);
@@ -297,10 +307,16 @@ const ConvertPage: FC = () => {
   const onSourceTokenChange = useCallback(
     (value: string) => {
       setSourceToken(value);
+      setHasQuoteError(false);
       setAmount('');
     },
     [setAmount],
   );
+
+  const onDestinationTokenChange = useCallback((value: string) => {
+    setDestinationToken(value);
+    setHasQuoteError(false);
+  }, []);
 
   const getAssetRenderer = useCallback(
     (token: string) => (
@@ -411,6 +427,7 @@ const ConvertPage: FC = () => {
 
   useEffect(() => {
     if (!account) {
+      setHasQuoteError(false);
       setAmount('');
     }
   }, [account, setAmount]);
@@ -510,7 +527,7 @@ const ConvertPage: FC = () => {
               />
               <Select
                 value={destinationToken}
-                onChange={setDestinationToken}
+                onChange={onDestinationTokenChange}
                 options={destinationTokenOptions}
                 className="min-w-[6.7rem]"
                 menuClassName="max-h-[10rem] sm:max-h-[20rem]"
@@ -576,6 +593,14 @@ const ConvertPage: FC = () => {
             //   />
             // </SimpleTable>
           }
+
+          {hasQuoteError && (
+            <ErrorBadge
+              level={ErrorLevel.Critical}
+              message={t(pageTranslations.form.quoteError)}
+              dataAttribute="convert-quote-error"
+            />
+          )}
 
           <Button
             type={ButtonType.reset}

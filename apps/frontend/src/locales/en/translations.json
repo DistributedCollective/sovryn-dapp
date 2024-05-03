@@ -408,7 +408,8 @@
         "form": {
             "convertFrom": "Convert from",
             "convertTo": "To",
-            "invalidAmountError": "Exceeds maximum amount"
+            "invalidAmountError": "Exceeds maximum amount",
+            "quoteError": "No route found, please try another asset or a lower amount"
         },
         "txDialog": {
             "convertTitle": "Convert {{from}} to {{to}}",
@@ -536,9 +537,9 @@
                 "cta": "Learn More"
             },
             "runesBridge": {
-                "title": "RUNES HAVE ARRIVED",
-                "description": "Now Runes are tradable on mainnet! Deposit Runes from bitcoin via Runes bridge and start trading on Sovryn.",
-                "cta": "Deposit Runes"
+                "title": "RUNES ARE COMING",
+                "description": "Runes will soon be tradeable on mainnet! Runes bridge is being prepared to go live. Stay tuned!",
+                "cta": "Learn more about Runes"
             },
             "sovrynIsLiveOnBob": {
                 "title": "Hello, BOB!",
@@ -1008,9 +1009,9 @@
             "title": "Rune Bridge",
             "tabs": {
                 "receiveLabel": "Receive",
-                "receiveInfoText": "Transfer Runes from Bitcoin to your Rootstock address",
+                "receiveInfoText": "Transfer Runes from Bitcoin to your {{chainName}} address",
                 "sendLabel": "Send",
-                "sendInfoText": "Transfer Rune Tokens from Rootstock to your Bitcoin address"
+                "sendInfoText": "Transfer Rune Tokens from {{chainName}} to your Bitcoin address"
             }
         },
         "instructions": {
@@ -1064,7 +1065,7 @@
                 "sending": "Sending",
                 "serviceFee": "Service fee",
                 "receiving": "Receiving",
-                "hash": "Rootstock TXID",
+                "hash": "{{chainName}} TXID",
                 "bitcoinTxId": "Bitcoin TXID"
             },
             "txDialog": {
@@ -1079,8 +1080,8 @@
                 "transferStatus": {
                     "detected": "Transfer detected",
                     "seen": "Runes received by the bridge",
-                    "sent_to_evm": "Rune Tokens transferred in Rootstock",
-                    "confirmed": "Rune Token transfer confirmed in Rootstock"
+                    "sent_to_evm": "Rune Tokens transferred in {{chainName}}",
+                    "confirmed": "Rune Token transfer confirmed in {{chainName}}"
                 },
                 "statusTitleProcessing": "Transfer processing...",
                 "statusTitleComplete": "Transfer complete",
@@ -1089,7 +1090,8 @@
                 "serviceFee": "Service fee",
                 "receiving": "Receiving",
                 "bitcoinTxId": "Bitcoin TXID",
-                "rootstockTxId": "Rootstock TXID"
+                "rootstockTxId": "Rootstock TXID",
+                "currentChainTxId": "{{chainName}} TXID"
             }
         }
     },
@@ -1921,7 +1923,7 @@
             "minPrice": "Min price",
             "maxPrice": "Max price",
             "apr": "Estimated APR",
-            "aprInfo": "APR is estimated based on previous fees earned at the defined price range, if no trades were made previously you may see 0 value",
+            "aprInfo": "APR is estimated based on previous fees earned at the defined price range, if no trades were made previously or you have recently claimed fees/withdrawn liquidity, you may see 0 value",
             "value": "Value (USD)",
             "balance": "Balance",
             "withdraw": "Withdraw"

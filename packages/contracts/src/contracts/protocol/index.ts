@@ -1,6 +1,7 @@
 import { Network } from '@sovryn/ethers-provider';
 
 import { AsyncContractConfigData } from '../../types';
+import { bob } from './bob';
 import { bobTestnet } from './bobTestnet';
 import { fork } from './fork';
 import { rsk } from './rsk';
@@ -12,6 +13,7 @@ export const protocol: Partial<
 > = {
   rsk,
   rskTestnet,
+  bob,
   bobTestnet,
   sepolia,
   fork,

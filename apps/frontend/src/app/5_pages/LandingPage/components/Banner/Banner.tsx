@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
-import { GOBOB_LINK } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
 import styles from './Banner.module.css';
 import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard';
@@ -83,26 +82,6 @@ export const Banner: FC = () => {
             </>
           }
           className="border-sovryn-blue"
-        />
-        <LandingPromoCard
-          heading={t(translations.landingPage.promotions.runesExtraSpice.title)}
-          description={t(
-            translations.landingPage.promotions.runesExtraSpice.description,
-          )}
-          actions={
-            <>
-              <Button
-                style={ButtonStyle.secondary}
-                size={ButtonSize.large}
-                text={t(
-                  translations.landingPage.promotions.runesExtraSpice.cta,
-                )}
-                href={GOBOB_LINK}
-                hrefExternal
-              />
-            </>
-          }
-          className="border-primary"
         />
       </Carousel>
     </div>

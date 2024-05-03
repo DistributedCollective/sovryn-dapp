@@ -9,6 +9,8 @@ import {
   Dialog,
   DialogSize,
   Heading,
+  Paragraph,
+  ParagraphSize,
   Tabs,
   VerticalTabs,
 } from '@sovryn/ui';
@@ -23,6 +25,7 @@ import { ACTIVE_CLASSNAME } from './constants';
 import { ReceiveFlowContextProvider } from './contextproviders/ReceiveFlowContext';
 import { RuneContextProvider } from './contextproviders/RuneContextProvider';
 import { SendFlowContextProvider } from './contextproviders/SendFlowContext';
+import { useChainDetails } from './hooks/useChainDetails';
 
 const translation = translations.runeBridge.mainScreen;
 
@@ -39,17 +42,36 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
 }) => {
   const [index, setIndex] = useState(step);
   const { account } = useAccount();
-
+  const { supported: isChainSupported, chainName } = useChainDetails();
   const { isMobile } = useIsMobile();
+
   useEffect(() => {
     setIndex(step);
   }, [step]);
 
   const items = useMemo(() => {
+    if (!isChainSupported) {
+      return [
+        {
+          label: '',
+          infoText: '',
+          content: (
+            <div className="mt-0 md:mt-12">
+              <Paragraph
+                size={ParagraphSize.base}
+                children={`${chainName} is currently not supported by the Rune Bridge.`}
+              />
+              <MobileCloseButton onClick={onClose} />
+            </div>
+          ),
+          activeClassName: ACTIVE_CLASSNAME,
+        },
+      ];
+    }
     return [
       {
         label: t(translation.tabs.receiveLabel),
-        infoText: t(translation.tabs.receiveInfoText),
+        infoText: t(translation.tabs.receiveInfoText, { chainName }),
         content: (
           <ReceiveFlowContextProvider>
             <ReceiveFlow onClose={onClose} />
@@ -61,7 +83,7 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
       },
       {
         label: t(translation.tabs.sendLabel),
-        infoText: t(translation.tabs.sendInfoText),
+        infoText: t(translation.tabs.sendInfoText, { chainName }),
         content: (
           <SendFlowContextProvider>
             <SendFlow onClose={onClose} />
@@ -72,15 +94,17 @@ export const RuneBridgeDialog: React.FC<RuneBridgeDialogProps> = ({
         dataAttribute: 'funding-send',
       },
     ];
-  }, [onClose]);
+  }, [onClose, chainName, isChainSupported]);
 
   const onChangeIndex = useCallback((index: number | null) => {
     index !== null ? setIndex(index) : setIndex(0);
   }, []);
+
   const dialogSize = useMemo(
     () => (isMobile ? DialogSize.md : DialogSize.xl3),
     [isMobile],
   );
+
   // Reset the selected index to 0 in case the connected account changes because the new account may have the Send tab hidden and it would crash the app if we tried to access that index
   useEffect(() => {
     setIndex(0);

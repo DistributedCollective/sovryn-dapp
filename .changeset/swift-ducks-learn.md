@@ -1,6 +1,4 @@
 ---
-Staking page updates
-=======
 "@sovryn/contracts": minor
 ---
 

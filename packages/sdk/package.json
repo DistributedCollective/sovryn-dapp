@@ -1,6 +1,6 @@
 {
   "name": "@sovryn/sdk",
-  "version": "0.0.8",
+  "version": "1.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",
@@ -30,7 +30,7 @@
     "@sovryn/sdex": "*",
     "@sovryn/contracts": "*",
     "@sovryn/ethers-provider": "*",
-    "@sovryn/utils": "^0.0.1",
+    "@sovryn/utils": "^0.0.2",
     "rxjs": "7.5.6"
   },
   "peerDependencies": {

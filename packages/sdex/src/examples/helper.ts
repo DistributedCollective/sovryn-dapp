@@ -61,7 +61,8 @@ function checkWithinSlippageTolerancePercentage(
   const average = (price1 + price2) / 2;
 
   const percentageDifference = (difference / average) * 100;
-
+  console.log('price1:', price1);
+  console.log('price2:', price2);
   if (log) console.log('slippage percentage diff: ', percentageDifference);
   // Check if the percentage difference is within 10%
 

@@ -5,10 +5,10 @@ import { ethers } from 'ethers';
 import { CrocEnv } from '../croc';
 import {
   // bobMainnetMockAmbientPoolConfigs,
-  bobMainnetAmbientPoolConfigs, //bobMainnetConcentratedPoolConfigs, // bobMainnetMockConcentratedPoolConfigs,
+  bobMainnetAmbientPoolConfigs, //bobMainnetConcentratedPoolConfigs //bobMainnetAmbientPoolConfigs, //, // bobMainnetMockConcentratedPoolConfigs,
 } from './config';
 import {
-  createPositionAmbientLiquidity, //createPositionConcentratedLiquidity, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
+  createPositionAmbientLiquidity, //createPositionAmbientLiquidity, //, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
 } from './helper';
 
 // import { priceToTick } from '../utils/price';
@@ -132,6 +132,7 @@ async function demo() {
     });
   }
 
+  // CONCENTRATED LIQUIDITY
   // for (const poolConfig of bobMainnetConcentratedPoolConfigs) {
   //   console.log(
   //     `Processing concentrated pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,

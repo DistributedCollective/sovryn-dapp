@@ -109,7 +109,8 @@ export const StakeDatePicker: FC<StakeDatePickerProps> = ({
   useEffect(() => {
     if (!kickoffTs) return;
 
-    const contractOffset = new Date().getTimezoneOffset() / 60;
+    const contractDate = dayjs(kickoffTs * MS).toDate();
+    const contractOffset = contractDate.getTimezoneOffset() / 60;
     const contractDateDeployed = dayjs(kickoffTs * MS).add(
       contractOffset,
       'hour',

@@ -4,7 +4,6 @@ import { formatUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 
-import { getAssetDataByAddress } from '@sovryn/contracts';
 import { NotificationType, OrderOptions } from '@sovryn/ui';
 
 import { EXPORT_RECORD_LIMIT } from '../../../../../../constants/general';
@@ -13,6 +12,7 @@ import { useNotificationContext } from '../../../../../../contexts/NotificationC
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
+import { findAssetByAddress } from '../../../../../../utils/asset';
 import { isBobChain } from '../../../../../../utils/chain';
 import { bobClient, sepoliaSdexClient } from '../../../../../../utils/clients';
 import {
@@ -83,11 +83,11 @@ export const useGetAmbientMarketMakingHistory = (
 
     return await Promise.all(
       list.map(async liquidityChange => {
-        const baseToken = await getAssetDataByAddress(
+        const baseToken = findAssetByAddress(
           liquidityChange?.pool.base,
           chainId,
         );
-        const quoteToken = await getAssetDataByAddress(
+        const quoteToken = findAssetByAddress(
           liquidityChange?.pool.quote,
           chainId,
         );
@@ -95,7 +95,9 @@ export const useGetAmbientMarketMakingHistory = (
         return {
           timestamp: dateFormat(Number(liquidityChange.time)),
           transactionType: getTransactionType(liquidityChange),
-          'Base Token': getTokenDisplayName(baseToken.symbol || ''),
+          'Base Token': baseToken
+            ? getTokenDisplayName(baseToken.symbol || '')
+            : liquidityChange?.pool?.base,
           'Base Balance': `${formatUnits(
             (liquidityChange.changeType === 'mint'
               ? decimalic(liquidityChange.baseFlow)
@@ -103,7 +105,9 @@ export const useGetAmbientMarketMakingHistory = (
             ).toString(),
             baseToken?.decimals,
           ).toString()}`,
-          'Quote Token': getTokenDisplayName(quoteToken.symbol || ''),
+          'Quote Token': quoteToken
+            ? getTokenDisplayName(quoteToken.symbol || '')
+            : liquidityChange?.pool?.quote,
           'Quote Balance': `${formatUnits(
             (liquidityChange.changeType === 'mint'
               ? decimalic(liquidityChange.quoteFlow)

@@ -26,6 +26,7 @@ export const StakeDatePicker: FC<StakeDatePickerProps> = ({
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
   const [filteredDates, setFilteredDates] = useState<FilteredDate[]>([]);
+
   const { kickoffTs } = useGetKickoffTs();
   const currentDate = useMemo(() => new Date(), []);
   const currentUserOffset = useMemo(

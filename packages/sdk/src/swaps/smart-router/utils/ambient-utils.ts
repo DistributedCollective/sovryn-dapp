@@ -177,7 +177,7 @@ const POOLS: Partial<Record<ChainIds, PoolWithIndex[]>> = {
     ['USDT', 'SOV', 37000],
     ['USDC', 'SOV', 37000],
     ['DAI', 'SOV', 37000],
-    ['ETH', 'SOV', 37000],
+    ['ETH', 'SOV', 36000],
     ['WSTETH', 'SOV', 37000],
     ['RETH', 'SOV', 37000],
     ['WBTC', 'SOV', 37000],

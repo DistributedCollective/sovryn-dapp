@@ -78,8 +78,8 @@ export const bobTestnet: AmbientLiquidityPool[] = [
     'ETH',
     'SOV',
     ChainIds.BOB_TESTNET,
-    37000,
-    '0xdC1f62679a25bB9d568463ce007a3b91D01448FD',
+    36000,
+    '0x1e3113be848af4a4ca3218052bb48d6291c857c7',
   ),
   new AmbientLiquidityPool(
     'WSTETH',

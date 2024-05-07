@@ -68,7 +68,7 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
   // wsUrl: 'wss://sepolia-dencun.rpc.gobob.xyz/wss',
   addrs: {
     dex: '0xA86F239490bd35923eCBD578C2A8989803294bee',
-    query: '0x9d9Fd4127E988B95E25F058cf11B274ffA98801E',
+    query: '0x35a4dd53C1AEd1AFD48659175ab3981f3C39493F',
     impact: '0xdB0Bb1e4b7aA5a747E17957FC66C772cea089ec5',
     router: '0x3F1cE244F286e9e16B68cd117b07A7c4a8bf815e',
     routerBypass: '0xAeb44C43Edd3a13921C626ACE5515deB243A5653',

@@ -23,6 +23,7 @@ import { useCurrentChain } from '../../../hooks/useChainStore';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { ABOUT_LP_URL, CAMPAIGN_URL } from './ClaimLpPage.constants';
+import { ClaimableItem } from './components/ClaimableItem';
 import { Claim, useClaimLp } from './hooks/useClaimLp';
 
 const ClaimLpPage: FC = () => {
@@ -137,6 +138,13 @@ const ClaimLpPage: FC = () => {
                 </div>
               </div>
             </div>
+
+            <div>
+              {claimable.map(item => (
+                <ClaimableItem key={item.index} item={item} />
+              ))}
+            </div>
+
             <div className="rounded bg-gray-60 p-4 mt-6">
               <Paragraph>
                 <Trans

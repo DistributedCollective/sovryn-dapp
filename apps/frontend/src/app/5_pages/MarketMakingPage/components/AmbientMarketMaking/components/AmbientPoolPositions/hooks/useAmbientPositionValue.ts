@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 
 import { useCurrentChain } from '../../../../../../../../hooks/useChainStore';
 import { useDollarValue } from '../../../../../../../../hooks/useDollarValue';
-import { bigNumberic, decimalic } from '../../../../../../../../utils/math';
+import { findAsset } from '../../../../../../../../utils/asset';
+import { decimalic, toWei } from '../../../../../../../../utils/math';
 import { AmbientPosition } from '../../../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../../utils/AmbientLiquidityPool';
 import { useAmbientPositionBalance } from './useAmbientPositionBalance';
@@ -16,12 +17,18 @@ export const useAmbientPositionValue = (
 
   const { usdValue: baseValue } = useDollarValue(
     pool.base,
-    bigNumberic(result?.positionLiqBase || '0').toString(),
+    toWei(
+      result?.positionLiqBase || '0',
+      18 - findAsset(pool.base, chainId).decimals,
+    ).toString(),
     chainId,
   );
   const { usdValue: quoteValue } = useDollarValue(
     pool.quote,
-    bigNumberic(result?.positionLiqQuote || '0').toString(),
+    toWei(
+      result?.positionLiqQuote || '0',
+      18 - findAsset(pool.quote, chainId).decimals,
+    ).toString(),
     chainId,
   );
 

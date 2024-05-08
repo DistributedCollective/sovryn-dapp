@@ -22,7 +22,7 @@ export const AmbientPositionValue: FC<AmbientPositionValueProps> = ({
 
   return (
     <div className="inline-flex flex-col">
-      <AmountRenderer value={value} />
+      <AmountRenderer value={value} asIf />
     </div>
   );
 };

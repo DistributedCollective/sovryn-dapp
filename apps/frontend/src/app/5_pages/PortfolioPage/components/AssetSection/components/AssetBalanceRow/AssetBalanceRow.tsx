@@ -58,6 +58,7 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
           suffix={USD}
           precision={getCurrencyPrecision(token)}
           isAnimated
+          asIf
         />
       </Paragraph>
     </div>

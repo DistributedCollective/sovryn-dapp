@@ -62,7 +62,7 @@ export function useDollarValue(
         (STABLECOINS[chain]?.includes(entry) &&
           STABLECOINS[chain]?.includes(destination))
       ) {
-        return formatUnits('1', destinationDetails?.decimals || 18);
+        return formatUnits('1', assetDetails?.decimals || 18);
       }
 
       if (
@@ -109,7 +109,13 @@ export function useDollarValue(
       (STABLECOINS[chain]?.includes(entry) &&
         STABLECOINS[chain]?.includes(destination))
     ) {
-      return fromWei(weiAmount);
+      const amount = Number(fromWei(weiAmount, assetDetails?.decimals || 18));
+
+      return toDisplayPrice(
+        amount,
+        destinationDetails?.decimals || 18,
+        assetDetails?.decimals || 18,
+      ).toString();
     } else {
       const amount = Decimal.fromBigNumberString(weiAmount)
         .mul(fromWei(usdPrice))

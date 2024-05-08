@@ -26,6 +26,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     setLowerBoundaryPercentage,
     setMaximumPrice,
     setUpperBoundaryPercentage,
+    spotPrice,
   } = useDepositContext();
 
   const { spotPrice: currentPrice, poolTokens } = useGetPoolInfo(
@@ -123,13 +124,23 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
   ]);
 
   const renderMin = useMemo(
-    () => toDisplayPrice(minimumPrice, baseTokenDecimals, quoteTokenDecimals),
-    [baseTokenDecimals, minimumPrice, quoteTokenDecimals],
+    () =>
+      toDisplayPrice(
+        spotPrice * ((100 + upperBoundaryPercentage) / 100),
+        baseTokenDecimals,
+        quoteTokenDecimals,
+      ),
+    [baseTokenDecimals, quoteTokenDecimals, spotPrice, upperBoundaryPercentage],
   );
 
   const renderMax = useMemo(
-    () => toDisplayPrice(maximumPrice, baseTokenDecimals, quoteTokenDecimals),
-    [baseTokenDecimals, maximumPrice, quoteTokenDecimals],
+    () =>
+      toDisplayPrice(
+        spotPrice * ((100 + lowerBoundaryPercentage) / 100),
+        baseTokenDecimals,
+        quoteTokenDecimals,
+      ),
+    [baseTokenDecimals, lowerBoundaryPercentage, quoteTokenDecimals, spotPrice],
   );
 
   return (
@@ -139,7 +150,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
         onMinusClick={onMinPriceMinusClick}
         onPlusClick={onMinPricePlusClick}
         value={minimumPrice}
-        text={renderMin}
+        text={renderMax}
         range={lowerBoundaryPercentage}
         decimals={quoteTokenDecimals}
       />
@@ -149,7 +160,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
         onMinusClick={onMaxPriceMinusClick}
         onPlusClick={onMaxPricePlusClick}
         value={maximumPrice}
-        text={renderMax}
+        text={renderMin}
         range={upperBoundaryPercentage}
         decimals={quoteTokenDecimals}
       />

@@ -15,6 +15,5 @@ export const getTokenDisplayNameByAddress = (
   chainId: ChainId = BOB_CHAIN_ID,
   fallbackPrettified = true,
 ): string =>
-  findAssetByAddress(address, chainId)?.symbol || fallbackPrettified
-    ? prettyTx(address)
-    : address;
+  findAssetByAddress(address, chainId)?.symbol ||
+  (fallbackPrettified ? prettyTx(address) : address);

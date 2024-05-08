@@ -15,7 +15,7 @@ import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import { generateTransactionType } from './BobConversionsHistoryFrame.utils';
 
-const renderAmount = (
+export const getConversionAmount = (
   value: string,
   pool: { base: string; quote: string },
   inBaseQty: boolean,
@@ -24,7 +24,18 @@ const renderAmount = (
     inBaseQty ? pool.base : pool.quote,
     getCurrentChain(),
   );
-  const amount = decimalic(formatUnits(value, token?.decimals || 18)).abs();
+  return {
+    token,
+    amount: decimalic(formatUnits(value, token?.decimals || 18)).abs(),
+  };
+};
+
+const renderAmount = (
+  value: string,
+  pool: { base: string; quote: string },
+  inBaseQty: boolean,
+) => {
+  const { token, amount } = getConversionAmount(value, pool, inBaseQty);
   return (
     <AmountRenderer
       value={amount}

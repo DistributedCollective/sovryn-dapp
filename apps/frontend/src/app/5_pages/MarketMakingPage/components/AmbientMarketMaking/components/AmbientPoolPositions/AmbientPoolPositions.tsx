@@ -110,6 +110,7 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
         preventExpandOnClickClass="prevent-row-click"
         className={styles.table}
         isLoading={!positions.length ? isLoading : false}
+        rowKey={row => row.positionId}
       />
     </div>
   );

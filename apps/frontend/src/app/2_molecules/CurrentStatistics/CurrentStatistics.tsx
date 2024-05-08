@@ -1,7 +1,5 @@
 import React, { FC } from 'react';
 
-import { Paragraph } from '@sovryn/ui';
-
 import { useCurrentChain } from '../../../hooks/useChainStore';
 import { AssetPairRenderer } from '../AssetPairRenderer/AssetPairRenderer';
 import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
@@ -42,11 +40,11 @@ export const CurrentStatistics: FC<CurrentStatisticsProps> = ({
 
       <div className="flex gap-8">
         <div className="mt-6 flex flex-col gap-2">
-          <Paragraph className="font-medium text-gray-30">{label1}</Paragraph>
+          <div className="font-medium text-gray-30">{label1}</div>
           {value1}
         </div>
         <div className="mt-6 flex flex-col gap-2">
-          <Paragraph className="font-medium text-gray-30">{label2}</Paragraph>
+          <div className="font-medium text-gray-30">{label2}</div>
           {value2}
         </div>
       </div>

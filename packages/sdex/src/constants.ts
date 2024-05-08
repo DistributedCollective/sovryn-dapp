@@ -43,7 +43,7 @@ const BOB_CHAIN: ChainSpec = {
   nodeUrl: 'https://rpc.gobob.xyz',
   addrs: {
     dex: '0xe5bc234A484A912A61Aa74501960cFc202e773dA',
-    query: '0xf1e7167A0b085B52A8ad02A5Cc48eD2027b8B577',
+    query: '0x1dff4Ff93dF17Ad6F44E23368341CcFb8fB8B675',
     impact: '0x30B2a8810B091D1DbE4aAA4905141f815586e274',
     router: '0x9f93D654a1cdC128c27F99Af5452b26d8002e607',
     routerBypass: '0x7b96cC2256e94348a678B554e2fC648D13b1560E',

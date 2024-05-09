@@ -1,5 +1,11 @@
 # @sovryn/sdk
 
+## 1.0.2
+
+### Patch Changes
+
+- d9654336: fix: ambient smart router
+
 ## 1.0.1
 
 ### Patch Changes

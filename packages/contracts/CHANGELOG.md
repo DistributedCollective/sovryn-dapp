@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.1.1
+
+### Patch Changes
+
+- 309ce36e: chore: add merkle distributor
+
 ## 1.1.0
 
 ### Minor Changes

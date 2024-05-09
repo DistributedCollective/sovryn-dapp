@@ -55,9 +55,10 @@ export const sendOrSimulateTx = async (
   args: string[],
   config: TransactionConfig = {},
 ): Promise<TransactionResponse> => {
-  // const nonce = await request.contract.provider.getTransactionCount(
-  //   await request.contract.signer.getAddress(),
-  // );
+  const from = await request.contract.signer.getAddress();
+  const nonce = await request.contract.provider.getTransactionCount(
+    await request.contract.signer.getAddress(),
+  );
 
   const gasLimit = config.gasLimit ? config.gasLimit?.toString() : undefined;
   const gasPrice = config.gasPrice
@@ -96,7 +97,8 @@ export const sendOrSimulateTx = async (
     value: request.value ?? '0',
     gasPrice,
     gasLimit,
-    // nonce,
+    nonce,
+    from,
   });
 };
 

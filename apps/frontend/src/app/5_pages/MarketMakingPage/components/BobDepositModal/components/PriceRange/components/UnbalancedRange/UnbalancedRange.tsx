@@ -126,21 +126,23 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
   const renderMin = useMemo(
     () =>
       toDisplayPrice(
-        spotPrice * ((100 + upperBoundaryPercentage) / 100),
+        spotPrice * ((100 - lowerBoundaryPercentage) / 100),
         baseTokenDecimals,
         quoteTokenDecimals,
+        true,
       ),
-    [baseTokenDecimals, quoteTokenDecimals, spotPrice, upperBoundaryPercentage],
+    [baseTokenDecimals, lowerBoundaryPercentage, quoteTokenDecimals, spotPrice],
   );
 
   const renderMax = useMemo(
     () =>
       toDisplayPrice(
-        spotPrice * ((100 + lowerBoundaryPercentage) / 100),
+        spotPrice * ((100 - upperBoundaryPercentage) / 100),
         baseTokenDecimals,
         quoteTokenDecimals,
+        true,
       ),
-    [baseTokenDecimals, lowerBoundaryPercentage, quoteTokenDecimals, spotPrice],
+    [baseTokenDecimals, quoteTokenDecimals, spotPrice, upperBoundaryPercentage],
   );
 
   return (
@@ -150,7 +152,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
         onMinusClick={onMinPriceMinusClick}
         onPlusClick={onMinPricePlusClick}
         value={minimumPrice}
-        text={renderMax}
+        text={renderMin}
         range={lowerBoundaryPercentage}
         decimals={quoteTokenDecimals}
       />
@@ -160,7 +162,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
         onMinusClick={onMaxPriceMinusClick}
         onPlusClick={onMaxPricePlusClick}
         value={maximumPrice}
-        text={renderMin}
+        text={renderMax}
         range={upperBoundaryPercentage}
         decimals={quoteTokenDecimals}
       />

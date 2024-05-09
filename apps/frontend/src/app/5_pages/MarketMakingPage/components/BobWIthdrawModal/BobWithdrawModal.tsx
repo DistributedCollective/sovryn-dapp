@@ -170,7 +170,8 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
       .mul(100)
       .div(depositedAmountBase)
       .toNumber();
-    const percentageWithDecimal = Number(percentage.toFixed(2)) * 100;
+    const percentageWithDecimal = Number((percentage * 100).toFixed(0));
+
     const withdraw = bigNumberic(totalLiquidity)
       .mul(percentageWithDecimal)
       .div(1e4);

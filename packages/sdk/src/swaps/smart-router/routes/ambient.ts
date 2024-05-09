@@ -140,15 +140,11 @@ export const ambientRoute: SwapRouteFunction = (
           return [item[0], item[1], index] as PoolWithIndex;
         });
 
-        console.log('pathsToPoolsWithIndexes', pathsToPoolsWithIndexes);
-
         const ambientPools = await Promise.all(
           pathsToPoolsWithIndexes.map(item =>
             env.pool(item[0], item[1], item[2]),
           ),
         );
-
-        console.log('ambientPools', ambientPools);
 
         if (ambientPools.length === 0) {
           throw makeError(

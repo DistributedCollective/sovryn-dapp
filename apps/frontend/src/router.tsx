@@ -66,6 +66,10 @@ const LeaderboardPage = loadable(
   () => import('./app/5_pages/LeaderboardPage/LeaderboardPage'),
 );
 
+const LeaderboardPointsPage = loadable(
+  () => import('./app/5_pages/LeaderboardPointsPage/LeaderboardPointsPage'),
+);
+
 const ClaimLpPage = loadable(
   () => import('./app/5_pages/ClaimLpPage/ClaimLpPage'),
 );
@@ -156,6 +160,10 @@ const routes = [
       {
         path: '/powa',
         element: <LeaderboardPage />,
+      },
+      {
+        path: '/bob-lp-points',
+        element: <LeaderboardPointsPage />,
       },
       {
         path: '/stats',

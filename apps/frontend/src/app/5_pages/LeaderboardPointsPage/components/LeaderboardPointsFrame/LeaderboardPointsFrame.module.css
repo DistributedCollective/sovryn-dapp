@@ -1,0 +1,11 @@
+.table {
+  @apply text-gray-10 lg:px-6 lg:py-4 text-xs;
+}
+
+.table thead, .table tbody:before {
+  @apply hidden;
+}
+
+.table tbody tr > td {
+  @apply min-w-12;
+}

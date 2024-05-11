@@ -1003,6 +1003,24 @@
             }
         }
     },
+    "leaderboardPointsPage": {
+        "meta": {
+            "title": "Extra Spice & Runes Leaderboard - Sovryn"
+        },
+        "title": "Extra Spice & Runes Leaderboard",
+        "claimWarning": "Please note that users claiming from the distributor contract prior to <0>2024-05-31 12:00:00 UTC</0> will not be eligible to Extra Spice, and claiming prior to <1>2024-06-30 12:00:00 UTC</1> will not be eligible to Rune points.",
+        "aboutCampaign": "About Extra Spice and Runes campaign",
+        "claimLp": "Claim LP tokens",
+        "table": {
+            "leaderboard": "Leaderboard",
+            "yourPosition": "Your position",
+            "position": "Position",
+            "balance": "Balance",
+            "spice": "Spice",
+            "extraSpice": "Extra Spice",
+            "runes": "Runes"
+        }
+    },
     "runeBridge": {
         "mainScreen": {
             "title": "Rune Bridge",

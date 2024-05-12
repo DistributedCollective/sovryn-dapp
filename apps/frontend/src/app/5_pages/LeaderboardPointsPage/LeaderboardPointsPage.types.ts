@@ -6,3 +6,14 @@ export type User = {
   extraSpice: number;
   runes: number;
 };
+
+export type UserDeposit = {
+  userAddress: string;
+  tokenSymbol: string;
+  totalAmount: number;
+};
+
+export type UserPoints = {
+  wallet: string;
+  points: number;
+};

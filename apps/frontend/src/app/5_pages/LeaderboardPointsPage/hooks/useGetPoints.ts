@@ -6,17 +6,18 @@ import {
   EXTRA_SPICE_POINTS_MULTIPLIER,
   RUNES_POINTS_MULTIPLIER,
 } from '../LeaderboardPointsPage.constants';
-import { User } from '../LeaderboardPointsPage.types';
+import { User, UserPoints } from '../LeaderboardPointsPage.types';
 import usersPointsList from '../data/usersPoints.json';
 
 export const useGetPoints = (pageSize: number, page: number) => {
   const { account } = useAccount();
+  const usersPointsData: UserPoints[] = usersPointsList;
   const startIndex = page * pageSize;
   const endIndex = Math.min(startIndex + pageSize, usersPointsList.length);
 
   const sortedUsers = useMemo(() => {
-    return usersPointsList.sort((a, b) => b.points - a.points);
-  }, []);
+    return usersPointsData.sort((a, b) => b.points - a.points);
+  }, [usersPointsData]);
 
   const userIndex = useMemo(() => {
     return sortedUsers.findIndex(user =>

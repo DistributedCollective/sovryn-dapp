@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { areAddressesEqual } from '../../../../../utils/helpers';
-import { User } from '../../LeaderboardPointsPage.types';
+import { User, UserDeposit } from '../../LeaderboardPointsPage.types';
 import usersDeposits from '../../data/usersDeposits.json';
 
 type BalanceRendererProps = {
@@ -12,14 +12,15 @@ type BalanceRendererProps = {
 
 export const BalanceRenderer: FC<BalanceRendererProps> = ({ user }) => {
   const { account } = useAccount();
-  const userDeposits = usersDeposits.filter(deposit =>
+  const usersDepositsData: UserDeposit[] = usersDeposits;
+  const deposits = usersDepositsData.filter(deposit =>
     areAddressesEqual(deposit.userAddress, user.wallet),
   );
 
   return (
     <div className="min-w-14">
       {areAddressesEqual(account, user.wallet) ? (
-        userDeposits.map((item, index) => (
+        deposits.map((item, index) => (
           <div key={index}>
             <AmountRenderer
               value={item.totalAmount}

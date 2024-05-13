@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../hooks/useAccount';
@@ -13,8 +13,12 @@ type BalanceRendererProps = {
 export const BalanceRenderer: FC<BalanceRendererProps> = ({ user }) => {
   const { account } = useAccount();
   const usersDepositsData: UserDeposit[] = usersDeposits;
-  const deposits = usersDepositsData.filter(deposit =>
-    areAddressesEqual(deposit.userAddress, user.wallet),
+  const deposits = useMemo(
+    () =>
+      usersDepositsData.filter(deposit =>
+        areAddressesEqual(deposit.userAddress, user.wallet),
+      ),
+    [usersDepositsData, user.wallet],
   );
 
   return (

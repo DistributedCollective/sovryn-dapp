@@ -312,12 +312,17 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             ? parseUnits(config.gasPrice?.toString() || '0', 9)
             : undefined;
 
+          const from = await request.signer.getAddress();
+          const nonce = await request.signer.getTransactionCount();
+
           const tx = await request.signer.sendTransaction({
             data: request.data,
             to: request.to,
             value: request.value,
             gasLimit,
             gasPrice,
+            from,
+            nonce,
           });
 
           updateReceipt(i, {

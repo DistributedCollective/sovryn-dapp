@@ -105,22 +105,14 @@ export const BobConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
         tx.qty === '0'
           ? t(translations.conversionsHistory.swapMultihop)
           : t(translations.conversionsHistory.swap),
-      sent: getConversionAmount(
-        tx.inBaseQty ? tx.baseFlow : tx.quoteFlow,
-        tx.pool,
-        tx.inBaseQty,
-      ).amount.toString(),
+      sent: getConversionAmount(tx as Swap, true).amount.toString(),
       setToken: tx.inBaseQty
         ? getTokenDisplayNameByAddress(tx.pool.base, BOB_CHAIN_ID)
         : getTokenDisplayNameByAddress(tx.pool.quote, BOB_CHAIN_ID),
       receivedToken: tx.inBaseQty
         ? getTokenDisplayNameByAddress(tx.pool.quote, BOB_CHAIN_ID)
         : getTokenDisplayNameByAddress(tx.pool.base, BOB_CHAIN_ID),
-      received: getConversionAmount(
-        tx.inBaseQty ? tx.quoteFlow : tx.baseFlow,
-        tx.pool,
-        !tx.inBaseQty,
-      ).amount.toString(),
+      received: getConversionAmount(tx as Swap, false).amount.toString(),
       TXID: tx.transactionHash,
     }));
   }, [account, addNotification, getConversions]);

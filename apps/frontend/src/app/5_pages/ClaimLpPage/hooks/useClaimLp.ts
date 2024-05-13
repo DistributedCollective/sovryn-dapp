@@ -106,7 +106,7 @@ export const useClaimLp = (onComplete?: () => void) => {
             claims.map(c => c.amount),
             claims.map(c => c.proof),
           ],
-          gasLimit: Math.min(claims.length * 75_000 + 21_000, 6_000_000),
+          gasLimit: 6_000_000,
         },
         onComplete,
       },

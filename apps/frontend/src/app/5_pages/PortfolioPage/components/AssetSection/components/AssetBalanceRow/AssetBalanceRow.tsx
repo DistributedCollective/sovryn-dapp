@@ -10,8 +10,10 @@ import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 import { useCurrentChain } from '../../../../../../../hooks/useChainStore';
 import { useDollarValue } from '../../../../../../../hooks/useDollarValue';
 import { findAsset } from '../../../../../../../utils/asset';
+import { isBobChain } from '../../../../../../../utils/chain';
 import { getCurrencyPrecision } from '../../../ProtocolSection/ProtocolSection.utils';
 import styles from './AssetBalanceRow.module.css';
+import { SdexBalance } from './SdexBalance';
 
 type AssetBalanceRowProps = {
   token: string;
@@ -51,6 +53,7 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
           precision={getCurrencyPrecision(token)}
           isAnimated
         />
+        {isBobChain(chainId) && <SdexBalance token={token} />}
       </Paragraph>
       <Paragraph className="text-gray-30 text-right lg:text-left truncate">
         <AmountRenderer
@@ -58,6 +61,7 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
           suffix={USD}
           precision={getCurrencyPrecision(token)}
           isAnimated
+          asIf
         />
       </Paragraph>
     </div>

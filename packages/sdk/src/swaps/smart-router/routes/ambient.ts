@@ -140,15 +140,11 @@ export const ambientRoute: SwapRouteFunction = (
           return [item[0], item[1], index] as PoolWithIndex;
         });
 
-        console.log('pathsToPoolsWithIndexes', pathsToPoolsWithIndexes);
-
         const ambientPools = await Promise.all(
           pathsToPoolsWithIndexes.map(item =>
             env.pool(item[0], item[1], item[2]),
           ),
         );
-
-        console.log('ambientPools', ambientPools);
 
         if (ambientPools.length === 0) {
           throw makeError(
@@ -360,13 +356,19 @@ export const ambientRoute: SwapRouteFunction = (
 
           const isLastPool = i === ambientPools.length - 1;
           if (isLastPool) {
-            const isBaseDestination =
-              destination.toLowerCase() ===
-              pool.baseToken.tokenAddr.toLowerCase();
-
-            // works for DLLR -> USDT -> USDC swap
-            baseHop.settlement.useSurplus = !isBaseDestination;
-            quoteHop.settlement.useSurplus = isBaseDestination;
+            // ether needs to be withdrawn from dex to user wallet with another hop
+            if (destination === constants.AddressZero) {
+              baseHop.settlement.useSurplus = true;
+              quoteHop.settlement.useSurplus = true;
+              const ethHop = order.appendHop(constants.AddressZero);
+              ethHop.settlement.useSurplus = false;
+            } else {
+              const isBaseDestination =
+                destination.toLowerCase() ===
+                pool.baseToken.tokenAddr.toLowerCase();
+              baseHop.settlement.useSurplus = !isBaseDestination;
+              quoteHop.settlement.useSurplus = isBaseDestination;
+            }
           }
         }
 

@@ -91,7 +91,7 @@ describe('SmartRouter', () => {
     });
 
     it('get cheapest swap route for DLLR -> BTC', async () => {
-      const amount = ethers.utils.parseEther('20');
+      const amount = ethers.utils.parseEther('0.01');
       await expect(
         router.getBestQuote(chainId, dllr, btc, amount),
       ).resolves.toMatchObject({
@@ -101,7 +101,7 @@ describe('SmartRouter', () => {
     });
 
     it('get cheapest swap route for BTC -> DLLR', async () => {
-      const amount = ethers.utils.parseEther('20');
+      const amount = ethers.utils.parseEther('0.01');
       await expect(
         router.getBestQuote(chainId, dllr, btc, amount),
       ).resolves.toMatchObject({

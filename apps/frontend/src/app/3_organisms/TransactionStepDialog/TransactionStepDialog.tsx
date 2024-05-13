@@ -25,7 +25,8 @@ export const TransactionStepDialog: FC<TransactionStepDialogProps> = ({
   disableFocusTrap = true,
 }) => {
   const chainId = useCurrentChain();
-  const { transactions, isOpen, setIsOpen, title } = useTransactionContext();
+  const { transactions, isOpen, setIsOpen, title, setTxTrigger } =
+    useTransactionContext();
   const onClose = useCallback(() => setIsOpen(false), [setIsOpen]);
   const [txStatus, setTxStatus] = useState<StatusType | null>(null);
   const gasPrice = useGasPrice(chainId);
@@ -57,6 +58,7 @@ export const TransactionStepDialog: FC<TransactionStepDialogProps> = ({
           onSuccess={onSuccess}
           gasPrice={gasPrice.toString()}
           onTxStatusChange={setTxStatus}
+          setTxTrigger={setTxTrigger}
         />
       </DialogBody>
     </Dialog>

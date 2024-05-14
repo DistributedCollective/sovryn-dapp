@@ -244,7 +244,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
       const permit: PermitTransferFrom = {
         permitted: {
           token: entry,
-          amount: amount ?? constants.MaxUint256,
+          amount: String(amount ?? constants.MaxUint256),
         },
         spender: PERMIT2_ADDRESS,
         nonce: BigNumber.from(Math.floor(Date.now() + Math.random() * 100)),

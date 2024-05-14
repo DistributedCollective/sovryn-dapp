@@ -264,11 +264,29 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
           await handleUpdates();
         } else if (isTypedDataRequest(request)) {
+          console.log('request', request);
+
           const signature = await request.signer._signTypedData(
             request.domain,
             request.types,
             request.values,
           );
+
+          const verifiedAddress = ethers.utils.verifyTypedData(
+            request.domain,
+            request.types,
+            request.values,
+            signature,
+          );
+
+          console.log('verifiedAddress', verifiedAddress);
+
+          if (
+            verifiedAddress.toLowerCase() !==
+            (await request.signer.getAddress()).toLowerCase()
+          ) {
+            throw new Error('Failed to verify signature. ');
+          }
 
           transactions[i].onChangeStatus?.(StatusType.success);
           transactions[i].onComplete?.(signature);

@@ -4,7 +4,9 @@ import { t } from 'i18next';
 
 import { Pagination, Paragraph, Table } from '@sovryn/ui';
 
+import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
+import { ConnectWalletMessage } from '../../../LeaderboardPage/components/Leaderboard/components/BaseTable/components/ConnectWalletMessage/ConnectWalletMessage';
 import {
   COLUMNS_CONFIG,
   MAXIMUM_USERS_TO_SHOW,
@@ -16,25 +18,24 @@ import styles from './LeaderboardPointsFrame.module.css';
 const pageSize = MAXIMUM_USERS_TO_SHOW;
 
 export const LeaderboardPointsFrame: FC = () => {
+  const { account } = useAccount();
   const [page, setPage] = useState(0);
 
-  const { usersPoints, userPoints } = useGetPoints(pageSize, page);
-
-  const isUserPoints = useMemo(() => userPoints.length > 0, [userPoints]);
+  const { connectedWalletPoints, points } = useGetPoints(pageSize, page);
 
   const onPageChange = useCallback(
     (value: number) => {
-      if (usersPoints?.length < pageSize && value > page) {
+      if (points?.length < pageSize && value > page) {
         return;
       }
       setPage(value);
     },
-    [page, usersPoints],
+    [page, points],
   );
 
   const isNextButtonDisabled = useMemo(
-    () => usersPoints?.length < pageSize,
-    [usersPoints],
+    () => points?.length < pageSize,
+    [points],
   );
 
   return (
@@ -46,25 +47,29 @@ export const LeaderboardPointsFrame: FC = () => {
       </div>
 
       <div className="lg:border rounded lg:p-6">
-        {isUserPoints && (
-          <div className="lg:p-4">
-            <Table
-              columns={COLUMNS_CONFIG(isUserPoints)}
-              rows={userPoints}
-              rowTitle={generateRowTitle}
-              className="text-gray-10 lg:px-6 lg:py-4 text-xs mb-5"
-              dataAttribute="leaderboard-points-user-table"
-              rowClassName="bg-gray-70 px-0"
-            />
-          </div>
-        )}
+        <div className="lg:p-4">
+          <Table
+            columns={COLUMNS_CONFIG(true)}
+            rows={connectedWalletPoints}
+            rowTitle={generateRowTitle}
+            className="text-gray-10 lg:px-6 lg:py-4 text-xs mb-5"
+            dataAttribute="leaderboard-points-user-table"
+            noData={
+              !account ? (
+                <ConnectWalletMessage />
+              ) : (
+                t(translations.common.tables.noData)
+              )
+            }
+          />
+        </div>
 
         <div className="lg:bg-gray-80 lg:p-4 rounded">
           <Table
             columns={COLUMNS_CONFIG()}
-            rows={usersPoints}
+            rows={points}
             rowTitle={generateRowTitle}
-            className={userPoints.length > 0 && styles.table}
+            className={points.length > 0 && styles.table}
             dataAttribute="leaderboard-points-users-table"
           />
           <Pagination

@@ -15,24 +15,24 @@ export const MAXIMUM_USERS_TO_SHOW = 50;
 export const EXTRA_SPICE_POINTS_MULTIPLIER = 0.5;
 export const RUNES_POINTS_MULTIPLIER = 3.14;
 
-export const COLUMNS_CONFIG = (isUserPosition: boolean = false) => [
+export const COLUMNS_CONFIG = (isSingleUser: boolean = false) => [
   {
-    id: '',
-    title: '',
+    id: isSingleUser ? 'position' : '',
+    title: isSingleUser
+      ? t(translations.leaderboardPointsPage.table.yourPosition)
+      : '',
     cellRenderer: (user: User) => user.id,
-    className: 'hidden lg:table-cell',
   },
   {
-    id: 'position',
-    title: isUserPosition
-      ? t(translations.leaderboardPointsPage.table.yourPosition)
-      : t(translations.leaderboardPointsPage.table.position),
+    id: isSingleUser ? '' : 'wallet',
+    title: isSingleUser
+      ? ''
+      : t(translations.leaderboardPointsPage.table.participant),
     cellRenderer: (user: User) => (
       <div className="text-right lg:text-left w-full">
         {prettyTx(user.wallet, 4)}
       </div>
     ),
-    className: 'hidden lg:table-cell',
   },
   {
     id: 'balance',

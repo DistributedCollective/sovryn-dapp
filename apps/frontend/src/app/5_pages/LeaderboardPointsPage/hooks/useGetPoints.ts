@@ -9,15 +9,19 @@ import {
 import { User, UserPoints } from '../LeaderboardPointsPage.types';
 import usersPointsList from '../data/usersPoints.json';
 
+const data: UserPoints[] = usersPointsList;
+
 export const useGetPoints = (pageSize: number, page: number) => {
   const { account } = useAccount();
-  const usersPointsData: UserPoints[] = usersPointsList;
-  const startIndex = page * pageSize;
-  const endIndex = Math.min(startIndex + pageSize, usersPointsList.length);
+  const startIndex = useMemo(() => page * pageSize, [page, pageSize]);
+  const endIndex = useMemo(
+    () => Math.min(startIndex + pageSize, usersPointsList.length),
+    [startIndex, pageSize],
+  );
 
   const sortedUsers = useMemo(() => {
-    return usersPointsData.sort((a, b) => b.points - a.points);
-  }, [usersPointsData]);
+    return data.sort((a, b) => b.points - a.points);
+  }, []);
 
   const userIndex = useMemo(() => {
     return sortedUsers.findIndex(user =>
@@ -25,36 +29,38 @@ export const useGetPoints = (pageSize: number, page: number) => {
     );
   }, [sortedUsers, account]);
 
-  const userPoints: User[] = useMemo(() => {
+  const connectedWalletPoints: User[] = useMemo(() => {
     if (userIndex !== -1) {
-      const user = sortedUsers[userIndex];
+      const { wallet, points } = sortedUsers[userIndex];
       return [
         {
           id: userIndex + 1,
-          wallet: user.wallet,
-          spice: user.points,
-          extraSpice: user.points * EXTRA_SPICE_POINTS_MULTIPLIER,
-          runes: user.points * RUNES_POINTS_MULTIPLIER,
+          wallet,
+          spice: points,
+          extraSpice: points * EXTRA_SPICE_POINTS_MULTIPLIER,
+          runes: points * RUNES_POINTS_MULTIPLIER,
         },
       ];
     }
     return [];
   }, [sortedUsers, userIndex]);
 
-  const usersPoints: User[] = useMemo(
+  const points: User[] = useMemo(
     () =>
-      sortedUsers.slice(startIndex, endIndex).map((user, index) => ({
-        id: startIndex + index + 1,
-        wallet: user.wallet,
-        spice: user.points,
-        extraSpice: user.points * EXTRA_SPICE_POINTS_MULTIPLIER,
-        runes: user.points * RUNES_POINTS_MULTIPLIER,
-      })),
+      sortedUsers
+        .slice(startIndex, endIndex)
+        .map(({ wallet, points }, index) => ({
+          id: startIndex + index + 1,
+          wallet,
+          spice: points,
+          extraSpice: points * EXTRA_SPICE_POINTS_MULTIPLIER,
+          runes: points * RUNES_POINTS_MULTIPLIER,
+        })),
     [sortedUsers, startIndex, endIndex],
   );
 
   return {
-    usersPoints,
-    userPoints,
+    connectedWalletPoints,
+    points,
   };
 };

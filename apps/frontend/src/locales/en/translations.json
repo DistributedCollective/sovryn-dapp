@@ -1011,10 +1011,12 @@
         "claimWarning": "Please note that users claiming from the distributor contract prior to <0>2024-05-31 12:00:00 UTC</0> will not be eligible to Extra Spice, and claiming prior to <1>2024-06-30 12:00:00 UTC</1> will not be eligible to Rune points.",
         "aboutCampaign": "About Extra Spice and Runes campaign",
         "claimLp": "Claim LP tokens",
+        "connectWalletText": "Connect your wallet to see how many points you’ve got.",
+        "connectWalletCta": "Connect wallet",
         "table": {
             "leaderboard": "Leaderboard",
             "yourPosition": "Your position",
-            "position": "Position",
+            "participant": "Participant",
             "balance": "Balance",
             "spice": "Spice",
             "extraSpice": "Extra Spice",

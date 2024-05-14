@@ -117,12 +117,12 @@ describe('SmartRouter', () => {
     });
 
     it('returns all available entries', async () => {
-      await expect(router.getEntries(chainId)).resolves.toHaveLength(14);
+      await expect(router.getEntries(chainId)).resolves.toHaveLength(15);
     });
 
     it('returns all available destinations for entry token', async () => {
       await expect(router.getDestination(chainId, sov)).resolves.toHaveLength(
-        12,
+        13,
       );
     });
 

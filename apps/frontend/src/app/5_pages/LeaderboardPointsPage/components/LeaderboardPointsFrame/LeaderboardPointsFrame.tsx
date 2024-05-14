@@ -4,10 +4,10 @@ import { t } from 'i18next';
 
 import { Pagination, Paragraph, Table } from '@sovryn/ui';
 
+import { ConnectWalletMessage } from '../../../../2_molecules/ConnectWalletMessage/ConnectWalletMessage';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useHandlePagination } from '../../../../../hooks/useHandlePagination';
 import { translations } from '../../../../../locales/i18n';
-import { ConnectWalletMessage } from '../../../LeaderboardPage/components/Leaderboard/components/BaseTable/components/ConnectWalletMessage/ConnectWalletMessage';
 import {
   COLUMNS_CONFIG,
   MAXIMUM_USERS_TO_SHOW,
@@ -42,7 +42,12 @@ export const LeaderboardPointsFrame: FC = () => {
             dataAttribute="leaderboard-points-user-table"
             noData={
               !account ? (
-                <ConnectWalletMessage />
+                <ConnectWalletMessage
+                  text={t(translations.leaderboardPointsPage.connectWalletText)}
+                  ctaText={t(
+                    translations.leaderboardPointsPage.connectWalletCta,
+                  )}
+                />
               ) : (
                 t(translations.common.tables.noData)
               )

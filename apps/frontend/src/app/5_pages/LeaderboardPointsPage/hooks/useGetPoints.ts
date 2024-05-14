@@ -11,13 +11,8 @@ import usersPointsList from '../data/usersPoints.json';
 
 const data: UserPoints[] = usersPointsList;
 
-export const useGetPoints = (pageSize: number, page: number) => {
+export const useGetPoints = () => {
   const { account } = useAccount();
-  const startIndex = useMemo(() => page * pageSize, [page, pageSize]);
-  const endIndex = useMemo(
-    () => Math.min(startIndex + pageSize, usersPointsList.length),
-    [startIndex, pageSize],
-  );
 
   const sortedUsers = useMemo(() => {
     return data.sort((a, b) => b.points - a.points);
@@ -47,16 +42,14 @@ export const useGetPoints = (pageSize: number, page: number) => {
 
   const points: User[] = useMemo(
     () =>
-      sortedUsers
-        .slice(startIndex, endIndex)
-        .map(({ wallet, points }, index) => ({
-          id: startIndex + index + 1,
-          wallet,
-          spice: points,
-          extraSpice: points * EXTRA_SPICE_POINTS_MULTIPLIER,
-          runes: points * RUNES_POINTS_MULTIPLIER,
-        })),
-    [sortedUsers, startIndex, endIndex],
+      sortedUsers.map(({ wallet, points }, index) => ({
+        id: index + 1,
+        wallet,
+        spice: points,
+        extraSpice: points * EXTRA_SPICE_POINTS_MULTIPLIER,
+        runes: points * RUNES_POINTS_MULTIPLIER,
+      })),
+    [sortedUsers],
   );
 
   return {

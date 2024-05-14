@@ -1,10 +1,11 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
 import { Pagination, Paragraph, Table } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../hooks/useAccount';
+import { useHandlePagination } from '../../../../../hooks/useHandlePagination';
 import { translations } from '../../../../../locales/i18n';
 import { ConnectWalletMessage } from '../../../LeaderboardPage/components/Leaderboard/components/BaseTable/components/ConnectWalletMessage/ConnectWalletMessage';
 import {
@@ -13,30 +14,15 @@ import {
 } from '../../LeaderboardPointsPage.constants';
 import { generateRowTitle } from '../../LeaderboardPointsPage.utils';
 import { useGetPoints } from '../../hooks/useGetPoints';
-import styles from './LeaderboardPointsFrame.module.css';
 
 const pageSize = MAXIMUM_USERS_TO_SHOW;
 
 export const LeaderboardPointsFrame: FC = () => {
   const { account } = useAccount();
-  const [page, setPage] = useState(0);
+  const { connectedWalletPoints, points } = useGetPoints();
 
-  const { connectedWalletPoints, points } = useGetPoints(pageSize, page);
-
-  const onPageChange = useCallback(
-    (value: number) => {
-      if (points?.length < pageSize && value > page) {
-        return;
-      }
-      setPage(value);
-    },
-    [page, points],
-  );
-
-  const isNextButtonDisabled = useMemo(
-    () => points?.length < pageSize,
-    [points],
-  );
+  const { page, onPageChange, paginatedItems, isNextButtonDisabled } =
+    useHandlePagination(points, pageSize);
 
   return (
     <div className="flex flex-col">
@@ -67,18 +53,19 @@ export const LeaderboardPointsFrame: FC = () => {
         <div className="lg:bg-gray-80 lg:p-4 rounded">
           <Table
             columns={COLUMNS_CONFIG()}
-            rows={points}
+            rows={paginatedItems}
             rowTitle={generateRowTitle}
-            className={points.length > 0 && styles.table}
+            className="text-gray-10 lg:px-6 lg:py-4 text-xs"
             dataAttribute="leaderboard-points-users-table"
           />
           <Pagination
             page={page}
-            className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start"
+            totalItems={points.length}
+            className="lg:pb-6 mt-3 lg:mt-6 lg:max-w-3xl flex flex-wrap lg:flex-nowrap"
             onChange={onPageChange}
             itemsPerPage={pageSize}
             isNextButtonDisabled={isNextButtonDisabled}
-            dataAttribute="deposit-collaterals-pagination"
+            dataAttribute="leaderboard-points-users-pagination"
           />
         </div>
       </div>

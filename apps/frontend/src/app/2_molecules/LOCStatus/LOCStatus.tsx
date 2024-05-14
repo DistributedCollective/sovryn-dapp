@@ -42,7 +42,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
   const hasWithdrawalSurplus = withdrawalSurplus.gt(0);
   const showOpenLOC = !hasWithdrawalSurplus && collateral.gt(0);
 
-  const ratio = useMemo(() => cRatio.toNumber(), [cRatio]);
+  const ratio = useMemo(() => parseInt(cRatio.toString()), [cRatio]);
 
   return (
     <div

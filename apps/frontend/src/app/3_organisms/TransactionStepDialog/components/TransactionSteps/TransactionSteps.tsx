@@ -22,7 +22,6 @@ import { translations } from '../../../../../locales/i18n';
 import { findNativeAsset } from '../../../../../utils/asset';
 import { sleep } from '../../../../../utils/helpers';
 import { fromWei, toWei } from '../../../../../utils/math';
-import { signERC2612Permit } from '../../../../../utils/permit/permit';
 import {
   Transaction,
   TransactionReceiptStatus,
@@ -32,7 +31,6 @@ import {
 } from '../../TransactionStepDialog.types';
 import {
   isMessageSignatureRequest,
-  isPermitRequest,
   isSignTransactionDataRequest,
   isTransactionRequest,
   isTypedDataRequest,
@@ -264,8 +262,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
           await handleUpdates();
         } else if (isTypedDataRequest(request)) {
-          console.log('request', request);
-
           const signature = await request.signer._signTypedData(
             request.domain,
             request.types,
@@ -278,8 +274,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             request.values,
             signature,
           );
-
-          console.log('verifiedAddress', verifiedAddress);
 
           if (
             verifiedAddress.toLowerCase() !==
@@ -295,27 +289,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             status: TransactionReceiptStatus.success,
             request,
             response: signature,
-          });
-
-          await handleUpdates();
-        } else if (isPermitRequest(request)) {
-          const response = await signERC2612Permit(
-            request.signer,
-            request.token,
-            request.owner,
-            request.spender,
-            request.value,
-            request.deadline,
-            request.nonce,
-          );
-
-          transactions[i].onChangeStatus?.(StatusType.success);
-          transactions[i].onComplete?.(response);
-
-          updateReceipt(i, {
-            status: TransactionReceiptStatus.success,
-            request,
-            response,
           });
 
           await handleUpdates();

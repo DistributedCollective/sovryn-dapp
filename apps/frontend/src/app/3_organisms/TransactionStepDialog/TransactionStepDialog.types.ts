@@ -50,6 +50,9 @@ export enum TransactionType {
   signTypedData = 'signTypedData',
   signTransaction = 'signTransaction',
   signTransactionData = 'signTransactionData',
+  /**
+   * @deprecated Use `signTypedData` instead.
+   */
   signPermit = 'signPermit',
 }
 
@@ -67,6 +70,9 @@ export type SignTypedDataRequest = {
   values: Record<string, any>;
 };
 
+/**
+ * @deprecated Use TypedDataTransactionRequest instead
+ */
 export type SignPermitRequest = {
   type: TransactionType.signPermit;
   signer: JsonRpcSigner;
@@ -115,5 +121,5 @@ export enum TransactionReceiptStatus {
 export type TransactionReceipt = {
   status: TransactionReceiptStatus;
   request: TransactionRequest;
-  response?: string | PermitTransactionResponse;
+  response?: string;
 };

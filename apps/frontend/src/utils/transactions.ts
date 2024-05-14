@@ -15,6 +15,7 @@ import { ChainId } from '@sovryn/ethers-provider';
 import {
   PermitTransactionResponse,
   TypedDataTransactionRequest,
+  prepareERC2612Permit,
 } from '@sovryn/sdk';
 import { Decimal } from '@sovryn/utils';
 
@@ -69,9 +70,7 @@ type PreparePermitTransactionOptions = {
 };
 
 /**
- * @deprecated
- * @param param0
- * @returns
+ * @deprecated Use prepareTypedDataTransaction instead
  */
 export const preparePermitTransaction = async ({
   token = COMMON_SYMBOLS.DLLR,
@@ -83,6 +82,15 @@ export const preparePermitTransaction = async ({
   nonce,
 }: PreparePermitTransactionOptions): Promise<Transaction> => {
   const { address: tokenAddress, symbol } = findAsset(token, chain);
+  const { domain, types, values } = await prepareERC2612Permit(
+    signer.provider,
+    tokenAddress,
+    await signer.getAddress(),
+    spender,
+    value,
+    deadline,
+    nonce,
+  );
   return {
     title: t(translations.common.tx.signPermitTitle, {
       symbol,
@@ -91,24 +99,15 @@ export const preparePermitTransaction = async ({
       symbol,
     }),
     request: {
-      type: TransactionType.signPermit,
+      type: TransactionType.signTypedData,
       signer,
-      token: tokenAddress,
-      owner: await signer.getAddress(),
-      spender,
-      value,
-      deadline,
-      nonce,
+      domain,
+      types,
+      values,
     },
   };
 };
 
-/**
- * @deprecated
- * @param permit
- * @param signer
- * @returns
- */
 export const preparePermit2Transaction = async (
   permit: PermitTransferFrom,
   signer: JsonRpcSigner,
@@ -138,12 +137,32 @@ export const preparePermit2Transaction = async (
   };
 };
 
+const getTokenAddressInTypedData = ({
+  domain,
+  values,
+}: TypedDataTransactionRequest['typedData']) => {
+  // Permit2
+  if (values?.permitted?.token) {
+    return values.permitted.token;
+  }
+
+  // Permit
+  if (domain?.verifyingContract) {
+    return domain.verifyingContract;
+  }
+
+  return undefined;
+};
+
 export const prepareTypedDataTransaction = async (
-  { request, typedData }: TypedDataTransactionRequest,
+  { typedData }: TypedDataTransactionRequest,
   signer: JsonRpcSigner,
+  chainId = RSK_CHAIN_ID,
 ): Promise<Transaction> => {
-  // const { symbol } = findAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID);
-  const symbol = 'TEST'; // todo: detect from request
+  const tokenAddress = getTokenAddressInTypedData(typedData);
+  const symbol = tokenAddress
+    ? findAssetByAddress(tokenAddress, chainId)?.symbol
+    : undefined;
 
   return {
     title: t(translations.common.tx.signPermitTitle, {

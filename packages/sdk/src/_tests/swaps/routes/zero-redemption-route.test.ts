@@ -4,7 +4,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { zeroRedemptionSwapRoute } from '../../../swaps/smart-router/routes/zero-redemption-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
 import { makeChainFixture } from '../../_fixtures/chain';
-import { FAKE_PERMIT } from '../../_fixtures/permit';
+import { FAKE_PERMIT, FAKE_SIGNATURE } from '../../_fixtures/permit';
 import { makeTokenAddress } from '../../_fixtures/tokens';
 import { TEST_TIMEOUT } from '../../config';
 
@@ -86,10 +86,12 @@ describe('Zero Redemption Route', () => {
       await expect(
         route.permit(dllr, rbtc, constants.WeiPerEther, constants.AddressZero),
       ).resolves.toMatchObject({
-        token: dllr,
-        spender: expect.any(String),
-        owner: constants.AddressZero,
-        value: constants.WeiPerEther,
+        approvalRequired: false,
+        typedData: expect.objectContaining({
+          domain: expect.any(Object),
+          types: expect.any(Object),
+          values: expect.any(Object),
+        }),
       });
     });
 
@@ -110,7 +112,8 @@ describe('Zero Redemption Route', () => {
     it('builds swap tx data for DLLR -> RBTC', async () => {
       await expect(
         route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero, {
-          permit: FAKE_PERMIT,
+          typedDataValue: FAKE_PERMIT,
+          typedDataSignature: FAKE_SIGNATURE,
         }),
       ).resolves.toMatchObject({
         to: expect.any(String),

@@ -179,7 +179,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
     },
     async swap(entry, destination, amount, from, options, overrides) {
       if (await isValidPair(entry, destination)) {
-        if (!options?.typedDataRequest || !options?.typedDataSignature) {
+        if (!options?.typedDataValue || !options?.typedDataSignature) {
           throw makeError(
             `Permit2 is required for swap.`,
             SovrynErrorCode.UNKNOWN_ERROR,
@@ -188,17 +188,11 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
 
         const mocIntegration = await getMocIntegrationContract();
 
-        console.log(
-          'swap',
-          options?.typedDataRequest,
-          options?.typedDataSignature,
-        );
-
         return {
           to: mocIntegration.address,
           data: mocIntegration.interface.encodeFunctionData(
             'getDocFromDllrAndRedeemRbtcWithPermit2',
-            [options?.typedDataRequest, options?.typedDataSignature],
+            [options?.typedDataValue, options?.typedDataSignature],
           ),
           value: '0',
           gasLimit: 800_000,
@@ -216,8 +210,6 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
       if (await isNativeToken(entry)) {
         return undefined;
       }
-
-      console.log('approval for permit2', PERMIT2_ADDRESS);
 
       if (
         await hasEnoughAllowance(
@@ -241,12 +233,14 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
       };
     },
     permit: async (entry, destination, amount, from, overrides) => {
+      const mocIntegration = await getMocIntegrationContract();
+
       const permit: PermitTransferFrom = {
         permitted: {
           token: entry,
           amount: String(amount ?? constants.MaxUint256),
         },
-        spender: PERMIT2_ADDRESS,
+        spender: mocIntegration.address,
         nonce: BigNumber.from(Math.floor(Date.now() + Math.random() * 100)),
         // 1 hour from now
         deadline: Math.ceil((Date.now() + 3600_000) / 1000),
@@ -259,7 +253,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
       );
 
       return {
-        request: permit,
+        approvalRequired: true,
         typedData,
       };
     },

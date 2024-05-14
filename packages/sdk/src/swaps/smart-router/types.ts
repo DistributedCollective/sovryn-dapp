@@ -1,8 +1,13 @@
 import type { TransactionRequest } from '@ethersproject/abstract-provider';
 import type { ChainId } from '@sovryn/ethers-provider';
-import { PermitTransferFrom } from '@uniswap/permit2-sdk';
 
-import type { BigNumber, BigNumberish, providers } from 'ethers';
+import type {
+  BigNumber,
+  BigNumberish,
+  TypedDataDomain,
+  TypedDataField,
+  providers,
+} from 'ethers';
 
 export type SwapPairs = Map<string, string[]>;
 
@@ -11,11 +16,7 @@ export type Options = {
 };
 
 export type SwapOptions = {
-  /** @deprecated */
-  permit?: PermitTransactionResponse;
-  /** @deprecated */
-  permitTransferFrom?: PermitTransferFrom;
-  typedDataRequest?: TypedDataTransactionRequest['request'];
+  typedDataValue?: TypedDataTransactionRequest['typedData']['values'];
   typedDataSignature?: string;
 } & Options;
 
@@ -72,33 +73,15 @@ export type SwapRoute = {
 
 export type SwapRouteFunction = (provider: providers.Provider) => SwapRoute;
 
-/**
- * @deprecated Use TypedDataTransactionRequest instead
- */
-export type PermitTransactionRequest = {
-  /**
-   * @deprecated Use 'typedData' instead
-   */
-  token: string;
-  spender: string;
-  owner: string;
-  value?: BigNumberish;
-  deadline?: number;
-  nonce?: number;
-};
-
 export type TypedDataTransactionRequest = {
-  request: any;
+  approvalRequired: boolean;
   typedData: {
-    domain: any;
-    types: Record<string, any>;
-    values: any;
+    domain: TypedDataDomain;
+    types: Record<string, Array<TypedDataField>>;
+    values: Record<string, any>;
   };
 };
 
-/**
- * @deprecated
- */
 export type PermitTransactionResponse = {
   r: string;
   s: string;

@@ -11,11 +11,12 @@ export const FIXED_RATE_ROUTES = ['MyntBasset', 'MyntFixedRate'];
 export const FIXED_MYNT_RATE = '0.004723550439442834'; // We need it here as well because ConvertPage slightly rounds maximum price
 
 export const SWAP_ROUTES = [
-  // smartRoutes.ammSwapRoute,
-  // smartRoutes.myntBassetRoute,
-  // smartRoutes.myntFixedRateRoute,
+  smartRoutes.ammSwapRoute,
+  smartRoutes.myntBassetRoute,
+  smartRoutes.myntFixedRateRoute,
   smartRoutes.mocIntegrationSwapRoute,
-  // smartRoutes.ambientRoute,
+  smartRoutes.ambientRoute,
+  smartRoutes.zeroRedemptionSwapRoute,
 ];
 
 export const SMART_ROUTER_RSK = new SmartRouter(

@@ -139,30 +139,7 @@ export const useHandleConversion = (
       getAssetData(destinationToken, currentChainId),
     ]);
 
-    const approveTxData = await route.approve(
-      sourceTokenDetails.address,
-      destinationTokenDetails.address,
-      weiAmount,
-      account,
-    );
-
     const transactions: Transaction[] = [];
-
-    if (approveTxData && approveTxData.to && approveTxData.data) {
-      transactions.push({
-        title: t(translations.convertPage.txDialog.approve, {
-          asset: getTokenDisplayName(sourceToken),
-        }),
-        request: {
-          type: TransactionType.signTransactionData,
-          signer: signer,
-          to: approveTxData.to,
-          data: approveTxData.data,
-          gasLimit: approveTxData.gasLimit ?? GAS_LIMIT.APPROVE,
-        },
-        onComplete,
-      });
-    }
 
     const permitTxData = await route.permit(
       sourceTokenDetails.address,
@@ -177,21 +154,46 @@ export const useHandleConversion = (
       );
     }
 
+    if (!permitTxData || permitTxData.approvalRequired) {
+      const approveTxData = await route.approve(
+        sourceTokenDetails.address,
+        destinationTokenDetails.address,
+        weiAmount,
+        account,
+      );
+
+      if (approveTxData) {
+        transactions.push({
+          title: t(translations.convertPage.txDialog.approve, {
+            asset: getTokenDisplayName(sourceToken),
+          }),
+          request: {
+            type: TransactionType.signTransactionData,
+            signer: signer,
+            to: approveTxData.to!,
+            data: approveTxData.data!,
+            gasLimit: approveTxData.gasLimit ?? GAS_LIMIT.APPROVE,
+          },
+          onComplete,
+        });
+      }
+    }
+
     const txData = await route.swap(
       sourceTokenDetails.address,
       destinationTokenDetails.address,
       weiAmount,
       account,
       {
-        typedDataRequest: permitTxData
-          ? permitTxData.request
+        typedDataValue: permitTxData
+          ? permitTxData.typedData.values
           : EMPTY_PERMIT_TRANSFER_FROM,
         typedDataSignature: DEFAULT_SIGNATURE,
         slippage: Number(slippageTolerance) * 100,
       },
     );
 
-    if (txData && txData.to && txData.data) {
+    if (txData) {
       transactions.push({
         title: t(translations.convertPage.txDialog.convert, {
           asset: getTokenDisplayName(sourceToken),
@@ -199,8 +201,8 @@ export const useHandleConversion = (
         request: {
           type: TransactionType.signTransactionData,
           signer: signer,
-          to: txData.to,
-          data: txData.data,
+          to: txData.to!,
+          data: txData.data!,
           value: txData.value,
           gasLimit: txData?.gasLimit ?? GAS_LIMIT.CONVERT,
           gasPrice: txData?.gasPrice?.toString(),
@@ -215,7 +217,7 @@ export const useHandleConversion = (
                 weiAmount,
                 account,
                 {
-                  typedDataRequest: permitTxData.request,
+                  typedDataValue: permitTxData.typedData.values,
                   typedDataSignature: res as string,
                   slippage: Number(slippageTolerance) * 100,
                 },

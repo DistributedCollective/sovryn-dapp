@@ -368,6 +368,24 @@ export const bobMainnetAmbientPoolConfigs = [
     amountInBase: '2.94118966395473',
     lpConduit: '0xE668D03C31f78713952953cE6f345b1D0137B754',
   },
+  {
+    baseToken: {
+      tokenSymbol: 'POWA',
+      tokenDeploymentName: 'POWA',
+      isNativeToken: false,
+      tokenAddress: '0xd0C2f08a873186db5cFB7b767dB62BEF9e495BFF',
+    },
+    quoteToken: {
+      tokenSymbol: 'SOV',
+      tokenDeploymentName: 'SOV',
+      isNativeToken: false,
+      tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+    },
+    price: 0.00000150289017341,
+    poolIdx: 420,
+    amountInBase: '19230769230.7692',
+    lpConduit: '0xbFB1bF6dCc02baCeB8C4c336457798c9b4ED1225',
+  },
 ];
 
 export const bobMainnetConcentratedPoolConfigs = [

@@ -127,7 +127,7 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () => (await import('../../abis/RuneBridge.json')).default,
   },
   merkleDistributor: {
-    address: '0xcce97e181a355939248afe2aab9587b46de56396',
+    address: '0x8510fe153b9e6fabee709d75bf0a864cd27d7593',
     getAbi: async () =>
       (await import('../../abis/merkleDistributor.json')).default,
   },

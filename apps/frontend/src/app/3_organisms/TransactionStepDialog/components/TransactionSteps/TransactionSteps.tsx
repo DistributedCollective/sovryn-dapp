@@ -267,7 +267,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           const signature = await request.signer._signTypedData(
             request.domain,
             request.types,
-            request.value,
+            request.values,
           );
 
           transactions[i].onChangeStatus?.(StatusType.success);

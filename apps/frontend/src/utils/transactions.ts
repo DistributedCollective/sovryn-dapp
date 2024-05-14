@@ -12,7 +12,10 @@ import { t } from 'i18next';
 
 import { getAssetData } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
-import { PermitTransactionResponse } from '@sovryn/sdk';
+import {
+  PermitTransactionResponse,
+  TypedDataTransactionRequest,
+} from '@sovryn/sdk';
 import { Decimal } from '@sovryn/utils';
 
 import { RSK_CHAIN_ID } from '../config/chains';
@@ -65,6 +68,11 @@ type PreparePermitTransactionOptions = {
   chain?: ChainId;
 };
 
+/**
+ * @deprecated
+ * @param param0
+ * @returns
+ */
 export const preparePermitTransaction = async ({
   token = COMMON_SYMBOLS.DLLR,
   chain = RSK_CHAIN_ID,
@@ -95,6 +103,12 @@ export const preparePermitTransaction = async ({
   };
 };
 
+/**
+ * @deprecated
+ * @param permit
+ * @param signer
+ * @returns
+ */
 export const preparePermit2Transaction = async (
   permit: PermitTransferFrom,
   signer: JsonRpcSigner,
@@ -118,7 +132,31 @@ export const preparePermit2Transaction = async (
       type: TransactionType.signTypedData,
       domain,
       types,
-      value: values,
+      values: values,
+      signer,
+    },
+  };
+};
+
+export const prepareTypedDataTransaction = async (
+  { request, typedData }: TypedDataTransactionRequest,
+  signer: JsonRpcSigner,
+): Promise<Transaction> => {
+  // const { symbol } = findAsset(COMMON_SYMBOLS.DLLR, RSK_CHAIN_ID);
+  const symbol = 'TEST'; // todo: detect from request
+
+  return {
+    title: t(translations.common.tx.signPermitTitle, {
+      symbol,
+    }),
+    subtitle: t(translations.common.tx.signPermitSubtitle, {
+      symbol,
+    }),
+    request: {
+      type: TransactionType.signTypedData,
+      domain: typedData.domain,
+      types: typedData.types,
+      values: typedData.values,
       signer,
     },
   };

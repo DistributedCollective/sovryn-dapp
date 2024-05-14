@@ -11,9 +11,12 @@ export type Options = {
 };
 
 export type SwapOptions = {
+  /** @deprecated */
   permit?: PermitTransactionResponse;
+  /** @deprecated */
   permitTransferFrom?: PermitTransferFrom;
-  signature?: string;
+  typedDataRequest?: TypedDataTransactionRequest['request'];
+  typedDataSignature?: string;
 } & Options;
 
 export type SwapRoute = {
@@ -58,8 +61,8 @@ export type SwapRoute = {
     destination: string,
     amount: BigNumberish,
     from: string,
-    overrides?: Partial<PermitTransactionRequest>,
-  ) => Promise<PermitTransactionRequest | undefined>;
+    overrides?: Partial<TypedDataTransactionRequest>,
+  ) => Promise<TypedDataTransactionRequest | undefined>;
 
   // todo: add functions overriding some values (like changing zero address with wrbtc)
   onPrepareTransaction?: (
@@ -69,7 +72,13 @@ export type SwapRoute = {
 
 export type SwapRouteFunction = (provider: providers.Provider) => SwapRoute;
 
+/**
+ * @deprecated Use TypedDataTransactionRequest instead
+ */
 export type PermitTransactionRequest = {
+  /**
+   * @deprecated Use 'typedData' instead
+   */
   token: string;
   spender: string;
   owner: string;
@@ -78,6 +87,18 @@ export type PermitTransactionRequest = {
   nonce?: number;
 };
 
+export type TypedDataTransactionRequest = {
+  request: any;
+  typedData: {
+    domain: any;
+    types: Record<string, any>;
+    values: any;
+  };
+};
+
+/**
+ * @deprecated
+ */
 export type PermitTransactionResponse = {
   r: string;
   s: string;

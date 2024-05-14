@@ -64,7 +64,7 @@ export type SignTypedDataRequest = {
   signer: JsonRpcSigner;
   domain: TypedDataDomain;
   types: Record<string, Array<TypedDataField>>;
-  value: Record<string, any>;
+  values: Record<string, any>;
 };
 
 export type SignPermitRequest = {

@@ -78,7 +78,7 @@ export const useClaimPowa = (onComplete?: () => void) => {
         .catch(() => [])) as number[];
     }
 
-    return claims.filter(c => unclaimedIndexes.includes(c.index));
+    return claims.filter(c => unclaimedIndexes?.includes(c.index));
   }, [contract, findProofs]);
 
   const claim = useCallback(async () => {

@@ -1,5 +1,14 @@
 # @sovryn/sdk
 
+## 1.0.3
+
+### Patch Changes
+
+- 312a7f0d: SOV-4075: POWA/RBTC Pool
+- Updated dependencies [b702399f]
+- Updated dependencies [312a7f0d]
+  - @sovryn/contracts@1.1.2
+
 ## 1.0.2
 
 ### Patch Changes

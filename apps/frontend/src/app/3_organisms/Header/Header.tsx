@@ -18,6 +18,7 @@ import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
 import { isBobChain } from '../../../utils/chain';
+import { isRskChain } from '../../../utils/chain';
 import { menuItemsMapping } from './Header.constants';
 import { BridgeMenuItem } from './components/BridgeMenuItem/BridgeMenuItem';
 import { NavItem } from './components/NavItem/NavItem';
@@ -92,9 +93,17 @@ export const Header: FC = () => {
           </div>
         }
         extraContent={
-          <>
+          <div className="flex space-x-4 items-center">
+            {isRskChain(chainId) && (
+              <Button
+                text={t(translations.header.nav.claimPowa)}
+                style={ButtonStyle.primary}
+                className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
+                onClick={() => navigate('/claim-POWA')}
+              />
+            )}
             {account && <BridgeMenuItem dataAttribute="dapp-header-bridges" />}
-          </>
+          </div>
         }
       />
     </>

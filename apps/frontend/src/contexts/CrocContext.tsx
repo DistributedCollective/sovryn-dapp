@@ -7,11 +7,12 @@ import React, {
   useState,
 } from 'react';
 
-import { CrocEnv } from '@sovryn/sdex';
 import { getProvider } from '@sovryn/ethers-provider';
+import { CrocEnv } from '@sovryn/sdex';
 
 import { useAccount } from '../hooks/useAccount';
 import { useCurrentChain } from '../hooks/useChainStore';
+import { isBobChain } from '../utils/chain';
 
 type CrocContextValue = {
   croc?: CrocEnv;
@@ -31,7 +32,7 @@ export const CrocContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [croc, setCroc] = useState(defaultContextValue.croc);
 
   useEffect(() => {
-    if (!croc && account) {
+    if (!croc && account && isBobChain(chainId)) {
       setCroc(new CrocEnv(getProvider(chainId), signer));
     }
   }, [croc, signer, account, chainId]);

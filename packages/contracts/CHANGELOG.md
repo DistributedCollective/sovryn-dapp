@@ -1,5 +1,12 @@
 # @sovryn/contracts
 
+## 1.1.2
+
+### Patch Changes
+
+- b702399f: SOV-4057: POWA Claim Page
+- 312a7f0d: SOV-4075: POWA/RBTC Pool
+
 ## 1.1.1
 
 ### Patch Changes

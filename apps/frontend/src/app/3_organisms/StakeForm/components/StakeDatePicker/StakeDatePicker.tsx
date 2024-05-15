@@ -26,6 +26,7 @@ export const StakeDatePicker: FC<StakeDatePickerProps> = ({
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
   const [filteredDates, setFilteredDates] = useState<FilteredDate[]>([]);
+
   const { kickoffTs } = useGetKickoffTs();
   const currentDate = useMemo(() => new Date(), []);
   const currentUserOffset = useMemo(
@@ -58,8 +59,11 @@ export const StakeDatePicker: FC<StakeDatePickerProps> = ({
         )?.key;
 
         const timestamp = date
-          ? Number(dayjs(date).subtract(currentUserOffset, 'hour')) / MS
+          ? Number(
+              dayjs(date).subtract(currentUserOffset, 'hour').add(1, 'hour'),
+            ) / MS
           : 0;
+
         onChange(timestamp);
       }
     },
@@ -88,13 +92,16 @@ export const StakeDatePicker: FC<StakeDatePickerProps> = ({
   const onMaxDurationClick = useCallback(() => {
     const maxDate = filteredDates[filteredDates.length - 1];
     if (maxDate) {
-      const timestamp = Number(maxDate.key) / MS;
+      const timestamp =
+        Number(
+          dayjs(maxDate.key).subtract(currentUserOffset, 'hour').add(1, 'hour'),
+        ) / MS;
       setSelectedYear(timestamp ? maxDate.date.getFullYear().toString() : '');
       setSelectedMonth(timestamp ? Month[maxDate.date.getMonth()] : '');
       setSelectedDay(timestamp ? maxDate.date.getDate().toString() : '');
       onChange(timestamp);
     }
-  }, [filteredDates, onChange]);
+  }, [currentUserOffset, filteredDates, onChange]);
 
   useEffect(() => {
     setFilteredDates(
@@ -109,7 +116,8 @@ export const StakeDatePicker: FC<StakeDatePickerProps> = ({
   useEffect(() => {
     if (!kickoffTs) return;
 
-    const contractOffset = new Date().getTimezoneOffset() / 60;
+    const contractDate = dayjs(kickoffTs * MS).toDate();
+    const contractOffset = contractDate.getTimezoneOffset() / 60;
     const contractDateDeployed = dayjs(kickoffTs * MS).add(
       contractOffset,
       'hour',

@@ -506,7 +506,7 @@
             "runes_BOB": {
                 "title": "Trade Runes",
                 "description": "The hottest tokens now trading on Sovryn.",
-                "action": "Coming soon"
+                "action": "Trade Runes"
             },
             "earnYield_BOB": {
                 "title": "Passive Yield",
@@ -537,8 +537,8 @@
                 "cta": "Learn More"
             },
             "runesBridge": {
-                "title": "RUNES ARE COMING",
-                "description": "Runes will soon be tradeable on mainnet! Runes bridge is being prepared to go live. Stay tuned!",
+                "title": "RUNES ARE HERE!",
+                "description": "Runes are now tradeable on mainnet! Runes bridge is live!",
                 "cta": "Learn more about Runes"
             },
             "sovrynIsLiveOnBob": {
@@ -1008,14 +1008,14 @@
         "meta": {
             "title": "Extra Spice & Runes Leaderboard - Sovryn"
         },
-        "title": "Extra Spice & Runes Leaderboard",
+        "title": "Extra Spice & Runes Season 1 Leaderboard",
         "claimWarning": "Please note that users claiming from the distributor contract prior to <0>2024-05-31 12:00:00 UTC</0> will not be eligible to Extra Spice, and claiming prior to <1>2024-06-30 12:00:00 UTC</1> will not be eligible to Rune points.",
         "aboutCampaign": "About Extra Spice and Runes campaign",
         "claimLp": "Claim LP tokens",
         "connectWalletText": "Connect your wallet to see how many points you’ve got.",
         "connectWalletCta": "Connect wallet",
         "table": {
-            "leaderboard": "Leaderboard",
+            "leaderboard": "Season 1 Leaderboard",
             "yourPosition": "Your position",
             "participant": "Participant",
             "balance": "Balance",
@@ -1959,10 +1959,10 @@
         "longDescription": "Your deposits were transferred into the Sovryn AMM pools on BOB. Deposit represents 50% of the value of your original token and 50% in SOV. Trading fees will begin accruing immediately.",
         "eSovDescription": "For eSOV Depositors:<br/>If you deposited eSOV via Sovryn’s referral link, please move your eSOV to BOB and stake them in Sovryn on BOB. This action must be done by <0>2024-05-16 12:00:00 UTC</0> to be eligible for Extra Spice. <1>Read more</1>",
         "claimWarning": "Please note that users claiming from the distributor contract prior to <0>2024-05-31 12:00:00 UTC</0> will not be eligible to Extra Spice, and claiming prior to <1>2024-06-30 12:00:00 UTC</1> will not be eligible to Rune points.",
-        "checkLeaderboard": "Check leaderboard",
+        "checkLeaderboard": "Check Season 1 leaderboard",
         "disclaimer": "I understand that by claiming deposits now I will lose eligibility for the additional rewards",
         "descriptionValues": {
-            "amm": "Marked Making page"
+            "amm": "Market Making page"
         },
         "originalDeposit": "Original deposit",
         "claimableTitle": "AMM pool",

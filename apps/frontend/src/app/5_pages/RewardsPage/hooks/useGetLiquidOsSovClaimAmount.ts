@@ -4,6 +4,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { MS } from '../../../../constants/general';
 import { useAccount } from '../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
 import { useGetLockDate } from '../../StakePage/components/StakesFrame/hooks/useGetLockDate';
 
@@ -15,7 +16,8 @@ export const useGetLiquidOsSovClaimAmount = () => {
   });
 
   const { account } = useAccount();
-  const stakingRewardsOs = useGetProtocolContract('stakingRewardsOs');
+  const chainId = useCurrentChain();
+  const stakingRewardsOs = useGetProtocolContract('stakingRewardsOs', chainId);
   const now = useMemo(() => Math.ceil(Date.now() / MS), []);
   const { lockDate } = useGetLockDate(now);
 

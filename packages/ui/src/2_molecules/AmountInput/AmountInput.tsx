@@ -15,7 +15,7 @@ import { HelperButton } from '../HelperButton/HelperButton';
 import styles from './AmountInput.module.css';
 
 const MAX_DECIMALS = 18;
-const MAX_VALUE = 999999999;
+const MAX_VALUE = Number.MAX_VALUE;
 
 export enum AmountInputVariant {
   large = 'large',
@@ -78,7 +78,7 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
           unformattedNumberValue = String(maxAmount);
         }
 
-        if (Number(unformattedNumberValue) >= MAX_VALUE + 1) {
+        if (Number(unformattedNumberValue) >= MAX_VALUE) {
           unformattedNumberValue = String(MAX_VALUE);
         }
 

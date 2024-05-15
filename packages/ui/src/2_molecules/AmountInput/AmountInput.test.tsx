@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import React from 'react';
@@ -105,19 +105,6 @@ describe('AmountInput', () => {
 
     const amountInput = getByTestId('test');
     expect(amountInput).toHaveProperty('lang', 'sk-SK');
-  });
-
-  test('does not allow to enter more than 9 whole numbers', async () => {
-    const { getByTestId } = render(
-      <AmountInput value={2} dataAttribute="test" />,
-    );
-
-    const amountInput = getByTestId('test');
-
-    userEvent.clear(amountInput);
-    userEvent.paste(amountInput, '10000000000000');
-
-    await waitFor(() => expect(amountInput).toHaveValue('999999999'));
   });
 
   test('trims unnecessary zeros at the end on blur', async () => {

@@ -1,5 +1,30 @@
 # @sovryn/sdk
 
+## 1.0.3
+
+### Patch Changes
+
+- 312a7f0d: SOV-4075: POWA/RBTC Pool
+- Updated dependencies [b702399f]
+- Updated dependencies [312a7f0d]
+  - @sovryn/contracts@1.1.2
+
+## 1.0.2
+
+### Patch Changes
+
+- d9654336: fix: ambient smart router
+
+## 1.0.1
+
+### Patch Changes
+
+- b566d2c1: fix: routers
+- Updated dependencies [a9f57ae0]
+- Updated dependencies [309ce36e]
+  - @sovryn/sdex@0.3.11
+  - @sovryn/contracts@1.1.1
+
 ## 1.0.0
 
 ### Minor Changes

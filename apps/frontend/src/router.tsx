@@ -70,6 +70,10 @@ const ClaimLpPage = loadable(
   () => import('./app/5_pages/ClaimLpPage/ClaimLpPage'),
 );
 
+const ClaimPowaPage = loadable(
+  () => import('./app/5_pages/ClaimPowaPage/ClaimPowaPage'),
+);
+
 const routes = [
   {
     path: '/',
@@ -113,11 +117,7 @@ const routes = [
       },
       {
         path: '/earn/market-making',
-        element: (
-          <CrocContextProvider>
-            <MarketMakingPage />
-          </CrocContextProvider>
-        ),
+        element: <MarketMakingPage />,
       },
       {
         path: '/earn',
@@ -164,6 +164,10 @@ const routes = [
       {
         path: '/claim-lp',
         element: <ClaimLpPage />,
+      },
+      {
+        path: '/claim-POWA',
+        element: <ClaimPowaPage />,
       },
     ],
   },

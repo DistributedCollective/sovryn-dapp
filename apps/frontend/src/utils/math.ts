@@ -27,7 +27,9 @@ export const toWei = (
     }
 
     if (isBigNumberish(value)) {
-      return BigNumber.from(value).mul(BigNumber.from(10).pow(unitName));
+      return BigNumber.from(String(value)).mul(
+        BigNumber.from(10).pow(unitName),
+      );
     } else {
       //can't just reuse same logic above, as values in scientific notation are unrecognised by BigNumber
       //so need to convert to weis before passing

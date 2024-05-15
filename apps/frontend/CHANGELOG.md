@@ -1,5 +1,29 @@
 # frontend
 
+## 1.1.2
+
+### Patch Changes
+
+- b702399f: SOV-4057: POWA Claim Page
+- 312a7f0d: SOV-4075: POWA/RBTC Pool
+- 98b527d4: Fix claim page date
+- Updated dependencies [b702399f]
+- Updated dependencies [312a7f0d]
+  - @sovryn/contracts@1.1.2
+  - @sovryn/sdk@1.0.3
+
+## 1.1.1
+
+### Patch Changes
+
+- b566d2c1: fix: routers
+- Updated dependencies [a9f57ae0]
+- Updated dependencies [309ce36e]
+- Updated dependencies [b566d2c1]
+  - @sovryn/sdex@0.3.11
+  - @sovryn/contracts@1.1.1
+  - @sovryn/sdk@1.0.1
+
 ## 1.1.0
 
 ### Minor Changes

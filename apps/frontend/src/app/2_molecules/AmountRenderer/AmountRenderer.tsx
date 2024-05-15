@@ -41,6 +41,7 @@ type AmountRendererProps = {
   showRoundingPrefix?: boolean;
   trigger?: TooltipTrigger;
   decimals?: number;
+  asIf?: boolean;
 };
 
 export const AmountRenderer: FC<AmountRendererProps> = ({
@@ -55,13 +56,16 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   showRoundingPrefix = true,
   trigger = TooltipTrigger.click,
   decimals = 18,
+  asIf,
 }) => {
   const adjustedValue = useMemo(
     () =>
       !value || value === 0 || value === '0'
         ? Decimal.ZERO
+        : asIf
+        ? Decimal.from(value)
         : Decimal.from(value).asUnits(decimals),
-    [decimals, value],
+    [asIf, decimals, value],
   );
 
   const { addNotification } = useNotificationContext();

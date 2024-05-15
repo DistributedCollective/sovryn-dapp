@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { formatUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import { prettyTx } from '@sovryn/ui';
@@ -15,20 +14,44 @@ import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import { generateTransactionType } from './BobConversionsHistoryFrame.utils';
 
-const renderAmount = (
-  value: string,
-  pool: { base: string; quote: string },
-  inBaseQty: boolean,
-) => {
+export const getConversionAmount = (swap: Swap, base: boolean) => {
+  const isBaseFlowNegative = swap.baseFlow.startsWith('-');
+
   const token = findAssetByAddress(
-    inBaseQty ? pool.base : pool.quote,
+    base
+      ? isBaseFlowNegative
+        ? swap.pool.quote
+        : swap.pool.base
+      : isBaseFlowNegative
+      ? swap.pool.base
+      : swap.pool.quote,
     getCurrentChain(),
   );
-  const amount = decimalic(formatUnits(value, token?.decimals || 18)).abs();
+  return {
+    token,
+    amount: decimalic(
+      base
+        ? isBaseFlowNegative
+          ? swap.quoteFlow
+          : swap.baseFlow
+        : isBaseFlowNegative
+        ? swap.baseFlow
+        : swap.quoteFlow,
+    )
+      .abs()
+      .toUnits(token?.decimals ?? 18),
+  };
+};
+
+const renderAmount = (swap: Swap, base: boolean) => {
+  const { token, amount } = getConversionAmount(swap, base);
   return (
     <AmountRenderer
       value={amount}
-      suffix={token?.symbol ?? prettyTx(inBaseQty ? pool.base : pool.quote)}
+      suffix={
+        token?.symbol ?? prettyTx(base ? swap.pool.base : swap.pool.quote)
+      }
+      asIf
     />
   );
 };
@@ -48,22 +71,12 @@ export const COLUMNS_CONFIG = [
   {
     id: 'sent',
     title: t(translations.conversionsHistory.table.sent),
-    cellRenderer: (item: Swap) =>
-      renderAmount(
-        item.inBaseQty ? item.baseFlow : item.quoteFlow,
-        item.pool,
-        item.inBaseQty,
-      ),
+    cellRenderer: (item: Swap) => renderAmount(item, true),
   },
   {
     id: 'received',
     title: t(translations.conversionsHistory.table.received),
-    cellRenderer: (item: Swap) =>
-      renderAmount(
-        item.inBaseQty ? item.quoteFlow : item.baseFlow,
-        item.pool,
-        !item.inBaseQty,
-      ),
+    cellRenderer: (item: Swap) => renderAmount(item, false),
   },
   {
     id: 'transactionId',

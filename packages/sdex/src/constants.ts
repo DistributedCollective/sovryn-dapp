@@ -43,7 +43,7 @@ const BOB_CHAIN: ChainSpec = {
   nodeUrl: 'https://rpc.gobob.xyz',
   addrs: {
     dex: '0xe5bc234A484A912A61Aa74501960cFc202e773dA',
-    query: '0xf1e7167A0b085B52A8ad02A5Cc48eD2027b8B577',
+    query: '0x1dff4Ff93dF17Ad6F44E23368341CcFb8fB8B675',
     impact: '0x30B2a8810B091D1DbE4aAA4905141f815586e274',
     router: '0x9f93D654a1cdC128c27F99Af5452b26d8002e607',
     routerBypass: '0x7b96cC2256e94348a678B554e2fC648D13b1560E',
@@ -68,7 +68,7 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
   // wsUrl: 'wss://sepolia-dencun.rpc.gobob.xyz/wss',
   addrs: {
     dex: '0xA86F239490bd35923eCBD578C2A8989803294bee',
-    query: '0x9d9Fd4127E988B95E25F058cf11B274ffA98801E',
+    query: '0x35a4dd53C1AEd1AFD48659175ab3981f3C39493F',
     impact: '0xdB0Bb1e4b7aA5a747E17957FC66C772cea089ec5',
     router: '0x3F1cE244F286e9e16B68cd117b07A7c4a8bf815e',
     routerBypass: '0xAeb44C43Edd3a13921C626ACE5515deB243A5653',

@@ -36,6 +36,8 @@ export const Input: FC<InputProps> = ({
         value={text}
         className="text-sm font-medium text-gray-10"
         decimals={decimals}
+        precision={9}
+        asIf
       />
       <Button
         text="+"

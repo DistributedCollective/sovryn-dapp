@@ -13,11 +13,9 @@ import { Decimal } from '@sovryn/utils';
 
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../hooks/useBlockNumber';
-import { useCurrentChain } from '../../../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
-import { getChainById } from '../../../../../../../utils/chain';
 import { useCheckPoolMaintenance } from '../../../../hooks/useCheckPoolMaintenance';
 import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
@@ -28,10 +26,6 @@ type PoolsTableActionProps = {
 };
 
 export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
-  const chainId = useCurrentChain();
-  const chain = useMemo(() => getChainById(chainId), [chainId]);
-  const isBobChain = useMemo(() => chain?.label === 'BOB', [chain?.label]);
-
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
 
@@ -116,7 +110,7 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
                   style={ButtonStyle.primary}
                   size={ButtonSize.small}
                   text={
-                    isBobChain && pool.assetA === COMMON_SYMBOLS.SOV
+                    pool.assetA === COMMON_SYMBOLS.SOV
                       ? t(translations.common.withdraw)
                       : t(translations.common.deposit)
                   }
@@ -139,16 +133,13 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
                 onClick={handleAdjustClick}
               />
             )}
+            <p>{actionLocked && 'action locked'}</p>
           </>
         }
       />
 
       <AdjustAndDepositModal
-        isOpen={
-          isModalOpen &&
-          isBobChain &&
-          ![COMMON_SYMBOLS.DLLR, COMMON_SYMBOLS.SOV].includes(pool.assetA)
-        }
+        isOpen={isModalOpen}
         onClose={handleClose}
         pool={pool}
         isInitialDeposit={isInitialDeposit}

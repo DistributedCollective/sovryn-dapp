@@ -117,11 +117,7 @@ const routes = [
       },
       {
         path: '/earn/market-making',
-        element: (
-          <CrocContextProvider>
-            <MarketMakingPage />
-          </CrocContextProvider>
-        ),
+        element: <MarketMakingPage />,
       },
       {
         path: '/earn',

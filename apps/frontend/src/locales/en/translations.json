@@ -1004,6 +1004,26 @@
             }
         }
     },
+    "leaderboardPointsPage": {
+        "meta": {
+            "title": "Extra Spice & Runes Leaderboard - Sovryn"
+        },
+        "title": "Extra Spice & Runes Leaderboard",
+        "claimWarning": "Please note that users claiming from the distributor contract prior to <0>2024-05-31 12:00:00 UTC</0> will not be eligible to Extra Spice, and claiming prior to <1>2024-06-30 12:00:00 UTC</1> will not be eligible to Rune points.",
+        "aboutCampaign": "About Extra Spice and Runes campaign",
+        "claimLp": "Claim LP tokens",
+        "connectWalletText": "Connect your wallet to see how many points you’ve got.",
+        "connectWalletCta": "Connect wallet",
+        "table": {
+            "leaderboard": "Leaderboard",
+            "yourPosition": "Your position",
+            "participant": "Participant",
+            "balance": "Balance",
+            "spice": "Spice",
+            "extraSpice": "Extra Spice",
+            "runes": "Runes"
+        }
+    },
     "runeBridge": {
         "mainScreen": {
             "title": "Rune Bridge",
@@ -1939,6 +1959,7 @@
         "longDescription": "Your deposits were transferred into the Sovryn AMM pools on BOB. Deposit represents 50% of the value of your original token and 50% in SOV. Trading fees will begin accruing immediately.",
         "eSovDescription": "For eSOV Depositors:<br/>If you deposited eSOV via Sovryn’s referral link, please move your eSOV to BOB and stake them in Sovryn on BOB. This action must be done by <0>2024-05-16 12:00:00 UTC</0> to be eligible for Extra Spice. <1>Read more</1>",
         "claimWarning": "Please note that users claiming from the distributor contract prior to <0>2024-05-31 12:00:00 UTC</0> will not be eligible to Extra Spice, and claiming prior to <1>2024-06-30 12:00:00 UTC</1> will not be eligible to Rune points.",
+        "checkLeaderboard": "Check leaderboard",
         "disclaimer": "I understand that by claiming deposits now I will lose eligibility for the additional rewards",
         "descriptionValues": {
             "amm": "Marked Making page"

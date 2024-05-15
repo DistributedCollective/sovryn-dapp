@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { Table, Pagination } from '@sovryn/ui';
 
+import { ConnectWalletMessage } from '../../../../../../2_molecules/ConnectWalletMessage/ConnectWalletMessage';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useHandlePagination } from '../../../../../../../hooks/useHandlePagination';
 import { translations } from '../../../../../../../locales/i18n';
@@ -15,7 +16,6 @@ import {
 } from './BaseTable.constants';
 import { TableType } from './BaseTable.types';
 import { generateRowTitle } from './BaseTable.utils';
-import { ConnectWalletMessage } from './components/ConnectWalletMessage/ConnectWalletMessage';
 import { useGetData } from './hooks/useGetData';
 
 type BaseTableProps = {
@@ -46,7 +46,12 @@ export const BaseTable: FC<BaseTableProps> = ({ type, tableSubtitle }) => {
           rowTitle={generateRowTitle}
           noData={
             !account ? (
-              <ConnectWalletMessage />
+              <ConnectWalletMessage
+                text={t(translations.leaderboardPage.tables.connectWalletText)}
+                ctaText={t(
+                  translations.leaderboardPage.tables.connectWalletCta,
+                )}
+              />
             ) : (
               t(translations.leaderboardPage.tables.participantNotFound)
             )

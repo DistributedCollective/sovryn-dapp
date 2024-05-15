@@ -3,9 +3,11 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { Trans } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Button,
+  ButtonStyle,
   Checkbox,
   Heading,
   Icon,
@@ -29,6 +31,7 @@ import { Claim, useClaimLp } from './hooks/useClaimLp';
 const ClaimLpPage: FC = () => {
   const { account } = useAccount();
   const chainId = useCurrentChain();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [claimable, setClaimable] = useState<Claim[]>([]);
   const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
@@ -88,13 +91,21 @@ const ClaimLpPage: FC = () => {
             {t(translations.claimLpPage.subtitle)}
           </Paragraph>
 
-          <Link
-            href={CAMPAIGN_URL}
-            text={t(translations.claimLpPage.aboutCampaign)}
-            className="mt-4"
-          />
+          <div className="flex lg:flex-row flex-col items-center justify-around mt-6">
+            <Button
+              style={ButtonStyle.secondary}
+              text={t(translations.claimLpPage.checkLeaderboard)}
+              loading={loading}
+              onClick={() => navigate('/bob-lp-points')}
+            />
+            <Link
+              href={CAMPAIGN_URL}
+              text={t(translations.claimLpPage.aboutCampaign)}
+              className="lg:mt-0 mt-4 lg:ml-3"
+            />
+          </div>
 
-          <div className="mt-12 w-full p-0 sm:rounded sm:w-[36rem] py-6 sm:p-6 bg-gray-90">
+          <div className="mt-3 w-full p-0 sm:rounded sm:w-[36rem] py-6 sm:p-6 bg-gray-90">
             <Paragraph className="mb-8 px-4">
               <Trans
                 t={t}

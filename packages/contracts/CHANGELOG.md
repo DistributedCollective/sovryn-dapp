@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.1.3
+
+### Patch Changes
+
+- e3348041: Add StakingRewardsOS contract on BOB
+
 ## 1.1.2
 
 ### Patch Changes

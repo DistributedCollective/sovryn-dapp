@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.25
+
+### Patch Changes
+
+- 05ffbb51: SOV-4157: Fix maximum value in AmountInput
+
 ## 1.0.24
 
 ### Patch Changes

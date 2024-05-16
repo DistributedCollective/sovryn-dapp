@@ -16,13 +16,15 @@ export const WithdrawButton = (item: VestingContractTableRecord) => {
   const isDisabled = useMemo(() => !result || result === 0, [result]);
 
   return (
-    <Button
-      onClick={handleWithdraw}
-      loading={isLoading}
-      text={t(translations.common.buttons.withdraw)}
-      type={ButtonType.button}
-      style={ButtonStyle.secondary}
-      disabled={isDisabled}
-    />
+    <div className="flex justify-end w-full md:w-auto h-full pt-3">
+      <Button
+        onClick={handleWithdraw}
+        loading={isLoading}
+        text={t(translations.common.buttons.withdraw)}
+        type={ButtonType.button}
+        style={ButtonStyle.secondary}
+        disabled={isDisabled}
+      />
+    </div>
   );
 };

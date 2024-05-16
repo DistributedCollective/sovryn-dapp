@@ -55,7 +55,7 @@ export const Vesting: FC = () => {
         }
         loadingData={t(translations.common.tables.loading)}
         isLoading={loading}
-        dataAttribute="funding-history-table"
+        dataAttribute="vesting-rewards-history-table"
         rowTitle={generateRowTitle}
       />
       <Pagination
@@ -64,7 +64,7 @@ export const Vesting: FC = () => {
         onChange={onPageChange}
         itemsPerPage={pageSize}
         isNextButtonDisabled={isNextButtonDisabled}
-        dataAttribute="funding-history-pagination"
+        dataAttribute="vesting-rewards-history-pagination"
       />
     </div>
   );

@@ -75,17 +75,20 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   }, []);
 
   const conversionFee = useMemo(
-    () => decimalic(amount).mul(decimalic(fees.percentage).div(100)),
-    [amount, fees.percentage],
+    () =>
+      decimalic(amount)
+        .add(decimalic(fees.minerFees.baseAsset.reverse.lockup).div(1e8))
+        .mul(decimalic(fees.percentage).div(100)),
+    [amount, fees.minerFees.baseAsset.reverse.lockup, fees.percentage],
   );
 
   const sendAmount = useMemo(
     () =>
       decimalic(amount)
-        .add(conversionFee)
         .add(decimalic(fees.minerFees.baseAsset.reverse.lockup).div(1e8))
-        .toString(),
-    [amount, conversionFee, fees.minerFees.baseAsset.reverse.lockup],
+        .div(decimalic(1).sub(decimalic(fees.percentage).div(100)))
+        .toString(8),
+    [amount, fees.minerFees.baseAsset.reverse.lockup, fees.percentage],
   );
 
   const handleConfirm = useCallback(async () => {

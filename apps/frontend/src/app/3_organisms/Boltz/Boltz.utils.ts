@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { crypto } from 'bitcoinjs-lib';
 import bolt11 from 'bolt11';
+import { randomBytes } from 'crypto';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
-import randomBytes from 'randombytes';
 
 import { defaultChainId } from '../../../config/chains';
 

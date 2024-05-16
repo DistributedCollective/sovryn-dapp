@@ -16,8 +16,11 @@ import {
 import { useAccount } from '../../../hooks/useAccount';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
-import { ReceiveFlow } from './components/ReceiveFlow/ReceiveFlow';
-import { SendFlow } from './components/SendFlow/SendFlow';
+import {
+  Direction,
+  NetworkChooser,
+} from './components/NetworkChooser/NetworkChooser';
+import { useFastBtcDialogStore } from './store';
 
 const ACTIVE_CLASSNAME = 'border-t-primary-30';
 
@@ -36,6 +39,7 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
   shouldHideSend = false,
   step = 0,
 }) => {
+  const reset = useFastBtcDialogStore(state => state.reset);
   const [index, setIndex] = useState(step);
   const { account } = useAccount();
 
@@ -45,9 +49,13 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
     setIndex(step);
   }, [step]);
 
-  const onChangeIndex = useCallback((index: number | null) => {
-    index !== null ? setIndex(index) : setIndex(0);
-  }, []);
+  const onChangeIndex = useCallback(
+    (index: number | null) => {
+      index !== null ? setIndex(index) : setIndex(0);
+      reset();
+    },
+    [reset],
+  );
 
   const items = useMemo(() => {
     if (shouldHideSend) {
@@ -55,7 +63,9 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
         {
           label: t(translation.tabs.receiveLabel),
           infoText: t(translation.tabs.receiveInfoText),
-          content: <ReceiveFlow onClose={onClose} />,
+          content: (
+            <NetworkChooser direction={Direction.Receive} onClose={onClose} />
+          ),
           activeClassName: ACTIVE_CLASSNAME,
           dataAttribute: 'funding-receive',
         },
@@ -66,14 +76,18 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
       {
         label: t(translation.tabs.receiveLabel),
         infoText: t(translation.tabs.receiveInfoText),
-        content: <ReceiveFlow onClose={onClose} />,
+        content: (
+          <NetworkChooser direction={Direction.Receive} onClose={onClose} />
+        ),
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'funding-receive',
       },
       {
         label: t(translation.tabs.sendLabel),
         infoText: t(translation.tabs.sendInfoText),
-        content: <SendFlow onClose={onClose} />,
+        content: (
+          <NetworkChooser direction={Direction.Send} onClose={onClose} />
+        ),
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'funding-send',
       },

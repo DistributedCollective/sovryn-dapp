@@ -131,9 +131,6 @@ export const useHandleConversion = (
       return;
     }
 
-    // const requiresPermit2 =
-    //   !!route && ['ZeroRedemption', 'MocIntegration'].includes(route.name);
-
     const [sourceTokenDetails, destinationTokenDetails] = await Promise.all([
       getAssetData(sourceToken, currentChainId),
       getAssetData(destinationToken, currentChainId),

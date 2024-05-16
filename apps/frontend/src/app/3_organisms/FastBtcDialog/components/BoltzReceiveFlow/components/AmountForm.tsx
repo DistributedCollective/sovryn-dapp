@@ -94,14 +94,13 @@ export const AmountForm: React.FC = () => {
         decimalic(fees.minerFees.baseAsset.reverse.lockup).div(BTC_IN_SATOSHIS),
       );
 
-    return amount.add(fee).gt(balance);
+    return amount.add(fee).gt(decimalic(limits.maximal).div(BTC_IN_SATOSHIS));
   }, [
     value,
     limits.minimal,
     limits.maximal,
     fees.percentage,
     fees.minerFees.baseAsset.reverse.lockup,
-    balance,
   ]);
 
   const onContinueClick = useCallback(

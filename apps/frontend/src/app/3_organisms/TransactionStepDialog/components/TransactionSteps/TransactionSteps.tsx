@@ -22,7 +22,6 @@ import { translations } from '../../../../../locales/i18n';
 import { findNativeAsset } from '../../../../../utils/asset';
 import { sleep } from '../../../../../utils/helpers';
 import { fromWei, toWei } from '../../../../../utils/math';
-import { signERC2612Permit } from '../../../../../utils/permit/permit';
 import {
   Transaction,
   TransactionReceiptStatus,
@@ -32,7 +31,6 @@ import {
 } from '../../TransactionStepDialog.types';
 import {
   isMessageSignatureRequest,
-  isPermitRequest,
   isSignTransactionDataRequest,
   isTransactionRequest,
   isTypedDataRequest,
@@ -267,8 +265,22 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           const signature = await request.signer._signTypedData(
             request.domain,
             request.types,
-            request.value,
+            request.values,
           );
+
+          const verifiedAddress = ethers.utils.verifyTypedData(
+            request.domain,
+            request.types,
+            request.values,
+            signature,
+          );
+
+          if (
+            verifiedAddress.toLowerCase() !==
+            (await request.signer.getAddress()).toLowerCase()
+          ) {
+            throw new Error('Failed to verify signature. ');
+          }
 
           transactions[i].onChangeStatus?.(StatusType.success);
           transactions[i].onComplete?.(signature);
@@ -277,27 +289,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             status: TransactionReceiptStatus.success,
             request,
             response: signature,
-          });
-
-          await handleUpdates();
-        } else if (isPermitRequest(request)) {
-          const response = await signERC2612Permit(
-            request.signer,
-            request.token,
-            request.owner,
-            request.spender,
-            request.value,
-            request.deadline,
-            request.nonce,
-          );
-
-          transactions[i].onChangeStatus?.(StatusType.success);
-          transactions[i].onComplete?.(response);
-
-          updateReceipt(i, {
-            status: TransactionReceiptStatus.success,
-            request,
-            response,
           });
 
           await handleUpdates();

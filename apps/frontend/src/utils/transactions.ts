@@ -12,7 +12,11 @@ import { t } from 'i18next';
 
 import { getAssetData } from '@sovryn/contracts';
 import { ChainId } from '@sovryn/ethers-provider';
-import { PermitTransactionResponse } from '@sovryn/sdk';
+import {
+  PermitTransactionResponse,
+  TypedDataTransactionRequest,
+  prepareERC2612Permit,
+} from '@sovryn/sdk';
 import { Decimal } from '@sovryn/utils';
 
 import { RSK_CHAIN_ID } from '../config/chains';
@@ -65,6 +69,9 @@ type PreparePermitTransactionOptions = {
   chain?: ChainId;
 };
 
+/**
+ * @deprecated Use prepareTypedDataTransaction instead
+ */
 export const preparePermitTransaction = async ({
   token = COMMON_SYMBOLS.DLLR,
   chain = RSK_CHAIN_ID,
@@ -75,6 +82,15 @@ export const preparePermitTransaction = async ({
   nonce,
 }: PreparePermitTransactionOptions): Promise<Transaction> => {
   const { address: tokenAddress, symbol } = findAsset(token, chain);
+  const { domain, types, values } = await prepareERC2612Permit(
+    signer.provider,
+    tokenAddress,
+    await signer.getAddress(),
+    spender,
+    value,
+    deadline,
+    nonce,
+  );
   return {
     title: t(translations.common.tx.signPermitTitle, {
       symbol,
@@ -83,14 +99,11 @@ export const preparePermitTransaction = async ({
       symbol,
     }),
     request: {
-      type: TransactionType.signPermit,
+      type: TransactionType.signTypedData,
       signer,
-      token: tokenAddress,
-      owner: await signer.getAddress(),
-      spender,
-      value,
-      deadline,
-      nonce,
+      domain,
+      types,
+      values,
     },
   };
 };
@@ -118,7 +131,51 @@ export const preparePermit2Transaction = async (
       type: TransactionType.signTypedData,
       domain,
       types,
-      value: values,
+      values: values,
+      signer,
+    },
+  };
+};
+
+const getTokenAddressInTypedData = ({
+  domain,
+  values,
+}: TypedDataTransactionRequest['typedData']) => {
+  // Permit2
+  if (values?.permitted?.token) {
+    return values.permitted.token;
+  }
+
+  // Permit
+  if (domain?.verifyingContract) {
+    return domain.verifyingContract;
+  }
+
+  return undefined;
+};
+
+export const prepareTypedDataTransaction = async (
+  { typedData }: TypedDataTransactionRequest,
+  signer: JsonRpcSigner,
+  chainId = RSK_CHAIN_ID,
+): Promise<Transaction> => {
+  const tokenAddress = getTokenAddressInTypedData(typedData);
+  const symbol = tokenAddress
+    ? findAssetByAddress(tokenAddress, chainId)?.symbol
+    : undefined;
+
+  return {
+    title: t(translations.common.tx.signPermitTitle, {
+      symbol,
+    }),
+    subtitle: t(translations.common.tx.signPermitSubtitle, {
+      symbol,
+    }),
+    request: {
+      type: TransactionType.signTypedData,
+      domain: typedData.domain,
+      types: typedData.types,
+      values: typedData.values,
       signer,
     },
   };

@@ -1,6 +1,5 @@
 import {
   SignMessageRequest,
-  SignPermitRequest,
   SignTransactionDataRequest,
   SignTransactionRequest,
   SignTypedDataRequest,
@@ -27,7 +26,3 @@ export const isSignTransactionDataRequest = (
   request: TransactionRequest,
 ): request is SignTransactionDataRequest =>
   request.type === TransactionType.signTransactionData;
-
-export const isPermitRequest = (
-  request: TransactionRequest,
-): request is SignPermitRequest => request.type === TransactionType.signPermit;

@@ -1,12 +1,10 @@
-import { PERMIT2_ADDRESS, PermitTransferFrom } from '@uniswap/permit2-sdk';
-
 import { useCallback } from 'react';
 
 import { BigNumber, ethers } from 'ethers';
 import { t } from 'i18next';
 
 import { getAssetData, getProtocolContract } from '@sovryn/contracts';
-import { PermitTransactionResponse, SwapRoute } from '@sovryn/sdk';
+import { SwapRoute } from '@sovryn/sdk';
 
 import {
   Transaction,
@@ -19,18 +17,13 @@ import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { translations } from '../../../../locales/i18n';
-import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import {
   DEFAULT_SIGNATURE,
   EMPTY_PERMIT_TRANSFER_FROM,
-  getPermitTransferFrom,
   permitHandler,
   prepareApproveTransaction,
-  preparePermit2Transaction,
-  preparePermitTransaction,
-  UNSIGNED_PERMIT,
+  prepareTypedDataTransaction,
 } from '../../../../utils/transactions';
-import { getRouteContract } from '../ConvertPage.utils';
 
 export const useHandleConversion = (
   sourceToken: string,
@@ -138,57 +131,12 @@ export const useHandleConversion = (
       return;
     }
 
-    const requiresPermit2 =
-      !!route && ['ZeroRedemption', 'MocIntegration'].includes(route.name);
-
     const [sourceTokenDetails, destinationTokenDetails] = await Promise.all([
       getAssetData(sourceToken, currentChainId),
       getAssetData(destinationToken, currentChainId),
     ]);
 
-    const approveTxData = await route.approve(
-      sourceTokenDetails.address,
-      destinationTokenDetails.address,
-      weiAmount,
-      account,
-    );
-
     const transactions: Transaction[] = [];
-
-    if (requiresPermit2) {
-      const approveTx = await prepareApproveTransaction({
-        token: COMMON_SYMBOLS.DLLR,
-        spender: PERMIT2_ADDRESS,
-        amount: weiAmount,
-        signer,
-        approveMaximumAmount: true,
-      });
-
-      if (approveTx) {
-        transactions.push(approveTx);
-      }
-    }
-
-    if (
-      !requiresPermit2 &&
-      approveTxData &&
-      approveTxData.to &&
-      approveTxData.data
-    ) {
-      transactions.push({
-        title: t(translations.convertPage.txDialog.approve, {
-          asset: getTokenDisplayName(sourceToken),
-        }),
-        request: {
-          type: TransactionType.signTransactionData,
-          signer: signer,
-          to: approveTxData.to,
-          data: approveTxData.data,
-          gasLimit: approveTxData.gasLimit ?? GAS_LIMIT.APPROVE,
-        },
-        onComplete,
-      });
-    }
 
     const permitTxData = await route.permit(
       sourceTokenDetails.address,
@@ -197,32 +145,35 @@ export const useHandleConversion = (
       account,
     );
 
-    if (!requiresPermit2 && permitTxData) {
+    if (permitTxData) {
       transactions.push(
-        await preparePermitTransaction({
-          token: sourceTokenDetails.symbol,
-          signer,
-          spender: permitTxData.spender,
-          value: permitTxData.value?.toString(),
-          deadline: permitTxData.deadline,
-          nonce: permitTxData.nonce,
-        }),
+        await prepareTypedDataTransaction(permitTxData, signer),
       );
     }
 
-    let permitTransferFrom: PermitTransferFrom;
-
-    if (requiresPermit2) {
-      const contract = await getRouteContract(route, signer);
-
-      permitTransferFrom = await getPermitTransferFrom(
-        contract.address,
-        weiAmount.toString(),
+    if (!permitTxData || permitTxData.approvalRequired) {
+      const approveTxData = await route.approve(
+        sourceTokenDetails.address,
+        destinationTokenDetails.address,
+        weiAmount,
+        account,
       );
 
-      transactions.push(
-        await preparePermit2Transaction(permitTransferFrom, signer),
-      );
+      if (approveTxData) {
+        transactions.push({
+          title: t(translations.convertPage.txDialog.approve, {
+            asset: getTokenDisplayName(sourceToken),
+          }),
+          request: {
+            type: TransactionType.signTransactionData,
+            signer: signer,
+            to: approveTxData.to!,
+            data: approveTxData.data!,
+            gasLimit: approveTxData.gasLimit ?? GAS_LIMIT.APPROVE,
+          },
+          onComplete,
+        });
+      }
     }
 
     const txData = await route.swap(
@@ -231,16 +182,15 @@ export const useHandleConversion = (
       weiAmount,
       account,
       {
-        permit: permitTxData ? UNSIGNED_PERMIT : undefined,
-        permitTransferFrom: requiresPermit2
-          ? EMPTY_PERMIT_TRANSFER_FROM
-          : undefined,
-        signature: DEFAULT_SIGNATURE,
+        typedDataValue: permitTxData
+          ? permitTxData.typedData.values
+          : EMPTY_PERMIT_TRANSFER_FROM,
+        typedDataSignature: DEFAULT_SIGNATURE,
         slippage: Number(slippageTolerance) * 100,
       },
     );
 
-    if (txData && txData.to && txData.data) {
+    if (txData) {
       transactions.push({
         title: t(translations.convertPage.txDialog.convert, {
           asset: getTokenDisplayName(sourceToken),
@@ -248,8 +198,8 @@ export const useHandleConversion = (
         request: {
           type: TransactionType.signTransactionData,
           signer: signer,
-          to: txData.to,
-          data: txData.data,
+          to: txData.to!,
+          data: txData.data!,
           value: txData.value,
           gasLimit: txData?.gasLimit ?? GAS_LIMIT.CONVERT,
           gasPrice: txData?.gasPrice?.toString(),
@@ -257,29 +207,16 @@ export const useHandleConversion = (
         onComplete,
         updateHandler: permitHandler(async (req, res) => {
           if (isSignTransactionDataRequest(req)) {
-            if (!requiresPermit2 && !!permitTxData) {
+            if (!!permitTxData) {
               const { data } = await route.swap(
                 sourceTokenDetails.address,
                 destinationTokenDetails.address,
                 weiAmount,
                 account,
                 {
-                  permit: res as PermitTransactionResponse,
+                  typedDataValue: permitTxData.typedData.values,
+                  typedDataSignature: res as string,
                   slippage: Number(slippageTolerance) * 100,
-                },
-              );
-              req.data = data!;
-            }
-
-            if (requiresPermit2 && !!permitTransferFrom) {
-              const { data } = await route.swap(
-                sourceTokenDetails.address,
-                destinationTokenDetails.address,
-                weiAmount,
-                account,
-                {
-                  permitTransferFrom,
-                  signature: typeof res === 'string' ? res : '',
                 },
               );
               req.data = data!;

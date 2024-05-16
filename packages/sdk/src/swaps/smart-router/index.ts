@@ -18,3 +18,5 @@ export const smartRoutes = {
   mocIntegrationSwapRoute,
   ambientRoute,
 };
+
+export { prepareERC2612Permit } from './utils/permit';

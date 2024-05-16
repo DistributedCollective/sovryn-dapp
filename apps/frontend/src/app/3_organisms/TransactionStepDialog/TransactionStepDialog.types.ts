@@ -92,8 +92,8 @@ export type SignTransactionRequest = {
 export type SignTransactionDataRequest = {
   type: TransactionType.signTransactionData;
   signer: JsonRpcSigner;
-  data: BytesLike;
   to: string;
+  data?: BytesLike;
   value?: BigNumberish;
   gasLimit?: BigNumberish;
   gasPrice?: string;

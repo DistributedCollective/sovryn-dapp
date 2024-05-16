@@ -6,11 +6,6 @@ import React, {
   useState,
 } from 'react';
 
-import {
-  validate,
-  getAddressInfo,
-  AddressType,
-} from 'bitcoin-address-validation';
 import { t } from 'i18next';
 
 import {
@@ -26,20 +21,18 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
-import { useGetProtocolContract } from '../../../../../../hooks/useGetContract';
-import { useMaintenance } from '../../../../../../hooks/useMaintenance';
-import { translations } from '../../../../../../locales/i18n';
-import { currentNetwork } from '../../../../../../utils/helpers';
-import {
-  WithdrawBoltzContext,
-  WithdrawBoltzStep,
-} from '../../../contexts/withdraw-boltz-context';
 import {
   BITCOIN,
   BTC_RENDER_PRECISION,
 } from '../../../../../../constants/currencies';
-import { decodeInvoice } from '../../../../Boltz/Boltz.utils';
+import { useMaintenance } from '../../../../../../hooks/useMaintenance';
+import { translations } from '../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../utils/math';
+import { decodeInvoice } from '../../../../Boltz/Boltz.utils';
+import {
+  WithdrawBoltzContext,
+  WithdrawBoltzStep,
+} from '../../../contexts/withdraw-boltz-context';
 
 enum InvoiceValidationState {
   NONE = 'NONE',

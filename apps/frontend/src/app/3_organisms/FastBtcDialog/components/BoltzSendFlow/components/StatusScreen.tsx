@@ -18,27 +18,25 @@ import { BITCOIN } from '../../../../../../constants/currencies';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../../locales/i18n';
 import { useGetBitcoinTxIdQuery } from '../../../../../../utils/graphql/rsk/generated';
-import {
-  getBtcExplorerUrl,
-  getRskExplorerUrl,
-} from '../../../../../../utils/helpers';
+import { getRskExplorerUrl } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
+import { BoltzStatus, BoltzStatusType } from './BoltzStatus';
 
-const translation = translations.fastBtc.send.confirmationScreens;
+const translation = translations.boltz.send.confirmationScreens;
 
 const getTitle = (status: StatusType) => {
-  switch (status) {
-    case StatusType.error:
-      return t(translation.statusTitleFailed);
-    case StatusType.success:
-      return t(translation.statusTitleComplete);
-    default:
-      return t(translation.statusTitleProcessing);
-  }
+  return 'title';
+  // switch (status) {
+  //   case StatusType.error:
+  //     return t(translation.statusTitleFailed);
+  //   case StatusType.success:
+  //     return t(translation.statusTitleComplete);
+  //   default:
+  //     return t(translation.statusTitleProcessing);
+  // }
 };
 
 const rskExplorerUrl = getRskExplorerUrl();
-const btcExplorerUrl = getBtcExplorerUrl();
 
 type StatusScreenProps = {
   from: string;
@@ -48,6 +46,7 @@ type StatusScreenProps = {
   receiveAmount: number;
   txHash?: string;
   txStatus: StatusType;
+  boltzStatus?: BoltzStatusType;
   onClose: () => void;
   onRetry: () => void;
 };
@@ -60,6 +59,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   receiveAmount,
   txHash,
   txStatus,
+  boltzStatus,
   onClose,
   onRetry,
 }) => {
@@ -90,15 +90,6 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         ),
       },
       {
-        label: t(translation.to),
-        value: (
-          <TxIdWithNotification
-            value={to}
-            href={`${btcExplorerUrl}/address/${to}`}
-          />
-        ),
-      },
-      {
         label: t(translation.sending),
         value: (
           <>
@@ -107,10 +98,18 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         ),
       },
       {
-        label: t(translation.serviceFee),
+        label: t(translation.conversionFee),
         value: (
           <>
-            {formatValue(feesPaid, 8)} {BITCOIN}
+            {formatValue(Number(amount), 8)} {BITCOIN}
+          </>
+        ),
+      },
+      {
+        label: t(translation.networkFee),
+        value: (
+          <>
+            {formatValue(Number(amount), 8)} {BITCOIN}
           </>
         ),
       },
@@ -123,10 +122,10 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         ),
       },
       {
-        label: t(translation.hash),
+        label: t(translation.rootstockTx),
         value: txHash ? (
           <TxIdWithNotification
-            value={txHash}
+            value={txHash!}
             href={`${rskExplorerUrl}/tx/${txHash}`}
           />
         ) : (
@@ -134,18 +133,11 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         ),
       },
       {
-        label: t(translation.bitcoinTxId),
-        value: bitcoinTxHash ? (
-          <TxIdWithNotification
-            value={bitcoinTxHash}
-            href={`${btcExplorerUrl}/tx/${bitcoinTxHash}`}
-          />
-        ) : (
-          <Icon icon={IconNames.PENDING} />
-        ),
+        label: t(translation.lightningInvoiceStatus),
+        value: <BoltzStatus status={boltzStatus} />,
       },
     ],
-    [amount, bitcoinTxHash, feesPaid, from, receiveAmount, to, txHash],
+    [amount, from, receiveAmount, txHash, boltzStatus],
   );
 
   const status = useMemo(() => {

@@ -28,6 +28,9 @@ import {
   StatusType,
   noop,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
+
+import { chains, defaultChainId } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
@@ -146,6 +149,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           signer,
           data,
           to,
+          value,
           gasLimit: requestGasLimit,
           gasPrice: requestGasPrice,
           value,
@@ -288,6 +292,25 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                         suffix={token?.symbol}
                       />
                     )
+                  }
+                  valueClassName={classNames(
+                    isLoading || status === StatusType.success
+                      ? 'text-gray-30'
+                      : 'text-primary-10',
+                    'whitespace-nowrap overflow-auto',
+                  )}
+                />
+              )}
+              {request.value !== undefined && (
+                <SimpleTableRow
+                  label={t(translations.common.amount)}
+                  value={
+                    <AmountRenderer
+                      value={Decimal.fromBigNumberString(
+                        request.value?.toString() ?? '0',
+                      )}
+                      suffix={BITCOIN}
+                    />
                   }
                   valueClassName={classNames(
                     isLoading || status === StatusType.success

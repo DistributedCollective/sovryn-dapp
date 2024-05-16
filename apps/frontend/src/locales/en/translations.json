@@ -162,6 +162,7 @@
     "maintenanceMode": {
         "fastBtc": "Fast BTC is locked",
         "runeBridge": "Rune Bridge is locked",
+        "boltz": "Boltz (lightning network) is locked",
         "featureDisabled": "This feature is currently disabled",
         "openingLOC": "Opening a line of credit is currently disabled",
         "fullD2": {
@@ -1220,7 +1221,7 @@
           "description": "In the destination Lightning wallet, create, copy and paste an invoice for the following amount:",
           "invoiceLabel": "Invoice",
           "invalidInvoice": {
-            "INVALID": "Invalid invoice",
+            "INVALID": "Invalid invoice. Double-check format or amount",
             "EXPIRED": "Invoice expired",
             "BALANCE": "Invoice amount is different than the amount specified in the transfer"
           }
@@ -1231,6 +1232,27 @@
           "maximumAmount": "Transfer maximum",
           "serviceFee": "Conversion fee (0.1%)",
           "networkFee": "Network fee"
+        },
+        "confirmationScreens": {
+          "title": "Keep this modal open until the transfer is complete",
+          "description": "Transfer details",
+          "from": "From",
+          "sending": "Sending",
+          "conversionFee": "Conversion Fee",
+          "networkFee": "Network Fee",
+          "receiving": "Amount received",
+          "rootstockTx": "Rootstock TXID",
+          "lightningInvoiceStatus": "Lightning invoice status"
+        },
+        "txDialog": {
+          "title": "Send Bitcoin to the Lightning Network"
+        },
+        "boltzStatus": {
+          "invoiceSet": "Invoice set",
+          "txPending": "Transaction pending",
+          "txConfirmed": "Transaction confirmed",
+          "txPaid": "Paid",
+          "txClaimed": "Claimed"
         }
       }
     },

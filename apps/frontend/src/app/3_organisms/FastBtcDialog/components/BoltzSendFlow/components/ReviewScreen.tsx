@@ -9,22 +9,23 @@ import {
   ErrorLevel,
   Heading,
   HeadingType,
+  Icon,
+  IconNames,
+  Paragraph,
+  ParagraphSize,
 } from '@sovryn/ui';
 
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { BITCOIN } from '../../../../../../constants/currencies';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
-import {
-  getBtcExplorerUrl,
-  getRskExplorerUrl,
-} from '../../../../../../utils/helpers';
+import { getRskExplorerUrl } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
+import { BoltzStatus, BoltzStatusType } from './BoltzStatus';
 
-const translation = translations.fastBtc.send.confirmationScreens;
+const translation = translations.boltz.send.confirmationScreens;
 
 const rskExplorerUrl = getRskExplorerUrl();
-const btcExplorerUrl = getBtcExplorerUrl();
 
 type ReviewScreenProps = {
   from: string;
@@ -32,6 +33,7 @@ type ReviewScreenProps = {
   amount: string;
   feesPaid: number;
   receiveAmount: number;
+  boltzStatus?: BoltzStatusType;
   onConfirm: () => void;
 };
 
@@ -42,6 +44,7 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
   receiveAmount,
   from,
   to,
+  boltzStatus,
 }) => {
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
@@ -58,15 +61,6 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         ),
       },
       {
-        label: t(translation.to),
-        value: (
-          <TxIdWithNotification
-            value={to}
-            href={`${btcExplorerUrl}/address/${to}`}
-          />
-        ),
-      },
-      {
         label: t(translation.sending),
         value: (
           <>
@@ -75,10 +69,18 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         ),
       },
       {
-        label: t(translation.serviceFee),
+        label: t(translation.conversionFee),
         value: (
           <>
-            {formatValue(feesPaid, 8)} {BITCOIN}
+            {formatValue(Number(amount), 8)} {BITCOIN}
+          </>
+        ),
+      },
+      {
+        label: t(translation.networkFee),
+        value: (
+          <>
+            {formatValue(Number(amount), 8)} {BITCOIN}
           </>
         ),
       },
@@ -90,15 +92,27 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
           </>
         ),
       },
+      {
+        label: t(translation.rootstockTx),
+        value: <Icon icon={IconNames.PENDING} />,
+      },
+      {
+        label: t(translation.lightningInvoiceStatus),
+        value: <BoltzStatus status={boltzStatus} />,
+      },
     ],
-    [amount, feesPaid, from, receiveAmount, to],
+    [amount, boltzStatus, from, receiveAmount],
   );
 
   return (
     <div className="text-center">
-      <Heading type={HeadingType.h2} className="font-medium mb-8">
-        {t(translation.reviewTitle)}
+      <Heading type={HeadingType.h2} className="font-medium mb-3">
+        {t(translation.title)}
       </Heading>
+
+      <Paragraph size={ParagraphSize.small} className="mb-8">
+        {t(translation.description)}
+      </Paragraph>
 
       <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">
         {items.map(({ label, value }, index) => (

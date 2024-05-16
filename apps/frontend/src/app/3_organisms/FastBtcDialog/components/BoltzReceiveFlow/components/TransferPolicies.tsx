@@ -29,10 +29,24 @@ export const TransferPolicies: React.FC<TransferPoliciesProps> = ({
     return decimalic(0);
   }, [amount, conversionRate]);
 
+  const maximumAmount = useMemo(() => {
+    const amount = decimalic(limits.maximal).div(BTC_IN_SATOSHIS);
+
+    return amount
+      .sub(decimalic(fees.percentage / 100).mul(amount))
+      .sub(
+        decimalic(fees.minerFees.baseAsset.reverse.lockup).div(BTC_IN_SATOSHIS),
+      );
+  }, [
+    fees.minerFees.baseAsset.reverse.lockup,
+    fees.percentage,
+    limits.maximal,
+  ]);
+
   return (
     <Limits
       minimumAmount={decimalic(limits.minimal).div(BTC_IN_SATOSHIS)}
-      maximumAmount={decimalic(limits.maximal).div(BTC_IN_SATOSHIS)}
+      maximumAmount={maximumAmount.toString(8)}
       conversionRate={decimalic(fees.percentageSwapIn)}
       conversionFee={conversionFee}
       networkFee={decimalic(fees.minerFees.baseAsset.reverse.lockup).div(

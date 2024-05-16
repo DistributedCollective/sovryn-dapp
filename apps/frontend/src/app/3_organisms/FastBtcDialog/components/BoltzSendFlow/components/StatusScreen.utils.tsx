@@ -12,9 +12,9 @@ const translation = translations.boltz.send.confirmationScreens;
 
 export const getTitle = (
   txStatus: StatusType,
-  BoltzStatus: BoltzStatusType,
+  boltzStatus: BoltzStatusType,
 ) => {
-  if (!BoltzStatus) {
+  if (!boltzStatus) {
     return t(translation.titles.default);
   }
   if (txStatus === StatusType.error) {
@@ -27,7 +27,7 @@ export const getTitle = (
       BoltzStatusType.paid,
       BoltzStatusType.txClaimed,
       BoltzStatusType.settled,
-    ].includes(BoltzStatus)
+    ].includes(boltzStatus)
   ) {
     return t(translation.titles.success);
   }

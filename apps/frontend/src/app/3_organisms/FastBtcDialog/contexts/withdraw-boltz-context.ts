@@ -1,6 +1,9 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 
-import { SubmarineSwapPair } from '../utils/boltz/boltz.types';
+import {
+  SubmarineSwapPair,
+  SubmarineSwapResponse,
+} from '../utils/boltz/boltz.types';
 
 export enum WithdrawBoltzStep {
   MAIN,
@@ -21,6 +24,7 @@ export type WithdrawBoltzContextStateType = {
   fees: SubmarineSwapPair['fees'];
   rate: number;
   hash: string;
+  swap?: SubmarineSwapResponse;
 };
 
 export type WithdrawContextFunctionsType = {
@@ -46,6 +50,7 @@ export const defaultValue: WithdrawContextType = {
   rate: 1,
   hash: '',
   loadingPairData: true,
+  swap: undefined,
   set: () => {
     throw new Error('set() has not been defined.');
   },

@@ -1296,7 +1296,7 @@
                 "txFailed": "Transaction failed",
                 "txClaimed": "Claimed",
                 "txRefunded": "Refunded",
-                "txLockupFailed": "Lockup Faile",
+                "txLockupFailed": "Lockup Failed",
                 "minerFeePaid": "Miner fee paid"
             }
         },

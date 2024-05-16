@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 
 import { t } from 'i18next';
 
@@ -11,6 +11,7 @@ import {
   WithdrawBoltzContext,
   WithdrawBoltzStep,
 } from '../../../contexts/withdraw-boltz-context';
+import { SubmarineSwapResponse } from '../../../utils/boltz/boltz.types';
 import { Instructions } from './Instructions';
 
 export const MainScreen: React.FC = () => {
@@ -24,6 +25,27 @@ export const MainScreen: React.FC = () => {
     () => set(prevState => ({ ...prevState, step: WithdrawBoltzStep.AMOUNT })),
     [set],
   );
+
+  useEffect(() => {
+    const swap = localStorage.getItem('submarine-swap');
+
+    if (swap) {
+      try {
+        const data: {
+          swap: SubmarineSwapResponse;
+          amount: string;
+          invoice: string;
+        } = JSON.parse(swap);
+        set(prevState => ({
+          ...prevState,
+          amount: data.amount,
+          step: WithdrawBoltzStep.REVIEW,
+          swap: data.swap,
+          invoice: data.invoice,
+        }));
+      } catch (error) {}
+    }
+  }, [set]);
 
   return (
     <div>

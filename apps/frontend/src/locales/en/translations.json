@@ -1249,10 +1249,19 @@
         },
         "boltzStatus": {
           "invoiceSet": "Invoice set",
-          "txPending": "Transaction pending",
+          "invoicePending": "Invoice pending",
+          "invoicePaid": "Paid",
+          "invoiceSettled": "Settled",
+          "invoiceExpired": "Expired",
+          "invoiceFailedToPay": "Failed to Pay",
+          "swapCreated": "Swap Created",
+          "swapExpired": "Swap Expired",
+          "txMempool": "Transaction in mempool",
           "txConfirmed": "Transaction confirmed",
-          "txPaid": "Paid",
-          "txClaimed": "Claimed"
+          "txFailed": "Transaction failed",
+          "txClaimed": "Claimed",
+          "txRefunded": "Refunded",
+          "minerFeePaid": "Miner fee paid"
         }
       }
     },

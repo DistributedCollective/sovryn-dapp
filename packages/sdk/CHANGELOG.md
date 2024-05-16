@@ -1,5 +1,11 @@
 # @sovryn/sdk
 
+## 1.0.4
+
+### Patch Changes
+
+- a063f5b2: SOV-3922: move typedData / permits to smart router
+
 ## 1.0.3
 
 ### Patch Changes

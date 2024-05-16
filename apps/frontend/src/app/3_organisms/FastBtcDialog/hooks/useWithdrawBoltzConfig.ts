@@ -1,53 +1,34 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useGetProtocolContract } from '../../../../hooks/useGetContract';
+import { getContracts, getPair } from '../../Boltz/Boltz.utils';
 import {
   defaultValue,
-  WithdrawContextStateType,
+  WithdrawBoltzContextStateType,
 } from '../contexts/withdraw-boltz-context';
 
 export function useWithdrawBoltzConfig() {
-  const [state, setState] = useState<WithdrawContextStateType>(defaultValue);
+  const [state, setState] =
+    useState<WithdrawBoltzContextStateType>(defaultValue);
 
-  const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
-
-  const getFastBtcBridgeParams = useCallback(async () => {
-    let minTransferSatoshi = 0;
-    let maxTransferSatoshi = 0;
-    let feeStructures = {
-      baseFeeSatoshi: 0,
-      dynamicFee: 0,
-    };
-
-    if (fastBtcBridgeContract) {
-      minTransferSatoshi = await fastBtcBridgeContract.minTransferSatoshi();
-      maxTransferSatoshi = await fastBtcBridgeContract.maxTransferSatoshi();
-      const currentFeeStructureIndex =
-        await fastBtcBridgeContract.currentFeeStructureIndex();
-      feeStructures = await fastBtcBridgeContract.feeStructures(
-        currentFeeStructureIndex,
-      );
-    }
-
+  const getBoltzLimits = useCallback(async () => {
+    const contracts = await getContracts();
+    const pair = await getPair();
     return {
-      minTransferSatoshi: minTransferSatoshi,
-      maxTransferSatoshi: maxTransferSatoshi,
-      feeStructures: feeStructures,
+      pair: pair!,
+      contracts,
     };
-  }, [fastBtcBridgeContract]);
+  }, []);
 
   useEffect(() => {
-    getFastBtcBridgeParams()
+    getBoltzLimits()
       .then(data => {
         setState(prevState => ({
           ...prevState,
-          limits: {
-            min: data.minTransferSatoshi,
-            max: data.maxTransferSatoshi,
-            baseFee: data.feeStructures.baseFeeSatoshi,
-            dynamicFee: data.feeStructures.dynamicFee,
-            loading: false,
-          },
+          loadingPairData: false,
+          fees: data.pair.fees,
+          limits: data.pair.limits,
+          rate: data.pair.rate,
+          hash: data.pair.hash,
         }));
       })
       .catch(error => {
@@ -57,7 +38,7 @@ export function useWithdrawBoltzConfig() {
           limits: { ...prevState.limits, loading: false },
         }));
       });
-  }, [getFastBtcBridgeParams]);
+  }, [getBoltzLimits]);
 
   return useMemo(
     () => ({

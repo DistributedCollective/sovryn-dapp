@@ -9,3 +9,5 @@ export const DEPOSIT_FEE_DYNAMIC = 20;
 export const DYNAMIC_FEE_DIVISOR = 10000;
 
 export const GAS_LIMIT_FAST_BTC_WITHDRAW = 200000;
+
+export const GAS_LIMIT_BOLTZ_SEND = 200000;

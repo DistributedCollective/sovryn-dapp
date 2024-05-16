@@ -1127,6 +1127,18 @@
                 "sendInfoText": "Transfer BTC from the Rootstock network to a specified bitcoin address"
             }
         },
+        "networkChooser": {
+          "send": {
+            "title": "Select the network you are transferring assets to"
+          },
+          "receive": {
+            "title": "Select the network you are sending assets from"
+          },
+          "networks": {
+            "bitcoin": "Bitcoin",
+            "lightning": "Lightning"
+          }
+        },
         "receiveInstructions": {
             "title": "Instructions",
             "line1": "Only transfer BTC from the bitcoin network",
@@ -1217,7 +1229,7 @@
           "amountLabel": "Transfer"
         },
         "invoice": {
-          "title": "Paste Lightning Iinvoice",
+          "title": "Paste Lightning Invoice",
           "description": "In the destination Lightning wallet, create, copy and paste an invoice for the following amount:",
           "invoiceLabel": "Invoice",
           "invalidInvoice": {
@@ -1230,7 +1242,7 @@
           "title": "Transfer policies",
           "minimumAmount": "Transfer minimum",
           "maximumAmount": "Transfer maximum",
-          "serviceFee": "Conversion fee (0.1%)",
+          "serviceFee": "Conversion fee ({{rate}}%)",
           "networkFee": "Network fee"
         },
         "confirmationScreens": {

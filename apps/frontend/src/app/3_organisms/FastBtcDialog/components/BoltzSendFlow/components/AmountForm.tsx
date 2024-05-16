@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 
-import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import { SupportedTokens } from '@sovryn/contracts';
@@ -15,6 +14,7 @@ import {
   Paragraph,
   ParagraphSize,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { defaultChainId } from '../../../../../../config/chains';
 
@@ -24,55 +24,59 @@ import {
   BTC_RENDER_PRECISION,
 } from '../../../../../../constants/currencies';
 import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
-import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../locales/i18n';
-import { fromWei, toWei } from '../../../../../../utils/math';
-import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
-import { TransferPolicies } from './TransferPolicies';
+import { decimalic } from '../../../../../../utils/math';
+import { GAS_LIMIT_BOLTZ_SEND } from '../../../constants';
 import {
   WithdrawBoltzContext,
   WithdrawBoltzStep,
 } from '../../../contexts/withdraw-boltz-context';
+import { TransferPolicies } from './TransferPolicies';
 
 export const AmountForm: React.FC = () => {
-  const { amount, limits, set } = useContext(WithdrawBoltzContext);
+  const { amount, limits, fees, set } = useContext(WithdrawBoltzContext);
 
   const { checkMaintenance, States } = useMaintenance();
   const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
 
-  const { bigNumberBalance: maxAmountWei } = useMaxAssetBalance(
-    SupportedTokens.rbtc,
-  );
-
-  const { bigNumberBalance: rbtcWeiBalance } = useAssetBalance(
+  const { balance } = useMaxAssetBalance(
     SupportedTokens.rbtc,
     defaultChainId,
+    GAS_LIMIT_BOLTZ_SEND,
   );
 
   const [value, setValue] = useState(amount || '0');
 
+  const maximumAmount = useMemo(
+    () => Decimal.min(decimalic(limits.maximal).div(BTC_IN_SATOSHIS), balance),
+    [balance, limits.maximal],
+  );
+
   const invalid = useMemo(() => {
-    if (value === '0') {
-      return true;
-    }
-
-    const amount = value;
-    const satoshiAmount = Number(amount) * BTC_IN_SATOSHIS;
-
+    const amount = decimalic(value);
     if (
-      satoshiAmount < 0 ||
-      satoshiAmount < limits.min ||
-      satoshiAmount > limits.max
+      amount.lte(0) ||
+      amount.lt(decimalic(limits.minimal).div(BTC_IN_SATOSHIS)) ||
+      amount.gt(decimalic(limits.maximal).div(BTC_IN_SATOSHIS))
     ) {
       return true;
     }
 
-    return toWei(amount)
-      .add(GAS_LIMIT_FAST_BTC_WITHDRAW)
-      .gt(rbtcWeiBalance || '0');
-  }, [value, limits.min, limits.max, rbtcWeiBalance]);
+    const fee = amount
+      .mul(fees.percentageSwapIn / 100)
+      .add(fees.minerFees.baseAsset.normal);
+
+    return amount.add(fee).gt(balance);
+  }, [
+    value,
+    limits.minimal,
+    limits.maximal,
+    fees.percentageSwapIn,
+    fees.minerFees.baseAsset.normal,
+    balance,
+  ]);
 
   const onContinueClick = useCallback(
     () =>
@@ -84,21 +88,16 @@ export const AmountForm: React.FC = () => {
     [set, value],
   );
 
-  const maxAmount = useMemo(() => {
-    const limit = parseUnits(limits.max.toString(), 10);
-    return limit.gt(maxAmountWei) ? maxAmountWei : limit;
-  }, [limits.max, maxAmountWei]);
-
   const maxExceed = useMemo(() => {
     if (value === '0') {
       return false;
     }
-    return toWei(value).gt(maxAmount);
-  }, [maxAmount, value]);
+    return decimalic(value).gt(decimalic(limits.maximal).div(BTC_IN_SATOSHIS));
+  }, [limits.maximal, value]);
 
   const onMaximumAmountClick = useCallback(
-    () => setValue(fromWei(maxAmount)),
-    [maxAmount],
+    () => setValue(maximumAmount.toString()),
+    [maximumAmount],
   );
 
   return (
@@ -119,7 +118,7 @@ export const AmountForm: React.FC = () => {
 
           <MaxButton
             onClick={onMaximumAmountClick}
-            value={fromWei(maxAmount)}
+            value={maximumAmount}
             token={SupportedTokens.rbtc}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="funding-send-amount-max"
@@ -145,7 +144,7 @@ export const AmountForm: React.FC = () => {
           )}
         </div>
 
-        <TransferPolicies />
+        <TransferPolicies amount={value} />
 
         <Button
           text={t(translations.common.buttons.continue)}

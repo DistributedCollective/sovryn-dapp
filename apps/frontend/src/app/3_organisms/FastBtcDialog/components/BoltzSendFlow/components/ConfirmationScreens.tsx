@@ -18,12 +18,12 @@ import { translations } from '../../../../../../locales/i18n';
 import { fromWei, toWei } from '../../../../../../utils/math';
 import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 import { GAS_LIMIT_FAST_BTC_WITHDRAW } from '../../../constants';
-import {
-  WithdrawContext,
-  WithdrawStep,
-} from '../../../contexts/withdraw-context';
 import { ReviewScreen } from './ReviewScreen';
 import { StatusScreen } from './StatusScreen';
+import {
+  WithdrawBoltzContext,
+  WithdrawBoltzStep,
+} from '../../../contexts/withdraw-boltz-context';
 
 type ConfirmationScreensProps = {
   onClose: () => void;
@@ -33,7 +33,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   onClose,
 }) => {
   const { account } = useAccount();
-  const { step, address, amount, set } = useContext(WithdrawContext);
+  const { step, invoice, amount, set } = useContext(WithdrawBoltzContext);
 
   const { setTransactions, setTitle, setIsOpen } = useTransactionContext();
 
@@ -84,13 +84,16 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
             type: TransactionType.signTransaction,
             contract: fastBtcBridgeContract,
             fnName: 'transferToBtc',
-            args: [address],
+            args: [invoice],
             value: toWei(amount),
             gasLimit: GAS_LIMIT_FAST_BTC_WITHDRAW,
           },
           onStart: hash => {
             setTxHash(hash);
-            set(prevState => ({ ...prevState, step: WithdrawStep.CONFIRM }));
+            set(prevState => ({
+              ...prevState,
+              step: WithdrawBoltzStep.CONFIRM,
+            }));
             setIsOpen(false);
           },
           onChangeStatus: setTxStatus,
@@ -101,7 +104,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       setIsOpen(true);
     }
   }, [
-    address,
+    invoice,
     amount,
     fastBtcBridgeContract,
     set,
@@ -111,18 +114,18 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   ]);
 
   const handleRetry = useCallback(() => {
-    set(prevState => ({ ...prevState, step: WithdrawStep.REVIEW }));
+    set(prevState => ({ ...prevState, step: WithdrawBoltzStep.REVIEW }));
     handleConfirm();
   }, [handleConfirm, set]);
 
-  if (step === WithdrawStep.REVIEW) {
+  if (step === WithdrawBoltzStep.REVIEW) {
     return (
       <ReviewScreen
         onConfirm={handleConfirm}
         feesPaid={feesPaid}
         receiveAmount={receiveAmount}
         from={account}
-        to={address}
+        to={invoice}
         amount={amount}
       />
     );
@@ -136,7 +139,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       feesPaid={feesPaid}
       receiveAmount={receiveAmount}
       from={account}
-      to={address}
+      to={invoice}
       amount={amount}
       onRetry={handleRetry}
     />

@@ -1208,6 +1208,14 @@
         "line3": "If your transaction takes longer than 5 minutes please <0>create a support ticket</0>",
         "line1cta": "Boltz",
         "line3cta": "create a support ticket"
+      },
+      "send": {
+        "invoice": {
+          "title": "Paste Lightning Iinvoice",
+          "description": "In the destination Lightning wallet, create, copy and paste an invoice for the following amount:",
+          "invoiceLabel": "Invoice",
+          "invalidInvoice": "Invalid invoice"
+        }
       }
     },
 

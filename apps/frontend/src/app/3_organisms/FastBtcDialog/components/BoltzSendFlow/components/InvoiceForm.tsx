@@ -14,13 +14,14 @@ import {
 import { t } from 'i18next';
 
 import {
+  AmountInput,
   Button,
   ButtonStyle,
   ErrorBadge,
   ErrorLevel,
   Heading,
   HeadingType,
-  Input,
+  TextArea,
   Paragraph,
   ParagraphSize,
 } from '@sovryn/ui';
@@ -30,9 +31,13 @@ import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { currentNetwork } from '../../../../../../utils/helpers';
 import {
-  WithdrawContext,
-  WithdrawStep,
-} from '../../../contexts/withdraw-context';
+  WithdrawBoltzContext,
+  WithdrawBoltzStep,
+} from '../../../contexts/withdraw-boltz-context';
+import {
+  BITCOIN,
+  BTC_RENDER_PRECISION,
+} from '../../../../../../constants/currencies';
 
 enum AddressValidationState {
   NONE = 'NONE',
@@ -41,8 +46,8 @@ enum AddressValidationState {
   INVALID = 'INVALID',
 }
 
-export const AddressForm: React.FC = () => {
-  const { address, set } = useContext(WithdrawContext);
+export const InvoiceForm: React.FC = () => {
+  const { amount, invoice, set } = useContext(WithdrawBoltzContext);
 
   const fastBtcBridgeContract = useGetProtocolContract('fastBtcBridge');
 
@@ -52,9 +57,9 @@ export const AddressForm: React.FC = () => {
   const [addressValidationState, setAddressValidationState] = useState(
     AddressValidationState.NONE,
   );
-  const [value, setValue] = useState(address);
+  const [value, setValue] = useState(invoice);
 
-  const invalidAddress = useMemo(
+  const invalidInvoice = useMemo(
     () => addressValidationState === AddressValidationState.INVALID,
     [addressValidationState],
   );
@@ -63,8 +68,8 @@ export const AddressForm: React.FC = () => {
     () =>
       set(prevState => ({
         ...prevState,
-        address: value,
-        step: WithdrawStep.REVIEW,
+        invoice: value,
+        step: WithdrawBoltzStep.REVIEW,
       })),
     [set, value],
   );
@@ -108,30 +113,46 @@ export const AddressForm: React.FC = () => {
   }, [value, validateAddress]);
 
   const isSubmitDisabled = useMemo(
-    () => invalidAddress || fastBtcLocked || !value || value === '',
-    [fastBtcLocked, invalidAddress, value],
+    () => invalidInvoice || fastBtcLocked || !value || value === '',
+    [fastBtcLocked, invalidInvoice, value],
   );
 
   return (
     <div className="text-center">
       <Heading type={HeadingType.h2} className="font-medium mb-8">
-        {t(translations.fastBtc.send.addressForm.title)}
+        {t(translations.boltz.send.invoice.title)}
       </Heading>
 
-      <div className="text-left">
+      <Paragraph
+        size={ParagraphSize.small}
+        className="font-medium mb-3 text-left"
+      >
+        {t(translations.boltz.send.invoice.description)}
+      </Paragraph>
+      <AmountInput
+        label={t(translations.common.amount)}
+        readOnly
+        unit={BITCOIN}
+        value={amount}
+        decimalPrecision={BTC_RENDER_PRECISION}
+        className="max-w-none"
+      />
+
+      <div className="mt-4 text-left">
         <Paragraph size={ParagraphSize.base} className="font-medium mb-3">
-          {t(translations.fastBtc.send.addressForm.addressLabel)}
+          {t(translations.boltz.send.invoice.invoiceLabel)}
         </Paragraph>
-        <Input
+        <TextArea
           onChangeText={setValue}
           value={value}
-          invalid={invalidAddress}
+          invalid={invalidInvoice}
           className="max-w-none"
+          rows={9}
         />
-        {invalidAddress && (
+        {invalidInvoice && (
           <ErrorBadge
             level={ErrorLevel.Critical}
-            message={t(translations.fastBtc.send.addressForm.invalidAddress)}
+            message={t(translations.boltz.send.invoice.invalidInvoice)}
           />
         )}
       </div>

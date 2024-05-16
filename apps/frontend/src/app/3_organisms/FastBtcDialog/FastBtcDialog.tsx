@@ -16,10 +16,8 @@ import {
 import { useAccount } from '../../../hooks/useAccount';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
-import {
-  Direction,
-  NetworkChooser,
-} from './components/NetworkChooser/NetworkChooser';
+import { NetworkChooser } from './components/NetworkChooser/NetworkChooser';
+import { Direction } from './components/NetworkChooser/NetworkChooser.type';
 import { useFastBtcDialogStore } from './store';
 
 const ACTIVE_CLASSNAME = 'border-t-primary-30';

@@ -13,6 +13,7 @@
         "buttons": {
             "switch": "Switch",
             "confirm": "Confirm",
+            "refund": "Refund",
             "save": "Save",
             "cancel": "Cancel",
             "withdraw": "Withdraw",
@@ -1246,6 +1247,15 @@
           "networkFee": "Network fee"
         },
         "confirmationScreens": {
+          "titles": {
+            "default": "Keep this modal open until the transfer is complete",
+            "error": "Transfer failed",
+            "success": "Transfer complete",
+            "pending": "Transfer processing..."
+          },
+          "descriptions": {
+            "default": "Transfer details"
+          },
           "title": "Keep this modal open until the transfer is complete",
           "description": "Transfer details",
           "from": "From",
@@ -1254,6 +1264,7 @@
           "networkFee": "Network Fee",
           "receiving": "Amount received",
           "rootstockTx": "Rootstock TXID",
+          "refundTx": "Refund TXID",
           "lightningInvoiceStatus": "Lightning invoice status"
         },
         "txDialog": {

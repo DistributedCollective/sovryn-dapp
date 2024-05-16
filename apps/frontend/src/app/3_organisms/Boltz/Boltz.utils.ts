@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { crypto } from 'bitcoinjs-lib';
 import bolt11 from 'bolt11';
-import { parseUnits } from 'ethers/lib/utils';
+import { getAddress, parseUnits } from 'ethers/lib/utils';
 import randomBytes from 'randombytes';
 
 import { defaultChainId } from '../../../config/chains';
@@ -11,7 +11,10 @@ import {
   BoltzPair,
   CheckSwapStatusResponse,
   CreateReverseSwapResponse,
+  CreateSwapResponse,
   GetContractsResponse,
+  ReverseSwap,
+  Swap,
 } from './Boltz.type';
 
 export const getPair = async () => {
@@ -50,10 +53,16 @@ export const streamSwapStatus = async (
   };
 };
 
-export const swapToBTC = async (amount: number, account: string) => {
+export const swapToBTC = async (
+  amount: number,
+  account: string,
+): Promise<ReverseSwap> => {
   try {
     const preimage = randomBytes(32);
     const preimageHash = crypto.sha256(preimage).toString('hex');
+    account = getAddress(account);
+
+    const pair = await getPair();
 
     const params = {
       type: 'reversesubmarine',
@@ -62,6 +71,7 @@ export const swapToBTC = async (amount: number, account: string) => {
       invoiceAmount: amount,
       preimageHash: preimageHash,
       claimAddress: account,
+      pairHash: pair?.hash,
     };
 
     const { data } = await axios.post<CreateReverseSwapResponse>(
@@ -70,28 +80,53 @@ export const swapToBTC = async (amount: number, account: string) => {
     );
 
     return {
-      data,
-      preimageHash,
+      asset: 'RBTC',
+      date: Date.now() / 1000,
+      onchainAddress: account,
+      preimage: preimageHash,
+      receiveAmount: amount,
+      reverse: true,
+      sendAmount: amount,
+      ...data,
     };
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 };
 
-export const swapToLighting = async (invoice: string) => {
+export const swapToLighting = async (
+  invoice: string,
+  account: string,
+): Promise<Swap> => {
   try {
+    account = getAddress(account);
+
+    const pair = await getPair();
+
     const params = {
       orderSide: 'sell',
       type: 'submarine',
       pairId: 'RBTC/BTC',
       invoice,
+      pairHash: pair?.hash,
     };
 
-    const { data } = await axios.post<CreateReverseSwapResponse>(
+    const { data } = await axios.post<CreateSwapResponse>(
       BOLTZ_URL[defaultChainId] + 'createswap',
       params,
     );
 
-    return data;
-  } catch (error) {}
+    return {
+      asset: 'RBTC',
+      date: Date.now() / 1000,
+      onchainAddress: account,
+      reverse: true,
+      invoice,
+      ...data,
+    };
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const getContracts = async () => {

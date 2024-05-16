@@ -46,7 +46,14 @@ export const BoltzSendFlow: React.FC<SendFlowProps> = ({ onClose }) => {
           window.confirm('Going back will clear the current swap. Continue?')
         ) {
           localStorage.removeItem('submarine-swap');
-          set(prevState => ({ ...prevState, step: getBackStep(step) }));
+          set(prevState => ({
+            ...prevState,
+            step: getBackStep(step),
+            invoice: '',
+            amount: '',
+            hash: '',
+            swap: undefined,
+          }));
         } else {
           return;
         }

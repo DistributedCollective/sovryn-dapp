@@ -11,10 +11,20 @@ import { Status, BoltzTxStatus } from '../../../utils/boltz/boltz.types';
 const translation = translations.boltz.send.confirmationScreens;
 
 export const getTitle = (txStatus: StatusType, boltzStatus: Status) => {
+  const failedTx = [
+    BoltzTxStatus.failedToPay,
+    BoltzTxStatus.txLockupFailed,
+    BoltzTxStatus.txFailed,
+  ].includes(boltzStatus as BoltzTxStatus);
+
+  if (txStatus === StatusType.pending) {
+    return t(translation.titles.pending);
+  }
+
   if (!boltzStatus) {
     return t(translation.titles.default);
   }
-  if (txStatus === StatusType.error) {
+  if (txStatus === StatusType.error || failedTx) {
     return t(translation.titles.error);
   }
 
@@ -33,11 +43,26 @@ export const getTitle = (txStatus: StatusType, boltzStatus: Status) => {
 };
 
 export const getDescription = (txStatus: StatusType, boltzStatus: Status) => {
+  const failedTx = [
+    BoltzTxStatus.failedToPay,
+    BoltzTxStatus.txLockupFailed,
+    BoltzTxStatus.txFailed,
+  ].includes(boltzStatus as BoltzTxStatus);
+
+  if (txStatus === StatusType.pending) {
+    return (
+      <StatusIcon
+        status={StatusType.pending}
+        dataAttribute="funding-send-status"
+      />
+    );
+  }
+
   if (txStatus === StatusType.idle || !boltzStatus) {
     return t(translation.descriptions.default);
   }
 
-  if (txStatus === StatusType.error) {
+  if (txStatus === StatusType.error || failedTx) {
     return (
       <StatusIcon
         status={StatusType.error}

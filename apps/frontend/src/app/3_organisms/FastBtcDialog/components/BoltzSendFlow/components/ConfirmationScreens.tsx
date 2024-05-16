@@ -52,6 +52,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     undefined,
   );
   const [txStatus, setTxStatus] = useState(StatusType.idle);
+  const [refundTxStatus, setRefundTxStatus] = useState<StatusType>();
   const [boltzStatus, setBoltzStatus] = useState<Status>();
   const [error, setError] = useState<string>();
 
@@ -96,11 +97,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
         return;
       }
 
-      // const value = decimalic(swap.expectedAmount).div(1e8).toBigNumber();
-      const value = decimalic(swap.expectedAmount)
-        .sub(0.0001)
-        .div(1e8)
-        .toBigNumber();
+      const value = decimalic(swap.expectedAmount).div(1e8).toBigNumber();
 
       const data = await boltz.getContracts();
       const etherSwapAddress = data?.rsk.swapContracts.EtherSwap;
@@ -235,7 +232,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
           }));
           setIsOpen(false);
         },
-        onChangeStatus: setTxStatus,
+        onChangeStatus: setRefundTxStatus,
       },
     ]);
 
@@ -251,7 +248,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   return (
     <StatusScreen
       txHash={txHash}
-      txStatus={txStatus}
+      txStatus={refundTxStatus ?? txStatus}
       refundTxHash={refundTxHash}
       boltzStatus={boltzStatus}
       swapData={swapData}

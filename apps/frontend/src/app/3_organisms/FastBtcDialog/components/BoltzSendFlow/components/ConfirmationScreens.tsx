@@ -1,30 +1,30 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 
 import { Contract } from 'ethers';
+import { splitSignature } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
+import { getProvider } from '@sovryn/ethers-provider';
 import { StatusType } from '@sovryn/ui';
 
 import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
+import { prefix0x, satoshiToWei } from '../../../../../../utils/helpers';
 import { decimalic } from '../../../../../../utils/math';
-import { Swap } from '../../../../Boltz/Boltz.type';
-import {
-  decodeInvoice,
-  getContracts,
-  prefix0x,
-  streamSwapStatus,
-  swapToLighting,
-} from '../../../../Boltz/Boltz.utils';
-import EtherSwapABI from '../../../../Boltz/EtherSwap.json';
 import { TransactionType } from '../../../../TransactionStepDialog/TransactionStepDialog.types';
 import {
   WithdrawBoltzContext,
   WithdrawBoltzStep,
 } from '../../../contexts/withdraw-boltz-context';
-import { BoltzStatusType } from './BoltzStatus';
+import EtherSwapABI from '../../../utils/boltz/EtherSwap.json';
+import { boltz } from '../../../utils/boltz/boltz.client';
+import {
+  BoltzListener,
+  Status,
+  SubmarineSwapResponse,
+} from '../../../utils/boltz/boltz.types';
 import { StatusScreen } from './StatusScreen';
 
 type ConfirmationScreensProps = {
@@ -44,31 +44,34 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     undefined,
   );
   const [txStatus, setTxStatus] = useState(StatusType.idle);
-  const [boltzStatus, setBoltzStatus] = useState<BoltzStatusType>();
-  const [swapData, setSwapData] = useState<Swap>();
+  const [boltzStatus, setBoltzStatus] = useState<Status>();
+  const [swapData, setSwapData] = useState<SubmarineSwapResponse>();
   const [error, setError] = useState<string>();
 
-  useEffect(() => {
-    if (!swapData) {
-      return;
-    }
-    let event: EventSource;
-    (async () => {
-      event = await streamSwapStatus(swapData?.id, setBoltzStatus);
-    })();
+  const wsRef = useRef<BoltzListener>();
 
-    return () => {
-      event?.close();
-    };
-  }, [swapData]);
+  const beginListening = useCallback(async (id: string) => {
+    if (wsRef.current) {
+      wsRef.current.close();
+    }
+    wsRef.current = boltz.listen(id);
+    wsRef.current.status(({ status }) => setBoltzStatus(status));
+  }, []);
 
   const handleConfirm = useCallback(async () => {
     try {
       setError(undefined);
       let swap = swapData;
       if (!swapData) {
-        swap = await swapToLighting(invoice, account);
+        swap = await boltz.submarineSwap({
+          invoice,
+          from: 'RBTC',
+          to: 'BTC',
+          refundAddress: account,
+        });
+
         setSwapData(swap);
+        beginListening(swap.id);
       }
 
       if (!swap) {
@@ -78,7 +81,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
 
       const value = decimalic(swap.expectedAmount).div(1e8).toBigNumber();
 
-      const data = await getContracts();
+      const data = await boltz.getContracts();
       const etherSwapAddress = data?.rsk.swapContracts.EtherSwap;
 
       if (!etherSwapAddress || !swap) {
@@ -95,7 +98,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
             contract,
             fnName: 'lock',
             args: [
-              prefix0x(decodeInvoice(swap?.invoice).preimageHash),
+              prefix0x(boltz.decodeInvoice(invoice).preimageHash),
               swap?.claimAddress,
               swap?.timeoutBlockHeight,
             ],
@@ -116,16 +119,18 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       setTitle(t(translations.fastBtc.send.txDialog.title));
       setIsOpen(true);
     } catch (e) {
+      console.log('error:', e);
       setError(e.message);
     }
   }, [
     swapData,
     signer,
     setTransactions,
+    invoice,
     setTitle,
     setIsOpen,
-    invoice,
     account,
+    beginListening,
     set,
   ]);
 
@@ -142,30 +147,46 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       return;
     }
 
-    const value = decimalic(swap.expectedAmount).div(1e8).toBigNumber();
-
-    const data = await getContracts();
+    const [data, block, signature] = await Promise.all([
+      boltz.getContracts(),
+      getProvider().getBlockNumber(),
+      boltz.getRefundSignature(swap.id),
+    ]);
     const etherSwapAddress = data?.rsk.swapContracts.EtherSwap;
 
-    if (!etherSwapAddress || !swap) {
+    if (!etherSwapAddress || !swap || !signature) {
       return;
     }
     const contract = new Contract(etherSwapAddress, EtherSwapABI.abi, signer);
 
-    setTransactions([
-      {
-        title: t(translations.boltz.send.txDialog.title),
-        request: {
-          type: TransactionType.signTransaction,
-          value,
-          contract,
-          fnName: 'refund',
-          args: [
-            prefix0x(decodeInvoice(swap?.invoice).preimageHash),
-            value,
+    const { v, r, s } = splitSignature(signature);
+
+    const preimageHash = prefix0x(boltz.decodeInvoice(invoice).preimageHash);
+    const amount = satoshiToWei(swap.expectedAmount);
+
+    const fnName =
+      swap.timeoutBlockHeight < block ? 'refund' : 'refundCooperative';
+    const args =
+      swap.timeoutBlockHeight < block
+        ? [preimageHash, amount, swap?.claimAddress, swap?.timeoutBlockHeight]
+        : [
+            preimageHash,
+            amount,
             swap?.claimAddress,
             swap?.timeoutBlockHeight,
-          ],
+            v,
+            r,
+            s,
+          ];
+
+    setTransactions([
+      {
+        title: t(translations.boltz.send.txDialog.refundTitle),
+        request: {
+          type: TransactionType.signTransaction,
+          contract,
+          fnName,
+          args,
           gasLimit: GAS_LIMIT.BOLTZ_REFUND,
         },
         onStart: hash => {
@@ -182,7 +203,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
 
     setTitle(t(translations.fastBtc.send.txDialog.title));
     setIsOpen(true);
-  }, [swapData, setTransactions, signer, setTitle, setIsOpen, set]);
+  }, [swapData, signer, setTransactions, invoice, setTitle, setIsOpen, set]);
 
   return (
     <StatusScreen

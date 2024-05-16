@@ -21,9 +21,13 @@ import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { getRskExplorerUrl } from '../../../../../../utils/helpers';
 import { decimalic } from '../../../../../../utils/math';
-import { Swap } from '../../../../Boltz/Boltz.type';
 import { WithdrawBoltzContext } from '../../../contexts/withdraw-boltz-context';
-import { BoltzStatus, BoltzStatusType } from './BoltzStatus';
+import {
+  Status,
+  BoltzTxStatus,
+  SubmarineSwapResponse,
+} from '../../../utils/boltz/boltz.types';
+import { BoltzStatus } from './BoltzStatus';
 import { getDescription, getTitle } from './StatusScreen.utils';
 
 const translation = translations.boltz.send.confirmationScreens;
@@ -36,8 +40,8 @@ type StatusScreenProps = {
   txHash?: string;
   refundTxHash?: string;
   txStatus: StatusType;
-  boltzStatus?: BoltzStatusType;
-  swapData?: Swap;
+  boltzStatus?: Status;
+  swapData?: SubmarineSwapResponse;
   error?: string;
   onConfirm: () => void;
   onRefund: () => void;
@@ -64,16 +68,16 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   const boltzLocked = checkMaintenance(States.BOLTZ_SEND);
 
   const conversionFee = useMemo(
-    () => decimalic(amount).mul(decimalic(fees.percentageSwapIn).div(100)),
-    [amount, fees.percentageSwapIn],
+    () => decimalic(amount).mul(decimalic(fees.percentage).div(100)),
+    [amount, fees.percentage],
   );
 
   const sendAmount = useMemo(
     () =>
       decimalic(amount)
         .add(conversionFee)
-        .add(decimalic(fees.minerFees.baseAsset.normal).div(1e8)),
-    [amount, conversionFee, fees.minerFees.baseAsset.normal],
+        .add(decimalic(fees.minerFees).div(1e8)),
+    [amount, conversionFee, fees.minerFees],
   );
 
   const items = useMemo(
@@ -107,7 +111,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         label: t(translation.networkFee),
         value: (
           <AmountRenderer
-            value={decimalic(fees.minerFees.baseAsset.normal).div(1e8)}
+            value={decimalic(fees.minerFees).div(1e8)}
             suffix={BITCOIN}
             precision={8}
           />
@@ -160,7 +164,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       from,
       sendAmount,
       conversionFee,
-      fees.minerFees.baseAsset.normal,
+      fees.minerFees,
       amount,
       swapData,
       txHash,
@@ -173,16 +177,20 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
     () =>
       [StatusType.idle, StatusType.error].includes(txStatus) ||
       [
-        BoltzStatusType.paid,
-        BoltzStatusType.txClaimed,
-        BoltzStatusType.txRefunded,
-        BoltzStatusType.failedToPay,
-      ].includes(boltzStatus!),
+        BoltzTxStatus.paid,
+        BoltzTxStatus.txClaimed,
+        BoltzTxStatus.txRefunded,
+        BoltzTxStatus.failedToPay,
+        BoltzTxStatus.txLockupFailed,
+      ].includes(boltzStatus as BoltzTxStatus),
     [boltzStatus, txStatus],
   );
   const disabledButton = useMemo(() => boltzLocked, [boltzLocked]);
   const buttonTitle = useMemo(() => {
-    if (boltzStatus === BoltzStatusType.failedToPay) {
+    if (
+      boltzStatus === BoltzTxStatus.failedToPay ||
+      boltzStatus === BoltzTxStatus.txLockupFailed
+    ) {
       return t(translations.common.buttons.refund);
     }
     if (txStatus === StatusType.idle) {
@@ -192,16 +200,19 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   }, [boltzStatus, txStatus]);
 
   const handleButtonClick = useCallback(() => {
+    if (
+      boltzStatus === BoltzTxStatus.failedToPay ||
+      boltzStatus === BoltzTxStatus.txLockupFailed
+    ) {
+      return onRefund();
+    }
+
     if (txStatus === StatusType.idle) {
       return onConfirm();
     }
 
     if (txStatus === StatusType.error) {
       return onRetry();
-    }
-
-    if (boltzStatus === BoltzStatusType.failedToPay) {
-      return onRefund();
     }
 
     onClose();

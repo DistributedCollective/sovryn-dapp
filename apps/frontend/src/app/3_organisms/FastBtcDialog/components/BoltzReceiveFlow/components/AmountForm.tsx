@@ -49,14 +49,8 @@ export const AmountForm: React.FC = () => {
 
     return amount
       .sub(decimalic(fees.percentage / 100).mul(amount))
-      .sub(
-        decimalic(fees.minerFees.baseAsset.reverse.lockup).div(BTC_IN_SATOSHIS),
-      );
-  }, [
-    fees.minerFees.baseAsset.reverse.lockup,
-    fees.percentage,
-    limits.maximal,
-  ]);
+      .sub(decimalic(fees.minerFees.lockup).div(BTC_IN_SATOSHIS));
+  }, [fees.minerFees.lockup, fees.percentage, limits.maximal]);
 
   const invalid = useMemo(() => {
     const amount = decimalic(value);

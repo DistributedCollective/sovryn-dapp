@@ -1279,7 +1279,8 @@
                 "swapId": "Swap ID"
             },
             "txDialog": {
-                "title": "Send Bitcoin to the Lightning Network"
+                "title": "Send Bitcoin to the Lightning Network",
+                "refundTitle": "Refund stuck Bitcoin"
             },
             "boltzStatus": {
                 "invoiceSet": "Invoice set",
@@ -1295,6 +1296,7 @@
                 "txFailed": "Transaction failed",
                 "txClaimed": "Claimed",
                 "txRefunded": "Refunded",
+                "txLockupFailed": "Lockup Faile",
                 "minerFeePaid": "Miner fee paid"
             }
         },

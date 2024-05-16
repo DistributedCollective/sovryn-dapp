@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -16,7 +15,7 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
 import {
@@ -28,6 +27,7 @@ import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 import { decimalic } from '../../../../../../utils/math';
 import {
   WithdrawBoltzContext,
@@ -42,8 +42,8 @@ export const AmountForm: React.FC = () => {
   const boltzLocked = checkMaintenance(States.BOLTZ_SEND);
 
   const { balance } = useMaxAssetBalance(
-    SupportedTokens.rbtc,
-    defaultChainId,
+    COMMON_SYMBOLS.BTC,
+    RSK_CHAIN_ID,
     GAS_LIMIT.BOLTZ_SEND,
   );
 
@@ -130,7 +130,7 @@ export const AmountForm: React.FC = () => {
           <MaxButton
             onClick={onMaximumAmountClick}
             value={maximumAmount}
-            token={SupportedTokens.rbtc}
+            token={COMMON_SYMBOLS.BTC}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="funding-send-amount-max"
           />

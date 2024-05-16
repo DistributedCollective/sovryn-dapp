@@ -8,7 +8,6 @@ import React, {
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -29,6 +28,7 @@ import {
 import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
 import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 import { decimalic } from '../../../../../../utils/math';
 import {
   DepositBoltzContext,
@@ -113,7 +113,7 @@ export const AmountForm: React.FC = () => {
           <MaxButton
             onClick={onMaximumAmountClick}
             value={maximumAmount}
-            token={SupportedTokens.rbtc}
+            token={COMMON_SYMBOLS.BTC}
             precision={BTC_RENDER_PRECISION}
             dataAttribute="funding-receive-amount-max"
           />

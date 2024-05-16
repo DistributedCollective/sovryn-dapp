@@ -4,11 +4,11 @@ import { t } from 'i18next';
 
 import { Heading, HeadingType, WalletContainer } from '@sovryn/ui';
 
+import { MobileCloseButton } from '../../../../1_atoms/MobileCloseButton/MobileCloseButton';
 import { translations } from '../../../../../locales/i18n';
 import { Network, useFastBtcDialogStore } from '../../store';
 import { BoltzReceiveFlow } from '../BoltzReceiveFlow/BoltzReceiveFlow';
 import { BoltzSendFlow } from '../BoltzSendFlow/BoltzSendFlow';
-import { MobileCloseButton } from '../MobileCloseButton';
 import { ReceiveFlow } from '../ReceiveFlow/ReceiveFlow';
 import { SendFlow } from '../SendFlow/SendFlow';
 import styles from './NetworkChooser.module.css';

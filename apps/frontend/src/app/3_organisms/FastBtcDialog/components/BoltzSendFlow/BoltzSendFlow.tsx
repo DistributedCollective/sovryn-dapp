@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 
+import { GoBackButton } from '../../../../1_atoms/GoBackButton/GoBackButton';
+import { MobileCloseButton } from '../../../../1_atoms/MobileCloseButton/MobileCloseButton';
 import {
   WithdrawBoltzContext,
   WithdrawBoltzStep,
 } from '../../contexts/withdraw-boltz-context';
 import { useWithdrawBoltzConfig } from '../../hooks/useWithdrawBoltzConfig';
-import { GoBackButton } from '../GoBackButton';
-import { MobileCloseButton } from '../MobileCloseButton';
 import { AmountForm } from './components/AmountForm';
 import { ConfirmationScreens } from './components/ConfirmationScreens';
 import { InvoiceForm } from './components/InvoiceForm';

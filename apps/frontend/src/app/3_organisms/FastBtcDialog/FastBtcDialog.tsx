@@ -9,6 +9,8 @@ import {
   Dialog,
   DialogSize,
   Heading,
+  Icon,
+  IconNames,
   Tabs,
   VerticalTabs,
 } from '@sovryn/ui';
@@ -18,7 +20,7 @@ import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
 import { NetworkChooser } from './components/NetworkChooser/NetworkChooser';
 import { Direction } from './components/NetworkChooser/NetworkChooser.type';
-import { useFastBtcDialogStore } from './store';
+import { Network, useFastBtcDialogStore } from './store';
 
 const ACTIVE_CLASSNAME = 'border-t-primary-30';
 
@@ -37,6 +39,7 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
   shouldHideSend = false,
   step = 0,
 }) => {
+  const network = useFastBtcDialogStore(state => state.network);
   const reset = useFastBtcDialogStore(state => state.reset);
   const [index, setIndex] = useState(step);
   const { account } = useAccount();
@@ -110,6 +113,18 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
       disableFocusTrap
       closeOnEscape={false}
     >
+      {network !== Network.none && (
+        <button
+          onClick={reset}
+          className="absolute left-6 top-6 flex items-center gap-2 sm:hidden block"
+        >
+          <Icon
+            icon={IconNames.ARROW_LEFT}
+            className="w-5 h-5 bg-gray-70 p-1.5 rounded"
+          />
+          {t(translations.common.buttons.back)}
+        </button>
+      )}
       <Tabs
         index={index}
         items={items}

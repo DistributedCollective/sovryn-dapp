@@ -134,20 +134,6 @@ export const TextAreaBase = React.forwardRef<
       [onBlur, resetIOSStylesOnBlur],
     );
 
-    // useEffect(() => {
-    //   if (parseFloat(value as string) !== parseFloat(renderedValue as string)) {
-    //     setRenderedValue(
-    //       prepareValueToRender(
-    //         value as string,
-    //         '',
-    //         type ?? 'text',
-    //         props.lang ?? navigator.language,
-    //       ),
-    //     );
-    //   }
-    //   // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [props.lang, type, value]);
-
     // set cursor position after value was changed
     useEffect(() => {
       if (inputRef.current && inputRef.current === document.activeElement) {

@@ -6,7 +6,7 @@ import { getAddress, parseUnits } from 'ethers/lib/utils';
 
 import { defaultChainId } from '../../../config/chains';
 
-import { BOLTZ_URL } from './Boltz.constants';
+import { BOLTZ_API_URLS } from './Boltz.constants';
 import {
   BoltzPair,
   CheckSwapStatusResponse,
@@ -19,7 +19,9 @@ import {
 
 export const getPair = async () => {
   try {
-    const { data } = await axios.get(BOLTZ_URL[defaultChainId] + 'getpairs');
+    const { data } = await axios.get(
+      BOLTZ_API_URLS[defaultChainId] + 'getpairs',
+    );
 
     return data.pairs['RBTC/BTC'] as BoltzPair;
   } catch (error) {}
@@ -28,7 +30,7 @@ export const getPair = async () => {
 export const checkSwapStatus = async (id: string) => {
   try {
     const { data } = await axios.post<CheckSwapStatusResponse>(
-      BOLTZ_URL[defaultChainId] + 'swapstatus',
+      BOLTZ_API_URLS[defaultChainId] + 'swapstatus',
       {
         id,
       },
@@ -43,7 +45,7 @@ export const streamSwapStatus = async (
   cb: (status: any) => void,
 ) => {
   const stream = new EventSource(
-    BOLTZ_URL[defaultChainId] + '/streamswapstatus?id=' + id,
+    BOLTZ_API_URLS[defaultChainId] + '/streamswapstatus?id=' + id,
   );
 
   stream.onmessage = function (event) {
@@ -77,7 +79,7 @@ export const swapToBTC = async (
     };
 
     const { data } = await axios.post<CreateReverseSwapResponse>(
-      BOLTZ_URL[defaultChainId] + 'createswap',
+      BOLTZ_API_URLS[defaultChainId] + 'createswap',
       params,
     );
 
@@ -114,7 +116,7 @@ export const swapToLighting = async (
     };
 
     const { data } = await axios.post<CreateSwapResponse>(
-      BOLTZ_URL[defaultChainId] + 'createswap',
+      BOLTZ_API_URLS[defaultChainId] + 'createswap',
       params,
     );
 
@@ -134,7 +136,7 @@ export const swapToLighting = async (
 export const getContracts = async () => {
   try {
     const { data } = await axios.get<GetContractsResponse>(
-      BOLTZ_URL[defaultChainId] + 'getcontracts',
+      BOLTZ_API_URLS[defaultChainId] + 'getcontracts',
     );
 
     return data;

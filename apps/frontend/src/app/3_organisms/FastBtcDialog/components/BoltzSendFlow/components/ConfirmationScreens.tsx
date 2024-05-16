@@ -168,37 +168,54 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       return;
     }
 
-    const [data, block, signature] = await Promise.all([
+    const [data, block] = await Promise.all([
       boltz.getContracts(),
       getProvider().getBlockNumber(),
-      boltz.getRefundSignature(swap.id),
     ]);
     const etherSwapAddress = data?.rsk.swapContracts.EtherSwap;
 
-    if (!etherSwapAddress || !swap || !signature) {
+    if (!etherSwapAddress || !swap) {
       return;
     }
     const contract = new Contract(etherSwapAddress, EtherSwapABI.abi, signer);
 
-    const { v, r, s } = splitSignature(signature);
+    const expired = swap.timeoutBlockHeight < block;
 
     const preimageHash = prefix0x(boltz.decodeInvoice(invoice).preimageHash);
     const amount = satoshiToWei(swap.expectedAmount);
 
-    const fnName =
-      swap.timeoutBlockHeight < block ? 'refund' : 'refundCooperative';
-    const args =
-      swap.timeoutBlockHeight < block
-        ? [preimageHash, amount, swap?.claimAddress, swap?.timeoutBlockHeight]
-        : [
-            preimageHash,
-            amount,
-            swap?.claimAddress,
-            swap?.timeoutBlockHeight,
-            v,
-            r,
-            s,
-          ];
+    let fnName = 'refund';
+    let args = [
+      preimageHash,
+      amount,
+      swap?.claimAddress,
+      swap?.timeoutBlockHeight,
+    ];
+
+    if (!expired) {
+      const [signature, txId] = await Promise.all([
+        boltz.getRefundSignature(swap.id),
+        boltz.getSubmarineSwapTransaction(swap.id).then(tx => tx.id),
+      ]);
+
+      const { v, r, s } = splitSignature(signature);
+
+      const value = await getProvider()
+        .getTransaction(txId)
+        .then(tx => tx.value.toString())
+        .catch(() => '0');
+
+      fnName = 'refundCooperative';
+      args = [
+        preimageHash,
+        value,
+        swap?.claimAddress,
+        swap?.timeoutBlockHeight,
+        v,
+        r,
+        s,
+      ];
+    }
 
     setTransactions([
       {

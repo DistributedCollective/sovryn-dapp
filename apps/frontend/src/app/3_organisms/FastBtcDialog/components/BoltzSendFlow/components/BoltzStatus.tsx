@@ -60,7 +60,7 @@ export const BoltzStatus: FC<BoltzStatusProps> = ({ status }) => {
           BoltzTxStatus.txClaimed,
           BoltzTxStatus.txRefunded,
         ].includes(status as BoltzTxStatus),
-        'text-danger': [
+        'text-error': [
           BoltzTxStatus.failedToPay,
           BoltzTxStatus.expired,
           BoltzTxStatus.swapExpired,

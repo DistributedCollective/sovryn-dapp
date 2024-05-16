@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { t } from 'i18next';
 
@@ -115,6 +121,10 @@ export const AmountForm: React.FC = () => {
     () => setValue(maximumAmount.toString()),
     [maximumAmount],
   );
+
+  useEffect(() => {
+    localStorage.removeItem('reverse-swap');
+  }, []);
 
   return (
     <>

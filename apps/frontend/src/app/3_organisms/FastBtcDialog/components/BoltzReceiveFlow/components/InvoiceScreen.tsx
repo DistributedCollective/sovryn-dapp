@@ -52,7 +52,7 @@ export const InvoiceScreen: React.FC<InvoiceScreenProps> = ({ invoice }) => {
         <div className="p-6">
           <div className="h-44 justify-center items-center flex rounded bg-white">
             <QRCode
-              value={`${URIType.BITCOIN}${invoice}`}
+              value={`${URIType.LIGHTNING}${invoice}`}
               renderAs="svg"
               bgColor="white"
               fgColor={config?.theme?.colors?.['gray-80'] || 'black'}

@@ -103,13 +103,6 @@ export const NetworkChooser: FC<NetworkChooserProps> = ({
             isReceiveDirection ? 'receive' : 'send'
           }-close`}
         />
-
-        <MobileCloseButton
-          onClick={onClose}
-          dataAttribute={`network-chooser-${
-            isReceiveDirection ? 'receive' : 'send'
-          }-close`}
-        />
       </div>
     );
   }

@@ -1200,6 +1200,17 @@
         }
     },
 
+    "boltz": {
+      "sendInstructions": {
+        "title": "Instructions",
+        "line1": "Lightning Network swaps are powered by <0>Boltz</0>",
+        "line2": "Allow up to 5 minutes to process",
+        "line3": "If your transaction takes longer than 5 minutes please <0>create a support ticket</0>",
+        "line1cta": "Boltz",
+        "line3cta": "create a support ticket"
+      }
+    },
+
     "rewardPage": {
         "meta": {
             "title": "Rewards - Sovryn",

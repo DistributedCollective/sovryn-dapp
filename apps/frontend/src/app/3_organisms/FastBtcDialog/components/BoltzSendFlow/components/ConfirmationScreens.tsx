@@ -3,9 +3,10 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Contract } from 'ethers';
 import { t } from 'i18next';
 
-import { StatusType } from '@sovryn/ui';
+import { NotificationType, StatusType } from '@sovryn/ui';
 
 import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
+import { useNotificationContext } from '../../../../../../contexts/NotificationContext';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
@@ -34,6 +35,7 @@ type ConfirmationScreensProps = {
 export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   onClose,
 }) => {
+  const { addNotification } = useNotificationContext();
   const { account, signer } = useAccount();
   const { invoice, amount, set } = useContext(WithdrawBoltzContext);
 
@@ -62,65 +64,74 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   }, [swapData]);
 
   const handleConfirm = useCallback(async () => {
-    let swap = swapData;
-    if (!swapData) {
-      swap = await swapToLighting(invoice, account);
-      setSwapData(swap);
-    }
+    try {
+      let swap = swapData;
+      if (!swapData) {
+        swap = await swapToLighting(invoice, account);
+        setSwapData(swap);
+      }
 
-    if (!swap) {
-      console.error('Swap data is not defined');
-      return;
-    }
+      if (!swap) {
+        console.error('Swap data is not defined');
+        return;
+      }
 
-    const value = decimalic(swap.expectedAmount).div(1e8).toBigNumber();
+      const value = decimalic(swap.expectedAmount).div(1e8).toBigNumber();
 
-    const data = await getContracts();
-    const etherSwapAddress = data?.rsk.swapContracts.EtherSwap;
+      const data = await getContracts();
+      const etherSwapAddress = data?.rsk.swapContracts.EtherSwap;
 
-    if (!etherSwapAddress || !swap) {
-      return;
-    }
-    const contract = new Contract(etherSwapAddress, EtherSwapABI.abi, signer);
+      if (!etherSwapAddress || !swap) {
+        return;
+      }
+      const contract = new Contract(etherSwapAddress, EtherSwapABI.abi, signer);
 
-    setTransactions([
-      {
-        title: t(translations.boltz.send.txDialog.title),
-        request: {
-          type: TransactionType.signTransaction,
-          value,
-          contract,
-          fnName: 'lock',
-          args: [
-            prefix0x(decodeInvoice(swap?.invoice).preimageHash),
-            swap?.claimAddress,
-            swap?.timeoutBlockHeight,
-          ],
-          gasLimit: GAS_LIMIT.BOLTZ_SEND,
+      setTransactions([
+        {
+          title: t(translations.boltz.send.txDialog.title),
+          request: {
+            type: TransactionType.signTransaction,
+            value,
+            contract,
+            fnName: 'lock',
+            args: [
+              prefix0x(decodeInvoice(swap?.invoice).preimageHash),
+              swap?.claimAddress,
+              swap?.timeoutBlockHeight,
+            ],
+            gasLimit: GAS_LIMIT.BOLTZ_SEND,
+          },
+          onStart: hash => {
+            setTxHash(hash);
+            set(prevState => ({
+              ...prevState,
+              step: WithdrawBoltzStep.CONFIRM,
+            }));
+            setIsOpen(false);
+          },
+          onChangeStatus: setTxStatus,
         },
-        onStart: hash => {
-          setTxHash(hash);
-          set(prevState => ({
-            ...prevState,
-            step: WithdrawBoltzStep.CONFIRM,
-          }));
-          setIsOpen(false);
-        },
-        onChangeStatus: setTxStatus,
-      },
-    ]);
+      ]);
 
-    setTitle(t(translations.fastBtc.send.txDialog.title));
-    setIsOpen(true);
+      setTitle(t(translations.fastBtc.send.txDialog.title));
+      setIsOpen(true);
+    } catch (e) {
+      addNotification({
+        id: 'boltz-send-error',
+        type: NotificationType.error,
+        title: e.message,
+      });
+    }
   }, [
     swapData,
-    invoice,
-    setTransactions,
     signer,
+    setTransactions,
     setTitle,
     setIsOpen,
+    invoice,
     account,
     set,
+    addNotification,
   ]);
 
   const handleRetry = useCallback(() => {

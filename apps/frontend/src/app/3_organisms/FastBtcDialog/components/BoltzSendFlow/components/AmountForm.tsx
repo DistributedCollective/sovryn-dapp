@@ -66,7 +66,7 @@ export const AmountForm: React.FC = () => {
 
     const fee = amount
       .mul(fees.percentageSwapIn / 100)
-      .add(fees.minerFees.baseAsset.normal);
+      .add(decimalic(fees.minerFees.baseAsset.normal).div(BTC_IN_SATOSHIS));
 
     return amount.add(fee).gt(balance);
   }, [

@@ -1123,9 +1123,9 @@
             "title": "Funding",
             "tabs": {
                 "receiveLabel": "Receive",
-                "receiveInfoText": "Transfer BTC from the bitcoin network to your Rootstock address",
+                "receiveInfoText": "Transfer assets from supported networks to your Rootstock address",
                 "sendLabel": "Send",
-                "sendInfoText": "Transfer BTC from the Rootstock network to a specified bitcoin address"
+                "sendInfoText": "Transfer assets from the Rootstock network to a specified address on another supported network"
             }
         },
         "networkChooser": {

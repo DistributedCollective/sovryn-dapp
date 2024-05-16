@@ -1273,7 +1273,8 @@
                 "receiving": "Amount received",
                 "rootstockTx": "Rootstock TXID",
                 "refundTx": "Refund TXID",
-                "lightningInvoiceStatus": "Lightning invoice status"
+                "lightningInvoiceStatus": "Lightning invoice status",
+                "swapId": "Swap ID"
             },
             "txDialog": {
                 "title": "Send Bitcoin to the Lightning Network"
@@ -1326,7 +1327,8 @@
                 "amountSent": "Amount sent",
                 "lightningInvoice": "Lightning invoice",
                 "rootstockTx": "Rootstock TXID",
-                "paid": "Paid"
+                "paid": "Paid",
+                "swapId": "Swap ID"
             }
         }
     },

@@ -23,6 +23,7 @@ import { useMaintenance } from '../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../locales/i18n';
 import { getRskExplorerUrl } from '../../../../../../utils/helpers';
 import { formatValue } from '../../../../../../utils/math';
+import { ReverseSwap } from '../../../../Boltz/Boltz.type';
 import {
   BoltzStatus,
   BoltzStatusType,
@@ -42,6 +43,7 @@ type StatusScreenProps = {
   txHash?: string;
   txStatus: StatusType;
   boltzStatus?: BoltzStatusType;
+  swapData?: ReverseSwap;
   onClaim: () => void;
   onClose: () => void;
   onRetry: () => void;
@@ -56,6 +58,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   txHash,
   txStatus,
   boltzStatus,
+  swapData,
   onRetry,
   onClose,
   networkFee,
@@ -112,6 +115,10 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         ),
       },
       {
+        label: t(translation.swapId),
+        value: swapData?.id ? swapData.id : <Icon icon={IconNames.PENDING} />,
+      },
+      {
         label: t(translation.lightningInvoice),
         value:
           boltzStatus === BoltzStatusType.txConfirmed ? (
@@ -134,7 +141,16 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
         ),
       },
     ],
-    [to, receiveAmount, conversionFee, networkFee, amount, boltzStatus, txHash],
+    [
+      to,
+      receiveAmount,
+      conversionFee,
+      networkFee,
+      amount,
+      swapData,
+      boltzStatus,
+      txHash,
+    ],
   );
 
   const showButton = useMemo(

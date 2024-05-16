@@ -4,8 +4,8 @@ import { BITCOIN } from '../../../../../../constants/currencies';
 import { BTC_IN_SATOSHIS } from '../../../../../../constants/general';
 import { formatValue } from '../../../../../../utils/math';
 import { DYNAMIC_FEE_DIVISOR } from '../../../constants';
-import { Limits } from '../../Limits';
 import { WithdrawBoltzContext } from '../../../contexts/withdraw-boltz-context';
+import { Limits } from './Limits';
 
 export const TransferPolicies: React.FC = () => {
   const { limits } = useContext(WithdrawBoltzContext);

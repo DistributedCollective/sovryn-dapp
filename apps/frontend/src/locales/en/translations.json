@@ -1210,11 +1210,27 @@
         "line3cta": "create a support ticket"
       },
       "send": {
+        "amount": {
+          "title": "Enter amount of BTC to transfer from Rootstock to Lightning",
+          "description": "This is the amount that will be sent to the Lightning Network.",
+          "amountLabel": "Transfer"
+        },
         "invoice": {
           "title": "Paste Lightning Iinvoice",
           "description": "In the destination Lightning wallet, create, copy and paste an invoice for the following amount:",
           "invoiceLabel": "Invoice",
-          "invalidInvoice": "Invalid invoice"
+          "invalidInvoice": {
+            "INVALID": "Invalid invoice",
+            "EXPIRED": "Invoice expired",
+            "BALANCE": "Invoice amount is different than the amount specified in the transfer"
+          }
+        },
+        "limits": {
+          "title": "Transfer policies",
+          "minimumAmount": "Transfer minimum",
+          "maximumAmount": "Transfer maximum",
+          "serviceFee": "Conversion fee (0.1%)",
+          "networkFee": "Network fee"
         }
       }
     },

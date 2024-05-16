@@ -74,11 +74,25 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     }
   }, []);
 
+  const conversionFee = useMemo(
+    () => decimalic(amount).mul(decimalic(fees.percentage).div(100)),
+    [amount, fees.percentage],
+  );
+
+  const sendAmount = useMemo(
+    () =>
+      decimalic(amount)
+        .add(conversionFee)
+        .add(decimalic(fees.minerFees.baseAsset.reverse.lockup).div(1e8))
+        .toString(),
+    [amount, conversionFee, fees.minerFees.baseAsset.reverse.lockup],
+  );
+
   const handleConfirm = useCallback(async () => {
-    const swap = await swapToBTC(Number(parseUnits(amount, 8)), account);
+    const swap = await swapToBTC(Number(parseUnits(sendAmount, 8)), account);
     setSwapData(swap);
     localStorage.setItem('reverse-swap', JSON.stringify(swap));
-  }, [amount, account]);
+  }, [sendAmount, account]);
 
   const handleClaim = useCallback(async () => {
     if (!swapData) {
@@ -127,27 +141,14 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     handleClaim();
   }, [handleClaim, set]);
 
-  const conversionFee = useMemo(
-    () => decimalic(amount).mul(decimalic(fees.percentageSwapIn).div(100)),
-    [amount, fees.percentageSwapIn],
-  );
-
-  const receiveAmount = useMemo(
-    () =>
-      decimalic(amount)
-        .sub(conversionFee)
-        .sub(decimalic(fees.minerFees.baseAsset.normal).div(1e8)),
-    [amount, conversionFee, fees.minerFees.baseAsset.normal],
-  );
-
   if (!swapData) {
     return (
       <ReviewScreen
         onConfirm={handleConfirm}
-        receiveAmount={receiveAmount}
+        receiveAmount={amount}
         to={account}
-        amount={amount}
-        networkFee={decimalic(fees.minerFees.baseAsset.normal).div(1e8)}
+        amount={sendAmount}
+        networkFee={decimalic(fees.minerFees.baseAsset.reverse.lockup).div(1e8)}
         conversionFee={conversionFee}
       />
     );
@@ -160,13 +161,13 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       txStatus={txStatus}
       boltzStatus={boltzStatus}
       to={account}
-      amount={amount}
+      amount={sendAmount}
       receiveAmount={swapData.receiveAmount}
       swapData={swapData}
       onClaim={handleClaim}
       onRetry={handleRetry}
       onClose={onClose}
-      networkFee={decimalic(fees.minerFees.baseAsset.normal).div(1e8)}
+      networkFee={decimalic(fees.minerFees.baseAsset.reverse.lockup).div(1e8)}
       conversionFee={conversionFee}
     />
   );

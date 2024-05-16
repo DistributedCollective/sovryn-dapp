@@ -3,10 +3,9 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Contract } from 'ethers';
 import { t } from 'i18next';
 
-import { NotificationType, StatusType } from '@sovryn/ui';
+import { StatusType } from '@sovryn/ui';
 
 import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
-import { useNotificationContext } from '../../../../../../contexts/NotificationContext';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../locales/i18n';
@@ -35,7 +34,6 @@ type ConfirmationScreensProps = {
 export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   onClose,
 }) => {
-  const { addNotification } = useNotificationContext();
   const { account, signer } = useAccount();
   const { invoice, amount, set } = useContext(WithdrawBoltzContext);
 
@@ -48,6 +46,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
   const [txStatus, setTxStatus] = useState(StatusType.idle);
   const [boltzStatus, setBoltzStatus] = useState<BoltzStatusType>();
   const [swapData, setSwapData] = useState<Swap>();
+  const [error, setError] = useState<string>();
 
   useEffect(() => {
     if (!swapData) {
@@ -65,6 +64,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
 
   const handleConfirm = useCallback(async () => {
     try {
+      setError(undefined);
       let swap = swapData;
       if (!swapData) {
         swap = await swapToLighting(invoice, account);
@@ -116,11 +116,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       setTitle(t(translations.fastBtc.send.txDialog.title));
       setIsOpen(true);
     } catch (e) {
-      addNotification({
-        id: 'boltz-send-error',
-        type: NotificationType.error,
-        title: e.message,
-      });
+      setError(e.message);
     }
   }, [
     swapData,
@@ -131,7 +127,6 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
     invoice,
     account,
     set,
-    addNotification,
   ]);
 
   const handleRetry = useCallback(() => {
@@ -196,6 +191,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
       refundTxHash={refundTxHash}
       boltzStatus={boltzStatus}
       swapData={swapData}
+      error={error}
       from={account}
       amount={amount}
       onConfirm={handleConfirm}

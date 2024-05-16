@@ -38,6 +38,7 @@ type StatusScreenProps = {
   txStatus: StatusType;
   boltzStatus?: BoltzStatusType;
   swapData?: Swap;
+  error?: string;
   onConfirm: () => void;
   onRefund: () => void;
   onClose: () => void;
@@ -52,6 +53,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   refundTxHash,
   boltzStatus,
   swapData,
+  error,
   onConfirm,
   onRetry,
   onRefund,
@@ -226,6 +228,12 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
           </div>
         ))}
       </div>
+
+      {error && (
+        <div className="mt-6">
+          <ErrorBadge level={ErrorLevel.Critical} message={error} />
+        </div>
+      )}
 
       {showButton && (
         <div className="mt-8">

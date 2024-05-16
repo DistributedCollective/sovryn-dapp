@@ -3,6 +3,7 @@
     "exportCSV": "Export to CSV",
     "copyAddress": "Address was copied to clipboard.",
     "copyAmount": "Amount was copied to clipboard.",
+    "copyValue": "Value was copied to clipboard.",
     "common": {
         "socials": {
             "discord": "Discord",

@@ -81,10 +81,10 @@ export const swapToBTC = async (
 
     return {
       asset: 'RBTC',
-      date: Date.now() / 1000,
+      date: Date.now(),
       onchainAddress: account,
       preimage: preimageHash,
-      receiveAmount: amount,
+      receiveAmount: data.onchainAmount,
       reverse: true,
       sendAmount: amount,
       ...data,
@@ -118,7 +118,7 @@ export const swapToLighting = async (
 
     return {
       asset: 'RBTC',
-      date: Date.now() / 1000,
+      date: Date.now(),
       onchainAddress: account,
       reverse: true,
       invoice,

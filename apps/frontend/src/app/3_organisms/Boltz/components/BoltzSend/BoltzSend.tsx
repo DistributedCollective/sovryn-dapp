@@ -1,28 +1,19 @@
 import React, { FC, useEffect, useState } from 'react';
 
-import { Contract } from 'ethers';
-
 import { Button, Input } from '@sovryn/ui';
 
-import { GAS_LIMIT } from '../../../../../constants/gasLimits';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { Swap } from '../../Boltz.type';
-import {
-  decodeInvoice,
-  getContracts,
-  prefix0x,
-  satoshiToWei,
-  streamSwapStatus,
-  swapToLighting,
-} from '../../Boltz.utils';
-import EtherSwapABI from '../../EtherSwap.json';
+import { streamSwapStatus, swapToLighting } from '../../Boltz.utils';
+import { useBoltz } from '../../hooks/useBoltz';
 
 export const BoltzSend: FC = () => {
   const [status, setStatus] = useState('');
   const [invoice, setInvoice] = useState('');
   const [swapData, setSwapData] = useState<Swap>();
 
-  const { signer, account } = useAccount();
+  const { lock } = useBoltz();
+  const { account } = useAccount();
 
   useEffect(() => {
     const swap = localStorage.getItem('swap');
@@ -38,32 +29,6 @@ export const BoltzSend: FC = () => {
     }
     streamSwapStatus(swapData?.id, setStatus);
   }, [swapData]);
-
-  const lock = async () => {
-    try {
-      const data = await getContracts();
-      const etherSwapAddress = data?.rsk.swapContracts.EtherSwap;
-
-      if (!etherSwapAddress || !swapData) {
-        return;
-      }
-      const contract = new Contract(etherSwapAddress, EtherSwapABI.abi, signer);
-
-      const tx = await contract.lock(
-        prefix0x(decodeInvoice(swapData?.invoice).preimageHash),
-        swapData?.claimAddress,
-        swapData?.timeoutBlockHeight,
-        {
-          value: satoshiToWei(swapData?.expectedAmount),
-          gasLimit: GAS_LIMIT.BOLTZ_SEND,
-        },
-      );
-
-      tx.wait();
-    } catch (error) {
-      console.log('error:', error);
-    }
-  };
 
   return (
     <div className="p-5 m-3 bg-gray-80 rounded">
@@ -104,7 +69,7 @@ export const BoltzSend: FC = () => {
 
       {status === 'invoice.set' && (
         <div>
-          <Button onClick={lock} text="Send" className="mt-2" />
+          <Button onClick={() => lock(swapData)} text="Send" className="mt-2" />
         </div>
       )}
     </div>

@@ -30,16 +30,16 @@ import { useMaxAssetBalance } from '../../../../../../hooks/useMaxAssetBalance';
 import { translations } from '../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../utils/math';
 import {
-  WithdrawBoltzContext,
-  WithdrawBoltzStep,
-} from '../../../contexts/withdraw-boltz-context';
+  DepositBoltzContext,
+  DepositBoltzStep,
+} from '../../../contexts/deposit-boltz-context';
 import { TransferPolicies } from './TransferPolicies';
 
 export const AmountForm: React.FC = () => {
-  const { amount, limits, fees, set } = useContext(WithdrawBoltzContext);
+  const { amount, limits, fees, set } = useContext(DepositBoltzContext);
 
   const { checkMaintenance, States } = useMaintenance();
-  const boltzLocked = checkMaintenance(States.BOLTZ_SEND);
+  const boltzLocked = checkMaintenance(States.BOLTZ_RECEIVE);
 
   const { balance } = useMaxAssetBalance(
     SupportedTokens.rbtc,
@@ -96,7 +96,7 @@ export const AmountForm: React.FC = () => {
       set(prevState => ({
         ...prevState,
         amount: Number(value).toFixed(8),
-        step: WithdrawBoltzStep.INVOICE,
+        step: DepositBoltzStep.REVIEW,
       })),
     [set, value],
   );
@@ -119,17 +119,13 @@ export const AmountForm: React.FC = () => {
   return (
     <>
       <Heading type={HeadingType.h2} className="font-medium mb-3 text-center">
-        {t(translations.boltz.send.amount.title)}
+        {t(translations.boltz.receive.amount.title)}
       </Heading>
-
-      <Paragraph size={ParagraphSize.small} className="mb-8 text-center">
-        {t(translations.boltz.send.amount.description)}
-      </Paragraph>
 
       <div>
         <div className="flex items-center justify-between mb-3">
           <Paragraph size={ParagraphSize.base} className="font-medium">
-            {t(translations.boltz.send.amount.amountLabel)}
+            {t(translations.boltz.receive.amount.amountLabel)}
           </Paragraph>
 
           <MaxButton
@@ -137,7 +133,7 @@ export const AmountForm: React.FC = () => {
             value={maximumAmount}
             token={SupportedTokens.rbtc}
             precision={BTC_RENDER_PRECISION}
-            dataAttribute="funding-send-amount-max"
+            dataAttribute="funding-receive-amount-max"
           />
         </div>
 
@@ -150,7 +146,7 @@ export const AmountForm: React.FC = () => {
             decimalPrecision={BTC_RENDER_PRECISION}
             className="max-w-none"
             invalid={maxExceed}
-            dataAttribute="funding-send-amount-input"
+            dataAttribute="funding-receive-amount-input"
           />
 
           {maxExceed && (
@@ -166,7 +162,7 @@ export const AmountForm: React.FC = () => {
           <ErrorBadge
             level={ErrorLevel.Warning}
             message={t(translations.maintenanceMode.boltz)}
-            dataAttribute="funding-send-amount-confirm-error"
+            dataAttribute="funding-receive-amount-confirm-error"
           />
         ) : (
           <Button
@@ -175,7 +171,7 @@ export const AmountForm: React.FC = () => {
             disabled={invalid || boltzLocked}
             style={ButtonStyle.secondary}
             className="mt-10 w-full"
-            dataAttribute="funding-send-amount-confirm"
+            dataAttribute="funding-receive-amount-confirm"
           />
         )}
       </div>

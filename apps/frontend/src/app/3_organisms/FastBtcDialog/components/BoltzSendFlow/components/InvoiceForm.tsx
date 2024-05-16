@@ -47,7 +47,7 @@ export const InvoiceForm: React.FC = () => {
   const { amount, invoice, set } = useContext(WithdrawBoltzContext);
 
   const { checkMaintenance, States } = useMaintenance();
-  const fastBtcLocked = checkMaintenance(States.FASTBTC_SEND);
+  const boltzLocked = checkMaintenance(States.BOLTZ_SEND);
 
   const [invoiceValidationState, setInvoiceValidationState] = useState(
     InvoiceValidationState.NONE,
@@ -111,8 +111,8 @@ export const InvoiceForm: React.FC = () => {
   }, [value, validateInvoice]);
 
   const isSubmitDisabled = useMemo(
-    () => invalidInvoice || fastBtcLocked || !value || value === '',
-    [fastBtcLocked, invalidInvoice, value],
+    () => invalidInvoice || boltzLocked || !value || value === '',
+    [boltzLocked, invalidInvoice, value],
   );
 
   return (
@@ -159,19 +159,19 @@ export const InvoiceForm: React.FC = () => {
         )}
       </div>
 
-      <Button
-        text={t(translations.common.buttons.continue)}
-        onClick={onContinueClick}
-        disabled={isSubmitDisabled}
-        style={ButtonStyle.secondary}
-        className="mt-10 w-full"
-        dataAttribute="funding-send-address-confirm"
-      />
-
-      {fastBtcLocked && (
+      {boltzLocked ? (
         <ErrorBadge
           level={ErrorLevel.Warning}
-          message={t(translations.maintenanceMode.fastBtc)}
+          message={t(translations.maintenanceMode.boltz)}
+        />
+      ) : (
+        <Button
+          text={t(translations.common.buttons.continue)}
+          onClick={onContinueClick}
+          disabled={isSubmitDisabled}
+          style={ButtonStyle.secondary}
+          className="mt-10 w-full"
+          dataAttribute="funding-send-address-confirm"
         />
       )}
     </div>

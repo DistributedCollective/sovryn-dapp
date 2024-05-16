@@ -1129,16 +1129,16 @@
             }
         },
         "networkChooser": {
-          "send": {
-            "title": "Select the network you are transferring assets to"
-          },
-          "receive": {
-            "title": "Select the network you are sending assets from"
-          },
-          "networks": {
-            "bitcoin": "Bitcoin",
-            "lightning": "Lightning"
-          }
+            "send": {
+                "title": "Select the network you are transferring assets to"
+            },
+            "receive": {
+                "title": "Select the network you are sending assets from"
+            },
+            "networks": {
+                "bitcoin": "Bitcoin",
+                "lightning": "Lightning"
+            }
         },
         "receiveInstructions": {
             "title": "Instructions",
@@ -1215,78 +1215,120 @@
     },
 
     "boltz": {
-      "sendInstructions": {
-        "title": "Instructions",
-        "line1": "Lightning Network swaps are powered by <0>Boltz</0>",
-        "line2": "Allow up to 5 minutes to process",
-        "line3": "If your transaction takes longer than 5 minutes please <0>create a support ticket</0>",
-        "line1cta": "Boltz",
-        "line3cta": "create a support ticket"
-      },
-      "send": {
-        "amount": {
-          "title": "Enter amount of BTC to transfer from Rootstock to Lightning",
-          "description": "This is the amount that will be sent to the Lightning Network.",
-          "amountLabel": "Transfer"
+        "sendInstructions": {
+            "title": "Instructions",
+            "line1": "Lightning Network swaps are powered by <0>Boltz</0>",
+            "line2": "Allow up to 5 minutes to process",
+            "line3": "If your transaction takes longer than 5 minutes please <0>create a support ticket</0>",
+            "line1cta": "Boltz",
+            "line3cta": "create a support ticket"
         },
-        "invoice": {
-          "title": "Paste Lightning Invoice",
-          "description": "In the destination Lightning wallet, create, copy and paste an invoice for the following amount:",
-          "invoiceLabel": "Invoice",
-          "invalidInvoice": {
-            "INVALID": "Invalid invoice. Double-check format or amount",
-            "EXPIRED": "Invoice expired",
-            "BALANCE": "Invoice amount is different than the amount specified in the transfer"
-          }
+        "receiveInstructions": {
+            "title": "Instructions",
+            "line1": "Lightning Network swaps are powered by <0>Boltz</0>",
+            "line2": "Allow up to 5 minutes to process",
+            "line3": "If your transaction takes longer than 5 minutes please <0>create a support ticket</0>",
+            "line1cta": "Boltz",
+            "line3cta": "create a support ticket"
         },
-        "limits": {
-          "title": "Transfer policies",
-          "minimumAmount": "Transfer minimum",
-          "maximumAmount": "Transfer maximum",
-          "serviceFee": "Conversion fee ({{rate}}%)",
-          "networkFee": "Network fee"
+        "send": {
+            "amount": {
+                "title": "Enter amount of BTC to transfer from Rootstock to Lightning",
+                "description": "This is the amount that will be sent to the Lightning Network.",
+                "amountLabel": "Transfer"
+            },
+            "invoice": {
+                "title": "Paste Lightning Invoice",
+                "description": "In the destination Lightning wallet, create, copy and paste an invoice for the following amount:",
+                "invoiceLabel": "Invoice",
+                "invalidInvoice": {
+                    "INVALID": "Invalid invoice. Double-check format or amount",
+                    "EXPIRED": "Invoice expired",
+                    "BALANCE": "Invoice amount is different than the amount specified in the transfer"
+                }
+            },
+            "limits": {
+                "title": "Transfer policies",
+                "minimumAmount": "Transfer minimum",
+                "maximumAmount": "Transfer maximum",
+                "serviceFee": "Conversion fee ({{rate}}%)",
+                "networkFee": "Network fee"
+            },
+            "confirmationScreens": {
+                "titles": {
+                    "default": "Keep this modal open until the transfer is complete",
+                    "error": "Transfer failed",
+                    "success": "Transfer complete",
+                    "pending": "Transfer processing..."
+                },
+                "descriptions": {
+                    "default": "Transfer details"
+                },
+                "title": "Keep this modal open until the transfer is complete",
+                "description": "Transfer details",
+                "from": "From",
+                "sending": "Sending",
+                "conversionFee": "Conversion Fee",
+                "networkFee": "Network Fee",
+                "receiving": "Amount received",
+                "rootstockTx": "Rootstock TXID",
+                "refundTx": "Refund TXID",
+                "lightningInvoiceStatus": "Lightning invoice status"
+            },
+            "txDialog": {
+                "title": "Send Bitcoin to the Lightning Network"
+            },
+            "boltzStatus": {
+                "invoiceSet": "Invoice set",
+                "invoicePending": "Invoice pending",
+                "invoicePaid": "Paid",
+                "invoiceSettled": "Settled",
+                "invoiceExpired": "Expired",
+                "invoiceFailedToPay": "Failed to Pay",
+                "swapCreated": "Swap Created",
+                "swapExpired": "Swap Expired",
+                "txMempool": "Transaction in mempool",
+                "txConfirmed": "Transaction confirmed",
+                "txFailed": "Transaction failed",
+                "txClaimed": "Claimed",
+                "txRefunded": "Refunded",
+                "minerFeePaid": "Miner fee paid"
+            }
         },
-        "confirmationScreens": {
-          "titles": {
-            "default": "Keep this modal open until the transfer is complete",
-            "error": "Transfer failed",
-            "success": "Transfer complete",
-            "pending": "Transfer processing..."
-          },
-          "descriptions": {
-            "default": "Transfer details"
-          },
-          "title": "Keep this modal open until the transfer is complete",
-          "description": "Transfer details",
-          "from": "From",
-          "sending": "Sending",
-          "conversionFee": "Conversion Fee",
-          "networkFee": "Network Fee",
-          "receiving": "Amount received",
-          "rootstockTx": "Rootstock TXID",
-          "refundTx": "Refund TXID",
-          "lightningInvoiceStatus": "Lightning invoice status"
-        },
-        "txDialog": {
-          "title": "Send Bitcoin to the Lightning Network"
-        },
-        "boltzStatus": {
-          "invoiceSet": "Invoice set",
-          "invoicePending": "Invoice pending",
-          "invoicePaid": "Paid",
-          "invoiceSettled": "Settled",
-          "invoiceExpired": "Expired",
-          "invoiceFailedToPay": "Failed to Pay",
-          "swapCreated": "Swap Created",
-          "swapExpired": "Swap Expired",
-          "txMempool": "Transaction in mempool",
-          "txConfirmed": "Transaction confirmed",
-          "txFailed": "Transaction failed",
-          "txClaimed": "Claimed",
-          "txRefunded": "Refunded",
-          "minerFeePaid": "Miner fee paid"
+        "receive": {
+            "finalize": "Finalize",
+            "amount": {
+                "title": "Enter amount of BTC to transfer to Rootstock",
+                "amountLabel": "Transfer"
+            },
+            "txDialog": {
+                "title": "Receive Bitcoin from Lightning Network"
+            },
+            "addressForm": {
+                "title": "Pay this Lightning invoice"
+            },
+            "confirmationScreens": {
+                "titles": {
+                    "default": "Keep this modal open until the transfer is complete",
+                    "error": "Transfer failed",
+                    "success": "Transfer complete",
+                    "pending": "Transfer processing...",
+                    "confirmed": "Click below to finilize your BTC transfer"
+                },
+                "descriptions": {
+                    "default": "Transfer details"
+                },
+                "description": "Transfer details",
+                "to": "To",
+                "receiving": "Receiving",
+                "conversionFee": "Conversion Fee",
+                "networkFee": "Network Fee",
+                "amountSent": "Amount sent",
+                "lightningInvoice": "Lightning invoice",
+                "rootstockTx": "Rootstock TXID",
+                "paid": "Paid"
+            }
         }
-      }
     },
 
     "rewardPage": {

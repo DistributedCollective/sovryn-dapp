@@ -6,11 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Accordion, Button, ButtonStyle, Paragraph } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
-import {
-  BITCOIN,
-  TOKEN_RENDER_PRECISION,
-  USD,
-} from '../../../../../constants/currencies';
+import { BITCOIN, USD } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
 import {
   BTC_VALUE_PRECISION,
@@ -99,8 +95,8 @@ export const ProtocolData: FC = () => {
                 <div className="text-gray-10 text-sm sm:font-medium font-semibold">
                   <AmountRenderer
                     value={lockedData.total_btc}
-                    suffix={USD}
-                    precision={TOKEN_RENDER_PRECISION}
+                    suffix={BITCOIN}
+                    precision={BTC_VALUE_PRECISION}
                   />
                 </div>
 

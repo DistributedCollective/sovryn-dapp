@@ -8,7 +8,8 @@ export const MAX_TICK = 831818;
 export const MAX_SQRT_PRICE: BigNumber = BigNumber.from(
   '21267430153580247136652501917186561138',
 ).sub(1);
-export const MIN_SQRT_PRICE: BigNumber = BigNumber.from('65538').sub(1);
+export const MIN_SQRT_PRICE: BigNumber = BigNumber.from('7000000').sub(1);
+// export const MIN_SQRT_PRICE: BigNumber = BigNumber.from('65538').sub(1);
 export const MAX_LIQ = BigNumber.from(2).pow(128).sub(1);
 
 export interface ChainSpec {

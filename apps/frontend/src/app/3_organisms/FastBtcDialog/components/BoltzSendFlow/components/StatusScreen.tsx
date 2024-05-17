@@ -40,6 +40,7 @@ type StatusScreenProps = {
   txHash?: string;
   refundTxHash?: string;
   txStatus: StatusType;
+  refundTxStatus?: StatusType;
   boltzStatus?: Status;
   swapData?: SubmarineSwapResponse;
   error?: string;
@@ -54,6 +55,7 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
   amount,
   txHash,
   txStatus,
+  refundTxStatus,
   refundTxHash,
   boltzStatus,
   swapData,
@@ -185,9 +187,18 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       ].includes(boltzStatus as BoltzTxStatus),
     [boltzStatus, txStatus],
   );
-  const disabledButton = useMemo(() => boltzLocked, [boltzLocked]);
+  const disabledButton = useMemo(
+    () =>
+      boltzLocked ||
+      txStatus === StatusType.pending ||
+      refundTxStatus === StatusType.pending,
+    [boltzLocked, refundTxStatus, txStatus],
+  );
   const buttonTitle = useMemo(() => {
-    if ([BoltzTxStatus.txClaimed].includes(boltzStatus as BoltzTxStatus)) {
+    if (
+      [BoltzTxStatus.txClaimed].includes(boltzStatus as BoltzTxStatus) ||
+      refundTxStatus === StatusType.success
+    ) {
       return t(translations.common.buttons.done);
     }
     if (
@@ -200,10 +211,13 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
       return t(translations.common.buttons.confirm);
     }
     return t(translations.common.buttons.done);
-  }, [boltzStatus, txStatus]);
+  }, [boltzStatus, refundTxStatus, txStatus]);
 
   const handleButtonClick = useCallback(() => {
-    if ([BoltzTxStatus.txClaimed].includes(boltzStatus as BoltzTxStatus)) {
+    if (
+      [BoltzTxStatus.txClaimed].includes(boltzStatus as BoltzTxStatus) ||
+      refundTxStatus === StatusType.success
+    ) {
       return onClose();
     }
 
@@ -223,15 +237,29 @@ export const StatusScreen: React.FC<StatusScreenProps> = ({
     }
 
     onClose();
-  }, [boltzStatus, onClose, onConfirm, onRefund, onRetry, txStatus]);
+  }, [
+    boltzStatus,
+    onClose,
+    onConfirm,
+    onRefund,
+    onRetry,
+    refundTxStatus,
+    txStatus,
+  ]);
 
   return (
     <div className="text-center">
       <Heading type={HeadingType.h2} className="font-medium mb-6">
-        {getTitle(txStatus, boltzStatus!)}
+        {getTitle(txStatus, boltzStatus!, refundTxStatus)}
       </Heading>
 
-      <div className="mb-6">{getDescription(txStatus, boltzStatus!)}</div>
+      <div className="mb-6">
+        {getDescription(
+          refundTxStatus ?? txStatus,
+          boltzStatus!,
+          refundTxStatus,
+        )}
+      </div>
 
       <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">
         {items.map(({ label, value }, index) => (

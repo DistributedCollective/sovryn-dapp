@@ -1261,7 +1261,10 @@
                     "default": "Keep this modal open until the transfer is complete",
                     "error": "Transfer failed",
                     "success": "Transfer complete",
-                    "pending": "Transfer processing..."
+                    "pending": "Transfer processing...",
+                    "refundSuccess": "Refund complete",
+                    "refundPending": "Refund pending",
+                    "refundError": "Refund failed"
                 },
                 "descriptions": {
                     "default": "Transfer details"

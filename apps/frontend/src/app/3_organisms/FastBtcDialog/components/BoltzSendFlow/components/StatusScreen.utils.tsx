@@ -10,12 +10,28 @@ import { Status, BoltzTxStatus } from '../../../utils/boltz/boltz.types';
 
 const translation = translations.boltz.send.confirmationScreens;
 
-export const getTitle = (txStatus: StatusType, boltzStatus: Status) => {
+export const getTitle = (
+  txStatus: StatusType,
+  boltzStatus: Status,
+  refundStatus?: StatusType,
+) => {
   const failedTx = [
     BoltzTxStatus.failedToPay,
     BoltzTxStatus.txLockupFailed,
     BoltzTxStatus.txFailed,
   ].includes(boltzStatus as BoltzTxStatus);
+
+  if (refundStatus === StatusType.success) {
+    return t(translation.titles.refundSuccess);
+  }
+
+  if (refundStatus === StatusType.pending) {
+    return t(translation.titles.refundPending);
+  }
+
+  if (refundStatus === StatusType.error) {
+    return t(translation.titles.refundError);
+  }
 
   if (txStatus === StatusType.pending) {
     return t(translation.titles.pending);
@@ -42,12 +58,22 @@ export const getTitle = (txStatus: StatusType, boltzStatus: Status) => {
   return t(translation.titles.pending);
 };
 
-export const getDescription = (txStatus: StatusType, boltzStatus: Status) => {
+export const getDescription = (
+  txStatus: StatusType,
+  boltzStatus: Status,
+  refundStatus?: StatusType,
+) => {
   const failedTx = [
     BoltzTxStatus.failedToPay,
     BoltzTxStatus.txLockupFailed,
     BoltzTxStatus.txFailed,
   ].includes(boltzStatus as BoltzTxStatus);
+
+  if (refundStatus) {
+    return (
+      <StatusIcon status={refundStatus} dataAttribute="funding-send-status" />
+    );
+  }
 
   if (txStatus === StatusType.pending) {
     return (

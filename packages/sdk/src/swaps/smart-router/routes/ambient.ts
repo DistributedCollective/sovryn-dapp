@@ -186,6 +186,7 @@ export const ambientRoute: SwapRouteFunction = (
               poolPath[0],
               prev.amount,
             ]);
+
             return { amount: BigNumber.from(0), isBuy: true, impact: {} };
           });
         }

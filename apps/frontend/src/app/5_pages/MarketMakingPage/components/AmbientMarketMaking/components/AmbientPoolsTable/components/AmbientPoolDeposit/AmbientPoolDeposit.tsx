@@ -31,7 +31,10 @@ export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {
         style={ButtonStyle.primary}
         size={ButtonSize.small}
         text={t(translations.common.deposit)}
-        onClick={onClick}
+        onClick={e => {
+          e.stopPropagation();
+          onClick();
+        }}
         disabled={!account || depositLocked}
       />
 

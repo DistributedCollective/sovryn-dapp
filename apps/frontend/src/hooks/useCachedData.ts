@@ -41,16 +41,18 @@ export const useCachedData = <T>(
 
     let sub: Subscription;
 
-    sub = observeCall(`call:${chain}:${key}`).subscribe(e => {
-      if (isMounted()) {
-        setState({
-          ...e.result,
-          value: e.result.value ?? defaultValue ?? (null as T),
-        });
-      }
-    });
+    sub = observeCall(`call:${chain}:${key}:${txTrigger || ''}`).subscribe(
+      e => {
+        if (isMounted()) {
+          setState({
+            ...e.result,
+            value: e.result.value ?? defaultValue ?? (null as T),
+          });
+        }
+      },
+    );
 
-    startCall(`call:${chain}:${key}`, callback, {
+    startCall(`call:${chain}:${key}:${txTrigger || ''}`, callback, {
       ...options,
       blockNumber: 0,
     });

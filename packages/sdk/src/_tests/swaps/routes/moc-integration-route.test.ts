@@ -72,10 +72,13 @@ describe('Moc Integration Route', () => {
   });
 
   describe('approve', () => {
-    it('returns undefined for approval tx request', async () => {
+    it('returns data for approval tx request', async () => {
       await expect(
         route.approve(dllr, rbtc, constants.WeiPerEther, constants.AddressZero),
-      ).resolves.toBe(undefined);
+      ).resolves.toMatchObject({
+        to: expect.any(String),
+        data: expect.any(String),
+      });
     });
   });
 
@@ -83,7 +86,14 @@ describe('Moc Integration Route', () => {
     it('returns undefined for permit function', async () => {
       await expect(
         route.permit(moc, rbtc, constants.WeiPerEther, constants.AddressZero),
-      ).resolves.toBe(undefined);
+      ).resolves.toMatchObject({
+        approvalRequired: true,
+        typedData: expect.objectContaining({
+          domain: expect.any(Object),
+          types: expect.any(Object),
+          values: expect.any(Object),
+        }),
+      });
     });
   });
 
@@ -91,8 +101,8 @@ describe('Moc Integration Route', () => {
     it('builds swap tx data for DLLR -> RBTC', async () => {
       await expect(
         route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero, {
-          permitTransferFrom: FAKE_PERMIT_TRANSFER_FROM,
-          signature: FAKE_SIGNATURE,
+          typedDataValue: FAKE_PERMIT_TRANSFER_FROM,
+          typedDataSignature: FAKE_SIGNATURE,
         }),
       ).resolves.toMatchObject({
         to: expect.any(String),

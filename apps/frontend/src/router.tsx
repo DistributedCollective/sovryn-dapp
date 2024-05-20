@@ -66,8 +66,16 @@ const LeaderboardPage = loadable(
   () => import('./app/5_pages/LeaderboardPage/LeaderboardPage'),
 );
 
+const LeaderboardPointsPage = loadable(
+  () => import('./app/5_pages/LeaderboardPointsPage/LeaderboardPointsPage'),
+);
+
 const ClaimLpPage = loadable(
   () => import('./app/5_pages/ClaimLpPage/ClaimLpPage'),
+);
+
+const ClaimPowaPage = loadable(
+  () => import('./app/5_pages/ClaimPowaPage/ClaimPowaPage'),
 );
 
 const routes = [
@@ -113,11 +121,7 @@ const routes = [
       },
       {
         path: '/earn/market-making',
-        element: (
-          <CrocContextProvider>
-            <MarketMakingPage />
-          </CrocContextProvider>
-        ),
+        element: <MarketMakingPage />,
       },
       {
         path: '/earn',
@@ -158,12 +162,20 @@ const routes = [
         element: <LeaderboardPage />,
       },
       {
+        path: '/bob-lp-points',
+        element: <LeaderboardPointsPage />,
+      },
+      {
         path: '/stats',
         element: <ProtocolDataPage />,
       },
       {
         path: '/claim-lp',
         element: <ClaimLpPage />,
+      },
+      {
+        path: '/claim-POWA',
+        element: <ClaimPowaPage />,
       },
     ],
   },

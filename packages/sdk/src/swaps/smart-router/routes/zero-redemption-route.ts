@@ -21,6 +21,7 @@ import {
   hasEnoughAllowance,
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
+import { prepareERC2612Permit, preparePermitResponse } from '../utils/permit';
 
 export const zeroRedemptionSwapRoute: SwapRouteFunction = (
   provider: providers.Provider,
@@ -142,21 +143,26 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
           (await getAssetContract('DLLR', chainId)).address,
         )
       ) {
-        if (!options?.permit) {
+        if (!options?.typedDataValue || !options?.typedDataSignature) {
           throw makeError(
             `Permit is required for swap.`,
             SovrynErrorCode.UNKNOWN_ERROR,
           );
         }
 
+        const permit = preparePermitResponse(
+          options.typedDataValue,
+          options.typedDataSignature,
+        );
+
         const { rawPopulatedTransaction } =
           await populatable.redeemCollateralViaDLLR(
             Decimal.fromBigNumberString(amount.toString()),
-            options.permit,
+            permit,
           );
 
-        const gasLimit = rawPopulatedTransaction.gasLimit?.lt(800_000)
-          ? 800_000
+        const gasLimit = rawPopulatedTransaction.gasLimit?.lt(1_500_000)
+          ? 1_500_000
           : rawPopulatedTransaction.gasLimit;
 
         return {
@@ -237,11 +243,16 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
         areAddressesEqual(destination, constants.AddressZero)
       ) {
         return {
-          token: entry,
-          spender: (await getTroveManagerContract()).address,
-          owner: from,
-          value: amount,
-          ...overrides,
+          approvalRequired: false,
+          typedData: await prepareERC2612Permit(
+            provider,
+            entry,
+            from,
+            (
+              await getTroveManagerContract()
+            ).address,
+            amount.toString(),
+          ),
         };
       }
       return undefined;

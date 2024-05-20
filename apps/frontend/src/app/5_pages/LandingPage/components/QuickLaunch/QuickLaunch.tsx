@@ -99,7 +99,6 @@ export const QuickLaunch: FC = () => {
         url: () => navigate('/convert'),
         backgroundImage: runesBg,
         chains: [Chains.BOB],
-        disable: true,
       },
       {
         title: t(pageTranslations.quickLaunch.earnYield_BOB.title),

@@ -1,5 +1,32 @@
 # frontend
 
+## 1.1.3
+
+### Patch Changes
+
+- 44807e74: SOV-3813: Fix rounding issue on the dashboard
+- 6797b953: SOV-4139: BoB Spice leaderboard
+- cf0db3ba: SOV-4079: Fix staking extend timestamp
+- 5af37b02: SOV-3959: TEMP patch to prevent future LM "dead vestings"
+- e3348041: General POWA & Spice updates
+- 6797b953: Fix claim page date
+- Updated dependencies [e3348041]
+- Updated dependencies [05ffbb51]
+  - @sovryn/contracts@1.1.3
+  - @sovryn/ui@1.0.25
+
+## 1.1.2
+
+### Patch Changes
+
+- b702399f: SOV-4057: POWA Claim Page
+- 312a7f0d: SOV-4075: POWA/RBTC Pool
+- 98b527d4: Fix claim page date
+- Updated dependencies [b702399f]
+- Updated dependencies [312a7f0d]
+  - @sovryn/contracts@1.1.2
+  - @sovryn/sdk@1.0.3
+
 ## 1.1.1
 
 ### Patch Changes

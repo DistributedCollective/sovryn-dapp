@@ -32,26 +32,32 @@ const amount = 100;
 // { route: SwapRoute, quote: BigNumber }
 const result = await smartRouter.getBestQuote(ChainIds.RSK_MAINNET, xusdToken, sovToken, amount);
 
-// Check if we need to approve xusd token to be able to swap
-// approveTxData will return the transaction data to be signed by the user
-// In most cases it will only have `to` and `data` fields
-const approveTxData = await result.route.approve(xusdToken, sovToken, amount)
-if (approveTxData) {
-  // ask user to sign the transaction with approveTxData as data
-}
-
 // Check if we need to permit xusd token to be able to swap
 // permitTxData will return the permit data to be signed by the user
 const permitTxData = await result.route.permit(xusdToken, sovToken, amount)
-let signedPermit;
+let signedPermit: string | undefined;
 if (permitTxData) {
   // ask user to sign the transaction with permitTxData as data
   signedPermit = await signPermit(permitTxData);
 }
 
+// If permit is possible and approval is not required, we can skip the approval step
+if (!permitTxData || permitTxData?.approvalRequired) {
+  // Check if we need to approve xusd token to be able to swap
+  // approveTxData will return the transaction data to be signed by the user
+  // In most cases it will only have `to` and `data` fields
+  const approveTxData = await result.route.approve(xusdToken, sovToken, amount)
+  if (approveTxData) {
+    // ask user to sign the transaction with approveTxData as data
+  }
+}
+
 // Swap tokens
 const txData = await result.route.swap(xusdToken, sovToken, amount, {
-  permit: signedPermit,
+  // pass the permit data if permit is required
+  typedDataValue: permitTxData?.typedData?.values,
+  // pass signature if permit is required
+  typedDataSignature: signedPermit,
 });
 
 // Sign the transaction with the user wallet of your choosing and send it to the network

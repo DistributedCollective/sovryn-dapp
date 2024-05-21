@@ -278,6 +278,7 @@ const ConvertPage: FC = () => {
           fromWei(result.quote.toString()),
         );
         setQuote(quote);
+        setHasQuoteError(false);
       } catch {
         setHasQuoteError(true);
       }

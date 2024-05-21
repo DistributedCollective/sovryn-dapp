@@ -474,4 +474,6 @@ async function demo() {
   // await croc.poolEth(USDC).burnAmbientLiq(lpConduitPosition.seeds, [0.0001, 0.001], { lpConduit: USDC_ETH_LP_CONDUIT });
 }
 
+// use --tx param when calling this script to get encoded tx for multisig printed instead of execution:
+// yarn ts-node packages/sdex/src/examples/demo-concentrated.ts --tx
 demo();

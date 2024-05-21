@@ -106,7 +106,11 @@ export const Staking: FC = () => {
                   ))}
                 </div>
               ),
-              action: <WithdrawAllFees fees={earnedFees} refetch={refetch} />,
+              action: (
+                <div className="flex justify-end w-full md:w-auto h-full pt-3">
+                  <WithdrawAllFees fees={earnedFees} refetch={refetch} />
+                </div>
+              ),
               key: `all-fee`,
             },
           ]
@@ -124,11 +128,15 @@ export const Staking: FC = () => {
                 />
               ),
               action: (
-                <WithdrawLiquidFee
-                  amountToClaim={liquidSovClaimAmount.toBigNumber().toString()}
-                  lastWithdrawalInterval={lastWithdrawalInterval}
-                  refetch={refetchLiquidSovClaim}
-                />
+                <div className="flex justify-end w-full md:w-auto h-full pt-3">
+                  <WithdrawLiquidFee
+                    amountToClaim={liquidSovClaimAmount
+                      .toBigNumber()
+                      .toString()}
+                    lastWithdrawalInterval={lastWithdrawalInterval}
+                    refetch={refetchLiquidSovClaim}
+                  />
+                </div>
               ),
               key: `sov-liquid-fee`,
             },
@@ -147,13 +155,15 @@ export const Staking: FC = () => {
                 />
               ),
               action: (
-                <WithdrawLiquidOsFee
-                  amountToClaim={liquidOsSovClaimAmount
-                    .toBigNumber()
-                    .toString()}
-                  nextWithdrawTimestamp={nextWithdrawTimestamp}
-                  refetch={refetchLiquidOsSovClaim}
-                />
+                <div className="flex justify-end w-full md:w-auto h-full pt-3">
+                  <WithdrawLiquidOsFee
+                    amountToClaim={liquidOsSovClaimAmount
+                      .toBigNumber()
+                      .toString()}
+                    nextWithdrawTimestamp={nextWithdrawTimestamp}
+                    refetch={refetchLiquidOsSovClaim}
+                  />
+                </div>
               ),
               key: `${COMMON_SYMBOLS.SOV}-os-liquid-fee`,
             },

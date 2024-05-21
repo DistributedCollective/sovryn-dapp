@@ -132,7 +132,7 @@ export const StabilityPool: FC = () => {
           />
         ),
         action: (
-          <div className="flex flex-row gap-3 w-full">
+          <div className="flex justify-end w-full md:w-auto h-full pt-3">
             <Button
               type={ButtonType.button}
               style={ButtonStyle.secondary}
@@ -169,15 +169,17 @@ export const StabilityPool: FC = () => {
           />
         ),
         action: (
-          <Button
-            type={ButtonType.button}
-            style={ButtonStyle.secondary}
-            text={t(translations.rewardPage.stabilityPool.actions.withdraw)}
-            onClick={handleWithdraw}
-            disabled={claimDisabled || decimalic(sovGain).isZero()}
-            className="w-full lg:w-auto"
-            dataAttribute="stability-subsidies-withdraw"
-          />
+          <div className="flex justify-end w-full md:w-auto h-full pt-3">
+            <Button
+              type={ButtonType.button}
+              style={ButtonStyle.secondary}
+              text={t(translations.rewardPage.stabilityPool.actions.withdraw)}
+              onClick={handleWithdraw}
+              disabled={claimDisabled || decimalic(sovGain).isZero()}
+              className="w-full lg:w-auto"
+              dataAttribute="stability-subsidies-withdraw"
+            />
+          </div>
         ),
       },
     ];

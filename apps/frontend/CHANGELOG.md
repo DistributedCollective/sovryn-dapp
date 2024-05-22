@@ -1,5 +1,17 @@
 # frontend
 
+## 1.1.4
+
+### Patch Changes
+
+- 7b1a27d3: SOV-3982: Fix button location Rewards page
+- b31fedd1: SOV-4166: Fix for TVL RSK label
+- 865976cb: SOV-4161: Reset quote error
+- Updated dependencies [5fa0447b]
+- Updated dependencies [a53308e1]
+  - @sovryn/ui@1.0.26
+  - @sovryn/sdk@1.0.5
+
 ## 1.1.3
 
 ### Patch Changes

@@ -43,16 +43,8 @@ export const getTooltipPosition = (
     tooltipWidth / 2 + OFFSET_DEFAULT;
 
   const getPosition = (position: TooltipPlacement) => {
-    if (
-      !canOpenAbove &&
-      !canOpenUnder &&
-      !canOpenLeft &&
-      !canOpenRight &&
-      !canOpenVerticalCenter &&
-      !canOpenVerticalStart &&
-      !canOpenVerticalEnd
-    ) {
-      return placement;
+    if (!canOpenAbove && !canOpenUnder && !canOpenLeft && !canOpenRight) {
+      return placement || TooltipPlacement.top;
     }
     switch (position) {
       case TooltipPlacement.top:

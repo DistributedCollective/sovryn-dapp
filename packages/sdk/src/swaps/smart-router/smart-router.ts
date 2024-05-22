@@ -67,7 +67,15 @@ export class SmartRouter {
     ).then(results =>
       results
         .filter(result => result.status === 'fulfilled')
-        .map(result => (result as PromiseFulfilledResult<any>).value),
+        .map(
+          result =>
+            (
+              result as PromiseFulfilledResult<{
+                route: SwapRoute;
+                quote: BigNumber;
+              }>
+            ).value,
+        ),
     );
 
     const sortedQuotes = quotes.sort((a, b) =>

@@ -67,7 +67,7 @@ export class SmartRouter {
     ).then(results =>
       results
         .filter(result => result.status === 'fulfilled')
-        .map(result => result.value),
+        .map(result => (result as PromiseFulfilledResult<any>).value),
     );
 
     const sortedQuotes = quotes.sort((a, b) =>

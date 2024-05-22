@@ -58,14 +58,24 @@ export class SmartRouter {
       destination,
     );
 
-    const quotes = await Promise.all(
-      routes.map(async route => {
-        const quote = await route.quote(entry, destination, amount).catch();
-        if (!quote) {
-          return { route, quote: BigNumber.from(0) };
-        }
-        return { route, quote };
-      }),
+    const quotes = await Promise.allSettled(
+      routes.map(route =>
+        route
+          .quote(entry, destination, amount)
+          .then(quote => ({ route, quote })),
+      ),
+    ).then(results =>
+      results
+        .filter(result => result.status === 'fulfilled')
+        .map(
+          result =>
+            (
+              result as PromiseFulfilledResult<{
+                route: SwapRoute;
+                quote: BigNumber;
+              }>
+            ).value,
+        ),
     );
 
     const sortedQuotes = quotes.sort((a, b) =>

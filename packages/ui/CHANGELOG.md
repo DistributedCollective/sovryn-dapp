@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.26
+
+### Patch Changes
+
+- 5fa0447b: SOV-3938: Fix tooltip positioning
+
 ## 1.0.25
 
 ### Patch Changes

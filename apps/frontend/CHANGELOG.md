@@ -1,5 +1,11 @@
 # frontend
 
+## 1.1.5
+
+### Patch Changes
+
+- 76dae6ee: Bump fastbtc-in fees
+
 ## 1.1.4
 
 ### Patch Changes

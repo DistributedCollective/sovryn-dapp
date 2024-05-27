@@ -3,7 +3,6 @@ import React, { FC, useMemo } from 'react';
 import classNames from 'classnames';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { HelperButton, SimpleTable, SimpleTableRow } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -14,6 +13,7 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../../../../../constants/currencies';
 import { translations } from '../../../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
 import { decimalic } from '../../../../../../../utils/math';
 import { useGetAccumulatedReward } from '../../../../hooks/useGetAccumulatedReward';
 import { useGetExpectedTokenAmount } from '../../../../hooks/useGetExpectedTokenAmount';
@@ -21,14 +21,13 @@ import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
 import { AdjustType } from '../../AdjustAndDepositModal.types';
 import { useGetPoolBalanceAndRewards } from '../../hooks/useGetPoolBalanceAndRewards';
-import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
 
 const pageTranslations =
   translations.marketMakingPage.adjustAndDepositModal.newPoolStatistics;
 
 type NewPoolStatisticsProps = {
   value: string;
-  asset: SupportedTokens;
+  asset: string;
   decimalAmount: Decimal;
   isInitialDeposit: boolean;
   adjustType: AdjustType;

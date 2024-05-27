@@ -1447,7 +1447,10 @@
             },
             "rangeWidth": "Range width",
             "minPrice": "Min price",
-            "maxPrice": "Max price"
+            "maxPrice": "Max price",
+            "form": {
+                "outOfRangeWarning": "The market is outside your specified range. Single-asset deposit only."
+            }
         },
         "withdrawModal": {
             "title": "Withdraw liquidity",

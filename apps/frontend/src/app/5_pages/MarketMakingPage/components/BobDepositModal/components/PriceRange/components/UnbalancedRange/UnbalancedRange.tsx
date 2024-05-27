@@ -26,6 +26,8 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     setLowerBoundaryPercentage,
     setMaximumPrice,
     setUpperBoundaryPercentage,
+    setIsFirstAssetOutOfRange,
+    setIsSecondAssetOutOfRange,
     spotPrice,
   } = useDepositContext();
 
@@ -101,6 +103,30 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
   const onMaxPricePlusClick = useCallback(() => {
     updateRange(true, true);
   }, [updateRange]);
+
+  const isInputADisabled = useMemo(() => {
+    if (minimumPrice && maximumPrice && currentPrice) {
+      return minimumPrice > currentPrice && maximumPrice > currentPrice;
+    }
+    return false;
+  }, [currentPrice, maximumPrice, minimumPrice]);
+
+  const isInputBDisabled = useMemo(() => {
+    if (minimumPrice && maximumPrice && currentPrice) {
+      return minimumPrice < currentPrice && maximumPrice < currentPrice;
+    }
+    return false;
+  }, [currentPrice, maximumPrice, minimumPrice]);
+
+  useEffect(() => {
+    setIsFirstAssetOutOfRange(isInputADisabled);
+    setIsSecondAssetOutOfRange(isInputBDisabled);
+  }, [
+    isInputADisabled,
+    isInputBDisabled,
+    setIsFirstAssetOutOfRange,
+    setIsSecondAssetOutOfRange,
+  ]);
 
   useEffect(() => {
     const calculatedMinimumPrice = calculatePrice(lowerBoundaryPercentage);

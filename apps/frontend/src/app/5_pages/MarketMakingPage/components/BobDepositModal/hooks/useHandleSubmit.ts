@@ -59,6 +59,8 @@ export const useHandleSubmit = (
     isBalancedRange,
     rangeWidth,
     usesBaseToken,
+    isFirstAssetOutOfRange,
+    isSecondAssetOutOfRange,
   } = useDepositContext();
 
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
@@ -68,13 +70,17 @@ export const useHandleSubmit = (
       return;
     }
 
-    const firstAssetBigNumberAmount = Decimal.from(firstAssetValue)
-      .asUnits(await poolTokens.tokenA.decimals)
-      .toBigNumber();
+    const firstAssetBigNumberAmount = isFirstAssetOutOfRange
+      ? BigNumber.from(0)
+      : Decimal.from(firstAssetValue)
+          .asUnits(await poolTokens.tokenA.decimals)
+          .toBigNumber();
 
-    const secondAssetBigNumberAmount = Decimal.from(secondAssetValue)
-      .asUnits(await poolTokens.tokenB.decimals)
-      .toBigNumber();
+    const secondAssetBigNumberAmount = isSecondAssetOutOfRange
+      ? BigNumber.from(0)
+      : Decimal.from(secondAssetValue)
+          .asUnits(await poolTokens.tokenB.decimals)
+          .toBigNumber();
 
     const transactions: Transaction[] = [];
 
@@ -202,6 +208,8 @@ export const useHandleSubmit = (
     onComplete,
     upperBoundaryPrice,
     usesBaseToken,
+    isFirstAssetOutOfRange,
+    isSecondAssetOutOfRange,
   ]);
 
   return onSubmit;

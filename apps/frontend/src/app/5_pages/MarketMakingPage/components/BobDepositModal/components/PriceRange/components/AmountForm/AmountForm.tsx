@@ -12,6 +12,7 @@ import { useIsMounted } from '../../../../../../../../../hooks/useIsMounted';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { calculateSecondaryDepositQty } from '../../../../../../../BobAmmPage/ambient-utils';
 import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
+import { DEFAULT_RANGE_WIDTH } from '../../../../BobDepositModal.constants';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { useGetMaxDeposit } from '../../../../hooks/useGetMaxDeposit';
 import { useGetPoolInfo } from '../../../../hooks/useGetPoolInfo';
@@ -41,6 +42,13 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
     isBalancedRange,
     rangeWidth,
     usesBaseToken,
+    isFirstAssetOutOfRange,
+    isSecondAssetOutOfRange,
+    setIsFirstAssetOutOfRange,
+    setIsSecondAssetOutOfRange,
+    setRangeWidth,
+    setLowerBoundaryPercentage,
+    setUpperBoundaryPercentage,
   } = useDepositContext();
 
   const depositSkew = useMemo(
@@ -164,28 +172,36 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
   );
 
   const handleRangeChange = useCallback(async () => {
-    if (isBalancedRange) {
-      if (usesBaseToken) {
-        if (firstAssetValue === '0') {
-          return;
-        }
-        const secondAssetQuantity = await getOtherTokenQuantity(
-          firstAssetValue,
-          'A',
-          true,
-        );
-        setSecondAssetValue(secondAssetQuantity);
-      } else {
-        if (firstAssetValue === '0') {
-          return;
-        }
-        const firstAssetQuantity = await getOtherTokenQuantity(
-          secondAssetValue,
-          'B',
-          true,
-        );
-        setFirstAssetValue(firstAssetQuantity);
+    if (!isBalancedRange) {
+      return;
+    }
+
+    if (usesBaseToken) {
+      if (firstAssetValue === '0') {
+        return;
       }
+      const secondAssetQuantity = await getOtherTokenQuantity(
+        firstAssetValue,
+        'A',
+        true,
+      );
+      if (secondAssetQuantity === null) {
+        return;
+      }
+      setSecondAssetValue(secondAssetQuantity);
+    } else {
+      if (secondAssetValue === '0') {
+        return;
+      }
+      const firstAssetQuantity = await getOtherTokenQuantity(
+        secondAssetValue,
+        'B',
+        true,
+      );
+      if (firstAssetQuantity === null) {
+        return;
+      }
+      setFirstAssetValue(firstAssetQuantity);
     }
   }, [
     isBalancedRange,
@@ -199,9 +215,21 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
 
   useEffect(() => {
     if (isBalancedRange) {
+      setIsFirstAssetOutOfRange(false);
+      setIsSecondAssetOutOfRange(false);
+      setLowerBoundaryPercentage(DEFAULT_RANGE_WIDTH * -1);
+      setUpperBoundaryPercentage(DEFAULT_RANGE_WIDTH);
       handleRangeChange();
     }
-  }, [minimumPrice, maximumPrice, isBalancedRange, handleRangeChange]);
+  }, [
+    handleRangeChange,
+    isBalancedRange,
+    setRangeWidth,
+    setIsFirstAssetOutOfRange,
+    setIsSecondAssetOutOfRange,
+    setLowerBoundaryPercentage,
+    setUpperBoundaryPercentage,
+  ]);
 
   return (
     <>
@@ -226,7 +254,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
           label={t(translations.common.amount)}
           className="max-w-none"
           unit={<AssetRenderer asset={base} />}
-          disabled={!account}
+          disabled={!account || isFirstAssetOutOfRange}
           invalid={isFirstAssetValueInvalid}
           placeholder="0"
         />
@@ -235,6 +263,16 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
             level={ErrorLevel.Critical}
             message={t(translations.common.invalidAmountError)}
             dataAttribute="bob-deposit-base-amount-error"
+          />
+        )}
+        {isFirstAssetOutOfRange && !isBalancedRange && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(
+              translations.bobMarketMakingPage.depositModal.form
+                .outOfRangeWarning,
+            )}
+            dataAttribute="bob-deposit-base-amount-warning"
           />
         )}
       </FormGroup>
@@ -260,7 +298,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
           label={t(translations.common.amount)}
           className="max-w-none"
           unit={<AssetRenderer asset={quote} />}
-          disabled={!account}
+          disabled={!account || isSecondAssetOutOfRange}
           invalid={isSecondAssetValueInvalid}
           placeholder="0"
         />
@@ -269,6 +307,16 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
             level={ErrorLevel.Critical}
             message={t(translations.common.invalidAmountError)}
             dataAttribute="bob-deposit-quote-amount-error"
+          />
+        )}
+        {isSecondAssetOutOfRange && !isBalancedRange && (
+          <ErrorBadge
+            level={ErrorLevel.Warning}
+            message={t(
+              translations.bobMarketMakingPage.depositModal.form
+                .outOfRangeWarning,
+            )}
+            dataAttribute="bob-deposit-quote-amount-warning"
           />
         )}
       </FormGroup>

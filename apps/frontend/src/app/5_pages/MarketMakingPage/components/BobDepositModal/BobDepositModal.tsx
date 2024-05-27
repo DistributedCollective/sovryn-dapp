@@ -47,11 +47,17 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
     secondAssetValue,
     minimumPrice,
     maximumPrice,
+    setMinimumPrice,
+    setMaximumPrice,
     setFirstAssetValue,
     setSecondAssetValue,
     setIsBalancedRange,
     setRangeWidth,
     setMaximumSlippage,
+    setLowerBoundaryPercentage,
+    setUpperBoundaryPercentage,
+    setIsFirstAssetOutOfRange,
+    setIsSecondAssetOutOfRange,
   } = useDepositContext();
   const { account } = useAccount();
   const { checkMaintenance, States } = useMaintenance();
@@ -72,14 +78,26 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
     setIsBalancedRange(true);
     setRangeWidth(DEFAULT_RANGE_WIDTH);
     setMaximumSlippage(DEFAULT_SLIPPAGE);
+    setMinimumPrice(0);
+    setMaximumPrice(0);
+    setLowerBoundaryPercentage(DEFAULT_RANGE_WIDTH * -1);
+    setUpperBoundaryPercentage(DEFAULT_RANGE_WIDTH);
+    setIsFirstAssetOutOfRange(false);
+    setIsSecondAssetOutOfRange(false);
   }, [
     onClose,
     setFirstAssetValue,
     setSecondAssetValue,
+    setMinimumPrice,
+    setMaximumPrice,
     setHasDisclaimerBeenChecked,
     setIsBalancedRange,
     setRangeWidth,
     setMaximumSlippage,
+    setLowerBoundaryPercentage,
+    setUpperBoundaryPercentage,
+    setIsFirstAssetOutOfRange,
+    setIsSecondAssetOutOfRange,
   ]);
 
   const handleSubmit = useHandleSubmit(base, quote, onComplete);

@@ -16,7 +16,6 @@ type InputProps = {
 
 export const Input: FC<InputProps> = ({
   label,
-  value,
   text,
   range,
   onMinusClick,
@@ -36,7 +35,7 @@ export const Input: FC<InputProps> = ({
         value={text}
         className="text-sm font-medium text-gray-10"
         decimals={decimals}
-        precision={9}
+        precision={6}
         asIf
       />
       <Button

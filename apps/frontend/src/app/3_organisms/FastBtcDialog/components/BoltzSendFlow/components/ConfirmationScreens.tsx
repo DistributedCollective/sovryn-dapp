@@ -97,10 +97,7 @@ export const ConfirmationScreens: React.FC<ConfirmationScreensProps> = ({
         return;
       }
 
-      const value = decimalic(swap.expectedAmount)
-        .sub(1) // forces tx to fail, remove for production
-        .div(1e8)
-        .toBigNumber();
+      const value = decimalic(swap.expectedAmount).div(1e8).toBigNumber();
 
       const data = await boltz.getContracts();
       const etherSwapAddress = data?.rsk.swapContracts.EtherSwap;

@@ -18,7 +18,9 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
   const quoteToken = useTokenDetailsByAsset(pool.quote, pool.chainId);
 
   const { value: positions, loading } = useCachedData(
-    `user-pools-balance/${baseToken?.address}/${quoteToken?.address}/${pool.poolIndex}/${account}`,
+    `user-pools-balance/${baseToken?.address}/${quoteToken?.address}/${
+      pool.poolIndex
+    }/${account}/${croc ? '' : 'croc'}`,
     chainId,
     async () => {
       if (

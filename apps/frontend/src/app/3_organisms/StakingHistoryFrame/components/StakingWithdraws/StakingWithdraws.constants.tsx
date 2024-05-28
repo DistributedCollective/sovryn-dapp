@@ -36,7 +36,7 @@ export const COLUMNS_CONFIG = [
     sortable: true,
   },
   {
-    id: 'penalty',
+    id: 'slashedAmount',
     title: t(translations.stakingHistory.unstakingPenalty),
     cellRenderer: (tx: StakingWithdrawItem) => (
       <AmountRenderer

@@ -208,7 +208,7 @@ input Block_height {
 
 scalar Bytes
 
-"A FeeChange represents an update to the swap fee setting on a given CrocSwap\nliquidity pool.\n"
+"A FeeChange represents an update to the swap fee setting on a given SdexSwap\nliquidity pool.\n"
 type FeeChange {
   block: BigInt!
   callIndex: Int!
@@ -301,7 +301,7 @@ enum FeeChange_orderBy {
   transactionHash
 }
 
-"A KnockoutCross is an exact copy of the data emitted in a KnockoutCross event\nemitted by the CrocSwap DEX. There is an exact 1:1 correspondence between\nemitted events and KnockoutCross entities created by the subgraph.\n"
+"A KnockoutCross is an exact copy of the data emitted in a KnockoutCross event\nemitted by the SdexSwap DEX. There is an exact 1:1 correspondence between\nemitted events and KnockoutCross entities created by the subgraph.\n"
 type KnockoutCross {
   block: BigInt!
   feeMileage: BigInt!
@@ -442,7 +442,7 @@ enum LatestIndex_orderBy {
   id
 }
 
-"A LiquidityChange entity represents a single modification to a single\nliquidity position made on CrocSwap. LiquidityChanges are categorized\naccording to their changeType, which can be equal to mint, burn, harvest,\nclaim, or recover.\n"
+"A LiquidityChange entity represents a single modification to a single\nliquidity position made on SdexSwap. LiquidityChanges are categorized\naccording to their changeType, which can be equal to mint, burn, harvest,\nclaim, or recover.\n"
 type LiquidityChange {
   askTick: Int
   baseFlow: BigInt
@@ -673,7 +673,7 @@ enum OrderDirection {
   desc
 }
 
-"A Pool represents a single liquidity pool on CrocSwap, which is uniquely\nspecified by a base token, a quote token, and a poolIdx. The ID of the Pool\nis the same as the poolHash used internally in CrocSwap contracts.\n"
+"A Pool represents a single liquidity pool on SdexSwap, which is uniquely\nspecified by a base token, a quote token, and a poolIdx. The ID of the Pool\nis the same as the poolHash used internally in SdexSwap contracts.\n"
 type Pool {
   base: Bytes!
   blockCreate: BigInt!
@@ -1397,7 +1397,7 @@ type Subscription {
   ): [UserBalance!]!
 }
 
-"A Swap entity represents an atomic swap of a base token for a quote token\nmade on either CrocSwap or Uniswap V3.\n"
+"A Swap entity represents an atomic swap of a base token for a quote token\nmade on either SdexSwap or Uniswap V3.\n"
 type Swap {
   baseFlow: BigInt!
   block: BigInt!
@@ -1614,7 +1614,7 @@ enum Swap_orderBy {
   user
 }
 
-"A UserBalance entity represents the first time that a user might have\nconceivably \"received\" a given token from the CrocSwap DEX, such as via\nthe output of a swap or via the burning of a liquidity position. These\nentities collectively represent the universe of tokens for which users\nmight have nonzero internal DEX balances.\n"
+"A UserBalance entity represents the first time that a user might have\nconceivably \"received\" a given token from the SdexSwap DEX, such as via\nthe output of a swap or via the burning of a liquidity position. These\nentities collectively represent the universe of tokens for which users\nmight have nonzero internal DEX balances.\n"
 type UserBalance {
   block: BigInt!
   id: Bytes!

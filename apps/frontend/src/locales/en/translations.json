@@ -1656,6 +1656,7 @@
         "totalStaked": "Total Staked",
         "amount": "Amount",
         "stakeChange": "Stake change",
+        "unstakingPenalty": "Unstaking Penalty",
         "increase": "Increase stake",
         "unstake": "Unstake",
         "extend": "Extend staking duration",

@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -217,7 +218,7 @@ export type Block_Height = {
 };
 
 /**
- * A FeeChange represents an update to the swap fee setting on a given CrocSwap
+ * A FeeChange represents an update to the swap fee setting on a given SdexSwap
  * liquidity pool.
  *
  */
@@ -314,7 +315,7 @@ export enum FeeChange_OrderBy {
 
 /**
  * A KnockoutCross is an exact copy of the data emitted in a KnockoutCross event
- * emitted by the CrocSwap DEX. There is an exact 1:1 correspondence between
+ * emitted by the SdexSwap DEX. There is an exact 1:1 correspondence between
  * emitted events and KnockoutCross entities created by the subgraph.
  *
  */
@@ -463,7 +464,7 @@ export enum LatestIndex_OrderBy {
 
 /**
  * A LiquidityChange entity represents a single modification to a single
- * liquidity position made on CrocSwap. LiquidityChanges are categorized
+ * liquidity position made on SdexSwap. LiquidityChanges are categorized
  * according to their changeType, which can be equal to mint, burn, harvest,
  * claim, or recover.
  *
@@ -696,9 +697,9 @@ export enum OrderDirection {
 }
 
 /**
- * A Pool represents a single liquidity pool on CrocSwap, which is uniquely
+ * A Pool represents a single liquidity pool on SdexSwap, which is uniquely
  * specified by a base token, a quote token, and a poolIdx. The ID of the Pool
- * is the same as the poolHash used internally in CrocSwap contracts.
+ * is the same as the poolHash used internally in SdexSwap contracts.
  *
  */
 export type Pool = {
@@ -715,9 +716,9 @@ export type Pool = {
 };
 
 /**
- * A Pool represents a single liquidity pool on CrocSwap, which is uniquely
+ * A Pool represents a single liquidity pool on SdexSwap, which is uniquely
  * specified by a base token, a quote token, and a poolIdx. The ID of the Pool
- * is the same as the poolHash used internally in CrocSwap contracts.
+ * is the same as the poolHash used internally in SdexSwap contracts.
  *
  */
 export type PoolLiquidityChangesArgs = {
@@ -729,9 +730,9 @@ export type PoolLiquidityChangesArgs = {
 };
 
 /**
- * A Pool represents a single liquidity pool on CrocSwap, which is uniquely
+ * A Pool represents a single liquidity pool on SdexSwap, which is uniquely
  * specified by a base token, a quote token, and a poolIdx. The ID of the Pool
- * is the same as the poolHash used internally in CrocSwap contracts.
+ * is the same as the poolHash used internally in SdexSwap contracts.
  *
  */
 export type PoolSwapsArgs = {
@@ -1275,7 +1276,7 @@ export type SubscriptionUserBalancesArgs = {
 
 /**
  * A Swap entity represents an atomic swap of a base token for a quote token
- * made on either CrocSwap or Uniswap V3.
+ * made on either SdexSwap or Uniswap V3.
  *
  */
 export type Swap = {
@@ -1495,7 +1496,7 @@ export enum Swap_OrderBy {
 
 /**
  * A UserBalance entity represents the first time that a user might have
- * conceivably "received" a given token from the CrocSwap DEX, such as via
+ * conceivably "received" a given token from the SdexSwap DEX, such as via
  * the output of a swap or via the burning of a liquidity position. These
  * entities collectively represent the universe of tokens for which users
  * might have nonzero internal DEX balances.

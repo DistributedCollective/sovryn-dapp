@@ -172,10 +172,6 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
   );
 
   const handleRangeChange = useCallback(async () => {
-    if (!isBalancedRange) {
-      return;
-    }
-
     if (usesBaseToken) {
       if (firstAssetValue === '0') {
         return;
@@ -185,10 +181,9 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
         'A',
         true,
       );
-      if (secondAssetQuantity === null) {
-        return;
+      if (secondAssetQuantity !== null) {
+        setSecondAssetValue(secondAssetQuantity);
       }
-      setSecondAssetValue(secondAssetQuantity);
     } else {
       if (secondAssetValue === '0') {
         return;
@@ -198,19 +193,57 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
         'B',
         true,
       );
-      if (firstAssetQuantity === null) {
-        return;
+      if (firstAssetQuantity !== null) {
+        setFirstAssetValue(firstAssetQuantity);
       }
-      setFirstAssetValue(firstAssetQuantity);
     }
   }, [
-    isBalancedRange,
     usesBaseToken,
     getOtherTokenQuantity,
     firstAssetValue,
     setSecondAssetValue,
     secondAssetValue,
     setFirstAssetValue,
+  ]);
+
+  const isFirstValueDisabled = useMemo(
+    () => !account || (isFirstAssetOutOfRange && !isBalancedRange),
+    [account, isFirstAssetOutOfRange, isBalancedRange],
+  );
+
+  const isSecondValueDisabled = useMemo(
+    () => !account || (isSecondAssetOutOfRange && !isBalancedRange),
+    [account, isSecondAssetOutOfRange, isBalancedRange],
+  );
+
+  useEffect(() => {
+    if (isFirstValueDisabled && !isBalancedRange) {
+      setFirstAssetValue('0');
+    } else if (firstAssetValue === '0' && isBalancedRange) {
+      onSecondAssetChange(secondAssetValue);
+    }
+  }, [
+    firstAssetValue,
+    isBalancedRange,
+    isFirstValueDisabled,
+    onSecondAssetChange,
+    secondAssetValue,
+    setFirstAssetValue,
+  ]);
+
+  useEffect(() => {
+    if (isSecondValueDisabled && !isBalancedRange) {
+      setSecondAssetValue('0');
+    } else if (secondAssetValue === '0' && isBalancedRange) {
+      onFirstAssetChange(firstAssetValue);
+    }
+  }, [
+    firstAssetValue,
+    isBalancedRange,
+    isSecondValueDisabled,
+    onFirstAssetChange,
+    secondAssetValue,
+    setSecondAssetValue,
   ]);
 
   useEffect(() => {
@@ -254,7 +287,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
           label={t(translations.common.amount)}
           className="max-w-none"
           unit={<AssetRenderer asset={base} />}
-          disabled={!account || isFirstAssetOutOfRange}
+          disabled={isFirstValueDisabled}
           invalid={isFirstAssetValueInvalid}
           placeholder="0"
         />
@@ -265,7 +298,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
             dataAttribute="bob-deposit-base-amount-error"
           />
         )}
-        {isFirstAssetOutOfRange && !isBalancedRange && (
+        {isFirstValueDisabled && (
           <ErrorBadge
             level={ErrorLevel.Warning}
             message={t(
@@ -298,7 +331,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
           label={t(translations.common.amount)}
           className="max-w-none"
           unit={<AssetRenderer asset={quote} />}
-          disabled={!account || isSecondAssetOutOfRange}
+          disabled={isSecondValueDisabled}
           invalid={isSecondAssetValueInvalid}
           placeholder="0"
         />
@@ -309,7 +342,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
             dataAttribute="bob-deposit-quote-amount-error"
           />
         )}
-        {isSecondAssetOutOfRange && !isBalancedRange && (
+        {isSecondValueDisabled && (
           <ErrorBadge
             level={ErrorLevel.Warning}
             message={t(

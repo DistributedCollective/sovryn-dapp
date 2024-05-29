@@ -59,7 +59,7 @@ export const WithdrawLiquidOsFee: FC<WithdrawLiquidOsFeeProps> = ({
           contract: stakingRewards,
           fnName: 'collectReward',
           args: [nextWithdrawTimestamp],
-          gasLimit: GAS_LIMIT.REWARDS,
+          gasLimit: GAS_LIMIT.REWARDS_OS_FEE,
         },
         onComplete,
       },

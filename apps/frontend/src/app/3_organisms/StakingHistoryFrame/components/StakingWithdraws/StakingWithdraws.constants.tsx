@@ -40,7 +40,7 @@ export const COLUMNS_CONFIG = [
     title: t(translations.stakingHistory.unstakingPenalty),
     cellRenderer: (tx: StakingWithdrawItem) => (
       <AmountRenderer
-        prefix="-"
+        prefix={Number(tx.slashedAmount) > 0 ? '-' : ''}
         value={tx.slashedAmount || 0}
         suffix={getTokenDisplayName(COMMON_SYMBOLS.SOV)}
       />

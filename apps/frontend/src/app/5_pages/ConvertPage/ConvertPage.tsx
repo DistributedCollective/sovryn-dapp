@@ -484,7 +484,7 @@ const ConvertPage: FC = () => {
                 options={sourceTokenOptions}
                 labelRenderer={() => getAssetRenderer(sourceToken)}
                 className="min-w-[6.7rem]"
-                menuClassName="max-h-[10rem] sm:max-h-[20rem]"
+                menuClassName="max-h-[10rem] sm:max-h-[12rem]"
                 dataAttribute="convert-from-asset"
               />
             </div>
@@ -531,7 +531,7 @@ const ConvertPage: FC = () => {
                 onChange={onDestinationTokenChange}
                 options={destinationTokenOptions}
                 className="min-w-[6.7rem]"
-                menuClassName="max-h-[10rem] sm:max-h-[20rem]"
+                menuClassName="max-h-[10rem] sm:max-h-[12rem]"
                 dataAttribute="convert-to-asset"
               />
             </div>

@@ -30,6 +30,7 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
   const [balance, setBalance] = useState(Decimal.ZERO);
+
   const chainId = useCurrentChain();
 
   const { balance: stakedValue } = useGetStakingBalanceOf(account);

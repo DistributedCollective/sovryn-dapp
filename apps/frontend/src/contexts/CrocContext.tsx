@@ -32,10 +32,10 @@ export const CrocContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [croc, setCroc] = useState(defaultContextValue.croc);
 
   useEffect(() => {
-    if (!croc && account && isBobChain(chainId)) {
+    if (!croc && isBobChain(chainId)) {
       setCroc(new CrocEnv(getProvider(chainId), signer));
     }
-  }, [croc, signer, account, chainId]);
+  }, [croc, account, signer, chainId]);
 
   return (
     <CrocContext.Provider value={{ croc }}>{children}</CrocContext.Provider>

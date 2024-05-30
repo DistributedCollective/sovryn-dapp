@@ -118,4 +118,11 @@ export const rskTestnet: Array<AssetDetails> = [
     decimals: 18,
     getIcon: async () => (await import('./icons/rsk/mynt')).default,
   },
+  {
+    symbol: 'POWA',
+    address: '0xfe8929d36ac789c562008abd59f5dd7e1eb1f5b6', // TODO: This is RSK Mainnet address, change it once we have it deployed on RSK Testnet
+    name: 'POWA•RANGERS•GO',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/powa')).default,
+  },
 ];

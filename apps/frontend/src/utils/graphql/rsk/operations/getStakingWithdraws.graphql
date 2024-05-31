@@ -14,6 +14,7 @@ query getStakingWithdraws(
   ) {
     id
     amount
+    slashedAmount
     isGovernance
     receiver {
       id

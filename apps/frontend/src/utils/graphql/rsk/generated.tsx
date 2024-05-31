@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -2464,6 +2465,131 @@ export enum CrossTransfer_OrderBy {
   UpdatedAtTx = 'updatedAtTx',
   User = 'user',
   Votes = 'votes',
+}
+
+export type DebugItem = {
+  __typename?: 'DebugItem';
+  amount?: Maybe<Scalars['BigDecimal']>;
+  emittedBy: Scalars['Bytes'];
+  formattedAmount?: Maybe<Scalars['BigDecimal']>;
+  id: Scalars['ID'];
+  timestamp: Scalars['Int'];
+  totalStaked?: Maybe<Scalars['BigDecimal']>;
+  totalVested?: Maybe<Scalars['BigDecimal']>;
+  transaction: Transaction;
+  type?: Maybe<Scalars['String']>;
+};
+
+export type DebugItem_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  amount?: InputMaybe<Scalars['BigDecimal']>;
+  amount_gt?: InputMaybe<Scalars['BigDecimal']>;
+  amount_gte?: InputMaybe<Scalars['BigDecimal']>;
+  amount_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  amount_lt?: InputMaybe<Scalars['BigDecimal']>;
+  amount_lte?: InputMaybe<Scalars['BigDecimal']>;
+  amount_not?: InputMaybe<Scalars['BigDecimal']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  emittedBy?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_contains?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  emittedBy_not?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_not_contains?: InputMaybe<Scalars['Bytes']>;
+  emittedBy_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  formattedAmount?: InputMaybe<Scalars['BigDecimal']>;
+  formattedAmount_gt?: InputMaybe<Scalars['BigDecimal']>;
+  formattedAmount_gte?: InputMaybe<Scalars['BigDecimal']>;
+  formattedAmount_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  formattedAmount_lt?: InputMaybe<Scalars['BigDecimal']>;
+  formattedAmount_lte?: InputMaybe<Scalars['BigDecimal']>;
+  formattedAmount_not?: InputMaybe<Scalars['BigDecimal']>;
+  formattedAmount_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  timestamp?: InputMaybe<Scalars['Int']>;
+  timestamp_gt?: InputMaybe<Scalars['Int']>;
+  timestamp_gte?: InputMaybe<Scalars['Int']>;
+  timestamp_in?: InputMaybe<Array<Scalars['Int']>>;
+  timestamp_lt?: InputMaybe<Scalars['Int']>;
+  timestamp_lte?: InputMaybe<Scalars['Int']>;
+  timestamp_not?: InputMaybe<Scalars['Int']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  totalStaked?: InputMaybe<Scalars['BigDecimal']>;
+  totalStaked_gt?: InputMaybe<Scalars['BigDecimal']>;
+  totalStaked_gte?: InputMaybe<Scalars['BigDecimal']>;
+  totalStaked_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  totalStaked_lt?: InputMaybe<Scalars['BigDecimal']>;
+  totalStaked_lte?: InputMaybe<Scalars['BigDecimal']>;
+  totalStaked_not?: InputMaybe<Scalars['BigDecimal']>;
+  totalStaked_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  totalVested?: InputMaybe<Scalars['BigDecimal']>;
+  totalVested_gt?: InputMaybe<Scalars['BigDecimal']>;
+  totalVested_gte?: InputMaybe<Scalars['BigDecimal']>;
+  totalVested_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  totalVested_lt?: InputMaybe<Scalars['BigDecimal']>;
+  totalVested_lte?: InputMaybe<Scalars['BigDecimal']>;
+  totalVested_not?: InputMaybe<Scalars['BigDecimal']>;
+  totalVested_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  transaction?: InputMaybe<Scalars['String']>;
+  transaction_?: InputMaybe<Transaction_Filter>;
+  transaction_contains?: InputMaybe<Scalars['String']>;
+  transaction_contains_nocase?: InputMaybe<Scalars['String']>;
+  transaction_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_gt?: InputMaybe<Scalars['String']>;
+  transaction_gte?: InputMaybe<Scalars['String']>;
+  transaction_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_lt?: InputMaybe<Scalars['String']>;
+  transaction_lte?: InputMaybe<Scalars['String']>;
+  transaction_not?: InputMaybe<Scalars['String']>;
+  transaction_not_contains?: InputMaybe<Scalars['String']>;
+  transaction_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  transaction_not_ends_with?: InputMaybe<Scalars['String']>;
+  transaction_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_not_in?: InputMaybe<Array<Scalars['String']>>;
+  transaction_not_starts_with?: InputMaybe<Scalars['String']>;
+  transaction_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  transaction_starts_with?: InputMaybe<Scalars['String']>;
+  transaction_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  type_contains?: InputMaybe<Scalars['String']>;
+  type_contains_nocase?: InputMaybe<Scalars['String']>;
+  type_ends_with?: InputMaybe<Scalars['String']>;
+  type_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  type_gt?: InputMaybe<Scalars['String']>;
+  type_gte?: InputMaybe<Scalars['String']>;
+  type_in?: InputMaybe<Array<Scalars['String']>>;
+  type_lt?: InputMaybe<Scalars['String']>;
+  type_lte?: InputMaybe<Scalars['String']>;
+  type_not?: InputMaybe<Scalars['String']>;
+  type_not_contains?: InputMaybe<Scalars['String']>;
+  type_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  type_not_ends_with?: InputMaybe<Scalars['String']>;
+  type_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  type_not_in?: InputMaybe<Array<Scalars['String']>>;
+  type_not_starts_with?: InputMaybe<Scalars['String']>;
+  type_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  type_starts_with?: InputMaybe<Scalars['String']>;
+  type_starts_with_nocase?: InputMaybe<Scalars['String']>;
+};
+
+export enum DebugItem_OrderBy {
+  Amount = 'amount',
+  EmittedBy = 'emittedBy',
+  FormattedAmount = 'formattedAmount',
+  Id = 'id',
+  Timestamp = 'timestamp',
+  TotalStaked = 'totalStaked',
+  TotalVested = 'totalVested',
+  Transaction = 'transaction',
+  Type = 'type',
 }
 
 export type Deposit = {
@@ -8331,6 +8457,8 @@ export type Query = {
   converterRegistry?: Maybe<ConverterRegistry>;
   crossTransfer?: Maybe<CrossTransfer>;
   crossTransfers: Array<CrossTransfer>;
+  debugItem?: Maybe<DebugItem>;
+  debugItems: Array<DebugItem>;
   deposit?: Maybe<Deposit>;
   depositCollateral?: Maybe<DepositCollateral>;
   depositCollaterals: Array<DepositCollateral>;
@@ -8686,6 +8814,22 @@ export type QueryCrossTransfersArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<CrossTransfer_Filter>;
+};
+
+export type QueryDebugItemArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryDebugItemsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<DebugItem_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<DebugItem_Filter>;
 };
 
 export type QueryDepositArgs = {
@@ -10434,6 +10578,11 @@ export enum StakeHistoryAction {
   Delegate = 'Delegate',
   DelegateVested = 'DelegateVested',
   /**
+   * When a user make an early unstake and the staked amount is slashed
+   *
+   */
+  EarlyUnstakingPenalty = 'EarlyUnstakingPenalty',
+  /**
    * Extending an existing stake. The amount of the stake remains the same, but the lockedUntil date increases.
    *
    */
@@ -10733,6 +10882,8 @@ export type Subscription = {
   converterRegistry?: Maybe<ConverterRegistry>;
   crossTransfer?: Maybe<CrossTransfer>;
   crossTransfers: Array<CrossTransfer>;
+  debugItem?: Maybe<DebugItem>;
+  debugItems: Array<DebugItem>;
   deposit?: Maybe<Deposit>;
   depositCollateral?: Maybe<DepositCollateral>;
   depositCollaterals: Array<DepositCollateral>;
@@ -11088,6 +11239,22 @@ export type SubscriptionCrossTransfersArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<CrossTransfer_Filter>;
+};
+
+export type SubscriptionDebugItemArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionDebugItemsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<DebugItem_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<DebugItem_Filter>;
 };
 
 export type SubscriptionDepositArgs = {
@@ -14434,13 +14601,37 @@ export enum User_OrderBy {
   Votes = 'votes',
 }
 
+/**
+ * Event is emitted when stake owner delegates voting power to another user
+ *
+ */
 export type V2DelegateChanged = {
   __typename?: 'V2DelegateChanged';
+  /**
+   * Address of the new delegatee
+   *
+   */
   delegate?: Maybe<User>;
   id: Scalars['ID'];
+  /**
+   * lockedUntil date of the stake
+   *
+   */
   lockedUntil: Scalars['Int'];
+  /**
+   * Address of the previous delegatee
+   *
+   */
   previousDelegate?: Maybe<User>;
+  /**
+   * Timestamp of the transaction
+   *
+   */
   timestamp: Scalars['Int'];
+  /**
+   * The user who staked the tokens
+   *
+   */
   user: User;
 };
 
@@ -14545,13 +14736,37 @@ export enum V2DelegateChanged_OrderBy {
   User = 'user',
 }
 
+/**
+ * Event is emitted when voluntary staked token lockedUntil date is extended
+ *
+ */
 export type V2ExtendedStakingDuration = {
   __typename?: 'V2ExtendedStakingDuration';
+  /**
+   * Amount that was moved to the new lockedUntil date
+   *
+   */
   amountStaked: Scalars['BigDecimal'];
   id: Scalars['ID'];
+  /**
+   * New lockedUntil date
+   *
+   */
   newDate: Scalars['Int'];
+  /**
+   * LockedUntil date of original stake
+   *
+   */
   previousDate: Scalars['Int'];
+  /**
+   * Timestamp of the transaction
+   *
+   */
   timestamp: Scalars['Int'];
+  /**
+   * The user who staked the tokens
+   *
+   */
   user: User;
 };
 
@@ -14756,14 +14971,47 @@ export enum V2Stake_OrderBy {
   User = 'user',
 }
 
+/**
+ * Event is emitted when voluntary or vested staked tokens are withdrawn
+ *
+ */
 export type V2StakingWithdrawn = {
   __typename?: 'V2StakingWithdrawn';
+  /**
+   * Amount of tokens withdrawn (does not include slashed amount)
+   *
+   */
   amount: Scalars['BigDecimal'];
   id: Scalars['ID'];
+  /**
+   * If this is true, tokens were withdrawn by governance (eg revoked vesting contract)
+   *
+   */
   isGovernance: Scalars['Boolean'];
+  /**
+   * Address who received the tokens
+   *
+   */
   receiver?: Maybe<User>;
+  /**
+   * Slashed amount when tokens are withdrawn before lockedUntil date
+   *
+   */
+  slashedAmount: Scalars['BigDecimal'];
+  /**
+   * Timestamp of the transaction
+   *
+   */
   timestamp: Scalars['Int'];
+  /**
+   * lockedUntil date of the stake from which tokens were withdrawn
+   *
+   */
   until: Scalars['Int'];
+  /**
+   * The user who staked the tokens (owner of tokens)
+   *
+   */
   user: User;
 };
 
@@ -14811,6 +15059,14 @@ export type V2StakingWithdrawn_Filter = {
   receiver_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
   receiver_starts_with?: InputMaybe<Scalars['String']>;
   receiver_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  slashedAmount?: InputMaybe<Scalars['BigDecimal']>;
+  slashedAmount_gt?: InputMaybe<Scalars['BigDecimal']>;
+  slashedAmount_gte?: InputMaybe<Scalars['BigDecimal']>;
+  slashedAmount_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  slashedAmount_lt?: InputMaybe<Scalars['BigDecimal']>;
+  slashedAmount_lte?: InputMaybe<Scalars['BigDecimal']>;
+  slashedAmount_not?: InputMaybe<Scalars['BigDecimal']>;
+  slashedAmount_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   timestamp?: InputMaybe<Scalars['Int']>;
   timestamp_gt?: InputMaybe<Scalars['Int']>;
   timestamp_gte?: InputMaybe<Scalars['Int']>;
@@ -14855,18 +15111,43 @@ export enum V2StakingWithdrawn_OrderBy {
   Id = 'id',
   IsGovernance = 'isGovernance',
   Receiver = 'receiver',
+  SlashedAmount = 'slashedAmount',
   Timestamp = 'timestamp',
   Until = 'until',
   User = 'user',
 }
 
+/**
+ * This event is emitted when tokens are staked, either by a user or by a vesting contract.
+ *
+ */
 export type V2TokensStaked = {
   __typename?: 'V2TokensStaked';
+  /**
+   * Amount of SOV staked in this event
+   *
+   */
   amount: Scalars['BigDecimal'];
   id: Scalars['ID'];
+  /**
+   * The date when these tokens will unlock
+   *
+   */
   lockedUntil: Scalars['Int'];
+  /**
+   * Timestamp of the transaction
+   *
+   */
   timestamp: Scalars['Int'];
+  /**
+   * The total amount staked for this specific user until this specific lockedUntil date. As of the time of this event.
+   *
+   */
   totalStaked: Scalars['BigDecimal'];
+  /**
+   * The user who staked the tokens (if tokens were staked by a vesting contract, user will be staking contract)
+   *
+   */
   user: User;
 };
 
@@ -16349,6 +16630,7 @@ export type GetStakingWithdrawsQuery = {
     __typename?: 'V2StakingWithdrawn';
     id: string;
     amount: string;
+    slashedAmount: string;
     isGovernance: boolean;
     timestamp: number;
     until: number;
@@ -18628,6 +18910,7 @@ export const GetStakingWithdrawsDocument = gql`
     ) {
       id
       amount
+      slashedAmount
       isGovernance
       receiver {
         id

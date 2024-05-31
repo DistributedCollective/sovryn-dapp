@@ -36,6 +36,17 @@ export const COLUMNS_CONFIG = [
     sortable: true,
   },
   {
+    id: 'slashedAmount',
+    title: t(translations.stakingHistory.unstakingPenalty),
+    cellRenderer: (tx: StakingWithdrawItem) => (
+      <AmountRenderer
+        prefix={Number(tx.slashedAmount) > 0 ? '-' : ''}
+        value={tx.slashedAmount || 0}
+        suffix={getTokenDisplayName(COMMON_SYMBOLS.SOV)}
+      />
+    ),
+  },
+  {
     id: 'until',
     title: t(translations.stakingHistory.lockedUntil),
     cellRenderer: (tx: StakingWithdrawItem) => dateFormat(tx.until),

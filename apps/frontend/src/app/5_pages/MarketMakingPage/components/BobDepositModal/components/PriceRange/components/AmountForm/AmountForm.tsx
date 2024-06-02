@@ -206,20 +206,31 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
     setFirstAssetValue,
   ]);
 
+  const isInvalidPriceRange = useMemo(
+    () => minimumPrice > maximumPrice,
+    [minimumPrice, maximumPrice],
+  );
+
   const isFirstValueDisabled = useMemo(
-    () => !account || (isFirstAssetOutOfRange && !isBalancedRange),
-    [account, isFirstAssetOutOfRange, isBalancedRange],
+    () =>
+      !account ||
+      (isFirstAssetOutOfRange && !isBalancedRange) ||
+      isInvalidPriceRange,
+    [account, isFirstAssetOutOfRange, isBalancedRange, isInvalidPriceRange],
   );
 
   const isSecondValueDisabled = useMemo(
-    () => !account || (isSecondAssetOutOfRange && !isBalancedRange),
-    [account, isSecondAssetOutOfRange, isBalancedRange],
+    () =>
+      !account ||
+      (isSecondAssetOutOfRange && !isBalancedRange) ||
+      isInvalidPriceRange,
+    [account, isSecondAssetOutOfRange, isBalancedRange, isInvalidPriceRange],
   );
 
   useEffect(() => {
     if (isFirstValueDisabled && !isBalancedRange) {
       setFirstAssetValue('0');
-    } else if (firstAssetValue === '0' && isBalancedRange) {
+    } else if (firstAssetValue === '0') {
       onSecondAssetChange(secondAssetValue);
     }
   }, [
@@ -234,7 +245,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
   useEffect(() => {
     if (isSecondValueDisabled && !isBalancedRange) {
       setSecondAssetValue('0');
-    } else if (secondAssetValue === '0' && isBalancedRange) {
+    } else if (secondAssetValue === '0') {
       onFirstAssetChange(firstAssetValue);
     }
   }, [
@@ -252,8 +263,8 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
       setIsSecondAssetOutOfRange(false);
       setLowerBoundaryPercentage(DEFAULT_RANGE_WIDTH * -1);
       setUpperBoundaryPercentage(DEFAULT_RANGE_WIDTH);
-      handleRangeChange();
     }
+    handleRangeChange();
   }, [
     handleRangeChange,
     isBalancedRange,
@@ -262,6 +273,8 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
     setIsSecondAssetOutOfRange,
     setLowerBoundaryPercentage,
     setUpperBoundaryPercentage,
+    firstAssetValue,
+    secondAssetValue,
   ]);
 
   return (
@@ -298,7 +311,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
             dataAttribute="bob-deposit-base-amount-error"
           />
         )}
-        {isFirstValueDisabled && (
+        {isFirstValueDisabled && !isInvalidPriceRange && (
           <ErrorBadge
             level={ErrorLevel.Warning}
             message={t(
@@ -342,7 +355,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
             dataAttribute="bob-deposit-quote-amount-error"
           />
         )}
-        {isSecondValueDisabled && (
+        {isSecondValueDisabled && !isInvalidPriceRange && (
           <ErrorBadge
             level={ErrorLevel.Warning}
             message={t(
@@ -353,6 +366,16 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
           />
         )}
       </FormGroup>
+      {isInvalidPriceRange && (
+        <ErrorBadge
+          level={ErrorLevel.Critical}
+          message={t(
+            translations.bobMarketMakingPage.depositModal.form
+              .invalidPriceRange,
+          )}
+          dataAttribute="bob-deposit-both-amount-warning"
+        />
+      )}
     </>
   );
 };

@@ -55,31 +55,22 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
         ? upperBoundaryPercentage
         : lowerBoundaryPercentage;
 
-      const newPercentage = isPlus
-        ? currentPercentage + 1
-        : currentPercentage - 1;
+      const newPercentage =
+        currentPercentage + (isPlus ? 1 : -1) || (isPlus ? 1 : -1);
 
-      const newPrice =
-        newPercentage < 0 ? currentPrice : calculatePrice(newPercentage);
+      const newPrice = calculatePrice(newPercentage);
 
       if (isUpperBoundary) {
-        if (newPrice > minimumPrice) {
-          setUpperBoundaryPercentage(newPercentage);
-          setMaximumPrice(newPrice);
-        }
+        setUpperBoundaryPercentage(newPercentage);
+        setMaximumPrice(newPrice);
       } else {
-        if (newPrice < maximumPrice) {
-          setLowerBoundaryPercentage(newPercentage);
-          setMinimumPrice(newPrice);
-        }
+        setLowerBoundaryPercentage(newPercentage);
+        setMinimumPrice(newPrice);
       }
     },
     [
       calculatePrice,
-      currentPrice,
       lowerBoundaryPercentage,
-      maximumPrice,
-      minimumPrice,
       setLowerBoundaryPercentage,
       setMaximumPrice,
       setMinimumPrice,
@@ -105,17 +96,19 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
   }, [updateRange]);
 
   const isInputADisabled = useMemo(() => {
-    if (minimumPrice && maximumPrice && currentPrice) {
-      return minimumPrice > currentPrice && maximumPrice > currentPrice;
+    if (!minimumPrice || !maximumPrice || !currentPrice) {
+      return false;
     }
-    return false;
+
+    return minimumPrice >= currentPrice && maximumPrice >= currentPrice;
   }, [currentPrice, maximumPrice, minimumPrice]);
 
   const isInputBDisabled = useMemo(() => {
-    if (minimumPrice && maximumPrice && currentPrice) {
-      return minimumPrice < currentPrice && maximumPrice < currentPrice;
+    if (!minimumPrice || !maximumPrice || !currentPrice) {
+      return false;
     }
-    return false;
+
+    return minimumPrice <= currentPrice && maximumPrice <= currentPrice;
   }, [currentPrice, maximumPrice, minimumPrice]);
 
   useEffect(() => {
@@ -147,6 +140,23 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     setMaximumPrice,
     setMinimumPrice,
     upperBoundaryPercentage,
+  ]);
+
+  useEffect(() => {
+    if (minimumPrice > maximumPrice) {
+      setIsFirstAssetOutOfRange(true);
+      setIsSecondAssetOutOfRange(true);
+    } else {
+      setIsFirstAssetOutOfRange(isInputADisabled);
+      setIsSecondAssetOutOfRange(isInputBDisabled);
+    }
+  }, [
+    minimumPrice,
+    maximumPrice,
+    isInputADisabled,
+    isInputBDisabled,
+    setIsFirstAssetOutOfRange,
+    setIsSecondAssetOutOfRange,
   ]);
 
   const renderMin = useMemo(

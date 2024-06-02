@@ -1449,7 +1449,8 @@
             "minPrice": "Min price",
             "maxPrice": "Max price",
             "form": {
-                "outOfRangeWarning": "The market is outside your specified range. Single-asset deposit only."
+                "outOfRangeWarning": "The market is outside your specified range. Single-asset deposit only.",
+                "invalidPriceRange": "Invalid range selected. The min price must be lower than the max price."
             }
         },
         "withdrawModal": {

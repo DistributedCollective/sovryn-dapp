@@ -190,16 +190,10 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
       return;
     }
 
-    if (
-      withdrawAmount.gt(0) &&
-      depositedAmountQuote.gt(0) &&
-      baseTokenDecimals
-    ) {
-      if (position.positionType === PoolPositionType.ambient) {
-        handleAmbientPosition();
-      } else if (position.positionType === PoolPositionType.concentrated) {
-        handleConcentratedPosition();
-      }
+    if (position.positionType === PoolPositionType.ambient) {
+      handleAmbientPosition();
+    } else if (position.positionType === PoolPositionType.concentrated) {
+      handleConcentratedPosition();
     }
 
     if (

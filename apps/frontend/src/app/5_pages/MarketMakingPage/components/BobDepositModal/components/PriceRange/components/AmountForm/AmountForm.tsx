@@ -230,6 +230,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
   useEffect(() => {
     if (isFirstValueDisabled && !isBalancedRange) {
       setFirstAssetValue('0');
+      setUsesBaseToken(false);
     } else if (firstAssetValue === '0') {
       onSecondAssetChange(secondAssetValue);
     }
@@ -240,11 +241,13 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
     onSecondAssetChange,
     secondAssetValue,
     setFirstAssetValue,
+    setUsesBaseToken,
   ]);
 
   useEffect(() => {
     if (isSecondValueDisabled && !isBalancedRange) {
       setSecondAssetValue('0');
+      setUsesBaseToken(true);
     } else if (secondAssetValue === '0') {
       onFirstAssetChange(firstAssetValue);
     }
@@ -255,6 +258,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
     onFirstAssetChange,
     secondAssetValue,
     setSecondAssetValue,
+    setUsesBaseToken,
   ]);
 
   useEffect(() => {

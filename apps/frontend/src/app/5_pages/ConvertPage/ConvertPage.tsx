@@ -438,7 +438,7 @@ const ConvertPage: FC = () => {
       <Helmet>
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
-      <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
+      <div className="w-full flex flex-col items-center text-gray-10 my-9 sm:my-24">
         <Heading className="text-base sm:text-2xl font-medium">
           {t(pageTranslations.title)}
         </Heading>

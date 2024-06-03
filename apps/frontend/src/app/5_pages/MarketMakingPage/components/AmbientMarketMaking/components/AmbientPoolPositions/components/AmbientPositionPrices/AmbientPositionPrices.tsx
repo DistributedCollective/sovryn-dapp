@@ -8,6 +8,7 @@ import { useGetPoolInfo } from '../../../../../BobDepositModal/hooks/useGetPoolI
 import { useGetTokenDecimals } from '../../../../../BobWIthdrawModal/hooks/useGetTokenDecimals';
 import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
+import { usePositionStatus } from '../../hooks/usePositionStatus';
 
 type AmbientPositionPricesProps = {
   pool: AmbientLiquidityPool;
@@ -18,6 +19,7 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
   position,
   pool,
 }) => {
+  const isOutOfRange = usePositionStatus(pool, position);
   const isAmbient = useMemo(
     () =>
       position.positionType === PoolPositionType.ambient ||
@@ -45,19 +47,19 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
     <div className="inline-flex flex-col">
       <AmountRenderer
         value={toDisplayPrice(
-          tickToPrice(position.askTick),
+          tickToPrice(isOutOfRange ? position.bidTick : position.askTick),
           baseTokenDecimals,
           quoteTokenDecimals,
-          true,
+          isOutOfRange ? false : true,
         )}
         suffix={pool.quote}
       />
       <AmountRenderer
         value={toDisplayPrice(
-          tickToPrice(position.bidTick),
+          tickToPrice(isOutOfRange ? position.askTick : position.bidTick),
           baseTokenDecimals,
           quoteTokenDecimals,
-          true,
+          isOutOfRange ? false : true,
         )}
         suffix={pool.quote}
       />

@@ -3,9 +3,11 @@ import { JsonRpcSigner } from '@ethersproject/providers';
 import { Contract } from 'ethers';
 
 import { getContract } from '@sovryn/contracts';
-import { SwapRoute } from '@sovryn/sdk';
+import { getProvider } from '@sovryn/ethers-provider';
+import { SmartRouter, SwapRoute } from '@sovryn/sdk';
 
 import { getRskChainId } from '../../../utils/chain';
+import { SWAP_ROUTES } from './ConvertPage.constants';
 
 export const getRouteContract = async (
   route: SwapRoute,
@@ -29,3 +31,6 @@ export const getRouteContract = async (
 
   return new Contract(address, abi, signer);
 };
+
+export const getSmartRouter = (chainId: string) =>
+  new SmartRouter(getProvider(chainId), SWAP_ROUTES);

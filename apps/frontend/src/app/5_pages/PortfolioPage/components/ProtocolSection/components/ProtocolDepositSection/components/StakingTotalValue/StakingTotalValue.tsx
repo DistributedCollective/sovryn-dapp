@@ -3,16 +3,15 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { getAssetData } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-import { RSK_CHAIN_ID } from '../../../../../../../../../config/chains';
-
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../../../hooks/useBlockNumber';
 import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
 import { COMMON_SYMBOLS } from '../../../../../../../../../utils/asset';
+import { isRskChain } from '../../../../../../../../../utils/chain';
 import { removeTrailingZerosFromString } from '../../../../../../../../../utils/helpers';
 import { decimalic, fromWei } from '../../../../../../../../../utils/math';
-import { SMART_ROUTER_RSK } from '../../../../../../../ConvertPage/ConvertPage.constants';
+import { getSmartRouter } from '../../../../../../../ConvertPage/ConvertPage.utils';
 import { useGetStakingBalanceOf } from '../../../../../../../StakePage/hooks/useGetStakingBalanceOf';
 import {
   ProtocolSectionProps,
@@ -31,9 +30,12 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
   const { account } = useAccount();
   const { value: block } = useBlockNumber();
   const [balance, setBalance] = useState(Decimal.ZERO);
+
   const chainId = useCurrentChain();
 
   const { balance: stakedValue } = useGetStakingBalanceOf(account);
+
+  const isRsk = useMemo(() => isRskChain(chainId), [chainId]);
 
   const renderTotalBalance = useMemo(
     () =>
@@ -48,18 +50,23 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
     [account, balance, selectedCurrency, nativeTokenPrice, chainId],
   );
 
+  const smartRouter = useMemo(() => getSmartRouter(chainId), [chainId]);
+
   useEffect(() => {
     if (Number(stakedValue) > 0) {
       (async () => {
         const [sourceTokenDetails, destinationTokenDetails] = await Promise.all(
           [
-            getAssetData(COMMON_SYMBOLS.SOV, RSK_CHAIN_ID),
-            getAssetData(COMMON_SYMBOLS.BTC, RSK_CHAIN_ID),
+            getAssetData(COMMON_SYMBOLS.SOV, chainId),
+            getAssetData(
+              isRsk ? COMMON_SYMBOLS.BTC : COMMON_SYMBOLS.ETH,
+              chainId,
+            ),
           ],
         );
 
-        const result = await SMART_ROUTER_RSK.getBestQuote(
-          RSK_CHAIN_ID,
+        const result = await smartRouter.getBestQuote(
+          chainId,
           sourceTokenDetails.address,
           destinationTokenDetails.address,
           stakedValue.toString(),
@@ -71,7 +78,7 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
         setBalance(decimalic(quote));
       })();
     }
-  }, [stakedValue, selectedCurrency, block]);
+  }, [stakedValue, selectedCurrency, block, chainId, isRsk, smartRouter]);
 
   useEffect(() => {
     if (balance.gt(Decimal.ZERO) && account) {

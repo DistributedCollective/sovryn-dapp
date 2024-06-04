@@ -11,8 +11,10 @@ import { AmbientPosition } from '../../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { AmbientPoolPositionClaimFees } from './components/AmbientPoolPositionClaimFees/AmbientPoolPositionClaimFees';
 import { AmbientPoolPositionWithdraw } from './components/AmbientPoolPositionWithdraw/AmbientPoolPositionWithdraw';
+import { AmbientPoolReposition } from './components/AmbientPoolReposition/AmbientPoolReposition';
 import { AmbientPositionBalance } from './components/AmbientPositionBalance/AmbientPositionBalance';
 import { AmbientPositionPrices } from './components/AmbientPositionPrices/AmbientPositionPrices';
+import { AmbientPositionStatus } from './components/AmbientPositionStatus/AmbientPositionStatus';
 import { AmbientPositionValue } from './components/AmbientPositionValue/AmbientPositionValue';
 
 export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
@@ -71,6 +73,13 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
     ),
   },
   {
+    id: 'status',
+    title: t(translations.ambientMarketMaking.positionsTable.status.title),
+    cellRenderer: (position: AmbientPosition) => (
+      <AmbientPositionStatus position={position} pool={pool} />
+    ),
+  },
+  {
     id: '',
     title: '',
     cellRenderer: (position: AmbientPosition) => (
@@ -82,6 +91,11 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
             className="mr-4"
           />
         )}
+        <AmbientPoolReposition
+          pool={pool}
+          position={position}
+          className="mr-4"
+        />
         <AmbientPoolPositionWithdraw pool={pool} position={position} />
       </div>
     ),

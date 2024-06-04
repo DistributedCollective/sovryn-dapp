@@ -86,7 +86,7 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
           />
           <AmountRenderer
             value={toDisplayPrice(
-              tickToPrice!(position.bidTick),
+              tickToPrice(position.bidTick),
               baseTokenDecimals,
               quoteTokenDecimals,
               true,

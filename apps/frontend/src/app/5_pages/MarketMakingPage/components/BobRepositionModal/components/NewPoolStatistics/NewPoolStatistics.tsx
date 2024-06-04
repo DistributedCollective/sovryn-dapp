@@ -3,30 +3,25 @@ import React, { FC } from 'react';
 import { t } from 'i18next';
 
 import { SimpleTable, SimpleTableRow } from '@sovryn/ui';
-import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../locales/i18n';
-import { AmbientPosition } from '../../../AmbientMarketMaking/AmbientMarketMaking.types';
 import { AmbientPositionStatus } from '../../../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionStatus/AmbientPositionStatus';
 import { AmbientLiquidityPool } from '../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
-import { DEFAULT_SLIPPAGE } from '../../../BobDepositModal/BobDepositModal.constants';
 
 const pageTranslations =
-  translations.bobMarketMakingPage.withdrawModal.newPoolStatistics;
+  translations.bobMarketMakingPage.repositionModal.newPoolStatistics;
 
 type NewPoolStatisticsProps = {
-  baseAmount: Decimal;
-  quoteAmount: Decimal;
+  baseAmount: string;
+  quoteAmount: string;
   pool: AmbientLiquidityPool;
-  position: AmbientPosition;
 };
 
 export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
   baseAmount,
   quoteAmount,
   pool,
-  position,
 }) => (
   <SimpleTable className="mt-6">
     <SimpleTableRow
@@ -41,19 +36,15 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
       valueClassName="text-primary-10"
     />
     <SimpleTableRow
-      label={t(pageTranslations.status)}
+      label={t(pageTranslations.newStatus)}
       value={
         <AmbientPositionStatus
-          position={position}
+          isInRange={false}
           pool={pool}
           className="flex justify-end"
         />
       }
       valueClassName="text-primary-10"
-    />
-    <SimpleTableRow
-      label={t(pageTranslations.slippage)}
-      value={<AmountRenderer value={DEFAULT_SLIPPAGE} suffix="%" />}
     />
   </SimpleTable>
 );

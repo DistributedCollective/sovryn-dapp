@@ -17,6 +17,7 @@
             "cancel": "Cancel",
             "withdraw": "Withdraw",
             "continue": "Continue",
+            "reposition": "Reposition",
             "done": "Done",
             "close": "Close",
             "retry": "Retry",
@@ -1443,6 +1444,7 @@
             "newPoolStatistics": {
                 "newPoolBalance": "New pool balance",
                 "currentPrice": "Current {{token}} price",
+                "status": "Status",
                 "lpFeeRate": "LP fee rate"
             },
             "rangeWidth": "Range width",
@@ -1453,6 +1455,15 @@
                 "invalidPriceRange": "Invalid range selected. The min price must be lower than the max price."
             }
         },
+        "repositionModal": {
+            "title": "Reposition liquidity",
+            "reposition": "Reposition",
+            "currentBalance": "Current balance",
+            "newPoolStatistics": {
+                "newPoolBalance": "New pool balance",
+                "newStatus": "New status"
+            }
+        },
         "withdrawModal": {
             "title": "Withdraw liquidity",
             "returnRate": "Return rate",
@@ -1460,7 +1471,8 @@
             "newPoolStatistics": {
                 "newPoolBalance": "New pool balance",
                 "earnedRewards": "Earned rewards",
-                "slippage": "Slippage"
+                "slippage": "Slippage",
+                "status": "Status"
             },
             "form": {
                 "invalidAmountError": "Exceeds maximum amount"
@@ -1950,6 +1962,11 @@
             "apr": "Estimated APR",
             "aprInfo": "APR is estimated based on previous fees earned at the defined price range, if no trades were made previously or you have recently claimed fees/withdrawn liquidity, you may see 0 value",
             "value": "Value (USD)",
+            "status": {
+                "title": "Status",
+                "inRange": "In range",
+                "outOfRange": "Out of range"
+            },
             "balance": "Balance",
             "withdraw": "Withdraw"
         }

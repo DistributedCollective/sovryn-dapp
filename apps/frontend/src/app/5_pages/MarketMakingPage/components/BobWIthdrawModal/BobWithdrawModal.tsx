@@ -296,6 +296,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
           baseAmount={depositedAmountBase.sub(withdrawAmount)}
           quoteAmount={depositedAmountQuote.sub(secondaryWithdrawAmount)}
           pool={pool}
+          position={position}
         />
 
         <Button

@@ -16,6 +16,7 @@ import { AmbientPoolPositionClaimFees } from './components/AmbientPoolPositionCl
 import { AmbientPoolPositionWithdraw } from './components/AmbientPoolPositionWithdraw/AmbientPoolPositionWithdraw';
 import { AmbientPositionBalance } from './components/AmbientPositionBalance/AmbientPositionBalance';
 import { AmbientPositionPrices } from './components/AmbientPositionPrices/AmbientPositionPrices';
+import { AmbientPositionStatus } from './components/AmbientPositionStatus/AmbientPositionStatus';
 import { AmbientPositionValue } from './components/AmbientPositionValue/AmbientPositionValue';
 
 type AmbientPoolPositionsProps = {
@@ -48,6 +49,18 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
             <SimpleTableRow
               label={t(translations.ambientMarketMaking.positionsTable.balance)}
               value={<AmbientPositionBalance pool={pool} position={position} />}
+            />
+            <SimpleTableRow
+              label={t(
+                translations.ambientMarketMaking.positionsTable.status.title,
+              )}
+              value={
+                <AmbientPositionStatus
+                  pool={pool}
+                  position={position}
+                  className="flex justify-end"
+                />
+              }
             />
             <SimpleTableRow
               label={t(translations.ambientMarketMaking.positionsTable.value)}

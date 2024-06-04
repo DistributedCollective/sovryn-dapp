@@ -1,5 +1,16 @@
 # frontend
 
+## 1.1.6
+
+### Patch Changes
+
+- e58ad2ab: SOV-4154: BOB Market Making - always show LP Fee Rate and Last Price
+- 5bdfda1c: SOV-4193: Fix hardcoded conversion
+- 7aee0cf4: SOV-4159: Add slashed SOV data to Staking history
+- 7b62c35f: SOV-4191: Raise the Gas Limit for OSSOV withdrawals
+- Updated dependencies [54bcf1e2]
+  - @sovryn/contracts@1.1.4
+
 ## 1.1.5
 
 ### Patch Changes

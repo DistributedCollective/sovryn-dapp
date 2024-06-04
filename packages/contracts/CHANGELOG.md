@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.1.4
+
+### Patch Changes
+
+- 54bcf1e2: SOV-4193: Add POWA testnet address for RSK
+
 ## 1.1.3
 
 ### Patch Changes

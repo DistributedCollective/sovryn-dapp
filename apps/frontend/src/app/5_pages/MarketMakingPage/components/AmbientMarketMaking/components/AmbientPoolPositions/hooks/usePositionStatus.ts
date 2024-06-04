@@ -1,27 +1,46 @@
 import { useMemo } from 'react';
 
+import { priceToTick } from '@sovryn/sdex';
+
 import { useGetPoolInfo } from '../../../../BobDepositModal/hooks/useGetPoolInfo';
 import { AmbientPosition } from '../../../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../../utils/AmbientLiquidityPool';
 
 export const usePositionStatus = (
   pool: AmbientLiquidityPool,
-  position: AmbientPosition,
+  position?: AmbientPosition,
+  isDeposit?: boolean,
 ) => {
   const { spotPrice: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
 
-  const rangeSpanAboveCurrentPrice = useMemo(
-    () => position.askTick - currentPrice,
-    [currentPrice, position.askTick],
+  const currentTickPrice = useMemo(
+    () => priceToTick(currentPrice),
+    [currentPrice],
   );
 
-  const rangeSpanBelowCurrentPrice = useMemo(
-    () => currentPrice - position.bidTick,
-    [currentPrice, position.bidTick],
-  );
+  const rangeSpanAboveCurrentPrice = useMemo(() => {
+    if (!position) {
+      return 0;
+    }
+    return position.askTick - currentTickPrice;
+  }, [currentTickPrice, position]);
 
-  return useMemo(
-    () => rangeSpanAboveCurrentPrice < 0 || rangeSpanBelowCurrentPrice < 0,
-    [rangeSpanAboveCurrentPrice, rangeSpanBelowCurrentPrice],
-  );
+  const rangeSpanBelowCurrentPrice = useMemo(() => {
+    if (!position) {
+      return 0;
+    }
+    return currentTickPrice - position.bidTick;
+  }, [currentTickPrice, position]);
+
+  return useMemo(() => {
+    if (position) {
+      return rangeSpanAboveCurrentPrice < 0 || rangeSpanBelowCurrentPrice < 0;
+    }
+    return isDeposit;
+  }, [
+    isDeposit,
+    position,
+    rangeSpanAboveCurrentPrice,
+    rangeSpanBelowCurrentPrice,
+  ]);
 };

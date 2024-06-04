@@ -1,5 +1,7 @@
 import React, { FC, useMemo } from 'react';
 
+import { constants } from 'ethers';
+
 import { MIN_TICK, MAX_TICK, tickToPrice, toDisplayPrice } from '@sovryn/sdex';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -27,6 +29,11 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
     [position.askTick, position.bidTick, position.positionType],
   );
 
+  const isNativeToken = useMemo(
+    () => position.base === constants.AddressZero,
+    [position.base],
+  );
+
   const { poolTokens } = useGetPoolInfo(pool.base, pool.quote);
 
   const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
@@ -45,24 +52,49 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
 
   return (
     <div className="inline-flex flex-col">
-      <AmountRenderer
-        value={toDisplayPrice(
-          tickToPrice(!isOutOfRange ? position.bidTick : position.askTick),
-          baseTokenDecimals,
-          quoteTokenDecimals,
-          !isOutOfRange ? false : true,
-        )}
-        suffix={pool.quote}
-      />
-      <AmountRenderer
-        value={toDisplayPrice(
-          tickToPrice!(!isOutOfRange ? position.askTick : position.bidTick),
-          baseTokenDecimals,
-          quoteTokenDecimals,
-          !isOutOfRange ? false : true,
-        )}
-        suffix={pool.quote}
-      />
+      {isOutOfRange ? (
+        <>
+          <AmountRenderer
+            value={toDisplayPrice(
+              tickToPrice(isNativeToken ? position.askTick : position.bidTick),
+              baseTokenDecimals,
+              quoteTokenDecimals,
+              isNativeToken ? true : false,
+            )}
+            suffix={pool.quote}
+          />
+          <AmountRenderer
+            value={toDisplayPrice(
+              tickToPrice(isNativeToken ? position.bidTick : position.askTick),
+              baseTokenDecimals,
+              quoteTokenDecimals,
+              isNativeToken ? true : false,
+            )}
+            suffix={pool.quote}
+          />
+        </>
+      ) : (
+        <>
+          <AmountRenderer
+            value={toDisplayPrice(
+              tickToPrice(position.askTick),
+              baseTokenDecimals,
+              quoteTokenDecimals,
+              true,
+            )}
+            suffix={pool.quote}
+          />
+          <AmountRenderer
+            value={toDisplayPrice(
+              tickToPrice!(position.bidTick),
+              baseTokenDecimals,
+              quoteTokenDecimals,
+              true,
+            )}
+            suffix={pool.quote}
+          />
+        </>
+      )}
     </div>
   );
 };

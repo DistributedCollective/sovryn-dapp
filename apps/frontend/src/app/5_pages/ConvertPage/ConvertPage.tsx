@@ -438,7 +438,7 @@ const ConvertPage: FC = () => {
       <Helmet>
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
-      <div className="w-full flex flex-col items-center text-gray-10 mt-9 sm:mt-24">
+      <div className="w-full flex flex-col items-center text-gray-10 my-9 sm:my-24">
         <Heading className="text-base sm:text-2xl font-medium">
           {t(pageTranslations.title)}
         </Heading>
@@ -484,7 +484,7 @@ const ConvertPage: FC = () => {
                 options={sourceTokenOptions}
                 labelRenderer={() => getAssetRenderer(sourceToken)}
                 className="min-w-[6.7rem]"
-                menuClassName="max-h-[10rem] sm:max-h-[20rem]"
+                menuClassName="max-h-[10rem] sm:max-h-[12rem]"
                 dataAttribute="convert-from-asset"
               />
             </div>
@@ -531,7 +531,7 @@ const ConvertPage: FC = () => {
                 onChange={onDestinationTokenChange}
                 options={destinationTokenOptions}
                 className="min-w-[6.7rem]"
-                menuClassName="max-h-[10rem] sm:max-h-[20rem]"
+                menuClassName="max-h-[10rem] sm:max-h-[12rem]"
                 dataAttribute="convert-to-asset"
               />
             </div>

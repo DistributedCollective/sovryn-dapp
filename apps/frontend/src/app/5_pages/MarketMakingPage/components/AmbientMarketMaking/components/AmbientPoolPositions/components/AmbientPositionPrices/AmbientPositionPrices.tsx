@@ -47,19 +47,19 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
     <div className="inline-flex flex-col">
       <AmountRenderer
         value={toDisplayPrice(
-          tickToPrice(isOutOfRange ? position.bidTick : position.askTick),
+          tickToPrice(!isOutOfRange ? position.bidTick : position.askTick),
           baseTokenDecimals,
           quoteTokenDecimals,
-          isOutOfRange ? false : true,
+          !isOutOfRange ? false : true,
         )}
         suffix={pool.quote}
       />
       <AmountRenderer
         value={toDisplayPrice(
-          tickToPrice(isOutOfRange ? position.askTick : position.bidTick),
+          tickToPrice!(!isOutOfRange ? position.askTick : position.bidTick),
           baseTokenDecimals,
           quoteTokenDecimals,
-          isOutOfRange ? false : true,
+          !isOutOfRange ? false : true,
         )}
         suffix={pool.quote}
       />

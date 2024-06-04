@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { BigNumber, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
+import { nanoid } from 'nanoid';
 
 import {
   Button,
@@ -44,6 +45,7 @@ export type TransactionStepsProps = {
   onClose?: () => void;
   gasPrice: string;
   onTxStatusChange?: (status: StatusType) => void;
+  setTxTrigger: (id: string) => void;
 };
 
 export const TransactionSteps: FC<TransactionStepsProps> = ({
@@ -52,6 +54,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   onClose,
   gasPrice,
   onTxStatusChange,
+  setTxTrigger,
 }) => {
   const chainId = useCurrentChain();
   const [stepData, setStepData] = useState<TransactionStepData[]>([]);
@@ -348,6 +351,8 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
       }
 
       setStep(transactions.length);
+
+      setTimeout(() => setTxTrigger(nanoid()), 1000);
     } catch (error) {
       onTxStatusChange?.(StatusType.error);
       console.error('error:', error);
@@ -364,8 +369,9 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     step,
     stepData,
     updateReceipt,
-    handleUpdates,
     onTxStatusChange,
+    handleUpdates,
+    setTxTrigger,
   ]);
 
   const getStatus = useCallback(

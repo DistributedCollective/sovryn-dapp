@@ -9,6 +9,8 @@ interface TransactionContextInterface {
   setIsOpen: (txDialog: boolean) => void;
   title: string;
   setTitle: (title: string) => void;
+  txTrigger: string;
+  setTxTrigger: (title: string) => void;
 }
 
 export const defaultValue: TransactionContextInterface = {
@@ -18,6 +20,8 @@ export const defaultValue: TransactionContextInterface = {
   setIsOpen: () => {},
   title: '',
   setTitle: () => {},
+  txTrigger: '',
+  setTxTrigger: () => {},
 };
 export const TransactionContext =
   createContext<TransactionContextInterface>(defaultValue);
@@ -34,6 +38,7 @@ export const TransactionProvider: React.FC<Props> = ({ children }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState('');
+  const [txTrigger, setTxTrigger] = useState('');
 
   return (
     <TransactionContext.Provider
@@ -44,6 +49,8 @@ export const TransactionProvider: React.FC<Props> = ({ children }) => {
         setIsOpen,
         title,
         setTitle,
+        txTrigger,
+        setTxTrigger,
       }}
     >
       {children}

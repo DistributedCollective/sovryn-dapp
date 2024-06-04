@@ -1,9 +1,8 @@
 import axios from 'axios';
 
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
-import { useCacheCall } from '../../../../../../hooks';
 import { useAccount } from '../../../../../../hooks/useAccount';
-import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
+import { useCachedData } from '../../../../../../hooks/useCachedData';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { getIndexerUri } from '../../../../../../utils/indexer';
@@ -17,15 +16,25 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
   const { account } = useAccount();
   const baseToken = useTokenDetailsByAsset(pool.base, pool.chainId);
   const quoteToken = useTokenDetailsByAsset(pool.quote, pool.chainId);
-  const { value: blockNumber } = useBlockNumber(chainId);
 
-  const { value: positions, loading } = useCacheCall(
-    `user-pools-balance/${pool.base}/${pool.quote}/${pool.poolIndex}/${account}`,
+  const { value: positions, loading } = useCachedData(
+    `user-pools-balance/${baseToken?.address}/${quoteToken?.address}/${
+      pool.poolIndex
+    }/${account}/${croc ? '' : 'croc'}`,
     chainId,
     async () => {
-      if (!baseToken || !quoteToken || !account || !croc) {
+      if (
+        !baseToken?.address ||
+        !quoteToken?.address ||
+        !account ||
+        !croc ||
+        !pool.poolIndex ||
+        !pool.chainId
+      ) {
         return [];
       }
+
+      console.log('fetching!');
       try {
         const { data } = await axios.get<any>(
           `${getIndexerUri(chainId)}/user_pool_positions?user=${account}&base=${
@@ -35,6 +44,9 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
           }`,
         );
 
+        console.log({
+          data,
+        });
         const positions = data.data as AmbientPosition[];
 
         if (pool.lpTokenAddress) {
@@ -85,14 +97,7 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
         return [];
       }
     },
-    [
-      baseToken?.address,
-      quoteToken?.address,
-      pool.poolIndex,
-      account,
-      blockNumber,
-      chainId,
-    ],
+    [baseToken?.address, quoteToken?.address, pool.poolIndex, account, chainId],
     [],
   );
 

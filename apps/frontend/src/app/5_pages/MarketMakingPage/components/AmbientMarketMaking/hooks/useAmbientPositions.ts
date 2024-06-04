@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import { useCacheCall } from '../../../../../../hooks';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
+import { useCachedData } from '../../../../../../hooks/useCachedData';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { getIndexerUri } from '../../../../../../utils/indexer';
 import { AmbientPosition } from '../AmbientMarketMaking.types';
@@ -12,7 +12,7 @@ export const useAmbientPositions = () => {
   const { account } = useAccount();
   const { value: blockNumber } = useBlockNumber(chainId);
 
-  const { value: positions, loading } = useCacheCall(
+  const { value: positions, loading } = useCachedData(
     `user_positions/${account}`,
     chainId,
     async () => {

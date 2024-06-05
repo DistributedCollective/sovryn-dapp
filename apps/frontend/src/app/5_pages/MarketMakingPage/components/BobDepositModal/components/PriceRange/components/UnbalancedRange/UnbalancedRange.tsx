@@ -2,8 +2,7 @@ import React, { FC, useCallback, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { toDisplayPrice } from '@sovryn/sdex';
-import { Decimal } from '@sovryn/utils';
+import { priceToTick, tickToPrice, toDisplayPrice } from '@sovryn/sdex';
 
 import { translations } from '../../../../../../../../../locales/i18n';
 import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
@@ -41,10 +40,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
   );
 
   const calculatePrice = useCallback(
-    (percentage: number) =>
-      Decimal.from(currentPrice)
-        .add(Decimal.from(currentPrice).mul(Decimal.from(percentage).div(100)))
-        .toNumber(),
+    (percentage: number) => currentPrice * ((100 - percentage) / 100),
     [currentPrice],
   );
 
@@ -57,14 +53,15 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
       const newPercentage =
         currentPercentage + (isPlus ? 1 : -1) || (isPlus ? 1 : -1);
 
+      // const newPercentage = currentPercentage + (isPlus ? 1 : -1);
       const newPrice = calculatePrice(newPercentage);
 
       if (isUpperBoundary) {
         setUpperBoundaryPercentage(newPercentage);
-        setMaximumPrice(newPrice);
+        setMinimumPrice(newPrice);
       } else {
         setLowerBoundaryPercentage(newPercentage);
-        setMinimumPrice(newPrice);
+        setMaximumPrice(newPrice);
       }
     },
     [
@@ -121,8 +118,8 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
   ]);
 
   useEffect(() => {
-    const calculatedMinimumPrice = calculatePrice(lowerBoundaryPercentage);
-    const calculatedMaximumPrice = calculatePrice(upperBoundaryPercentage);
+    const calculatedMinimumPrice = calculatePrice(upperBoundaryPercentage);
+    const calculatedMaximumPrice = calculatePrice(lowerBoundaryPercentage);
 
     if (minimumPrice === 0 || calculatedMinimumPrice !== minimumPrice) {
       setMinimumPrice(calculatedMinimumPrice);
@@ -161,33 +158,23 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
   const renderMin = useMemo(
     () =>
       toDisplayPrice(
-        currentPrice * ((100 - lowerBoundaryPercentage) / 100),
+        tickToPrice(priceToTick(maximumPrice)),
         baseTokenDecimals,
         quoteTokenDecimals,
         true,
       ),
-    [
-      baseTokenDecimals,
-      lowerBoundaryPercentage,
-      quoteTokenDecimals,
-      currentPrice,
-    ],
+    [baseTokenDecimals, maximumPrice, quoteTokenDecimals],
   );
 
   const renderMax = useMemo(
     () =>
       toDisplayPrice(
-        currentPrice * ((100 - upperBoundaryPercentage) / 100),
+        tickToPrice(priceToTick(minimumPrice)),
         baseTokenDecimals,
         quoteTokenDecimals,
         true,
       ),
-    [
-      baseTokenDecimals,
-      quoteTokenDecimals,
-      currentPrice,
-      upperBoundaryPercentage,
-    ],
+    [baseTokenDecimals, minimumPrice, quoteTokenDecimals],
   );
 
   return (

@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { constants } from 'ethers';
 
@@ -26,19 +26,35 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
     () =>
       position.positionType === PoolPositionType.ambient ||
       (position.bidTick === MIN_TICK && position.askTick === MAX_TICK),
-    [position.askTick, position.bidTick, position.positionType],
+    [position],
   );
 
-  const isNativeToken = useMemo(
-    () => position.base === constants.AddressZero,
-    [position.base],
+  const isContainsNativeToken = useMemo(
+    () =>
+      position.base === constants.AddressZero ||
+      position.quote === constants.AddressZero,
+    [position.base, position.quote],
   );
 
   const { poolTokens } = useGetPoolInfo(pool.base, pool.quote);
-
   const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
     poolTokens?.tokenA,
     poolTokens?.tokenB,
+  );
+
+  const renderAmountRenderer = useCallback(
+    (tick: number) => (
+      <AmountRenderer
+        value={toDisplayPrice(
+          tickToPrice(tick),
+          baseTokenDecimals,
+          quoteTokenDecimals,
+          true,
+        )}
+        suffix={pool.quote}
+      />
+    ),
+    [baseTokenDecimals, quoteTokenDecimals, pool.quote],
   );
 
   if (isAmbient) {
@@ -52,47 +68,15 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
 
   return (
     <div className="inline-flex flex-col">
-      {isOutOfRange ? (
+      {isOutOfRange && isContainsNativeToken ? (
         <>
-          <AmountRenderer
-            value={toDisplayPrice(
-              tickToPrice(isNativeToken ? position.askTick : position.bidTick),
-              baseTokenDecimals,
-              quoteTokenDecimals,
-              isNativeToken ? true : false,
-            )}
-            suffix={pool.quote}
-          />
-          <AmountRenderer
-            value={toDisplayPrice(
-              tickToPrice(isNativeToken ? position.bidTick : position.askTick),
-              baseTokenDecimals,
-              quoteTokenDecimals,
-              isNativeToken ? true : false,
-            )}
-            suffix={pool.quote}
-          />
+          {renderAmountRenderer(position.askTick)}
+          {renderAmountRenderer(position.bidTick)}
         </>
       ) : (
         <>
-          <AmountRenderer
-            value={toDisplayPrice(
-              tickToPrice(position.askTick),
-              baseTokenDecimals,
-              quoteTokenDecimals,
-              true,
-            )}
-            suffix={pool.quote}
-          />
-          <AmountRenderer
-            value={toDisplayPrice(
-              tickToPrice!(position.bidTick),
-              baseTokenDecimals,
-              quoteTokenDecimals,
-              true,
-            )}
-            suffix={pool.quote}
-          />
+          {renderAmountRenderer(position.askTick)}
+          {renderAmountRenderer(position.bidTick)}
         </>
       )}
     </div>

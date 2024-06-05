@@ -19,11 +19,7 @@ import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
 import { prepareApproveTransaction } from '../../../../../../utils/transactions';
-import {
-  createRangePositionTx,
-  roundDownTick,
-  roundUpTick,
-} from '../../../../BobAmmPage/ambient-utils';
+import { createRangePositionTx } from '../../../../BobAmmPage/ambient-utils';
 import { AmbientLiquidityPoolDictionary } from '../../AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 import { useDepositContext } from '../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from './useGetPoolInfo';
@@ -141,11 +137,9 @@ export const useHandleSubmit = (
 
     const pool = AmbientLiquidityPoolDictionary.get(assetA, assetB, chainId);
 
-    const gridSize = (await croc.context).chain.gridSize;
-
     const tick = {
-      low: roundDownTick(priceToTick(lowerBoundaryPrice), gridSize),
-      high: roundUpTick(priceToTick(upperBoundaryPrice), gridSize),
+      low: priceToTick(lowerBoundaryPrice),
+      high: priceToTick(upperBoundaryPrice),
     };
 
     const tx = await createRangePositionTx({

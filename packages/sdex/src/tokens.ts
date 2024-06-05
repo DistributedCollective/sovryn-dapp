@@ -212,12 +212,47 @@ export class CrocTokenView {
     return this.surplusOp(73, qty, recv, this.isNativeEth);
   }
 
+  async getDepositSurplusData(qty: TokenQty, recv: string): Promise<string> {
+    return this.surplusOpsData(73, qty, recv, this.isNativeEth);
+  }
+
+  async getWithdrawSurplusData(qty: TokenQty, recv: string): Promise<string> {
+    return this.surplusOpsData(74, qty, recv, this.isNativeEth);
+  }
+
   async withdraw(qty: TokenQty, recv: string): Promise<TransactionResponse> {
     return this.surplusOp(74, qty, recv);
   }
 
   async transfer(qty: TokenQty, recv: string): Promise<TransactionResponse> {
     return this.surplusOp(75, qty, recv);
+  }
+
+  private async surplusOpsData(
+    subCode: number,
+    qty: TokenQty,
+    recv: string,
+    useMsgVal: boolean = false,
+  ): Promise<string> {
+    const abiCoder = new ethers.utils.AbiCoder();
+    const weiQty = this.normQty(qty);
+    const cmd = abiCoder.encode(
+      ['uint8', 'address', 'uint128', 'address'],
+      [subCode, recv, await weiQty, this.tokenAddr],
+    );
+
+    const txArgs = useMsgVal ? { value: await weiQty } : {};
+    console.log('txArgs:', txArgs);
+    const cntx = await this.context;
+    if (process.argv.includes('--tx')) {
+      const data = cntx.dex.interface.encodeFunctionData('userCmd', [
+        cntx.chain.proxyPaths.cold,
+        cmd,
+      ]);
+      console.log('data:', data);
+    }
+    console.log('-'.repeat(50));
+    return cmd;
   }
 
   private async surplusOp(

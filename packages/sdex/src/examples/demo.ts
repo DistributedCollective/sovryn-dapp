@@ -3,13 +3,6 @@ import { ethers } from 'ethers';
 
 //import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
-import {
-  // bobMainnetMockAmbientPoolConfigs,
-  bobMainnetAmbientPoolConfigs, //bobMainnetConcentratedPoolConfigs //bobMainnetAmbientPoolConfigs, //, // bobMainnetMockConcentratedPoolConfigs,
-} from './config';
-import {
-  createPositionAmbientLiquidity, //createPositionAmbientLiquidity, //, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
-} from './helper';
 
 // import { priceToTick } from '../utils/price';
 
@@ -113,41 +106,6 @@ async function demo() {
   //   .pool(SOV, USDT, 410)
   //   .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
   // console.log('Encoded data to deposit', amountParam, ' USDT:', encodedData);
-
-  const slippageTolerancePercentage = 10; // 10%
-
-  for (const poolConfig of bobMainnetAmbientPoolConfigs) {
-    console.log(
-      `Processing ambient pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
-    );
-    const price = poolConfig.price;
-    await createPositionAmbientLiquidity(croc, {
-      base: poolConfig.baseToken.tokenAddress,
-      quote: poolConfig.quoteToken.tokenAddress,
-      poolIndex: poolConfig.poolIdx,
-      amountInBase: poolConfig.amountInBase, // decimal not yet considered here
-      lpConduit: poolConfig.lpConduit,
-      price: price, // price
-      slippageTolerancePercentage,
-    });
-  }
-
-  // CONCENTRATED LIQUIDITY
-  // for (const poolConfig of bobMainnetConcentratedPoolConfigs) {
-  //   console.log(
-  //     `Processing concentrated pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
-  //   );
-  //   const price = poolConfig.price;
-  //   await createPositionConcentratedLiquidity(croc, {
-  //     base: poolConfig.baseToken.tokenAddress,
-  //     quote: poolConfig.quoteToken.tokenAddress,
-  //     poolIndex: poolConfig.poolIdx,
-  //     amountInBase: poolConfig.amountInBase, // decimal not yet considered here
-  //     price: price, // price
-  //     slippageTolerancePercentage,
-  //     rangeMultipliers: poolConfig.rangeMultipliers,
-  //   });
-  // }
 
   // await burnAmbientLiquidity(croc, {
   //   base: USDT,
@@ -472,8 +430,24 @@ async function demo() {
   // const lpConduitPosition = await lpConduitPositionView.queryAmbient()
   // console.log(lpConduitPosition);
   // await croc.poolEth(USDC).burnAmbientLiq(lpConduitPosition.seeds, [0.0001, 0.001], { lpConduit: USDC_ETH_LP_CONDUIT });
+
+  // DEPOSIT/DISBURSE SURPLUS
+  // const bobTreasurySafe = '0x4ff3d7a244fe5094b38bafa49290e0cc5fcbc172';
+  // const receiver = bobTreasurySafe;
+  // console.log('DEPOSIT SURPLUS');
+  // console.log(
+  //   await croc
+  //     .token(SOV)
+  //     .getDepositSurplusData('17694320.889337585438381886', receiver),
+  // );
+  // console.log('DISBURSE SURPLUS');
+  // console.log(
+  //   await croc
+  //     .token(SOV)
+  //     .getWithdrawSurplusData('17694320.889337585438381886', receiver),
+  // );
 }
 
 // use --tx param to print raw encoded tx:
-// yarn ts-node packages/sdex/src/examples/demo-ambient.ts --tx
+// yarn ts-node packages/sdex/src/examples/demo.ts --tx
 demo();

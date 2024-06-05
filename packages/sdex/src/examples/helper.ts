@@ -45,8 +45,8 @@ export interface CreateConcentratedPositionProps {
   slippageTolerancePercentage: number;
 }
 
-type PriceRange = [number, number];
-type TickRange = [number, number];
+export type PriceRange = [number, number];
+export type TickRange = [number, number];
 
 const SLIPPAGE_TORELANCE = 0.05; // 0.05%
 
@@ -232,39 +232,69 @@ export async function createPositionConcentratedLiquidity(
     rangeMultipliers,
   }: CreateConcentratedPositionProps,
 ) {
-  // const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
-  const [baseToken, quoteToken] = [base, quote]; // : [quote, base];
-  const pool = env.pool(baseToken, quoteToken, poolIndex);
+  const [baseToken, quoteToken] =
+    base.toLowerCase() < quote.toLowerCase() ? [base, quote] : [quote, base];
+  const expectedBase = baseToken.toLowerCase() === base.toLowerCase();
+  const priceToCheck = price; //expectedBase ? price : 1 / price;
+  // const [baseToken, quoteToken] = [base, quote]; // : [quote, base];
+  console.log(
+    'base:',
+    base,
+    'quote:',
+    quote,
+    'baseToken:',
+    baseToken,
+    'quoteToken:',
+    quoteToken,
+    'poolIndex:',
+    poolIndex,
+    'price:',
+    price,
+    'priceToCheck:',
+    priceToCheck,
+    'expectedBase:',
+    expectedBase,
+  );
+  const pool = env.pool(quote, base, poolIndex); // we need to keep original quote and base because we use display price which should be comparable to that of config
 
   const poolPrice = await pool.displayPrice();
+  console.log('Pool Price:', poolPrice);
+  // const amountAdjusted =
+  //   baseToken !== base ? amountInBase : amountInBase * poolPrice;
 
   checkWithinSlippageTolerancePercentage(
     poolPrice,
-    price,
+    priceToCheck,
     slippageTolerancePercentage,
     false,
   );
 
-  const spotPrice = await pool.spotPrice();
+  // const spotPrice = await pool.spotPrice();
+  // console.log('Spot Price:', spotPrice);
 
   const gridSize = (await env.context).chain.gridSize;
 
-  const minimumPrice = spotPrice * rangeMultipliers[0];
-  const maximumPrice = spotPrice * rangeMultipliers[1];
+  // const minimumPrice = spotPrice * rangeMultipliers[0];
+  // const maximumPrice = spotPrice * rangeMultipliers[1];
+  const minimumPrice = poolPrice * rangeMultipliers[0];
+  const maximumPrice = poolPrice * rangeMultipliers[1];
 
   const ticks = {
     low: roundDownTick(priceToTick(minimumPrice), gridSize),
     high: roundUpTick(priceToTick(maximumPrice), gridSize),
   };
 
-  const expectedBase =
-    pool.baseToken.tokenAddr.toLowerCase() === base.toLowerCase();
-
   const decimals = await (expectedBase
     ? pool.baseToken.decimals
     : pool.quoteToken.decimals);
+  console.log('decimals', decimals);
+  //console.log('amountAdjusted', amountAdjusted.toFixed(decimals));
+  //const amount = parseUnits(amountAdjusted.toFixed(decimals), decimals);
+  const amount = parseUnits(amountInBase.toFixed(decimals), decimals);
 
-  const amount = parseUnits(amountInBase.toString(), decimals);
+  // const amount = !expectedBase
+  //   ? parseUnits(amountInBase.toString(), decimals)
+  //   : parseUnits(amountAdjusted.toFixed(decimals), decimals);
 
   const limits = {
     min: poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
@@ -277,31 +307,31 @@ export async function createPositionConcentratedLiquidity(
     decimals: decimals,
   });
 
-  // const mintData = await (!expectedBase
-  //   ? pool.mintRangeBase(
-  //       amount,
-  //       [ticks.low, ticks.high],
-  //       [limits.min, limits.max],
-  //       {
-  //         surplus: [false, false],
-  //       },
-  //     )
-  //   : pool.mintRangeQuote(
-  //       amount,
-  //       [ticks.low, ticks.high],
-  //       [limits.min, limits.max],
-  //       {
-  //         surplus: [false, false],
-  //       },
-  //     ));
-  const mintData = await pool.mintRangeQuote(
-    amount,
-    [ticks.low, ticks.high],
-    [limits.min, limits.max],
-    {
-      surplus: [false, false],
-    },
-  );
+  const mintData = await (expectedBase
+    ? pool.mintRangeBase(
+        amount,
+        [ticks.low, ticks.high],
+        [limits.min, limits.max],
+        {
+          surplus: [false, false],
+        },
+      )
+    : pool.mintRangeQuote(
+        amount,
+        [ticks.low, ticks.high],
+        [limits.min, limits.max],
+        {
+          surplus: [false, false],
+        },
+      ));
+  // const mintData = await pool.mintRangeQuote(
+  //   amount,
+  //   [ticks.low, ticks.high],
+  //   [limits.min, limits.max],
+  //   {
+  //     surplus: [false, false],
+  //   },
+  // );
   console.log('expectedBase:', expectedBase);
   console.log('to', mintData.contract.address);
   console.log('calldata', mintData.calldata);
@@ -333,11 +363,15 @@ export async function burnConcentratedLiquidity(
   const pool = croc.pool(base, quote, poolIndex);
   //   const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
   const poolPrice = await pool.displayPrice();
+  console.log('Pool Price:', poolPrice);
+  console.log('price:', price);
+  const difference = Math.abs(poolPrice - price);
+  const average = (poolPrice + price) / 2;
+  const slippagePercentage = (difference / average) * 100;
 
-  const slippagePercentage = (poolPrice / price) * 100;
   if (slippagePercentage > slippageTolerancePercentage) {
     throw new Error(
-      `burnAmbientLiquidity:: Invalid slippage for token ${base} - ${quote}, expected ${slippageTolerancePercentage}% got ${slippagePercentage}%, with expected price: ${price}, got ${poolPrice}`,
+      `burnConcentratedLiquidity:: Invalid slippage for token ${base} - ${quote}, expected ${slippageTolerancePercentage}% got ${slippagePercentage}%, with expected price: ${price}, got ${poolPrice}`,
     );
   }
 
@@ -354,11 +388,17 @@ export async function burnConcentratedLiquidity(
     poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
     poolPrice * (1 + SLIPPAGE_TORELANCE / 100),
   ];
-  console.log('pool price:', poolPrice);
-  console.log(
-    'encoded_data: ',
-    await pool.burnRangeLiq(amount, range, limits, {}),
-  );
+  const encodedData = await pool.burnRangeLiq(amount, range, limits, {});
+  console.log('encoded_data: ', encodedData);
+  const cntx = await croc.context;
+  if (process.argv.includes('--tx')) {
+    const data = cntx.dex.interface.encodeFunctionData('userCmd', [
+      cntx.chain.proxyPaths.liq,
+      encodedData,
+    ]);
+    console.log('data:', data);
+  }
+  console.log('-'.repeat(50));
 }
 
 export function roundDownTick(lowTick: number, nTicksGrid: number): number {

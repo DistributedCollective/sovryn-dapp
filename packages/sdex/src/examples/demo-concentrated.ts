@@ -1,15 +1,35 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ethers } from 'ethers';
+import path from 'path';
 
 //import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
 import {
-  // bobMainnetMockAmbientPoolConfigs,
-  bobMainnetConcentratedPoolConfigs, //bobMainnetAmbientPoolConfigs, //, // bobMainnetMockConcentratedPoolConfigs,
-} from './config';
-import {
-  createPositionConcentratedLiquidity, //createPositionAmbientLiquidity, //, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
+  createPositionConcentratedLiquidity,
+  burnConcentratedLiquidity, //createPositionAmbientLiquidity, //, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
 } from './helper';
+
+let configPath = '';
+
+// Iterate over the command-line arguments
+process.argv.forEach((arg, index) => {
+  if (arg === '--path' && index + 1 < process.argv.length) {
+    configPath = process.argv[index + 1];
+  }
+});
+let config;
+if (configPath) {
+  const fullPath = path.resolve(configPath);
+  try {
+    config = require(fullPath);
+  } catch (err) {
+    console.error('Error requiring config:', err);
+  }
+} else {
+  console.error('No path provided. Please provide a path using --path');
+}
+//console.log(config);
+const { bobMainnetConcentratedPoolConfigs } = config;
 
 // import { priceToTick } from '../utils/price';
 
@@ -138,6 +158,7 @@ async function demo() {
       `Processing concentrated pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
     );
     const price = poolConfig.price;
+    console.log('DEPOSIT CONCENTRATED');
     await createPositionConcentratedLiquidity(croc, {
       base: poolConfig.baseToken.tokenAddress,
       quote: poolConfig.quoteToken.tokenAddress,
@@ -146,6 +167,17 @@ async function demo() {
       price: price, // price
       slippageTolerancePercentage,
       rangeMultipliers: poolConfig.rangeMultipliers,
+    });
+
+    console.log('WITHDRAW CONCENTRATED');
+    await burnConcentratedLiquidity(croc, {
+      base: poolConfig.baseToken.tokenAddress,
+      quote: poolConfig.quoteToken.tokenAddress,
+      amountInBase: poolConfig.amountInBase,
+      poolIndex: poolConfig.poolIdx,
+      range: [115004, 115008],
+      price,
+      slippageTolerancePercentage,
     });
   }
 
@@ -474,6 +506,6 @@ async function demo() {
   // await croc.poolEth(USDC).burnAmbientLiq(lpConduitPosition.seeds, [0.0001, 0.001], { lpConduit: USDC_ETH_LP_CONDUIT });
 }
 
-// use --tx param when calling this script to get encoded tx for multisig printed instead of execution:
+// use --tx param to print raw encoded tx:
 // yarn ts-node packages/sdex/src/examples/demo-concentrated.ts --tx
 demo();

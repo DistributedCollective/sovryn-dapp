@@ -101,7 +101,7 @@ export const BobRepositionModal: FC<BobRepositionModalProps> = ({
       <Dialog disableFocusTrap isOpen={isOpen}>
         <DialogHeader title={t(pageTranslations.title)} onClose={onClose} />
         <DialogBody>
-          <div className="bg-gray-90 p-4 mb-4 rounded">
+          <div className="bg-gray-90 p-4 rounded mb-4">
             <CurrentStatistics
               symbol={base}
               symbol2={quote}

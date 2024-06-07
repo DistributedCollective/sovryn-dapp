@@ -1,41 +1,26 @@
-import { MaxAllowanceTransferAmount } from '@uniswap/permit2-sdk';
-
 import { useCallback } from 'react';
 
-import { BigNumber, Contract, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
 import { priceToTick } from '@sovryn/sdex';
-import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
 import { Decimal } from '@sovryn/utils';
 
 import {
   Transaction,
   TransactionType,
 } from '../../../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
-import { prepareApproveTransaction } from '../../../../../../utils/transactions';
 import { createRangePositionTx } from '../../../../BobAmmPage/ambient-utils';
+import { checkAndPrepareApproveTransaction } from '../../AmbientMarketMaking/components/AmbientPoolPositions/AmbientPoolPositions.utils';
 import { AmbientLiquidityPoolDictionary } from '../../AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 import { useDepositContext } from '../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from './useGetPoolInfo';
-
-const testAllowance = async (
-  owner: string,
-  token: CrocTokenView,
-  amount: BigNumber,
-) => {
-  const allowance = await token.allowance(owner);
-
-  if (allowance.lt(amount)) {
-    const approval = await token.approve();
-    return approval;
-  }
-};
 
 export const useHandleSubmit = (
   assetA: string,
@@ -80,59 +65,28 @@ export const useHandleSubmit = (
 
     const transactions: Transaction[] = [];
 
-    const allowanceA = await testAllowance(
+    const approveA = await checkAndPrepareApproveTransaction({
       account,
-      poolTokens.tokenA,
-      firstAssetBigNumberAmount,
-    );
-    const allowanceB = await testAllowance(
-      account,
-      poolTokens.tokenB,
-      secondAssetBigNumberAmount,
-    );
+      token: poolTokens.tokenA,
+      assetAmount: firstAssetBigNumberAmount,
+      chainId,
+      signer,
+    });
 
-    if (allowanceA) {
-      const approve = await prepareApproveTransaction({
-        token: poolTokens.tokenA.tokenAddr,
-        chain: chainId,
-        amount:
-          allowanceA.weiQty === ethers.constants.MaxUint256
-            ? MaxAllowanceTransferAmount
-            : allowanceA.weiQty,
-        spender: allowanceA.address,
-        contract: new Contract(
-          poolTokens.tokenA.tokenAddr,
-          (
-            await poolTokens.tokenA.context
-          ).erc20Write.interface,
-          signer,
-        ),
-      });
-      if (approve) {
-        transactions.push(approve);
-      }
+    const approveB = await checkAndPrepareApproveTransaction({
+      account,
+      token: poolTokens.tokenB,
+      assetAmount: secondAssetBigNumberAmount,
+      chainId,
+      signer,
+    });
+
+    if (approveA) {
+      transactions.push(approveA);
     }
 
-    if (allowanceB) {
-      const approve = await prepareApproveTransaction({
-        token: poolTokens.tokenB.tokenAddr,
-        chain: chainId,
-        amount:
-          allowanceB.weiQty === ethers.constants.MaxUint256
-            ? MaxAllowanceTransferAmount
-            : allowanceB.weiQty,
-        spender: allowanceB.address,
-        contract: new Contract(
-          poolTokens.tokenB.tokenAddr,
-          (
-            await poolTokens.tokenB.context
-          ).erc20Write.interface,
-          signer,
-        ),
-      });
-      if (approve) {
-        transactions.push(approve);
-      }
+    if (approveB) {
+      transactions.push(approveB);
     }
 
     const pool = AmbientLiquidityPoolDictionary.get(assetA, assetB, chainId);
@@ -162,8 +116,6 @@ export const useHandleSubmit = (
       poolIndex: pool?.poolIndex,
     });
 
-    console.log('txData', tx);
-
     transactions.push({
       title: t(translations.common.deposit),
       request: {
@@ -174,7 +126,7 @@ export const useHandleSubmit = (
         value: tx.txArgs?.value ? tx.txArgs.value : 0,
         gasLimit: tx.txArgs?.gasLimit
           ? tx.txArgs.gasLimit
-          : BigNumber.from(6_000_000),
+          : BigNumber.from(GAS_LIMIT.MARKET_MAKING_DEPOSIT),
       },
       onComplete,
     });

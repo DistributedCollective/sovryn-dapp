@@ -1,37 +1,28 @@
-import { MaxAllowanceTransferAmount } from '@uniswap/permit2-sdk';
-
 import { useCallback } from 'react';
 
-import { BigNumber, Contract, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
+import { t } from 'i18next';
 
 import { CrocReposition, priceToTick } from '@sovryn/sdex';
-import { CrocTokenView } from '@sovryn/sdex/dist/tokens';
 import { Decimal } from '@sovryn/utils';
 
-import { Transaction } from '../../../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import {
+  Transaction,
+  TransactionType,
+} from '../../../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
+import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
+import { translations } from '../../../../../../locales/i18n';
 import { decimalic } from '../../../../../../utils/math';
-import { prepareApproveTransaction } from '../../../../../../utils/transactions';
 import { AmbientPosition } from '../../AmbientMarketMaking/AmbientMarketMaking.types';
+import { checkAndPrepareApproveTransaction } from '../../AmbientMarketMaking/components/AmbientPoolPositions/AmbientPoolPositions.utils';
 import { DEFAULT_SLIPPAGE } from '../../BobDepositModal/BobDepositModal.constants';
 import { useDepositContext } from '../../BobDepositModal/contexts/BobDepositModalContext';
 import { useGetPoolInfo } from '../../BobDepositModal/hooks/useGetPoolInfo';
 import { mintArgsForReposition } from '../BobRepositionModal.utils';
-
-const testAllowance = async (
-  owner: string,
-  token: CrocTokenView,
-  amount: BigNumber,
-) => {
-  const allowance = await token.allowance(owner);
-
-  if (allowance.lt(amount)) {
-    const approval = await token.approve();
-    return approval;
-  }
-};
 
 export const useHandleSubmit = (
   assetA: string,
@@ -42,7 +33,9 @@ export const useHandleSubmit = (
   const chainId = useCurrentChain();
   const { account, signer } = useAccount();
   const { croc } = useCrocContext();
-  const { poolTokens } = useGetPoolInfo(assetA, assetB);
+  const { poolTokens, pool: crocPool } = useGetPoolInfo(assetA, assetB);
+  const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+
   const {
     minimumPrice: lowerBoundaryPrice,
     maximumPrice: upperBoundaryPrice,
@@ -50,9 +43,10 @@ export const useHandleSubmit = (
     secondAssetValue,
     isFirstAssetOutOfRange,
     isSecondAssetOutOfRange,
+    rangeWidth,
   } = useDepositContext();
   const onSubmit = useCallback(async () => {
-    if (!croc || !poolTokens || !signer) {
+    if (!croc || !poolTokens || !signer || !crocPool) {
       return;
     }
 
@@ -70,77 +64,63 @@ export const useHandleSubmit = (
 
     const transactions: Transaction[] = [];
 
-    const allowanceA = await testAllowance(
+    const approveA = await checkAndPrepareApproveTransaction({
       account,
-      poolTokens.tokenA,
-      firstAssetBigNumberAmount,
-    );
-    const allowanceB = await testAllowance(
-      account,
-      poolTokens.tokenB,
-      secondAssetBigNumberAmount,
-    );
+      token: poolTokens.tokenA,
+      assetAmount: firstAssetBigNumberAmount,
+      chainId,
+      signer,
+    });
 
-    if (allowanceA) {
-      const approve = await prepareApproveTransaction({
-        token: poolTokens.tokenA.tokenAddr,
-        chain: chainId,
-        amount:
-          allowanceA.weiQty === ethers.constants.MaxUint256
-            ? MaxAllowanceTransferAmount
-            : allowanceA.weiQty,
-        spender: allowanceA.address,
-        contract: new Contract(
-          poolTokens.tokenA.tokenAddr,
-          (
-            await poolTokens.tokenA.context
-          ).erc20Write.interface,
-          signer,
-        ),
-      });
-      if (approve) {
-        transactions.push(approve);
-      }
+    const approveB = await checkAndPrepareApproveTransaction({
+      account,
+      token: poolTokens.tokenB,
+      assetAmount: secondAssetBigNumberAmount,
+      chainId,
+      signer,
+    });
+
+    if (approveA) {
+      transactions.push(approveA);
     }
 
-    if (allowanceB) {
-      const approve = await prepareApproveTransaction({
-        token: poolTokens.tokenB.tokenAddr,
-        chain: chainId,
-        amount:
-          allowanceB.weiQty === ethers.constants.MaxUint256
-            ? MaxAllowanceTransferAmount
-            : allowanceB.weiQty,
-        spender: allowanceB.address,
-        contract: new Contract(
-          poolTokens.tokenB.tokenAddr,
-          (
-            await poolTokens.tokenB.context
-          ).erc20Write.interface,
-          signer,
-        ),
-      });
-      if (approve) {
-        transactions.push(approve);
-      }
+    if (approveB) {
+      transactions.push(approveB);
     }
 
-    const pool = croc.pool(position.base, position.quote, position.poolIdx);
-
-    const repo = new CrocReposition(
-      pool,
+    const reposition = new CrocReposition(
+      crocPool,
       {
         liquidity: decimalic(position.concLiq).toString(),
         burn: [position.bidTick, position.askTick],
         mint: mintArgsForReposition(
           priceToTick(lowerBoundaryPrice),
           priceToTick(upperBoundaryPrice),
+          rangeWidth,
         ),
       },
       { impact: DEFAULT_SLIPPAGE / 100 },
     );
 
-    await repo.rebal();
+    const calldata = await reposition.rebal();
+    const contract = await crocPool.context;
+    const proxyPaths = contract.chain.proxyPaths.long;
+
+    transactions.push({
+      title: t(translations.bobMarketMakingPage.repositionModal.title),
+      request: {
+        type: TransactionType.signTransaction,
+        contract: contract.dex,
+        fnName: 'userCmd',
+        args: [proxyPaths, calldata],
+        gasLimit: GAS_LIMIT.MARKET_MAKING_REPOSITION,
+      },
+      onComplete,
+    });
+
+    setTransactions(transactions);
+    setTitle(t(translations.bobMarketMakingPage.repositionModal.reposition));
+    setIsOpen(true);
   }, [
     account,
     chainId,
@@ -154,6 +134,12 @@ export const useHandleSubmit = (
     signer,
     upperBoundaryPrice,
     position,
+    crocPool,
+    onComplete,
+    setTransactions,
+    setIsOpen,
+    setTitle,
+    rangeWidth,
   ]);
 
   return onSubmit;

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -21,30 +21,26 @@ export const AmbientPositionStatus: FC<AmbientPositionStatusProps> = ({
 }) => {
   const isOutOfRange = usePositionStatus(pool, position, isInRange);
 
+  const statusLabel = useMemo(
+    () =>
+      isOutOfRange
+        ? t(translations.ambientMarketMaking.positionsTable.status.outOfRange)
+        : t(translations.ambientMarketMaking.positionsTable.status.inRange),
+    [isOutOfRange],
+  );
+
+  const statusClassName = useMemo(
+    () => (isOutOfRange ? 'bg-warning-75' : 'bg-success'),
+    [isOutOfRange],
+  );
+
   return (
     <div className={className}>
       <div className="flex items-center">
-        <div className="flex items-center gap-1">
-          <span className="text-xs text-gray-30 font-semibold">
-            {!isOutOfRange ? (
-              <div className="flex items-center">
-                <div className="rounded-full w-2.5 h-2.5 bg-success mr-1"></div>
-                {t(
-                  translations.ambientMarketMaking.positionsTable.status
-                    .inRange,
-                )}
-              </div>
-            ) : (
-              <div className="flex items-center">
-                <div className="rounded-full w-2.5 h-2.5 bg-warning-75 mr-1"></div>
-                {t(
-                  translations.ambientMarketMaking.positionsTable.status
-                    .outOfRange,
-                )}
-              </div>
-            )}
-          </span>
-        </div>
+        <div
+          className={`rounded-full w-2.5 h-2.5 ${statusClassName} mr-1`}
+        ></div>
+        {statusLabel}
       </div>
     </div>
   );

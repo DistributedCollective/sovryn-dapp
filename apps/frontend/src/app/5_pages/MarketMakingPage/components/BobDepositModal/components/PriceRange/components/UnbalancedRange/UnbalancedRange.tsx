@@ -2,9 +2,10 @@ import React, { FC, useCallback, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { priceToTick, tickToPrice, toDisplayPrice } from '@sovryn/sdex';
+import { toDisplayPrice } from '@sovryn/sdex';
 
 import { translations } from '../../../../../../../../../locales/i18n';
+import { adjustPriceByPercentage } from '../../../../../AmbientMarketMaking/components/AmbientPoolPositions/AmbientPoolPositions.utils';
 import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useGetTokenDecimals } from '../../../../../BobWIthdrawModal/hooks/useGetTokenDecimals';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
@@ -39,11 +40,6 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     poolTokens?.tokenB,
   );
 
-  const calculatePrice = useCallback(
-    (percentage: number) => currentPrice * ((100 - percentage) / 100),
-    [currentPrice],
-  );
-
   const updateRange = useCallback(
     (isUpperBoundary: boolean, isPlus: boolean) => {
       const currentPercentage = isUpperBoundary
@@ -53,8 +49,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
       const newPercentage =
         currentPercentage + (isPlus ? 1 : -1) || (isPlus ? 1 : -1);
 
-      // const newPercentage = currentPercentage + (isPlus ? 1 : -1);
-      const newPrice = calculatePrice(newPercentage);
+      const newPrice = adjustPriceByPercentage(newPercentage, currentPrice);
 
       if (isUpperBoundary) {
         setUpperBoundaryPercentage(newPercentage);
@@ -65,7 +60,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
       }
     },
     [
-      calculatePrice,
+      currentPrice,
       lowerBoundaryPercentage,
       setLowerBoundaryPercentage,
       setMaximumPrice,
@@ -118,8 +113,14 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
   ]);
 
   useEffect(() => {
-    const calculatedMinimumPrice = calculatePrice(upperBoundaryPercentage);
-    const calculatedMaximumPrice = calculatePrice(lowerBoundaryPercentage);
+    const calculatedMinimumPrice = adjustPriceByPercentage(
+      upperBoundaryPercentage,
+      currentPrice,
+    );
+    const calculatedMaximumPrice = adjustPriceByPercentage(
+      lowerBoundaryPercentage,
+      currentPrice,
+    );
 
     if (minimumPrice === 0 || calculatedMinimumPrice !== minimumPrice) {
       setMinimumPrice(calculatedMinimumPrice);
@@ -129,7 +130,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
       setMaximumPrice(calculatedMaximumPrice);
     }
   }, [
-    calculatePrice,
+    currentPrice,
     lowerBoundaryPercentage,
     maximumPrice,
     minimumPrice,
@@ -157,23 +158,13 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
 
   const renderMin = useMemo(
     () =>
-      toDisplayPrice(
-        tickToPrice(priceToTick(maximumPrice)),
-        baseTokenDecimals,
-        quoteTokenDecimals,
-        true,
-      ),
+      toDisplayPrice(maximumPrice, baseTokenDecimals, quoteTokenDecimals, true),
     [baseTokenDecimals, maximumPrice, quoteTokenDecimals],
   );
 
   const renderMax = useMemo(
     () =>
-      toDisplayPrice(
-        tickToPrice(priceToTick(minimumPrice)),
-        baseTokenDecimals,
-        quoteTokenDecimals,
-        true,
-      ),
+      toDisplayPrice(minimumPrice, baseTokenDecimals, quoteTokenDecimals, true),
     [baseTokenDecimals, minimumPrice, quoteTokenDecimals],
   );
 

@@ -1,8 +1,7 @@
-import React, { FC, useCallback, useEffect, useMemo } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
-import { CrocEnv, CrocReposition, priceToTick } from '@sovryn/sdex';
 import {
   Button,
   ButtonStyle,
@@ -11,25 +10,21 @@ import {
   DialogBody,
   DialogHeader,
 } from '@sovryn/ui';
-import { Decimal } from '@sovryn/utils';
-
-import { BOB_CHAIN_ID } from '../../../../../config/chains';
 
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { translations } from '../../../../../locales/i18n';
-import { decimalic } from '../../../../../utils/math';
 import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.types';
+import {
+  adjustPriceByPercentage,
+  calculateBoundedPrice,
+} from '../AmbientMarketMaking/components/AmbientPoolPositions/AmbientPoolPositions.utils';
 import { AmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionBalance/AmbientPositionBalance';
 import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
-import {
-  MAXIMUM_PRICE,
-  MINIMUM_PRICE,
-} from '../BobDepositModal/BobDepositModal.constants';
 import { BalancedRange } from '../BobDepositModal/components/PriceRange/components/BalancedRange/BalancedRange';
 import { useDepositContext } from '../BobDepositModal/contexts/BobDepositModalContext';
 import { useGetPoolInfo } from '../BobDepositModal/hooks/useGetPoolInfo';
-import { mintArgsForReposition } from './BobRepositionModal.utils';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
+import { useGetBalances } from './hooks/useGetBalances';
 import { useHandleSubmit } from './hooks/useHandleSubmit';
 
 const pageTranslations = translations.bobMarketMakingPage.repositionModal;
@@ -49,8 +44,6 @@ export const BobRepositionModal: FC<BobRepositionModalProps> = ({
 }) => {
   const {
     rangeWidth,
-    minimumPrice,
-    maximumPrice,
     firstAssetValue,
     secondAssetValue,
     lowerBoundaryPercentage,
@@ -62,90 +55,31 @@ export const BobRepositionModal: FC<BobRepositionModalProps> = ({
   } = useDepositContext();
   const { base, quote } = useMemo(() => pool, [pool]);
 
-  const { spotPrice: currentPrice } = useGetPoolInfo(base, quote);
-
-  const calculatePrice = useCallback(
-    (percentage: number) =>
-      Decimal.from(currentPrice)
-        .add(Decimal.from(currentPrice).mul(Decimal.from(percentage).div(100)))
-        .toNumber(),
-    [currentPrice],
-  );
-
-  const lowTick = useMemo(() => priceToTick(minimumPrice), [minimumPrice]);
-  const highTick = useMemo(() => priceToTick(maximumPrice), [maximumPrice]);
-
-  const updatePrice = useCallback(
-    (isMinimumPrice: boolean, value: number) => {
-      if (value === 0) {
-        return currentPrice;
-      }
-
-      if (value === 100) {
-        return isMinimumPrice ? MINIMUM_PRICE : MAXIMUM_PRICE;
-      }
-
-      const priceDifference = Decimal.from(currentPrice).mul(
-        Decimal.from(value).div(100),
-      );
-
-      if (isMinimumPrice) {
-        const result = decimalic(currentPrice).sub(priceDifference);
-
-        return result.lt(0) ? 0 : result.toNumber();
-      }
-
-      return decimalic(currentPrice).add(priceDifference).toNumber();
-    },
-    [currentPrice],
-  );
+  const { spotPrice: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
 
   const handleSubmit = useHandleSubmit(base, quote, position, onClose);
 
-  useEffect(() => {
-    setMinimumPrice(updatePrice(true, rangeWidth));
-    setMaximumPrice(updatePrice(false, rangeWidth));
-  }, [rangeWidth, setMaximumPrice, setMinimumPrice, updatePrice]);
+  const [baseValue, quoteValue] = useGetBalances(pool, position, rangeWidth);
 
   useEffect(() => {
-    setFirstAssetValue('0');
-    setSecondAssetValue('0');
-  }, [setFirstAssetValue, setSecondAssetValue, rangeWidth, lowTick, highTick]);
+    setFirstAssetValue(baseValue);
+    setSecondAssetValue(quoteValue);
+  }, [baseValue, quoteValue, setFirstAssetValue, setSecondAssetValue]);
 
   useEffect(() => {
-    const crocEnv = new CrocEnv(BOB_CHAIN_ID);
-
-    if (position && crocEnv) {
-      const pool = crocEnv.pool(
-        position.base,
-        position.quote,
-        position.poolIdx,
-      );
-
-      const repo = new CrocReposition(pool, {
-        liquidity: decimalic(position.concLiq).toString(),
-        burn: [position.bidTick, position.askTick],
-        mint: mintArgsForReposition(lowTick, highTick),
-      });
-
-      repo.postBalance().then(([base, quote]: [number, number]) => {
-        setFirstAssetValue(base.toString());
-        setSecondAssetValue(quote.toString());
-      });
-    }
-  }, [
-    position,
-    setFirstAssetValue,
-    setSecondAssetValue,
-    minimumPrice,
-    maximumPrice,
-    lowTick,
-    highTick,
-  ]);
+    setMinimumPrice(calculateBoundedPrice(true, rangeWidth, currentPrice));
+    setMaximumPrice(calculateBoundedPrice(false, rangeWidth, currentPrice));
+  }, [rangeWidth, setMaximumPrice, setMinimumPrice, currentPrice]);
 
   useEffect(() => {
-    const calculatedMinimumPrice = calculatePrice(lowerBoundaryPercentage);
-    const calculatedMaximumPrice = calculatePrice(upperBoundaryPercentage);
+    const calculatedMinimumPrice = adjustPriceByPercentage(
+      lowerBoundaryPercentage,
+      currentPrice,
+    );
+    const calculatedMaximumPrice = adjustPriceByPercentage(
+      upperBoundaryPercentage,
+      currentPrice,
+    );
 
     if (calculatedMinimumPrice) {
       setMinimumPrice(calculatedMinimumPrice);
@@ -155,7 +89,7 @@ export const BobRepositionModal: FC<BobRepositionModalProps> = ({
       setMaximumPrice(calculatedMaximumPrice);
     }
   }, [
-    calculatePrice,
+    currentPrice,
     lowerBoundaryPercentage,
     upperBoundaryPercentage,
     setMinimumPrice,

@@ -6,7 +6,6 @@ import { SimpleTable, SimpleTableRow } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../locales/i18n';
-import { AmbientPositionStatus } from '../../../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionStatus/AmbientPositionStatus';
 import { AmbientLiquidityPool } from '../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 
 const pageTranslations =
@@ -33,17 +32,6 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
     <SimpleTableRow
       label=""
       value={<AmountRenderer value={quoteAmount} suffix={pool.quote} />}
-      valueClassName="text-primary-10"
-    />
-    <SimpleTableRow
-      label={t(pageTranslations.newStatus)}
-      value={
-        <AmbientPositionStatus
-          isInRange={false}
-          pool={pool}
-          className="flex justify-end"
-        />
-      }
       valueClassName="text-primary-10"
     />
   </SimpleTable>

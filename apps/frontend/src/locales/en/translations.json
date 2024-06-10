@@ -1258,7 +1258,7 @@
         },
         "staking": {
             "stakingSubsidies": "Staking subsidies",
-            "stakingSubsidiesOs": "Staking subsidies (SIP-76)",
+            "stakingSubsidiesOs": "Staking subsidies (SIP-77)",
             "stakingRevenue": "Staking revenue",
             "stakingRevenueLegacy": "Staking revenue (legacy)",
             "liquidityMiningError": "Your liquidity mining vesting contract holds more than {{count}} checkpoints worth of rewards. Please withdraw liquid rewards from your vesting contract to enable the 'Withdraw' button and claim additional rewards."

@@ -506,6 +506,7 @@ async function demo() {
   // await croc.poolEth(USDC).burnAmbientLiq(lpConduitPosition.seeds, [0.0001, 0.001], { lpConduit: USDC_ETH_LP_CONDUIT });
 }
 
+// provide --path PATH/TO/CONCENTRATED/POOL/DEPOSIT/CONFIG to run the demo
 // use --tx param to print raw encoded tx:
-// yarn ts-node packages/sdex/src/examples/demo-concentrated.ts --tx
+// yarn ts-node packages/sdex/src/examples/demo-concentrated.ts --path PATH/TO/CONCENTRATED/POOL/DEPOSIT/CONFIG --tx
 demo();

@@ -82,4 +82,33 @@ export const bob: Array<AssetDetails> = [
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/powa')).default,
   },
+  // TODO: Only testing, delete later
+  {
+    symbol: 'MOCK2_WETH',
+    address: '0x015FC1cd6f6159B8e2f93e4bA5495818d0f2ac8E',
+    name: 'MOCK2_WETH',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/powa')).default,
+  },
+  {
+    symbol: 'MOCK2_SOV',
+    address: '0xDCD9F011cf1d5a7e33023fBE5d445Eb181F0b64E',
+    name: 'MOCK2_SOV',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/sov')).default,
+  },
+  {
+    symbol: 'MOCK_POWA',
+    address: '0x4Ad48819AB9f6601849dD4b73DF9b115C4AeFa3a',
+    name: 'MOCK_POWA',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/powa')).default,
+  },
+  {
+    symbol: 'MOCK_GOB',
+    address: '0x13411341d7c3140742B9aF45B8Db6d24f2428F3F',
+    name: 'MOCK_GOV',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/sov')).default,
+  },
 ];

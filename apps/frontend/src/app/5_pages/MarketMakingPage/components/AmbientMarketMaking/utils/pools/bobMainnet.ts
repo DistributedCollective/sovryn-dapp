@@ -94,6 +94,21 @@ export const bobMainnet: AmbientLiquidityPool[] = [
     420,
     '0xbFB1bF6dCc02baCeB8C4c336457798c9b4ED1225',
   ),
+  // TODO: Only testing, delete later
+  new AmbientLiquidityPool(
+    'MOCK_GOB',
+    'MOCK_POWA',
+    ChainIds.BOB_MAINNET,
+    420,
+    '0xbce402a0cd6196251dd2d24d498beadd7cea57aa',
+  ),
+  new AmbientLiquidityPool(
+    'MOCK2_WETH',
+    'MOCK2_SOV',
+    ChainIds.BOB_MAINNET,
+    410,
+    '0x37654297DcbA0E4917d1d0232aEE374fa13b9251',
+  ),
   // new AmbientLiquidityPool('DAI', 'DLLR', ChainIds.BOB_MAINNET, 400),
   // new AmbientLiquidityPool('RETH', 'ETH', ChainIds.BOB_MAINNET, 400),
   // new AmbientLiquidityPool('WSTETH', 'ETH', ChainIds.BOB_MAINNET, 400),

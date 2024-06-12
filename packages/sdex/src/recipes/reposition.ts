@@ -112,8 +112,8 @@ export class CrocReposition {
       buyToken,
       await this.convertCollateral(),
       false,
-      (await this.pool.context).chain.poolIndex,
-      (await this.pool).context,
+      this.pool.poolIndex,
+      this.pool.context,
       { slippage: this.impact },
     );
     const impact = await swap.calcImpact();
@@ -142,9 +142,7 @@ export class CrocReposition {
 
     const directive = new OrderDirective(openToken.tokenAddr);
     directive.appendHop(closeToken.tokenAddr);
-    const pool = directive.appendPool(
-      (await this.pool.context).chain.poolIndex,
-    );
+    const pool = directive.appendPool(this.pool.poolIndex);
 
     directive.appendRangeBurn(
       this.burnRange[0],
@@ -153,7 +151,7 @@ export class CrocReposition {
     );
     await this.setupSwap(pool);
 
-    directive.appendPool((await this.pool.context).chain.poolIndex);
+    directive.appendPool(this.pool.poolIndex);
 
     if (this.mintRange === 'ambient') {
       const mint = directive.appendAmbientMint(0);

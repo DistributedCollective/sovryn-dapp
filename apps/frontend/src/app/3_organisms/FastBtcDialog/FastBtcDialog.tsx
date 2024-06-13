@@ -9,6 +9,8 @@ import {
   Dialog,
   DialogSize,
   Heading,
+  Icon,
+  IconNames,
   Tabs,
   VerticalTabs,
 } from '@sovryn/ui';
@@ -16,8 +18,9 @@ import {
 import { useAccount } from '../../../hooks/useAccount';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
-import { ReceiveFlow } from './components/ReceiveFlow/ReceiveFlow';
-import { SendFlow } from './components/SendFlow/SendFlow';
+import { NetworkChooser } from './components/NetworkChooser/NetworkChooser';
+import { Direction } from './components/NetworkChooser/NetworkChooser.type';
+import { Network, useFastBtcDialogStore } from './store';
 
 const ACTIVE_CLASSNAME = 'border-t-primary-30';
 
@@ -36,6 +39,8 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
   shouldHideSend = false,
   step = 0,
 }) => {
+  const network = useFastBtcDialogStore(state => state.network);
+  const reset = useFastBtcDialogStore(state => state.reset);
   const [index, setIndex] = useState(step);
   const { account } = useAccount();
 
@@ -45,9 +50,13 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
     setIndex(step);
   }, [step]);
 
-  const onChangeIndex = useCallback((index: number | null) => {
-    index !== null ? setIndex(index) : setIndex(0);
-  }, []);
+  const onChangeIndex = useCallback(
+    (index: number | null) => {
+      index !== null ? setIndex(index) : setIndex(0);
+      reset();
+    },
+    [reset],
+  );
 
   const items = useMemo(() => {
     if (shouldHideSend) {
@@ -55,7 +64,9 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
         {
           label: t(translation.tabs.receiveLabel),
           infoText: t(translation.tabs.receiveInfoText),
-          content: <ReceiveFlow onClose={onClose} />,
+          content: (
+            <NetworkChooser direction={Direction.Receive} onClose={onClose} />
+          ),
           activeClassName: ACTIVE_CLASSNAME,
           dataAttribute: 'funding-receive',
         },
@@ -66,14 +77,18 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
       {
         label: t(translation.tabs.receiveLabel),
         infoText: t(translation.tabs.receiveInfoText),
-        content: <ReceiveFlow onClose={onClose} />,
+        content: (
+          <NetworkChooser direction={Direction.Receive} onClose={onClose} />
+        ),
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'funding-receive',
       },
       {
         label: t(translation.tabs.sendLabel),
         infoText: t(translation.tabs.sendInfoText),
-        content: <SendFlow onClose={onClose} />,
+        content: (
+          <NetworkChooser direction={Direction.Send} onClose={onClose} />
+        ),
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'funding-send',
       },
@@ -98,6 +113,18 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
       disableFocusTrap
       closeOnEscape={false}
     >
+      {network !== Network.none && (
+        <button
+          onClick={reset}
+          className="absolute left-6 top-6 flex items-center gap-2 sm:hidden block"
+        >
+          <Icon
+            icon={IconNames.ARROW_LEFT}
+            className="w-5 h-5 bg-gray-70 p-1.5 rounded"
+          />
+          {t(translations.common.buttons.back)}
+        </button>
+      )}
       <Tabs
         index={index}
         items={items}
@@ -109,7 +136,7 @@ export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
         items={items}
         onChange={onChangeIndex}
         selectedIndex={index}
-        tabsClassName="min-h-[39rem] block pt-0 relative"
+        tabsClassName="min-h-[44rem] block pt-0 relative"
         headerClassName="pb-0 pt-5"
         footerClassName="absolute bottom-5 left-5"
         contentClassName="px-10 pb-10 pt-6"

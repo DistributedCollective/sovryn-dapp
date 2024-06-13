@@ -28,6 +28,7 @@ import {
   StatusType,
   noop,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
@@ -35,7 +36,7 @@ import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { APPROVAL_FUNCTION } from '../../../../../constants/general';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
-import { findNativeAsset } from '../../../../../utils/asset';
+import { COMMON_SYMBOLS, findNativeAsset } from '../../../../../utils/asset';
 import { getChainById } from '../../../../../utils/chain';
 import { fromWei, toWei } from '../../../../../utils/math';
 import {
@@ -146,9 +147,9 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           signer,
           data,
           to,
+          value,
           gasLimit: requestGasLimit,
           gasPrice: requestGasPrice,
-          value,
         } = request;
 
         const gasLimit =
@@ -288,6 +289,25 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                         suffix={token?.symbol}
                       />
                     )
+                  }
+                  valueClassName={classNames(
+                    isLoading || status === StatusType.success
+                      ? 'text-gray-30'
+                      : 'text-primary-10',
+                    'whitespace-nowrap overflow-auto',
+                  )}
+                />
+              )}
+              {request.value !== undefined && (
+                <SimpleTableRow
+                  label={t(translations.common.amount)}
+                  value={
+                    <AmountRenderer
+                      value={Decimal.fromBigNumberString(
+                        request.value?.toString() ?? '0',
+                      )}
+                      suffix={COMMON_SYMBOLS.BTC}
+                    />
                   }
                   valueClassName={classNames(
                     isLoading || status === StatusType.success

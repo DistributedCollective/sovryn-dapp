@@ -16,3 +16,4 @@ export * from './ErrorBadge';
 export * from './Toggle';
 export * from './Bar/Bar';
 export * from './Slider/Slider';
+export * from './TextArea';

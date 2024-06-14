@@ -12,6 +12,7 @@ import { parsePoolPositions } from '../BobPoolPositionsPage.utils';
 
 export const useFetchPoolPositions = (pool: AmbientLiquidityPool) => {
   const [positions, setPositions] = useState<Position[] | undefined>(undefined);
+  const [loadedPool, setLoadedPool] = useState<string | undefined>(undefined);
 
   const chainId = useCurrentChain();
 
@@ -33,10 +34,16 @@ export const useFetchPoolPositions = (pool: AmbientLiquidityPool) => {
   const quoteDetails = useTokenDetailsByAsset(pool.quote, pool.chainId);
 
   useEffect(() => {
-    if (positions === undefined) {
+    if (
+      positions === undefined ||
+      loadedPool === undefined ||
+      loadedPool.toLowerCase() !== pool.lpTokenAddress?.toLowerCase()
+    ) {
       if (price === 0) {
         return;
       }
+
+      console.log(`refetch`);
 
       fetch(
         baseEndpointUrl +
@@ -69,9 +76,11 @@ export const useFetchPoolPositions = (pool: AmbientLiquidityPool) => {
           });
 
           setPositions(positions);
+          setLoadedPool(pool.lpTokenAddress?.toLowerCase());
         });
     }
   }, [
+    pool,
     baseDetails?.symbol,
     baseEndpointUrl,
     baseTokenDecimals,
@@ -85,6 +94,7 @@ export const useFetchPoolPositions = (pool: AmbientLiquidityPool) => {
     price,
     quoteDetails?.symbol,
     quoteTokenDecimals,
+    loadedPool,
   ]);
 
   return positions;

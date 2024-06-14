@@ -1,7 +1,10 @@
 import { tickToPrice, toDisplayPrice } from '@sovryn/sdex';
 
+import { BOB_CHAIN_ID } from '../../../config/chains';
+
 import { AmbientPosition } from '../MarketMakingPage/components/AmbientMarketMaking/AmbientMarketMaking.types';
 import { getPositionBalance } from '../MarketMakingPage/components/AmbientMarketMaking/components/AmbientPoolPositions/AmbientPoolPositions.utils';
+import { AmbientLiquidityPoolDictionary } from '../MarketMakingPage/components/AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 import { Position } from './BobPoolPositionsPage.types';
 
 export const parsePoolPositions = (
@@ -63,4 +66,17 @@ export const parsePoolPositions = (
   };
 
   return result;
+};
+
+export const getPoolsList = () => {
+  const pools = AmbientLiquidityPoolDictionary.list(BOB_CHAIN_ID);
+
+  const options = pools.map(pool => {
+    return {
+      value: pool?.lpTokenAddress || '',
+      label: `${pool.base}/${pool.quote}`,
+    };
+  });
+
+  return options;
 };

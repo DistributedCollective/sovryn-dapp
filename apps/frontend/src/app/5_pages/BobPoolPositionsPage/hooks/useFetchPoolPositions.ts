@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { useCurrentChain } from '../../../../hooks/useChainStore';
+import { useTokenDetailsByAsset } from '../../../../hooks/useTokenDetailsByAsset';
 import { getIndexerUri } from '../../../../utils/indexer';
 import { usePoolSpotPrice } from '../../MarketMakingPage/components/AmbientMarketMaking/components/AmbientPoolPositions/hooks/usePoolSpotPrice';
 import { AmbientLiquidityPool } from '../../MarketMakingPage/components/AmbientMarketMaking/utils/AmbientLiquidityPool';
@@ -27,6 +28,9 @@ export const useFetchPoolPositions = (pool: AmbientLiquidityPool) => {
     poolInfo.poolTokens?.tokenA,
     poolInfo.poolTokens?.tokenB,
   );
+
+  const baseDetails = useTokenDetailsByAsset(pool.base, pool.chainId);
+  const quoteDetails = useTokenDetailsByAsset(pool.quote, pool.chainId);
 
   useEffect(() => {
     if (positions === undefined) {
@@ -59,6 +63,8 @@ export const useFetchPoolPositions = (pool: AmbientLiquidityPool) => {
               baseTokenDecimals,
               quoteTokenDecimals,
               price,
+              baseDetails?.symbol || '',
+              quoteDetails?.symbol || '',
             );
           });
 
@@ -66,6 +72,7 @@ export const useFetchPoolPositions = (pool: AmbientLiquidityPool) => {
         });
     }
   }, [
+    baseDetails?.symbol,
     baseEndpointUrl,
     baseTokenDecimals,
     chainId,
@@ -76,6 +83,7 @@ export const useFetchPoolPositions = (pool: AmbientLiquidityPool) => {
     pool.quoteAddress,
     positions,
     price,
+    quoteDetails?.symbol,
     quoteTokenDecimals,
   ]);
 

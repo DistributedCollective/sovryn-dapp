@@ -9,6 +9,8 @@ export const parsePoolPositions = (
   baseTokenDecimals: number,
   quoteTokenDecimals: number,
   spotPrice: number | undefined,
+  baseSymbol: string,
+  quoteSymbol: string,
 ) => {
   if (!spotPrice) {
     return;
@@ -54,6 +56,10 @@ export const parsePoolPositions = (
     positionLiqBase: liquidity?.positionLiqBase || 0,
     positionLiqQuote: liquidity?.positionLiqQuote || 0,
     positionType: position.positionType,
+    baseTokenDecimals,
+    quoteTokenDecimals,
+    baseTokenSymbol: baseSymbol,
+    quoteTokenSymbol: quoteSymbol,
   };
 
   return result;

@@ -1,14 +1,11 @@
 import React, { FC } from 'react';
 
-import { prettyTx } from '@sovryn/ui';
+import { Table } from '@sovryn/ui';
 
 import { BOB_CHAIN_ID } from '../../../config/chains';
 
-import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
-import { useCurrentChain } from '../../../hooks/useChainStore';
-import { useTokenDetailsByAsset } from '../../../hooks/useTokenDetailsByAsset';
-import { decimalic } from '../../../utils/math';
 import { AmbientLiquidityPoolDictionary } from '../MarketMakingPage/components/AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
+import { COLUMNS_CONFIG } from './BobPoolPositionsPage.constants';
 import { useFetchPoolPositions } from './hooks/useFetchPoolPositions';
 
 // TODO: Change to params, currently it's set to SOV/DLLR
@@ -24,39 +21,15 @@ const POOL = AmbientLiquidityPoolDictionary.list(BOB_CHAIN_ID).find(
 );
 
 const BobPoolPositionsPage: FC = () => {
-  const chainId = useCurrentChain();
-
-  const baseToken = useTokenDetailsByAsset(POOL!.base, chainId);
-  const quoteToken = useTokenDetailsByAsset(POOL!.quote, chainId);
-
   const positions = useFetchPoolPositions(POOL!);
 
   return (
-    <div className="w-full">
-      {positions?.map((item, index) => (
-        <div className="w-full flex justify-between" key={item.positionId}>
-          <div>Index: {index}</div>
-          <div>Id: {prettyTx(item.positionId, 4, 4)}</div>
-          <div>Min: {item.minPriceBase}</div>
-          <div>Max: {item.maxPriceBase}</div>
-          <div>
-            {POOL?.base}:{' '}
-            <AmountRenderer
-              value={decimalic(item.positionLiqBase).toUnits(
-                baseToken?.decimals,
-              )}
-            />
-          </div>
-          <div>
-            {POOL?.quote}:{' '}
-            <AmountRenderer
-              value={decimalic(item.positionLiqQuote).toUnits(
-                quoteToken?.decimals,
-              )}
-            />
-          </div>
-        </div>
-      ))}
+    <div className="bg-gray-90 py-4 px-4 rounded w-full mt-8">
+      <Table
+        rows={positions}
+        columns={COLUMNS_CONFIG}
+        rowKey={row => row.positionId}
+      />
     </div>
   );
 };

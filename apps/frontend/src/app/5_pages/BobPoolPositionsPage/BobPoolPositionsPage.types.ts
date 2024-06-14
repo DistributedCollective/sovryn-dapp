@@ -28,4 +28,8 @@ export type Position = {
   positionLiqBase: number;
   positionLiqQuote: number;
   positionType: string;
+  baseTokenDecimals: number;
+  quoteTokenDecimals: number;
+  baseTokenSymbol: string;
+  quoteTokenSymbol: string;
 };

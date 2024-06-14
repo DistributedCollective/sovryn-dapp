@@ -20,6 +20,10 @@ import { CrocContextProvider } from './contexts/CrocContext';
 import { isIPFSBuild } from './utils/helpers';
 import { loadable } from './utils/loadable';
 
+const BobPoolPositionsPage = loadable(
+  () => import('./app/5_pages/BobPoolPositionsPage/BobPoolPositionsPage'),
+);
+
 const Zero = loadable(() => import('./app/5_pages/ZeroPage/ZeroPage'));
 
 const EarnPage = loadable(() => import('./app/5_pages/EarnPage/EarnPage'));
@@ -176,6 +180,14 @@ const routes = [
       {
         path: '/claim-POWA',
         element: <ClaimPowaPage />,
+      },
+      {
+        path: '/pool-positions',
+        element: (
+          <CrocContextProvider>
+            <BobPoolPositionsPage />
+          </CrocContextProvider>
+        ),
       },
     ],
   },

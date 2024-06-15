@@ -11,15 +11,13 @@ type AmbientPositionStatusProps = {
   pool: AmbientLiquidityPool;
   position?: AmbientPosition;
   className?: string;
-  isInRange?: boolean;
 };
 export const AmbientPositionStatus: FC<AmbientPositionStatusProps> = ({
   pool,
   position,
   className,
-  isInRange = false,
 }) => {
-  const isOutOfRange = usePositionStatus(pool, position, isInRange);
+  const isOutOfRange = usePositionStatus(pool, position);
 
   const statusLabel = useMemo(
     () =>
@@ -33,6 +31,10 @@ export const AmbientPositionStatus: FC<AmbientPositionStatusProps> = ({
     () => (isOutOfRange ? 'bg-warning-75' : 'bg-success'),
     [isOutOfRange],
   );
+
+  if (isOutOfRange === null) {
+    return <>{t(translations.bobMarketMakingPage.loading)}</>;
+  }
 
   return (
     <div className={className}>

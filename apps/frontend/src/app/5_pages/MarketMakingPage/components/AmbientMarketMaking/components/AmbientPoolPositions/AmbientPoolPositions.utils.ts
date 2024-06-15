@@ -98,7 +98,10 @@ export const calculateBoundedPrice = (
 export const adjustPriceByPercentage = (
   percentage: number,
   currentPrice: number,
-) => currentPrice * ((100 - percentage) / 100);
+): number => {
+  const adjustmentFactor = 1 + percentage / 100;
+  return currentPrice * adjustmentFactor;
+};
 
 export const testAllowance = async (
   owner: string,

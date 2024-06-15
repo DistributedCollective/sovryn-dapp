@@ -10,9 +10,11 @@ import { AmbientLiquidityPool } from '../../../utils/AmbientLiquidityPool';
 export const usePositionStatus = (
   pool: AmbientLiquidityPool,
   position?: AmbientPosition,
-  isDeposit?: boolean,
 ) => {
-  const { spotPrice: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
+  const { spotPrice: currentPrice, loading } = useGetPoolInfo(
+    pool.base,
+    pool.quote,
+  );
 
   const isAmbient = useMemo(
     () => position?.positionType === PoolPositionType.ambient,
@@ -39,12 +41,16 @@ export const usePositionStatus = (
   }, [currentTickPrice, position]);
 
   return useMemo(() => {
-    if (position && !isAmbient) {
+    if (loading || !currentPrice || !position) {
+      return null;
+    }
+    if (!isAmbient) {
       return rangeSpanAboveCurrentPrice < 0 || rangeSpanBelowCurrentPrice < 0;
     }
-    return isDeposit || false;
+    return false;
   }, [
-    isDeposit,
+    loading,
+    currentPrice,
     isAmbient,
     position,
     rangeSpanAboveCurrentPrice,

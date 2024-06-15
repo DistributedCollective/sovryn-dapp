@@ -1,7 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
 
-import { constants } from 'ethers';
-
 import { MIN_TICK, MAX_TICK, tickToPrice, toDisplayPrice } from '@sovryn/sdex';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -10,7 +8,6 @@ import { useGetPoolInfo } from '../../../../../BobDepositModal/hooks/useGetPoolI
 import { useGetTokenDecimals } from '../../../../../BobWIthdrawModal/hooks/useGetTokenDecimals';
 import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
-import { usePositionStatus } from '../../hooks/usePositionStatus';
 
 type AmbientPositionPricesProps = {
   pool: AmbientLiquidityPool;
@@ -21,19 +18,11 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
   position,
   pool,
 }) => {
-  const isOutOfRange = usePositionStatus(pool, position);
   const isAmbient = useMemo(
     () =>
       position.positionType === PoolPositionType.ambient ||
       (position.bidTick === MIN_TICK && position.askTick === MAX_TICK),
     [position],
-  );
-
-  const isContainsNativeToken = useMemo(
-    () =>
-      position.base === constants.AddressZero ||
-      position.quote === constants.AddressZero,
-    [position.base, position.quote],
   );
 
   const { poolTokens } = useGetPoolInfo(pool.base, pool.quote);
@@ -68,17 +57,8 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
 
   return (
     <div className="inline-flex flex-col">
-      {isOutOfRange && isContainsNativeToken ? (
-        <>
-          {renderAmountRenderer(position.askTick)}
-          {renderAmountRenderer(position.bidTick)}
-        </>
-      ) : (
-        <>
-          {renderAmountRenderer(position.askTick)}
-          {renderAmountRenderer(position.bidTick)}
-        </>
-      )}
+      {renderAmountRenderer(position.askTick)}
+      {renderAmountRenderer(position.bidTick)}
     </div>
   );
 };

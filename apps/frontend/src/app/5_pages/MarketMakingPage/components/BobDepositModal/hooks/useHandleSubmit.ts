@@ -16,7 +16,11 @@ import { useTransactionContext } from '../../../../../../contexts/TransactionCon
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
-import { createRangePositionTx } from '../../../../BobAmmPage/ambient-utils';
+import {
+  createRangePositionTx,
+  roundDownTick,
+  roundUpTick,
+} from '../../../../BobAmmPage/ambient-utils';
 import { checkAndPrepareApproveTransaction } from '../../AmbientMarketMaking/components/AmbientPoolPositions/AmbientPoolPositions.utils';
 import { AmbientLiquidityPoolDictionary } from '../../AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 import { useDepositContext } from '../contexts/BobDepositModalContext';
@@ -32,8 +36,8 @@ export const useHandleSubmit = (
   const { croc } = useCrocContext();
   const { poolTokens } = useGetPoolInfo(assetA, assetB);
   const {
-    minimumPrice: lowerBoundaryPrice,
-    maximumPrice: upperBoundaryPrice,
+    minimumPrice,
+    maximumPrice,
     firstAssetValue,
     secondAssetValue,
     maximumSlippage,
@@ -90,10 +94,11 @@ export const useHandleSubmit = (
     }
 
     const pool = AmbientLiquidityPoolDictionary.get(assetA, assetB, chainId);
+    const gridSize = (await croc.context).chain.gridSize;
 
     const tick = {
-      low: priceToTick(lowerBoundaryPrice),
-      high: priceToTick(upperBoundaryPrice),
+      low: roundDownTick(priceToTick(minimumPrice), gridSize),
+      high: roundUpTick(priceToTick(maximumPrice), gridSize),
     };
 
     const tx = await createRangePositionTx({
@@ -142,7 +147,8 @@ export const useHandleSubmit = (
     croc,
     firstAssetValue,
     isBalancedRange,
-    lowerBoundaryPrice,
+    minimumPrice,
+    maximumPrice,
     maximumSlippage,
     poolTokens,
     rangeWidth,
@@ -152,7 +158,6 @@ export const useHandleSubmit = (
     setTransactions,
     signer,
     onComplete,
-    upperBoundaryPrice,
     usesBaseToken,
     isFirstAssetOutOfRange,
     isSecondAssetOutOfRange,

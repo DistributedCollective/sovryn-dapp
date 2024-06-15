@@ -16,13 +16,17 @@ import { useTransactionContext } from '../../../../../../contexts/TransactionCon
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
-import { decimalic } from '../../../../../../utils/math';
+import {
+  roundDownTick,
+  roundUpTick,
+} from '../../../../BobAmmPage/ambient-utils';
 import { AmbientPosition } from '../../AmbientMarketMaking/AmbientMarketMaking.types';
 import { checkAndPrepareApproveTransaction } from '../../AmbientMarketMaking/components/AmbientPoolPositions/AmbientPoolPositions.utils';
 import { DEFAULT_SLIPPAGE } from '../../BobDepositModal/BobDepositModal.constants';
 import { useDepositContext } from '../../BobDepositModal/contexts/BobDepositModalContext';
 import { useGetPoolInfo } from '../../BobDepositModal/hooks/useGetPoolInfo';
 import { mintArgsForReposition } from '../BobRepositionModal.utils';
+import { useGetLiquidity } from './useGetLiquidity';
 
 export const useHandleSubmit = (
   assetA: string,
@@ -37,16 +41,19 @@ export const useHandleSubmit = (
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const {
-    minimumPrice: lowerBoundaryPrice,
-    maximumPrice: upperBoundaryPrice,
+    minimumPrice,
+    maximumPrice,
     firstAssetValue,
     secondAssetValue,
     isFirstAssetOutOfRange,
     isSecondAssetOutOfRange,
     rangeWidth,
   } = useDepositContext();
+
+  const { liquidity } = useGetLiquidity(position);
+
   const onSubmit = useCallback(async () => {
-    if (!croc || !poolTokens || !signer || !crocPool) {
+    if (!croc || !poolTokens || !signer || !crocPool || !liquidity) {
       return;
     }
 
@@ -88,16 +95,19 @@ export const useHandleSubmit = (
       transactions.push(approveB);
     }
 
+    const gridSize = (await croc.context).chain.gridSize;
+
+    const tick = {
+      low: roundDownTick(priceToTick(minimumPrice), gridSize),
+      high: roundUpTick(priceToTick(maximumPrice), gridSize),
+    };
+
     const reposition = new CrocReposition(
       crocPool,
       {
-        liquidity: decimalic(position.concLiq).toString(),
+        liquidity: liquidity,
         burn: [position.bidTick, position.askTick],
-        mint: mintArgsForReposition(
-          priceToTick(lowerBoundaryPrice),
-          priceToTick(upperBoundaryPrice),
-          rangeWidth,
-        ),
+        mint: mintArgsForReposition(tick.low, tick.high, rangeWidth),
       },
       { impact: DEFAULT_SLIPPAGE / 100 },
     );
@@ -125,14 +135,15 @@ export const useHandleSubmit = (
     account,
     chainId,
     croc,
+    liquidity,
     firstAssetValue,
     isSecondAssetOutOfRange,
     isFirstAssetOutOfRange,
-    lowerBoundaryPrice,
+    maximumPrice,
     poolTokens,
     secondAssetValue,
     signer,
-    upperBoundaryPrice,
+    minimumPrice,
     position,
     crocPool,
     onComplete,

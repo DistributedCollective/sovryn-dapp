@@ -34,7 +34,6 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     pool.base,
     pool.quote,
   );
-
   const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
     poolTokens?.tokenA,
     poolTokens?.tokenB,
@@ -53,10 +52,10 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
 
       if (isUpperBoundary) {
         setUpperBoundaryPercentage(newPercentage);
-        setMinimumPrice(newPrice);
+        setMaximumPrice(newPrice);
       } else {
         setLowerBoundaryPercentage(newPercentage);
-        setMaximumPrice(newPrice);
+        setMinimumPrice(newPrice);
       }
     },
     [
@@ -90,7 +89,6 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     if (!minimumPrice || !maximumPrice || !currentPrice) {
       return false;
     }
-
     return minimumPrice >= currentPrice && maximumPrice >= currentPrice;
   }, [currentPrice, maximumPrice, minimumPrice]);
 
@@ -98,7 +96,6 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     if (!minimumPrice || !maximumPrice || !currentPrice) {
       return false;
     }
-
     return minimumPrice <= currentPrice && maximumPrice <= currentPrice;
   }, [currentPrice, maximumPrice, minimumPrice]);
 
@@ -114,11 +111,11 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
 
   useEffect(() => {
     const calculatedMinimumPrice = adjustPriceByPercentage(
-      upperBoundaryPercentage,
+      lowerBoundaryPercentage,
       currentPrice,
     );
     const calculatedMaximumPrice = adjustPriceByPercentage(
-      lowerBoundaryPercentage,
+      upperBoundaryPercentage,
       currentPrice,
     );
 
@@ -158,35 +155,35 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
 
   const renderMin = useMemo(
     () =>
-      toDisplayPrice(maximumPrice, baseTokenDecimals, quoteTokenDecimals, true),
-    [baseTokenDecimals, maximumPrice, quoteTokenDecimals],
+      toDisplayPrice(minimumPrice, baseTokenDecimals, quoteTokenDecimals, true),
+    [baseTokenDecimals, minimumPrice, quoteTokenDecimals],
   );
 
   const renderMax = useMemo(
     () =>
-      toDisplayPrice(minimumPrice, baseTokenDecimals, quoteTokenDecimals, true),
-    [baseTokenDecimals, minimumPrice, quoteTokenDecimals],
+      toDisplayPrice(maximumPrice, baseTokenDecimals, quoteTokenDecimals, true),
+    [baseTokenDecimals, maximumPrice, quoteTokenDecimals],
   );
 
   return (
     <div className="flex justify-between px-4">
       <Input
         label={t(translations.bobMarketMakingPage.depositModal.minPrice)}
-        onMinusClick={onMinPriceMinusClick}
-        onPlusClick={onMinPricePlusClick}
+        onMinusClick={onMaxPricePlusClick}
+        onPlusClick={onMaxPriceMinusClick}
         value={minimumPrice}
-        text={renderMin}
-        range={lowerBoundaryPercentage}
+        text={renderMax}
+        range={-upperBoundaryPercentage}
         decimals={quoteTokenDecimals}
       />
 
       <Input
         label={t(translations.bobMarketMakingPage.depositModal.maxPrice)}
-        onMinusClick={onMaxPriceMinusClick}
-        onPlusClick={onMaxPricePlusClick}
+        onMinusClick={onMinPricePlusClick}
+        onPlusClick={onMinPriceMinusClick}
         value={maximumPrice}
-        text={renderMax}
-        range={upperBoundaryPercentage}
+        text={renderMin}
+        range={-lowerBoundaryPercentage}
         decimals={quoteTokenDecimals}
       />
     </div>

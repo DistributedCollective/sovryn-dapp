@@ -1484,7 +1484,8 @@
             "earnedToken": "Earned {{token}}",
             "removalValue": "Removal value",
             "claimFees": "Claim fees"
-        }
+        },
+        "loading": "Loading..."
     },
 
     "borrowHistory": {

@@ -47,8 +47,6 @@ export const useFetchPoolPositions = (pool: AmbientLiquidityPool) => {
         return;
       }
 
-      console.log(`refetch`);
-
       fetch(
         baseEndpointUrl +
           new URLSearchParams({
@@ -101,5 +99,19 @@ export const useFetchPoolPositions = (pool: AmbientLiquidityPool) => {
     loadedPool,
   ]);
 
-  return positions || [];
+  const totalLiquidity = useMemo(() => {
+    const sum = {
+      base: 0,
+      quote: 0,
+    };
+
+    positions?.forEach(position => {
+      sum.base += position.positionLiqBase || 0;
+      sum.quote += position.positionLiqQuote || 0;
+    });
+
+    return sum;
+  }, [positions]);
+
+  return { positions: positions || [], totalLiquidity };
 };

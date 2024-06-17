@@ -4,9 +4,10 @@ import { prettyTx } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { decimalic } from '../../../utils/math';
+import { AmbientLiquidityPool } from '../MarketMakingPage/components/AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { Position } from './BobPoolPositionsPage.types';
 
-export const COLUMNS_CONFIG = [
+export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
   {
     id: 'id',
     title: 'Id',
@@ -16,33 +17,43 @@ export const COLUMNS_CONFIG = [
   },
   {
     id: 'min',
-    title: 'Min',
-    cellRenderer: (position: Position) => <div>{position.minPriceBase}</div>,
+    title: 'Min price',
+    cellRenderer: (position: Position) => (
+      <div>
+        {position.minPriceBase} {pool.quote}
+      </div>
+    ),
   },
   {
     id: 'max',
-    title: 'Max',
-    cellRenderer: (position: Position) => <div>{position.maxPriceBase}</div>,
+    title: 'Max price',
+    cellRenderer: (position: Position) => (
+      <div>
+        {position.maxPriceBase} {pool.quote}
+      </div>
+    ),
   },
   {
     id: 'liqBase',
-    title: 'Liquidity in base',
+    title: 'Liquidity (base)',
     cellRenderer: (position: Position) => (
       <AmountRenderer
         value={decimalic(position.positionLiqBase).toUnits(
           position.baseTokenDecimals,
         )}
+        suffix={pool.base}
       />
     ),
   },
   {
     id: 'liqQuote',
-    title: 'Liquidity in quote',
+    title: 'Liquidity (quote)',
     cellRenderer: (position: Position) => (
       <AmountRenderer
         value={decimalic(position.positionLiqQuote).toUnits(
           position.quoteTokenDecimals,
         )}
+        suffix={pool.quote}
       />
     ),
   },

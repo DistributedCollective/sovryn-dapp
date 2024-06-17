@@ -33,6 +33,10 @@ export const useFetchPoolPositions = (pool: AmbientLiquidityPool) => {
   const baseDetails = useTokenDetailsByAsset(pool.base, pool.chainId);
   const quoteDetails = useTokenDetailsByAsset(pool.quote, pool.chainId);
 
+  //   console.log(
+  //     `baseTokenDecimals: ${baseTokenDecimals}, quoteTokenDecimals: ${quoteTokenDecimals}, baseDetails: ${baseDetails?.decimals}, quoteDetails: ${quoteDetails?.decimals}`,
+  //   );
+
   useEffect(() => {
     if (
       positions === undefined ||
@@ -97,5 +101,5 @@ export const useFetchPoolPositions = (pool: AmbientLiquidityPool) => {
     loadedPool,
   ]);
 
-  return positions;
+  return positions || [];
 };

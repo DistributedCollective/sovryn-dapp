@@ -15,6 +15,7 @@ export const AmbientPoolLiquidity: FC<AmbientPoolLiquidityProps> = ({
   pool,
 }) => {
   const { stats, baseToken, quoteToken } = useGetAmbientPoolStats(pool);
+  console.log(`stats: ${JSON.stringify(stats, null, 2)}`);
   return (
     <div className="inline-flex flex-col gap-0.5">
       <AmountRenderer

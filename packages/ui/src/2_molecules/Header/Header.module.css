@@ -43,7 +43,7 @@
 }
 
 .mobileContent {
-  @apply mb-14 flex flex-row items-center justify-between w-full lg:hidden;
+  @apply mb-6 flex flex-wrap flex-row items-center justify-between w-full lg:hidden;
 }
 
 .mobileContentLogo {
@@ -51,7 +51,7 @@
 }
 
 .mobileExtraContent {
-  @apply justify-self-end;
+  @apply justify-self-end w-full;
 }
 
 .extraContentDesktop {

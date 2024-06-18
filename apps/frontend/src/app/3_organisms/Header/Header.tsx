@@ -93,16 +93,20 @@ export const Header: FC = () => {
           </div>
         }
         extraContent={
-          <div className="flex space-x-4 items-center">
+          <div className="flex lg:space-x-4 items-center flex-wrap lg:flex-nowrap flex-col-reverse lg:flex-row lg:justify-start">
             {isRskChain(chainId) && (
               <Button
                 text={t(translations.header.nav.claimPowa)}
                 style={ButtonStyle.primary}
-                className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
+                className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D] mt-2 lg:mt-0 w-full lg:w-auto lg:hidden xl:block"
                 onClick={() => navigate('/claim-POWA')}
               />
             )}
-            {account && <BridgeMenuItem dataAttribute="dapp-header-bridges" />}
+            {account && (
+              <div className="w-full lg:w-auto mt-2 lg:mt-0">
+                <BridgeMenuItem dataAttribute="dapp-header-bridges" />
+              </div>
+            )}
           </div>
         }
       />

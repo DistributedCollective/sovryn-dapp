@@ -29,7 +29,13 @@ export const BalanceChange: React.FC<BalanceChangeProps> = ({
           baseToken?.decimals,
         ).toString()}
         suffix={getTokenDisplayName(baseToken?.symbol || '')}
-        prefix={liquidityChange.changeType === 'mint' ? '+' : '-'}
+        prefix={
+          Number(liquidityChange.baseFlow) === 0
+            ? ''
+            : liquidityChange.changeType === 'mint'
+            ? '+'
+            : '-'
+        }
       />
 
       <AmountRenderer
@@ -41,7 +47,13 @@ export const BalanceChange: React.FC<BalanceChangeProps> = ({
           quoteToken?.decimals,
         ).toString()}
         suffix={getTokenDisplayName(quoteToken?.symbol || '')}
-        prefix={liquidityChange.changeType === 'mint' ? '+' : '-'}
+        prefix={
+          Number(liquidityChange.quoteFlow) === 0
+            ? ''
+            : liquidityChange.changeType === 'mint'
+            ? '+'
+            : '-'
+        }
       />
     </div>
   );

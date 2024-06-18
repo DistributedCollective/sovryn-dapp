@@ -87,12 +87,16 @@ export async function createPositionAmbientLiquidity(
     slippageTolerancePercentage,
   }: CreateAmbientPositionProps,
 ) {
-  const pool = env.pool(base, quote, poolIndex);
-  // const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
+  //const [baseToken, quoteToken] =
+  //  base.toLowerCase() < quote.toLowerCase() ? [base, quote] : [quote, base];
+  const expectedBase = base.toLowerCase() < quote.toLowerCase();
+  //  const priceToCheck = price; //expectedBase ? price : 1 / price;
+  //  const [baseToken, quoteToken] = [base, quote]; // : [quote, base];
 
+  const pool = env.pool(quote, base, poolIndex);
   const poolPrice = await pool.displayPrice();
 
-  console.log(`On chain price, 1 ${base}: ${poolPrice} ${quote}`);
+  console.log(`Pool price ${base}: ${poolPrice} ${quote}`);
 
   console.log(`Checking slippage for token ${base} - ${quote}`);
   checkWithinSlippageTolerancePercentage(
@@ -102,14 +106,16 @@ export async function createPositionAmbientLiquidity(
     false,
   );
 
-  const expectedBase =
-    pool.baseToken.tokenAddr.toLowerCase() === base.toLowerCase();
-
   const decimals = await (expectedBase
     ? pool.baseToken.decimals
     : pool.quoteToken.decimals);
 
-  const amount = parseUnits(amountInBase.toString(), decimals);
+  const amount = parseUnits(
+    typeof amountInBase === 'string'
+      ? Number(amountInBase).toFixed(decimals)
+      : amountInBase.toFixed(decimals),
+    decimals,
+  );
 
   const limits = {
     min: poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
@@ -122,24 +128,24 @@ export async function createPositionAmbientLiquidity(
     decimals: decimals,
   });
   console.log('expectedBase:', expectedBase);
-  const mintData = await pool.mintAmbientQuote(
-    amount,
-    [limits.min, limits.max],
-    {
-      surplus: [false, false],
-      lpConduit,
-    },
-  );
+  // const mintData = await pool.mintAmbientQuote(
+  //   amount,
+  //   [limits.min, limits.max],
+  //   {
+  //     surplus: [false, false],
+  //     lpConduit,
+  //   },
+  // );
 
-  // const mintData = await (!expectedBase
-  //   ? pool.mintAmbientBase(amount, [limits.min, limits.max], {
-  //       surplus: [false, false],
-  //       lpConduit,
-  //     })
-  //   : pool.mintAmbientQuote(amount, [limits.min, limits.max], {
-  //       surplus: [false, false],
-  //       lpConduit,
-  //     }));
+  const mintData = await (expectedBase
+    ? pool.mintAmbientBase(amount, [limits.min, limits.max], {
+        surplus: [false, false],
+        lpConduit,
+      })
+    : pool.mintAmbientQuote(amount, [limits.min, limits.max], {
+        surplus: [false, false],
+        lpConduit,
+      }));
   // const mintData = await (!expectedBase
   //   ? pool.encodeMintAmbientBase(amount, [limits.min, limits.max], {
   //       surplus: [false, false],
@@ -235,7 +241,7 @@ export async function createPositionConcentratedLiquidity(
   const [baseToken, quoteToken] =
     base.toLowerCase() < quote.toLowerCase() ? [base, quote] : [quote, base];
   const expectedBase = baseToken.toLowerCase() === base.toLowerCase();
-  const priceToCheck = price; //expectedBase ? price : 1 / price;
+  //const priceToCheck = price; //expectedBase ? price : 1 / price;
   // const [baseToken, quoteToken] = [base, quote]; // : [quote, base];
   console.log(
     'base:',
@@ -250,8 +256,6 @@ export async function createPositionConcentratedLiquidity(
     poolIndex,
     'price:',
     price,
-    'priceToCheck:',
-    priceToCheck,
     'expectedBase:',
     expectedBase,
   );
@@ -264,7 +268,7 @@ export async function createPositionConcentratedLiquidity(
 
   checkWithinSlippageTolerancePercentage(
     poolPrice,
-    priceToCheck,
+    price,
     slippageTolerancePercentage,
     false,
   );
@@ -360,7 +364,7 @@ export async function burnConcentratedLiquidity(
     slippageTolerancePercentage,
   }: IBurnConcentratedLiquidity,
 ) {
-  const pool = croc.pool(base, quote, poolIndex);
+  const pool = croc.pool(quote, base, poolIndex);
   //   const [baseToken, quoteToken] = base < quote ? [base, quote] : [quote, base];
   const poolPrice = await pool.displayPrice();
   console.log('Pool Price:', poolPrice);

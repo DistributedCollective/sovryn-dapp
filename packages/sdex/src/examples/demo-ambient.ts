@@ -1,15 +1,37 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ethers } from 'ethers';
+import path from 'path';
 
 //import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
-import {
-  // bobMainnetMockAmbientPoolConfigs,
-  bobMainnetAmbientPoolConfigs, //bobMainnetConcentratedPoolConfigs //bobMainnetAmbientPoolConfigs, //, // bobMainnetMockConcentratedPoolConfigs,
-} from './config';
+// import { // bobMainnetMockAmbientPoolConfigs,
+// bobMainnetAmbientPoolConfigs //bobMainnetConcentratedPoolConfigs //bobMainnetAmbientPoolConfigs, //, // bobMainnetMockConcentratedPoolConfigs,
+// } from './config';
 import {
   createPositionAmbientLiquidity, //createPositionAmbientLiquidity, //, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
 } from './helper';
+
+let configPath = '';
+
+// Iterate over the command-line arguments
+process.argv.forEach((arg, index) => {
+  if (arg === '--path' && index + 1 < process.argv.length) {
+    configPath = process.argv[index + 1];
+  }
+});
+let config;
+if (configPath) {
+  const fullPath = path.resolve(configPath);
+  try {
+    config = require(fullPath);
+  } catch (err) {
+    console.error('Error requiring config:', err);
+  }
+} else {
+  console.error('No path provided. Please provide a path using --path');
+}
+//console.log(config);
+const { bobMainnetAmbientPoolConfigs } = config;
 
 // import { priceToTick } from '../utils/price';
 
@@ -474,6 +496,7 @@ async function demo() {
   // await croc.poolEth(USDC).burnAmbientLiq(lpConduitPosition.seeds, [0.0001, 0.001], { lpConduit: USDC_ETH_LP_CONDUIT });
 }
 
+// provide --path PATH/TO/AMBIENT/POOL/DEPOSIT/CONFIG
 // use --tx param to print raw encoded tx:
-// yarn ts-node packages/sdex/src/examples/demo-ambient.ts --tx
+// yarn ts-node packages/sdex/src/examples/demo-ambient.ts --path PATH/TO/CONCENTRATED/POOL/DEPOSIT/CONFIG --tx
 demo();

@@ -11,6 +11,7 @@ import {
   decodeSurplusFlag,
   encodeSurplusArg,
 } from './encoding/flags';
+import { logger } from './logger';
 import { CrocPoolView } from './pool';
 import { CrocSlotReader } from './slots';
 import {
@@ -402,33 +403,60 @@ export class CrocSwapPlan {
     const TIP = 0;
     const limitPrice = this.sellBase ? MAX_SQRT_PRICE : MIN_SQRT_PRICE;
 
-    const impact = await (
-      await this.context
-    ).slipQuery.calcImpact(
-      this.baseToken.tokenAddr,
-      this.quoteToken.tokenAddr,
-      this.poolIndex,
-      this.sellBase,
-      this.qtyInBase,
-      await this.qty,
-      TIP,
-      limitPrice,
-    );
+    try {
+      const impact = await (
+        await this.context
+      ).slipQuery.calcImpact(
+        this.baseToken.tokenAddr,
+        this.quoteToken.tokenAddr,
+        this.poolIndex,
+        this.sellBase,
+        this.qtyInBase,
+        await this.qty,
+        TIP,
+        limitPrice,
+      );
 
-    const baseQty = this.baseToken.toDisplay(impact.baseFlow.abs());
-    const quoteQty = this.quoteToken.toDisplay(impact.quoteFlow.abs());
-    const spotPrice = decodeCrocPrice(impact.finalPrice);
+      const baseQty = this.baseToken.toDisplay(impact.baseFlow.abs());
+      const quoteQty = this.quoteToken.toDisplay(impact.quoteFlow.abs());
+      const spotPrice = decodeCrocPrice(impact.finalPrice);
 
-    const startPrice = this.poolView.displayPrice();
-    const finalPrice = this.poolView.toDisplayPrice(spotPrice);
+      const startPrice = this.poolView.displayPrice();
+      const finalPrice = this.poolView.toDisplayPrice(spotPrice);
 
-    return {
-      sellQty: this.sellBase ? await baseQty : await quoteQty,
-      buyQty: this.sellBase ? await quoteQty : await baseQty,
-      finalPrice: await finalPrice,
-      percentChange:
-        ((await finalPrice) - (await startPrice)) / (await startPrice),
-    };
+      logger('info', 'calcImpact', {
+        baseToken: this.baseToken.tokenAddr,
+        quoteToken: this.quoteToken.tokenAddr,
+        poolIndex: this.poolIndex,
+        sellBase: this.sellBase,
+        qtyInBase: this.qtyInBase,
+        qty: await this.qty,
+        TIP,
+        limitPrice,
+        network: process.env.REACT_APP_NETWORK,
+      });
+      return {
+        sellQty: this.sellBase ? await baseQty : await quoteQty,
+        buyQty: this.sellBase ? await quoteQty : await baseQty,
+        finalPrice: await finalPrice,
+        percentChange:
+          ((await finalPrice) - (await startPrice)) / (await startPrice),
+      };
+    } catch (error) {
+      logger('info', 'calcImpact', {
+        baseToken: this.baseToken.tokenAddr,
+        quoteToken: this.quoteToken.tokenAddr,
+        poolIndex: this.poolIndex,
+        sellBase: this.sellBase,
+        qtyInBase: this.qtyInBase,
+        qty: await this.qty,
+        TIP,
+        limitPrice,
+        network: process.env.REACT_APP_NETWORK,
+        error,
+      });
+      throw error;
+    }
   }
 
   public maskSurplusArgs(args?: CrocSwapExecOpts): number {

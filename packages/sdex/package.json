@@ -36,6 +36,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@datadog/browser-logs": "^5.21.0",
     "ethers": "^5.5.3"
   }
 }

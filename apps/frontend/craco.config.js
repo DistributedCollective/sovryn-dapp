@@ -56,6 +56,7 @@ module.exports = {
         buffer: require.resolve('buffer'),
         crypto: require.resolve('crypto-browserify'),
         assert: require.resolve('assert/'),
+        os: require.resolve('os-browserify/browser'),
       };
       config.plugins = (config.plugins || []).concat([
         new webpack.ProvidePlugin({

@@ -1,3 +1,4 @@
+import { datadogLogs } from '@datadog/browser-logs';
 import { AddressZero } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 
@@ -6,6 +7,7 @@ import { AbiCoder } from 'ethers/lib/utils';
 
 import { MAX_SQRT_PRICE, MIN_SQRT_PRICE } from './constants';
 import { CrocContext } from './context';
+import './datadog';
 import {
   CrocSurplusFlags,
   decodeSurplusFlag,
@@ -399,36 +401,45 @@ export class CrocSwapPlan {
   }
 
   async calcImpact(): Promise<CrocImpact> {
-    const TIP = 0;
-    const limitPrice = this.sellBase ? MAX_SQRT_PRICE : MIN_SQRT_PRICE;
+    try {
+      const TIP = 0;
+      const limitPrice = this.sellBase ? MAX_SQRT_PRICE : MIN_SQRT_PRICE;
 
-    const impact = await (
-      await this.context
-    ).slipQuery.calcImpact(
-      this.baseToken.tokenAddr,
-      this.quoteToken.tokenAddr,
-      this.poolIndex,
-      this.sellBase,
-      this.qtyInBase,
-      await this.qty,
-      TIP,
-      limitPrice,
-    );
+      const impact = await (
+        await this.context
+      ).slipQuery.calcImpact(
+        this.baseToken.tokenAddr,
+        this.quoteToken.tokenAddr,
+        this.poolIndex,
+        this.sellBase,
+        this.qtyInBase,
+        await this.qty,
+        TIP,
+        limitPrice,
+      );
 
-    const baseQty = this.baseToken.toDisplay(impact.baseFlow.abs());
-    const quoteQty = this.quoteToken.toDisplay(impact.quoteFlow.abs());
-    const spotPrice = decodeCrocPrice(impact.finalPrice);
+      const baseQty = this.baseToken.toDisplay(impact.baseFlow.abs());
+      const quoteQty = this.quoteToken.toDisplay(impact.quoteFlow.abs());
+      const spotPrice = decodeCrocPrice(impact.finalPrice);
 
-    const startPrice = this.poolView.displayPrice();
-    const finalPrice = this.poolView.toDisplayPrice(spotPrice);
+      const startPrice = this.poolView.displayPrice();
+      const finalPrice = this.poolView.toDisplayPrice(spotPrice);
 
-    return {
-      sellQty: this.sellBase ? await baseQty : await quoteQty,
-      buyQty: this.sellBase ? await quoteQty : await baseQty,
-      finalPrice: await finalPrice,
-      percentChange:
-        ((await finalPrice) - (await startPrice)) / (await startPrice),
-    };
+      const crocImpact = {
+        sellQty: this.sellBase ? await baseQty : await quoteQty,
+        buyQty: this.sellBase ? await quoteQty : await baseQty,
+        finalPrice: await finalPrice,
+        percentChange:
+          ((await finalPrice) - (await startPrice)) / (await startPrice),
+      };
+
+      datadogLogs.logger.info('calcImpact', { ...crocImpact });
+
+      return crocImpact;
+    } catch (error) {
+      datadogLogs.logger.error('calcImpact error', undefined, error as Error);
+      throw error;
+    }
   }
 
   public maskSurplusArgs(args?: CrocSwapExecOpts): number {

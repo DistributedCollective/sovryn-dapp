@@ -402,8 +402,20 @@ export class CrocSwapPlan {
   async calcImpact(): Promise<CrocImpact> {
     const TIP = 0;
     const limitPrice = this.sellBase ? MAX_SQRT_PRICE : MIN_SQRT_PRICE;
+    const qty = await this.qty;
 
     try {
+      console.log(
+        `this.baseToken.tokenAddr: ${
+          this.baseToken.tokenAddr
+        } , this.quoteToken.tokenAddr: ${
+          this.quoteToken.tokenAddr
+        } , this.poolIndex: ${this.poolIndex} , this.sellBase: ${
+          this.sellBase
+        } , this.qtyInBase: ${this.qtyInBase} , qty: ${await this
+          .qty} , TIP: ${TIP} , limitPrice: ${limitPrice}`,
+      );
+
       const impact = await (
         await this.context
       ).slipQuery.calcImpact(
@@ -412,7 +424,7 @@ export class CrocSwapPlan {
         this.poolIndex,
         this.sellBase,
         this.qtyInBase,
-        await this.qty,
+        qty,
         TIP,
         limitPrice,
       );
@@ -430,7 +442,7 @@ export class CrocSwapPlan {
         poolIndex: this.poolIndex,
         sellBase: this.sellBase,
         qtyInBase: this.qtyInBase,
-        qty: await this.qty,
+        qty,
         TIP,
         limitPrice,
         network: process.env.REACT_APP_NETWORK,
@@ -449,7 +461,7 @@ export class CrocSwapPlan {
         poolIndex: this.poolIndex,
         sellBase: this.sellBase,
         qtyInBase: this.qtyInBase,
-        qty: await this.qty,
+        qty,
         TIP,
         limitPrice,
         network: process.env.REACT_APP_NETWORK,

@@ -89,15 +89,15 @@ export const calcImpact = async (
     return result;
   } catch (error) {
     logger('error', 'calcImpact', {
-      base,
-      quote,
-      poolIdx,
-      isBuy,
-      inBaseQty,
-      qty,
-      initialLimitPrice: initialLimitPrice(isBuy),
       data: {
         error,
+        base,
+        quote,
+        poolIdx,
+        isBuy,
+        inBaseQty,
+        qty,
+        initialLimitPrice: initialLimitPrice(isBuy),
       },
     });
   }

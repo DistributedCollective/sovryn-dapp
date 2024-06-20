@@ -1021,6 +1021,7 @@
             "balance": "Balance",
             "spice": "Spice",
             "extraSpice": "Extra Spice",
+            "extraSpiceShot": "Extra Spice Shot",
             "runes": "Runes"
         }
     },

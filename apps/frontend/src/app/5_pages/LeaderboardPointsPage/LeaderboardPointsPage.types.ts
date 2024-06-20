@@ -4,6 +4,7 @@ export type User = {
   balance?: string;
   spice: number;
   extraSpice: number;
+  extraSpiceShot: number;
   runes: number;
 };
 

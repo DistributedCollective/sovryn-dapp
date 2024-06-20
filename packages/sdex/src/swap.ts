@@ -437,15 +437,17 @@ export class CrocSwapPlan {
       const finalPrice = this.poolView.toDisplayPrice(spotPrice);
 
       logger('info', 'calcImpact', {
-        baseToken: this.baseToken.tokenAddr,
-        quoteToken: this.quoteToken.tokenAddr,
-        poolIndex: this.poolIndex,
-        sellBase: this.sellBase,
-        qtyInBase: this.qtyInBase,
-        qty,
-        TIP,
-        limitPrice,
-        network: process.env.REACT_APP_NETWORK,
+        data: {
+          baseToken: this.baseToken.tokenAddr,
+          quoteToken: this.quoteToken.tokenAddr,
+          poolIndex: this.poolIndex,
+          sellBase: this.sellBase,
+          qtyInBase: this.qtyInBase,
+          qty,
+          TIP,
+          limitPrice,
+          network: process.env.REACT_APP_NETWORK,
+        },
       });
       return {
         sellQty: this.sellBase ? await baseQty : await quoteQty,
@@ -455,17 +457,19 @@ export class CrocSwapPlan {
           ((await finalPrice) - (await startPrice)) / (await startPrice),
       };
     } catch (error) {
-      logger('info', 'calcImpact', {
-        baseToken: this.baseToken.tokenAddr,
-        quoteToken: this.quoteToken.tokenAddr,
-        poolIndex: this.poolIndex,
-        sellBase: this.sellBase,
-        qtyInBase: this.qtyInBase,
-        qty,
-        TIP,
-        limitPrice,
-        network: process.env.REACT_APP_NETWORK,
-        error,
+      logger('error', 'calcImpact', {
+        data: {
+          baseToken: this.baseToken.tokenAddr,
+          quoteToken: this.quoteToken.tokenAddr,
+          poolIndex: this.poolIndex,
+          sellBase: this.sellBase,
+          qtyInBase: this.qtyInBase,
+          qty,
+          TIP,
+          limitPrice,
+          network: process.env.REACT_APP_NETWORK,
+          error,
+        },
       });
       throw error;
     }

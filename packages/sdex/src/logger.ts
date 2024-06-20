@@ -1,5 +1,11 @@
 import { datadogLogs } from '@datadog/browser-logs';
 
+if (process.env.REACT_APP_DATADOG_CLIENT_TOKEN) {
+  console.log('datadogLogs init successful');
+} else {
+  console.log('datadogLogs token missing');
+}
+
 datadogLogs.init({
   clientToken: process.env.REACT_APP_DATADOG_CLIENT_TOKEN || '',
   site: 'datadoghq.com',

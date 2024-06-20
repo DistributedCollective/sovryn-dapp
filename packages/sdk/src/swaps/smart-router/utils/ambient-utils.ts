@@ -98,6 +98,19 @@ export const calcImpact = async (
         inBaseQty,
         qty,
         initialLimitPrice: initialLimitPrice(isBuy),
+        env,
+      },
+      dataFormatted: {
+        error,
+        base,
+        quote,
+        poolIdx,
+        isBuy,
+        inBaseQty,
+        qty: qty.toString(),
+        initialLimitPrice: initialLimitPrice(isBuy).toString(),
+        network: process.env.REACT_APP_NETWORK,
+        env,
       },
     });
   }

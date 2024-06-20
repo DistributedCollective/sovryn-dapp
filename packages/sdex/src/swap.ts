@@ -412,7 +412,7 @@ export class CrocSwapPlan {
           this.quoteToken.tokenAddr
         } , this.poolIndex: ${this.poolIndex} , this.sellBase: ${
           this.sellBase
-        } , this.qtyInBase: ${this.qtyInBase} , qty: ${await this
+        } , this.qtyInBase: ${this.qtyInBase} ,  qty: ${await this
           .qty} , TIP: ${TIP} , limitPrice: ${limitPrice}`,
       );
 

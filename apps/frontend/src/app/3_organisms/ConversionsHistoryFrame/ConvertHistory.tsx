@@ -4,9 +4,9 @@ import { Select } from '@sovryn/ui';
 
 import { isHistoryItemOnChain } from '../../5_pages/HistoryPage/HistoryPage.utils';
 import { useCurrentChain } from '../../../hooks/useChainStore';
-import { isRskChain } from '../../../utils/chain';
 import { CONVERT_HISTORY_OPTIONS } from './ConvertHistory.constants';
 import { ConvertHistoryType } from './ConvertHistory.types';
+import { getHistoryTypeOption } from './ConvertHistory.utils';
 import { AmmConversionsHistoryFrame } from './components/AmmConversionsHistoryFrame/AmmConversionsHistoryFrame';
 import { BobConversionsHistoryFrame } from './components/BobConversionHistoryFrame/BobConversionsHistoryFrame';
 import { MyntConversionsHistoryFrame } from './components/MyntConversionsHistoryFrame/MyntConversionsHistoryFrame';
@@ -15,7 +15,7 @@ import { ZeroConversionsHistoryFrame } from './components/ZeroConversionsHistory
 export const ConvertHistory: FC = () => {
   const chainId = useCurrentChain();
   const [selectedHistoryType, setSelectedHistoryType] = useState(
-    isRskChain(chainId) ? ConvertHistoryType.AMM : ConvertHistoryType.BOB,
+    getHistoryTypeOption(chainId),
   );
 
   const filteredOptions = useMemo(

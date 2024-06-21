@@ -4,7 +4,7 @@ import { ChainIds } from '@sovryn/ethers-provider';
 import { Select } from '@sovryn/ui';
 
 import { useCurrentChain } from '../../../hooks/useChainStore';
-import { isBobChain } from '../../../utils/chain';
+import { isBobChain, isRskChain } from '../../../utils/chain';
 import { EARN_HISTORY_OPTIONS } from './EarnHistory.constants';
 import { EarnHistoryType } from './EarnHistory.types';
 import { AmbientMarketMakingHistoryFrame } from './components/AmbientMarketMakingHistoryFrame/AmbientMarketMakingHistoryFrame';
@@ -34,27 +34,32 @@ export const EarnHistory: FC = () => {
   const HistoryFrame = useMemo(() => {
     if (isBobChain(chainId) || chainId === ChainIds.SEPOLIA) {
       return <AmbientMarketMakingHistoryFrame />;
-    }
-    switch (selectedHistoryType) {
-      case EarnHistoryType.stabilityPool:
-        return (
-          <>
-            <StabilityPoolHistoryFrame>
-              {SelectComponent}
-            </StabilityPoolHistoryFrame>
-          </>
-        );
-      case EarnHistoryType.lending:
-        return (
-          <>
-            <LendingHistoryFrame>{SelectComponent}</LendingHistoryFrame>
-          </>
-        );
+    } else if (isRskChain(chainId)) {
+      switch (selectedHistoryType) {
+        case EarnHistoryType.stabilityPool:
+          return (
+            <>
+              <StabilityPoolHistoryFrame>
+                {SelectComponent}
+              </StabilityPoolHistoryFrame>
+            </>
+          );
+        case EarnHistoryType.lending:
+          return (
+            <>
+              <LendingHistoryFrame>{SelectComponent}</LendingHistoryFrame>
+            </>
+          );
 
-      case EarnHistoryType.marketMaking:
-        return (
-          <MarketMakingHistoryFrame>{SelectComponent}</MarketMakingHistoryFrame>
-        );
+        case EarnHistoryType.marketMaking:
+          return (
+            <MarketMakingHistoryFrame>
+              {SelectComponent}
+            </MarketMakingHistoryFrame>
+          );
+      }
+    } else {
+      return null;
     }
   }, [SelectComponent, chainId, selectedHistoryType]);
 

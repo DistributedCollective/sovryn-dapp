@@ -20,7 +20,7 @@ import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useLoadContract } from '../../../../../hooks/useLoadContract';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS, findAsset } from '../../../../../utils/asset';
-import { isBobChain } from '../../../../../utils/chain';
+import { isRskChain } from '../../../../../utils/chain';
 import { fromWei } from '../../../../../utils/math';
 import { APR, MAX_STAKING_APR_LINK, VP } from '../../StakePage.constants';
 import { GlobalStatistics } from '../../StakePage.utils';
@@ -82,7 +82,7 @@ export const StakingStatistics = () => {
             />
           }
         />
-        {!isBobChain(chainId) && (
+        {isRskChain(chainId) && (
           <GlobalStatistics
             label={
               <span className="flex items-center gap-1">

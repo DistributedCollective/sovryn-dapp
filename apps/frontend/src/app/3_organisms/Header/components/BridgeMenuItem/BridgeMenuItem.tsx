@@ -17,13 +17,13 @@ import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { sharedState } from '../../../../../store/rxjs/shared-state';
 import { Environments } from '../../../../../types/global';
-import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { isBobChain, isRskChain } from '../../../../../utils/chain';
 import {
   isMainnet,
   isTestnetFastBtcEnabled,
 } from '../../../../../utils/helpers';
 import { NavDropdown } from '../NavItem/NavDropdown';
+import { getNativeTokenSymbol } from './BridgeMenuItem.utils';
 
 export type BridgeMenuItemProps = {
   dataAttribute?: string;
@@ -32,10 +32,7 @@ export type BridgeMenuItemProps = {
 export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
   const { isMobile } = useIsMobile();
   const chainId = useCurrentChain();
-  const { balance } = useAssetBalance(
-    isRskChain(chainId) ? COMMON_SYMBOLS.BTC : COMMON_SYMBOLS.ETH,
-    chainId,
-  );
+  const { balance } = useAssetBalance(getNativeTokenSymbol(chainId), chainId);
   const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
 
   const enableFastBtc = useMemo(

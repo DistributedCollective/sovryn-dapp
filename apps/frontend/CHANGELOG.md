@@ -1,5 +1,19 @@
 # frontend
 
+## 1.1.7
+
+### Patch Changes
+
+- ec0afb6b: SOV-4199: Fix mobile layout
+- 746f3d6f: SOV-4239: add SDEX swap error logging for debugging
+- 9aefb81b: SOV-4240: update tiledesk version
+- bb3f28cc: SOV-4219: update OSSOV label
+- Updated dependencies [ec0afb6b]
+- Updated dependencies [746f3d6f]
+  - @sovryn/ui@1.0.27
+  - @sovryn/sdex@0.3.12
+  - @sovryn/sdk@1.0.6
+
 ## 1.1.6
 
 ### Patch Changes

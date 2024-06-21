@@ -18,3 +18,8 @@ export type UserPoints = {
   wallet: string;
   points: number;
 };
+
+export type UserExtraPoints = {
+  wallet: string;
+  extraSpiceShot: number;
+};

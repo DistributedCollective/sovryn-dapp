@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers';
 
 import { getAssetContract, getAssetDataByAddress } from '@sovryn/contracts';
 import { ChainId, ChainIds } from '@sovryn/ethers-provider';
-import { CrocEnv, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/sdex';
+import { CrocEnv, logger, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/sdex';
 
 export type PoolWithIndex = [string, string, number];
 export type Pool = [string, string];
@@ -73,17 +73,47 @@ export const calcImpact = async (
   inBaseQty: boolean,
   qty: BigNumber,
 ) => {
-  const context = await env.context;
-  return await context.slipQuery.calcImpact(
-    base,
-    quote,
-    poolIdx,
-    isBuy,
-    inBaseQty,
-    qty,
-    0,
-    initialLimitPrice(isBuy),
-  );
+  try {
+    const context = await env.context;
+    const result = await context.slipQuery.calcImpact(
+      base,
+      quote,
+      poolIdx,
+      isBuy,
+      inBaseQty,
+      qty,
+      0,
+      initialLimitPrice(isBuy),
+    );
+
+    return result;
+  } catch (error) {
+    logger('error', 'calcImpact', {
+      data: {
+        error,
+        base,
+        quote,
+        poolIdx,
+        isBuy,
+        inBaseQty,
+        qty,
+        initialLimitPrice: initialLimitPrice(isBuy),
+        env,
+      },
+      dataFormatted: {
+        error,
+        base,
+        quote,
+        poolIdx,
+        isBuy,
+        inBaseQty,
+        qty: qty.toString(),
+        initialLimitPrice: initialLimitPrice(isBuy).toString(),
+        network: process.env.REACT_APP_NETWORK,
+        env,
+      },
+    });
+  }
 };
 
 const INDEXER = {

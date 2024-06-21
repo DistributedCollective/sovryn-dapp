@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.27
+
+### Patch Changes
+
+- ec0afb6b: SOV-4199: Fix mobile layout
+
 ## 1.0.26
 
 ### Patch Changes

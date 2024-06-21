@@ -1,5 +1,13 @@
 # @sovryn/sdk
 
+## 1.0.6
+
+### Patch Changes
+
+- 746f3d6f: SOV-4239: add SDEX swap error logging for debugging
+- Updated dependencies [746f3d6f]
+  - @sovryn/sdex@0.3.12
+
 ## 1.0.5
 
 ### Patch Changes

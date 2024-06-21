@@ -91,7 +91,7 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
     <NavDropdown
       text={t('header.nav.bridges.title')}
       className={classNames(
-        'rounded-b-none text-gray-30 font-normal text-sm hover:bg-gray-70 hover:text-gray-10 min-w-auto w-full lg:w-auto lg:rounded bg-gray-70 border-gray-50',
+        'text-gray-30 font-normal text-sm hover:bg-gray-70 hover:text-gray-10 min-w-auto w-full lg:w-auto rounded bg-gray-70 border-gray-50',
       )}
       closeOnClick={!isMobile}
       dataAttribute={dataAttribute}
@@ -117,7 +117,7 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
           label={
             !isMobile && isRskChain(chainId)
               ? t('header.nav.bridges.subMenu.btcBridgeDescription')
-              : t('header.nav.bridges.subMenu.btcBridgeDescription_BOB')
+              : t('header.nav.bridges.subMenu.ethBridgeDescription')
           }
           dataAttribute={`dapp-menu-btcBridge`}
           className={classNames('no-underline', {

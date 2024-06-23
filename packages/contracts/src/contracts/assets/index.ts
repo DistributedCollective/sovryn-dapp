@@ -1,6 +1,8 @@
 import { Network } from '@sovryn/ethers-provider';
 
 import { AssetDetails } from '../../types';
+import { bitlayer } from './bitlayer';
+import { bitlayerTestnet } from './bitlayerTestnet';
 import { bob } from './bob';
 import { bobTestnet } from './bobTestnet';
 import { eth } from './eth';
@@ -17,4 +19,6 @@ export const assets: Partial<Record<Network, Array<AssetDetails>>> = {
   eth,
   sepolia,
   fork,
+  bitlayer,
+  bitlayerTestnet,
 };

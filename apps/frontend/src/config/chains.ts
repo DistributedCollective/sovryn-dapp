@@ -4,6 +4,7 @@ import { ChainId } from '@sovryn/ethers-provider';
 import bobLogo from '../assets/chains/bob.svg';
 import rskLogo from '../assets/chains/rsk.svg';
 import unknownLogo from '../assets/chains/unknown.svg';
+import { BITLAYER } from '../constants/infrastructure/bitlayer';
 import { BOB } from '../constants/infrastructure/bob';
 import { FORK } from '../constants/infrastructure/fork';
 import { RSK } from '../constants/infrastructure/rsk';
@@ -72,6 +73,15 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           rpcUrl: BOB.rpc[Environments.Testnet],
           blockExplorerUrl: BOB.explorer[Environments.Testnet],
           icon: bobLogo,
+        },
+        {
+          id: ChainIds.BITLAYER_TESTNET,
+          label: 'Bitlayer Testnet',
+          token: 'BTC',
+          publicRpcUrl: BITLAYER.publicRpc[Environments.Testnet],
+          rpcUrl: BITLAYER.rpc[Environments.Testnet],
+          blockExplorerUrl: BITLAYER.explorer[Environments.Testnet],
+          icon: unknownLogo,
         },
         {
           id: ChainIds.SEPOLIA,

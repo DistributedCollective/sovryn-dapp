@@ -11,7 +11,7 @@ import { mergeExtraPoints } from '../LeaderboardPointsPage.utils';
 import usersExtraPointsList from '../data/usersExtraPoints.json';
 import usersPointsList from '../data/usersPoints.json';
 
-const data: UserPoints[] = usersPointsList;
+const users: UserPoints[] = usersPointsList;
 const extraData = usersExtraPointsList.map(({ toAddress, points }) => ({
   wallet: toAddress,
   extraSpiceShot: parseFloat(points),
@@ -20,22 +20,16 @@ const extraData = usersExtraPointsList.map(({ toAddress, points }) => ({
 export const useGetPoints = () => {
   const { account } = useAccount();
 
-  const mergedAndSortedData = useMemo(
-    () => mergeExtraPoints(data, extraData),
-    [],
-  );
+  const data = useMemo(() => mergeExtraPoints(users, extraData), []);
 
   const userIndex = useMemo(
-    () =>
-      mergedAndSortedData.findIndex(user =>
-        areAddressesEqual(user.wallet, account),
-      ),
-    [mergedAndSortedData, account],
+    () => data.findIndex(user => areAddressesEqual(user.wallet, account)),
+    [data, account],
   );
 
   const connectedWalletPoints = useMemo(() => {
     if (userIndex !== -1) {
-      const { wallet, points, extraSpiceShot } = mergedAndSortedData[userIndex];
+      const { wallet, points, extraSpiceShot } = data[userIndex];
       return [
         {
           id: userIndex + 1,
@@ -48,11 +42,11 @@ export const useGetPoints = () => {
       ];
     }
     return [];
-  }, [mergedAndSortedData, userIndex]);
+  }, [data, userIndex]);
 
   const points = useMemo(
     () =>
-      mergedAndSortedData.map(({ wallet, points, extraSpiceShot }, index) => ({
+      data.map(({ wallet, points, extraSpiceShot }, index) => ({
         id: index + 1,
         wallet,
         spice: points,
@@ -60,7 +54,7 @@ export const useGetPoints = () => {
         extraSpiceShot,
         runes: points * RUNES_POINTS_MULTIPLIER,
       })),
-    [mergedAndSortedData],
+    [data],
   );
 
   return {

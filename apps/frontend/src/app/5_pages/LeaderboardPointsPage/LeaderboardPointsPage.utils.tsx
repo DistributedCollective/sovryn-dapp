@@ -31,5 +31,6 @@ export const mergeExtraPoints = (
   });
 
   merged.sort((a, b) => b.points - a.points);
+
   return merged;
 };

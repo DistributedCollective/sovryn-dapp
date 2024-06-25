@@ -8,7 +8,6 @@ import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../../../hooks/useBlockNumber';
 import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
 import { COMMON_SYMBOLS } from '../../../../../../../../../utils/asset';
-import { isRskChain } from '../../../../../../../../../utils/chain';
 import { removeTrailingZerosFromString } from '../../../../../../../../../utils/helpers';
 import { decimalic, fromWei } from '../../../../../../../../../utils/math';
 import { getSmartRouter } from '../../../../../../../ConvertPage/ConvertPage.utils';
@@ -21,6 +20,7 @@ import {
   getCurrencyPrecision,
   getConvertedValue,
 } from '../../../../ProtocolSection.utils';
+import { getNativeCurrency } from './StakingTotalValue.utils';
 
 export const StakingTotalValue: FC<ProtocolSectionProps> = ({
   selectedCurrency,
@@ -35,7 +35,7 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
 
   const { balance: stakedValue } = useGetStakingBalanceOf(account);
 
-  const isRsk = useMemo(() => isRskChain(chainId), [chainId]);
+  const nativeCurrency = useMemo(() => getNativeCurrency(chainId), [chainId]);
 
   const renderTotalBalance = useMemo(
     () =>
@@ -58,10 +58,7 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
         const [sourceTokenDetails, destinationTokenDetails] = await Promise.all(
           [
             getAssetData(COMMON_SYMBOLS.SOV, chainId),
-            getAssetData(
-              isRsk ? COMMON_SYMBOLS.BTC : COMMON_SYMBOLS.ETH,
-              chainId,
-            ),
+            getAssetData(nativeCurrency, chainId),
           ],
         );
 
@@ -78,7 +75,14 @@ export const StakingTotalValue: FC<ProtocolSectionProps> = ({
         setBalance(decimalic(quote));
       })();
     }
-  }, [stakedValue, selectedCurrency, block, chainId, isRsk, smartRouter]);
+  }, [
+    stakedValue,
+    selectedCurrency,
+    block,
+    chainId,
+    smartRouter,
+    nativeCurrency,
+  ]);
 
   useEffect(() => {
     if (balance.gt(Decimal.ZERO) && account) {

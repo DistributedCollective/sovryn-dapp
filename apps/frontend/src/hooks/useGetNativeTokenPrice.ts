@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { COMMON_SYMBOLS } from '../utils/asset';
-import { isRskChain } from '../utils/chain';
+import { isBobChain, isRskChain } from '../utils/chain';
 import { toWei } from '../utils/math';
 import { useCurrentChain } from './useChainStore';
 import { useDollarValue } from './useDollarValue';
@@ -16,10 +16,15 @@ export const useGetNativeTokenPrice = () => {
     toWei(1).toString(),
   );
 
-  const price = useMemo(
-    () => (isRskChain(chainId) ? rBTCPrice : ethPrice),
-    [chainId, ethPrice, rBTCPrice],
-  );
+  const price = useMemo(() => {
+    if (isRskChain(chainId)) {
+      return rBTCPrice;
+    } else if (isBobChain(chainId)) {
+      return ethPrice;
+    } else {
+      return ethPrice; // TODO: Adjust we have more supported chains.
+    }
+  }, [chainId, ethPrice, rBTCPrice]);
 
   return { price };
 };

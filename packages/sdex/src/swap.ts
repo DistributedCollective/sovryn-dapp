@@ -401,7 +401,17 @@ export class CrocSwapPlan {
 
   async calcImpact(): Promise<CrocImpact> {
     const TIP = 0;
-    const limitPrice = this.sellBase ? MAX_SQRT_PRICE : MIN_SQRT_PRICE;
+
+    const startPrice = await this.poolView.displayPrice();
+    const maxLimitPrice = BigNumber.from(Math.round(startPrice))
+      .mul(BigNumber.from(10).pow(18))
+      .mul(2);
+
+    const maxSqrtPrice = maxLimitPrice.lte(MAX_SQRT_PRICE)
+      ? maxLimitPrice
+      : MAX_SQRT_PRICE;
+
+    const limitPrice = this.sellBase ? maxSqrtPrice : MIN_SQRT_PRICE;
     const qty = await this.qty;
 
     try {
@@ -433,7 +443,6 @@ export class CrocSwapPlan {
       const quoteQty = this.quoteToken.toDisplay(impact.quoteFlow.abs());
       const spotPrice = decodeCrocPrice(impact.finalPrice);
 
-      const startPrice = this.poolView.displayPrice();
       const finalPrice = this.poolView.toDisplayPrice(spotPrice);
 
       logger('info', 'calcImpact', {
@@ -464,8 +473,7 @@ export class CrocSwapPlan {
         sellQty: this.sellBase ? await baseQty : await quoteQty,
         buyQty: this.sellBase ? await quoteQty : await baseQty,
         finalPrice: await finalPrice,
-        percentChange:
-          ((await finalPrice) - (await startPrice)) / (await startPrice),
+        percentChange: ((await finalPrice) - startPrice) / startPrice,
       };
     } catch (error) {
       logger('error', 'calcImpact', {

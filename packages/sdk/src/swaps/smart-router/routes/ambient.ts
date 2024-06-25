@@ -2,7 +2,7 @@ import { BigNumber, utils, providers, constants, BigNumberish } from 'ethers';
 
 import { ChainIds } from '@sovryn/ethers-provider';
 import { numberToChainId } from '@sovryn/ethers-provider';
-import { CrocEnv, CrocPoolView } from '@sovryn/sdex';
+import { CrocEnv, CrocPoolView, MAX_SQRT_PRICE } from '@sovryn/sdex';
 import { OrderDirective } from '@sovryn/sdex/dist/encoding/longform';
 import { Decimal } from '@sovryn/utils';
 
@@ -397,6 +397,14 @@ const calculateImpact = async (
 ): Promise<{ amount: BigNumber; isBuy: boolean; impact: any }> => {
   const isBuy = pool.baseToken.tokenAddr.toLowerCase() === entry.toLowerCase();
 
+  const displayPrice = await pool.displayPrice();
+  const maxLimitPrice = BigNumber.from(Math.round(displayPrice))
+    .mul(BigNumber.from(10).pow(18))
+    .mul(2);
+  const maxSqrtPrice = maxLimitPrice.lte(MAX_SQRT_PRICE)
+    ? maxLimitPrice
+    : MAX_SQRT_PRICE;
+
   const impact = await calcImpact(
     env,
     pool.baseToken.tokenAddr,
@@ -405,6 +413,7 @@ const calculateImpact = async (
     isBuy,
     isBuy,
     amount,
+    maxSqrtPrice,
   );
 
   const entryOut = Decimal.fromBigNumberString(
@@ -440,6 +449,14 @@ const setupPool = async (
   orderPool.swap.qty = amount;
   orderPool.poolIdx = poolIndex;
 
+  const displayPrice = await pool.displayPrice();
+  const maxLimitPrice = BigNumber.from(Math.round(displayPrice))
+    .mul(BigNumber.from(10).pow(18))
+    .mul(2);
+  const maxSqrtPrice = maxLimitPrice.lte(MAX_SQRT_PRICE)
+    ? maxLimitPrice
+    : MAX_SQRT_PRICE;
+
   const impact = await calcImpact(
     env,
     pool.baseToken.tokenAddr,
@@ -448,6 +465,7 @@ const setupPool = async (
     orderPool.swap.isBuy,
     orderPool.swap.inBaseQty,
     orderPool.swap.qty,
+    maxSqrtPrice,
   );
 
   orderPool.swap.limitPrice = Decimal.fromBigNumberString(impact.finalPrice)

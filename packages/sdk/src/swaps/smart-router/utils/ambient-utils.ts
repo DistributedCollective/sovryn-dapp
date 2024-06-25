@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers';
 
 import { getAssetContract, getAssetDataByAddress } from '@sovryn/contracts';
 import { ChainId, ChainIds } from '@sovryn/ethers-provider';
-import { CrocEnv, logger, MAX_SQRT_PRICE, MIN_SQRT_PRICE } from '@sovryn/sdex';
+import { CrocEnv, logger, MIN_SQRT_PRICE } from '@sovryn/sdex';
 
 export type PoolWithIndex = [string, string, number];
 export type Pool = [string, string];
@@ -60,10 +60,6 @@ export function groupItemsInPairs<T>(items: T[]): T[][] {
   return groupedItems;
 }
 
-// for some reason some pairs are failing when using these values in calcImpact
-const initialLimitPrice = (isBuy: boolean) =>
-  isBuy ? MAX_SQRT_PRICE : MIN_SQRT_PRICE;
-
 export const calcImpact = async (
   env: CrocEnv,
   base: string,
@@ -72,7 +68,10 @@ export const calcImpact = async (
   isBuy: boolean,
   inBaseQty: boolean,
   qty: BigNumber,
+  maxLimitPrice: BigNumber,
 ) => {
+  const initialLimitPrice = isBuy ? maxLimitPrice : MIN_SQRT_PRICE;
+
   try {
     const context = await env.context;
     const result = await context.slipQuery.calcImpact(
@@ -83,7 +82,7 @@ export const calcImpact = async (
       inBaseQty,
       qty,
       0,
-      initialLimitPrice(isBuy),
+      initialLimitPrice,
     );
 
     return result;
@@ -97,7 +96,7 @@ export const calcImpact = async (
         isBuy,
         inBaseQty,
         qty,
-        initialLimitPrice: initialLimitPrice(isBuy),
+        initialLimitPrice,
         env,
       },
       dataFormatted: {
@@ -108,7 +107,7 @@ export const calcImpact = async (
         isBuy,
         inBaseQty,
         qty: qty.toString(),
-        initialLimitPrice: initialLimitPrice(isBuy).toString(),
+        initialLimitPrice: initialLimitPrice.toString(),
         network: process.env.REACT_APP_NETWORK,
         env,
       },

@@ -11,4 +11,6 @@ export const networkMap = {
   [ChainIds.BOB_MAINNET]: 'bob',
   [ChainIds.BOB_TESTNET]: 'bobTestnet',
   [ChainIds.FORK]: 'fork',
+  [ChainIds.BITLAYER]: 'bitlayer',
+  [ChainIds.BITLAYER_TESTNET]: 'bitlayerTestnet',
 } as const;

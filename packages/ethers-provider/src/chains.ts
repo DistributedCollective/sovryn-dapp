@@ -7,6 +7,8 @@ export enum ChainIds {
   BSC_TESTNET = '0x61',
   BOB_MAINNET = '0xed88', // 60808
   BOB_TESTNET = '0x6f', // 111
+  BITLAYER = '0x310c5', //200901
+  BITLAYER_TESTNET = '0x3106a', //200810
   /** @deprecated */
   ROPSTEN = '0x3',
   // forks

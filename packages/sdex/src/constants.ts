@@ -130,6 +130,30 @@ const SEPOLIA_CHAIN: ChainSpec = {
   logoUrl: ETHEREUM_LOGO,
 };
 
+const BITLAYER_TESTNET_CHAIN: ChainSpec = {
+  nodeUrl: 'https://testnet-rpc.bitlayer.org',
+  addrs: {
+    dex: '0x701C1331AABf09F66E3f62455c7D1b4A3924E5C3',
+    query: '0x71A5452a62F35F22A4C5115382d6b4CC8a864D4C',
+    impact: '0xA17B99B2817d0EdD992fE00D219DEc2b9835742d',
+    router: '0x22Bdd8B71928003473EfA83cd69689cc04507cd9',
+    routerBypass: '0x6138a1c3c2a419075E50f2C8A8600366D4105f8d',
+  },
+  poolIndex: 36000,
+  isTestNet: true,
+  chainId: '0x3106a',
+  gridSize: 16,
+  proxyPaths: {
+    cold: 3,
+    long: 130,
+    liq: 128,
+    dfltColdSwap: true,
+  },
+  blockExplorer: 'https://testnet-scan.bitlayer.org',
+  displayName: 'Bitlayer Testnet',
+  logoUrl: ETHEREUM_LOGO,
+};
+
 const LOCAL_FORK_CHAIN: ChainSpec = Object.assign({}, SEPOLIA_CHAIN, {
   nodeUrl: 'http://127.0.0.1:8545',
   chainId: '0x7a69',
@@ -142,6 +166,7 @@ export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
   '0x7a69': LOCAL_FORK_CHAIN,
   '0xaa36a7': SEPOLIA_CHAIN,
   '0x1b669': TENDERLY_FORK,
+  '0x3106a': BITLAYER_TESTNET_CHAIN,
   sepolia: SEPOLIA_CHAIN,
   local: LOCAL_FORK_CHAIN,
   bob: BOB_CHAIN,

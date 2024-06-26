@@ -1,6 +1,7 @@
 import { Network } from '@sovryn/ethers-provider';
 
 import { AsyncContractConfigData } from '../../types';
+import { bitlayerTestnet } from './bitlayerTestnet';
 import { bob } from './bob';
 import { bobTestnet } from './bobTestnet';
 import { fork } from './fork';
@@ -17,4 +18,5 @@ export const protocol: Partial<
   bobTestnet,
   sepolia,
   fork,
+  bitlayerTestnet,
 };

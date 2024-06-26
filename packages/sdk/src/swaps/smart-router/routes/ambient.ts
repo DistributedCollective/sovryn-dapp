@@ -67,7 +67,12 @@ export const ambientRoute: SwapRouteFunction = (
 
   return {
     name: 'Ambient',
-    chains: [ChainIds.BOB_MAINNET, ChainIds.BOB_TESTNET, ChainIds.SEPOLIA],
+    chains: [
+      ChainIds.BOB_MAINNET,
+      ChainIds.BOB_TESTNET,
+      ChainIds.BITLAYER_TESTNET,
+      ChainIds.SEPOLIA,
+    ],
     pairs: async () => {
       const pools = await loadPools();
 

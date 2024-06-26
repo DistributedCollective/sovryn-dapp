@@ -185,6 +185,7 @@ const POOLS: Partial<Record<ChainIds, PoolWithIndex[]>> = {
     ['POWA', 'SOV', 38000],
   ],
   [ChainIds.SEPOLIA]: [['USDC', 'USDT', 36000]],
+  [ChainIds.BITLAYER_TESTNET]: [],
 };
 
 export const fetchPools = async (chainId: ChainId) => {

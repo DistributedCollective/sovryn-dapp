@@ -40,13 +40,19 @@ export const parsePoolPositions = (
     lowerPriceNonDisplay,
     baseTokenDecimals,
     quoteTokenDecimals,
+    true,
   );
 
   const upperPriceDisplayInQuote = toDisplayPrice(
     upperPriceNonDisplay,
     baseTokenDecimals,
     quoteTokenDecimals,
+    true,
   );
+
+  // console.log(
+  //   `baseTokenDecimals: ${baseTokenDecimals} , quoteTokenDecimals: ${quoteTokenDecimals}`,
+  // );
 
   const result: Position = {
     positionId: position.positionId,

@@ -19,18 +19,14 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
     id: 'min',
     title: 'Min price',
     cellRenderer: (position: Position) => (
-      <div>
-        {position.minPriceBase} {pool.quote}
-      </div>
+      <AmountRenderer value={position.minPriceQuote} suffix={pool.quote} />
     ),
   },
   {
     id: 'max',
     title: 'Max price',
     cellRenderer: (position: Position) => (
-      <div>
-        {position.maxPriceBase} {pool.quote}
-      </div>
+      <AmountRenderer value={position.maxPriceQuote} suffix={pool.quote} />
     ),
   },
   {

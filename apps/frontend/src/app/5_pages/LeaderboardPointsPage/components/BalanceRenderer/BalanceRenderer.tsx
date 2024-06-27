@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { areAddressesEqual } from '../../../../../utils/helpers';
 import { User, UserDeposit } from '../../LeaderboardPointsPage.types';
-import usersDeposits from '../../data/usersDeposits.json';
+import usersDeposits from './data/usersDeposits.json';
 
 type BalanceRendererProps = {
   user: User;

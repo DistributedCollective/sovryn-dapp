@@ -23,4 +23,8 @@ export type DepositContextValue = {
   setSpotPrice: Dispatch<SetStateAction<number>>;
   usesBaseToken: boolean;
   setUsesBaseToken: Dispatch<SetStateAction<boolean>>;
+  isFirstAssetOutOfRange: boolean;
+  isSecondAssetOutOfRange: boolean;
+  setIsFirstAssetOutOfRange: Dispatch<SetStateAction<boolean>>;
+  setIsSecondAssetOutOfRange: Dispatch<SetStateAction<boolean>>;
 };

@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
-import { priceToTick } from '@sovryn/sdex';
+import { CrocReposition, priceToTick } from '@sovryn/sdex';
 import { Decimal } from '@sovryn/utils';
 
 import {
@@ -17,41 +17,43 @@ import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
 import {
-  createRangePositionTx,
   roundDownTick,
   roundUpTick,
 } from '../../../../BobAmmPage/ambient-utils';
+import { AmbientPosition } from '../../AmbientMarketMaking/AmbientMarketMaking.types';
 import { checkAndPrepareApproveTransaction } from '../../AmbientMarketMaking/components/AmbientPoolPositions/AmbientPoolPositions.utils';
-import { AmbientLiquidityPoolDictionary } from '../../AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
-import { useDepositContext } from '../contexts/BobDepositModalContext';
-import { useGetPoolInfo } from './useGetPoolInfo';
+import { DEFAULT_SLIPPAGE } from '../../BobDepositModal/BobDepositModal.constants';
+import { useDepositContext } from '../../BobDepositModal/contexts/BobDepositModalContext';
+import { useGetPoolInfo } from '../../BobDepositModal/hooks/useGetPoolInfo';
+import { mintArgsForReposition } from '../BobRepositionModal.utils';
+import { useGetLiquidity } from './useGetLiquidity';
 
 export const useHandleSubmit = (
   assetA: string,
   assetB: string,
+  position: AmbientPosition,
   onComplete: () => void,
 ) => {
   const chainId = useCurrentChain();
   const { account, signer } = useAccount();
   const { croc } = useCrocContext();
-  const { poolTokens } = useGetPoolInfo(assetA, assetB);
+  const { poolTokens, pool: crocPool } = useGetPoolInfo(assetA, assetB);
+  const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+
   const {
     minimumPrice,
     maximumPrice,
     firstAssetValue,
     secondAssetValue,
-    maximumSlippage,
-    isBalancedRange,
-    rangeWidth,
-    usesBaseToken,
     isFirstAssetOutOfRange,
     isSecondAssetOutOfRange,
+    rangeWidth,
   } = useDepositContext();
 
-  const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+  const { liquidity } = useGetLiquidity(position);
 
   const onSubmit = useCallback(async () => {
-    if (!croc || !poolTokens || !signer) {
+    if (!croc || !poolTokens || !signer || !crocPool || !liquidity) {
       return;
     }
 
@@ -93,7 +95,6 @@ export const useHandleSubmit = (
       transactions.push(approveB);
     }
 
-    const pool = AmbientLiquidityPoolDictionary.get(assetA, assetB, chainId);
     const gridSize = (await croc.context).chain.gridSize;
 
     const tick = {
@@ -101,66 +102,55 @@ export const useHandleSubmit = (
       high: roundUpTick(priceToTick(maximumPrice), gridSize),
     };
 
-    const tx = await createRangePositionTx({
-      crocEnv: croc,
-      isAmbient: isBalancedRange && rangeWidth === 100,
-      slippageTolerancePercentage: maximumSlippage,
-      tokenA: {
-        address: poolTokens.tokenA.tokenAddr,
-        qty: firstAssetBigNumberAmount,
-        isWithdrawFromDexChecked: false,
+    const reposition = new CrocReposition(
+      crocPool,
+      {
+        liquidity: liquidity,
+        burn: [position.bidTick, position.askTick],
+        mint: mintArgsForReposition(tick.low, tick.high, rangeWidth),
       },
-      tokenB: {
-        address: poolTokens.tokenB.tokenAddr,
-        qty: secondAssetBigNumberAmount,
-        isWithdrawFromDexChecked: false,
-      },
-      isTokenAPrimaryRange: usesBaseToken,
-      tick,
-      lpConduit: pool?.lpTokenAddress,
-      poolIndex: pool?.poolIndex,
-    });
+      { impact: DEFAULT_SLIPPAGE / 100 },
+    );
+
+    const calldata = await reposition.rebal();
+    const contract = await crocPool.context;
+    const proxyPaths = contract.chain.proxyPaths.long;
 
     transactions.push({
-      title: t(translations.common.deposit),
+      title: t(translations.bobMarketMakingPage.repositionModal.title),
       request: {
         type: TransactionType.signTransaction,
-        contract: tx.contract,
+        contract: contract.dex,
         fnName: 'userCmd',
-        args: [tx.path, tx.calldata],
-        value: tx.txArgs?.value ? tx.txArgs.value : 0,
-        gasLimit: tx.txArgs?.gasLimit
-          ? tx.txArgs.gasLimit
-          : BigNumber.from(GAS_LIMIT.MARKET_MAKING_DEPOSIT),
+        args: [proxyPaths, calldata],
+        gasLimit: GAS_LIMIT.MARKET_MAKING_REPOSITION,
       },
       onComplete,
     });
 
     setTransactions(transactions);
-    setTitle(t(translations.bobMarketMakingPage.depositModal.title));
+    setTitle(t(translations.bobMarketMakingPage.repositionModal.reposition));
     setIsOpen(true);
   }, [
     account,
-    assetA,
-    assetB,
     chainId,
     croc,
+    liquidity,
     firstAssetValue,
-    isBalancedRange,
-    minimumPrice,
+    isSecondAssetOutOfRange,
+    isFirstAssetOutOfRange,
     maximumPrice,
-    maximumSlippage,
     poolTokens,
-    rangeWidth,
     secondAssetValue,
+    signer,
+    minimumPrice,
+    position,
+    crocPool,
+    onComplete,
+    setTransactions,
     setIsOpen,
     setTitle,
-    setTransactions,
-    signer,
-    onComplete,
-    usesBaseToken,
-    isFirstAssetOutOfRange,
-    isSecondAssetOutOfRange,
+    rangeWidth,
   ]);
 
   return onSubmit;

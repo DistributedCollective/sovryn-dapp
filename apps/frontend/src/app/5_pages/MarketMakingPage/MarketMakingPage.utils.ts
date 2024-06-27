@@ -1,12 +1,10 @@
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { AmmHistory } from './MarketMakingPage.types';
 import { AmmLiquidityPoolDictionary } from './utils/AmmLiquidityPoolDictionary';
 
 export const getAmmHistory = (
   ammData: any,
-  asset1: SupportedTokens,
-  asset2: SupportedTokens,
+  asset1: string,
+  asset2: string,
 ): AmmHistory =>
   ammData &&
   ammData[

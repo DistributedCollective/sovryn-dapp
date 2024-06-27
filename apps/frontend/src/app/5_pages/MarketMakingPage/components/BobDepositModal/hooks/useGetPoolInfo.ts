@@ -11,7 +11,7 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
   const [price, setPrice] = useState(0);
   const [spotPrice, setSpotPrice] = useState(0);
   const [feeRate, setFeeRate] = useState('0');
-
+  const [loading, setLoading] = useState(true);
   const getPoolPrice = useCallback(async () => {
     if (!pool) {
       return;
@@ -71,23 +71,15 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
       });
   }, [chainId, pool, poolTokens]);
 
-  useEffect(() => {
-    if (price === 0) {
-      getPoolPrice();
-    }
-  }, [getPoolPrice, price]);
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    await Promise.all([getPoolPrice(), getSpotPrice(), getLiquidityFee()]);
+    setLoading(false);
+  }, [getPoolPrice, getSpotPrice, getLiquidityFee]);
 
   useEffect(() => {
-    if (spotPrice === 0) {
-      getSpotPrice();
-    }
-  }, [getSpotPrice, spotPrice]);
+    fetchData();
+  }, [fetchData]);
 
-  useEffect(() => {
-    if (feeRate === '0') {
-      getLiquidityFee();
-    }
-  }, [feeRate, getLiquidityFee, pool]);
-
-  return { poolTokens, price, feeRate, pool, spotPrice };
+  return { poolTokens, price, feeRate, pool, spotPrice, loading };
 };

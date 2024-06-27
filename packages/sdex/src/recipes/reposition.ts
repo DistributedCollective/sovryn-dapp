@@ -1,13 +1,10 @@
-import { TransactionResponse } from '@ethersproject/abstract-provider';
-
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumber, BigNumberish, BytesLike } from 'ethers';
 
 import { OrderDirective, PoolDirective } from '../encoding/longform';
 import { CrocPoolView } from '../pool';
 import { CrocSwapPlan } from '../swap';
 import { CrocTokenView } from '../tokens';
 import { encodeCrocPrice, tickToPrice } from '../utils';
-import { GAS_PADDING } from '../utils';
 import {
   baseTokenForConcLiq,
   concDepositBalance,
@@ -41,17 +38,10 @@ export class CrocReposition {
     this.impact = opts?.impact || DEFAULT_REBAL_SLIPPAGE;
   }
 
-  async rebal(): Promise<TransactionResponse> {
+  async rebal(): Promise<BytesLike> {
     const directive = await this.formatDirective();
-    const cntx = await this.pool.context;
-    const path = cntx.chain.proxyPaths.long;
-    const gasEst = await cntx.dex.estimateGas.userCmd(
-      path,
-      directive.encodeBytes(),
-    );
-    return cntx.dex.userCmd(path, directive.encodeBytes(), {
-      gasLimit: gasEst.add(GAS_PADDING),
-    });
+    const encodedDirective = directive.encodeBytes();
+    return encodedDirective;
   }
 
   async simStatic() {
@@ -122,8 +112,8 @@ export class CrocReposition {
       buyToken,
       await this.convertCollateral(),
       false,
-      (await this.pool.context).chain.poolIndex,
-      (await this.pool).context,
+      this.pool.poolIndex,
+      this.pool.context,
       { slippage: this.impact },
     );
     const impact = await swap.calcImpact();
@@ -152,9 +142,7 @@ export class CrocReposition {
 
     const directive = new OrderDirective(openToken.tokenAddr);
     directive.appendHop(closeToken.tokenAddr);
-    const pool = directive.appendPool(
-      (await this.pool.context).chain.poolIndex,
-    );
+    const pool = directive.appendPool(this.pool.poolIndex);
 
     directive.appendRangeBurn(
       this.burnRange[0],
@@ -163,7 +151,7 @@ export class CrocReposition {
     );
     await this.setupSwap(pool);
 
-    directive.appendPool((await this.pool.context).chain.poolIndex);
+    directive.appendPool(this.pool.poolIndex);
 
     if (this.mintRange === 'ambient') {
       const mint = directive.appendAmbientMint(0);
@@ -197,6 +185,9 @@ export class CrocReposition {
 
   private async swapFraction(): Promise<BigNumber> {
     const swapProp = (await this.balancePercent()) + this.impact;
+    if (isNaN(swapProp)) {
+      return BigNumber.from(0);
+    }
     return BigNumber.from(Math.floor(Math.min(swapProp, 1.0) * 10000));
   }
 

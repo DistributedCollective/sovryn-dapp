@@ -1615,6 +1615,8 @@ export type GetLiquidityChangesQuery = {
     quoteFlow?: string | null;
     time: string;
     transactionHash: string;
+    positionType: string;
+    liq?: string | null;
     pool: { __typename?: 'Pool'; base: string; quote: string };
   }>;
 };
@@ -1666,6 +1668,8 @@ export const GetLiquidityChangesDocument = gql`
       quoteFlow
       time
       transactionHash
+      positionType
+      liq
     }
   }
 `;

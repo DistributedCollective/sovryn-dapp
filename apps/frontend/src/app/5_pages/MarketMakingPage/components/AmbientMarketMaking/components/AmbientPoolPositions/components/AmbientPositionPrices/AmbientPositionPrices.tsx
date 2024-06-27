@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { MIN_TICK, MAX_TICK, tickToPrice, toDisplayPrice } from '@sovryn/sdex';
 
@@ -22,14 +22,28 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
     () =>
       position.positionType === PoolPositionType.ambient ||
       (position.bidTick === MIN_TICK && position.askTick === MAX_TICK),
-    [position.askTick, position.bidTick, position.positionType],
+    [position],
   );
 
   const { poolTokens } = useGetPoolInfo(pool.base, pool.quote);
-
   const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
     poolTokens?.tokenA,
     poolTokens?.tokenB,
+  );
+
+  const renderAmountRenderer = useCallback(
+    (tick: number) => (
+      <AmountRenderer
+        value={toDisplayPrice(
+          tickToPrice(tick),
+          baseTokenDecimals,
+          quoteTokenDecimals,
+          true,
+        )}
+        suffix={pool.quote}
+      />
+    ),
+    [baseTokenDecimals, quoteTokenDecimals, pool.quote],
   );
 
   if (isAmbient) {
@@ -43,24 +57,8 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
 
   return (
     <div className="inline-flex flex-col">
-      <AmountRenderer
-        value={toDisplayPrice(
-          tickToPrice(position.askTick),
-          baseTokenDecimals,
-          quoteTokenDecimals,
-          true,
-        )}
-        suffix={pool.quote}
-      />
-      <AmountRenderer
-        value={toDisplayPrice(
-          tickToPrice(position.bidTick),
-          baseTokenDecimals,
-          quoteTokenDecimals,
-          true,
-        )}
-        suffix={pool.quote}
-      />
+      {renderAmountRenderer(position.askTick)}
+      {renderAmountRenderer(position.bidTick)}
     </div>
   );
 };

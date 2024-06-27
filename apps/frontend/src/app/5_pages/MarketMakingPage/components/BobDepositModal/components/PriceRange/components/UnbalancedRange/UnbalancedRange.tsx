@@ -3,9 +3,9 @@ import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import { t } from 'i18next';
 
 import { toDisplayPrice } from '@sovryn/sdex';
-import { Decimal } from '@sovryn/utils';
 
 import { translations } from '../../../../../../../../../locales/i18n';
+import { adjustPriceByPercentage } from '../../../../../AmbientMarketMaking/components/AmbientPoolPositions/AmbientPoolPositions.utils';
 import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useGetTokenDecimals } from '../../../../../BobWIthdrawModal/hooks/useGetTokenDecimals';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
@@ -26,25 +26,17 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     setLowerBoundaryPercentage,
     setMaximumPrice,
     setUpperBoundaryPercentage,
-    spotPrice,
+    setIsFirstAssetOutOfRange,
+    setIsSecondAssetOutOfRange,
   } = useDepositContext();
 
   const { spotPrice: currentPrice, poolTokens } = useGetPoolInfo(
     pool.base,
     pool.quote,
   );
-
   const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
     poolTokens?.tokenA,
     poolTokens?.tokenB,
-  );
-
-  const calculatePrice = useCallback(
-    (percentage: number) =>
-      Decimal.from(currentPrice)
-        .add(Decimal.from(currentPrice).mul(Decimal.from(percentage).div(100)))
-        .toNumber(),
-    [currentPrice],
   );
 
   const updateRange = useCallback(
@@ -53,31 +45,22 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
         ? upperBoundaryPercentage
         : lowerBoundaryPercentage;
 
-      const newPercentage = isPlus
-        ? currentPercentage + 1
-        : currentPercentage - 1;
+      const newPercentage =
+        currentPercentage + (isPlus ? 1 : -1) || (isPlus ? 1 : -1);
 
-      const newPrice =
-        newPercentage < 0 ? currentPrice : calculatePrice(newPercentage);
+      const newPrice = adjustPriceByPercentage(newPercentage, currentPrice);
 
       if (isUpperBoundary) {
-        if (newPrice > minimumPrice) {
-          setUpperBoundaryPercentage(newPercentage);
-          setMaximumPrice(newPrice);
-        }
+        setUpperBoundaryPercentage(newPercentage);
+        setMaximumPrice(newPrice);
       } else {
-        if (newPrice < maximumPrice) {
-          setLowerBoundaryPercentage(newPercentage);
-          setMinimumPrice(newPrice);
-        }
+        setLowerBoundaryPercentage(newPercentage);
+        setMinimumPrice(newPrice);
       }
     },
     [
-      calculatePrice,
       currentPrice,
       lowerBoundaryPercentage,
-      maximumPrice,
-      minimumPrice,
       setLowerBoundaryPercentage,
       setMaximumPrice,
       setMinimumPrice,
@@ -102,9 +85,39 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     updateRange(true, true);
   }, [updateRange]);
 
+  const isInputADisabled = useMemo(() => {
+    if (!minimumPrice || !maximumPrice || !currentPrice) {
+      return false;
+    }
+    return minimumPrice >= currentPrice && maximumPrice >= currentPrice;
+  }, [currentPrice, maximumPrice, minimumPrice]);
+
+  const isInputBDisabled = useMemo(() => {
+    if (!minimumPrice || !maximumPrice || !currentPrice) {
+      return false;
+    }
+    return minimumPrice <= currentPrice && maximumPrice <= currentPrice;
+  }, [currentPrice, maximumPrice, minimumPrice]);
+
   useEffect(() => {
-    const calculatedMinimumPrice = calculatePrice(lowerBoundaryPercentage);
-    const calculatedMaximumPrice = calculatePrice(upperBoundaryPercentage);
+    setIsFirstAssetOutOfRange(isInputADisabled);
+    setIsSecondAssetOutOfRange(isInputBDisabled);
+  }, [
+    isInputADisabled,
+    isInputBDisabled,
+    setIsFirstAssetOutOfRange,
+    setIsSecondAssetOutOfRange,
+  ]);
+
+  useEffect(() => {
+    const calculatedMinimumPrice = adjustPriceByPercentage(
+      lowerBoundaryPercentage,
+      currentPrice,
+    );
+    const calculatedMaximumPrice = adjustPriceByPercentage(
+      upperBoundaryPercentage,
+      currentPrice,
+    );
 
     if (minimumPrice === 0 || calculatedMinimumPrice !== minimumPrice) {
       setMinimumPrice(calculatedMinimumPrice);
@@ -114,7 +127,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
       setMaximumPrice(calculatedMaximumPrice);
     }
   }, [
-    calculatePrice,
+    currentPrice,
     lowerBoundaryPercentage,
     maximumPrice,
     minimumPrice,
@@ -123,47 +136,54 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     upperBoundaryPercentage,
   ]);
 
+  useEffect(() => {
+    if (minimumPrice > maximumPrice) {
+      setIsFirstAssetOutOfRange(true);
+      setIsSecondAssetOutOfRange(true);
+    } else {
+      setIsFirstAssetOutOfRange(isInputADisabled);
+      setIsSecondAssetOutOfRange(isInputBDisabled);
+    }
+  }, [
+    minimumPrice,
+    maximumPrice,
+    isInputADisabled,
+    isInputBDisabled,
+    setIsFirstAssetOutOfRange,
+    setIsSecondAssetOutOfRange,
+  ]);
+
   const renderMin = useMemo(
     () =>
-      toDisplayPrice(
-        spotPrice * ((100 - lowerBoundaryPercentage) / 100),
-        baseTokenDecimals,
-        quoteTokenDecimals,
-        true,
-      ),
-    [baseTokenDecimals, lowerBoundaryPercentage, quoteTokenDecimals, spotPrice],
+      toDisplayPrice(minimumPrice, baseTokenDecimals, quoteTokenDecimals, true),
+    [baseTokenDecimals, minimumPrice, quoteTokenDecimals],
   );
 
   const renderMax = useMemo(
     () =>
-      toDisplayPrice(
-        spotPrice * ((100 - upperBoundaryPercentage) / 100),
-        baseTokenDecimals,
-        quoteTokenDecimals,
-        true,
-      ),
-    [baseTokenDecimals, quoteTokenDecimals, spotPrice, upperBoundaryPercentage],
+      toDisplayPrice(maximumPrice, baseTokenDecimals, quoteTokenDecimals, true),
+    [baseTokenDecimals, maximumPrice, quoteTokenDecimals],
   );
 
   return (
     <div className="flex justify-between px-4">
       <Input
         label={t(translations.bobMarketMakingPage.depositModal.minPrice)}
-        onMinusClick={onMinPriceMinusClick}
-        onPlusClick={onMinPricePlusClick}
+        onMinusClick={onMaxPricePlusClick}
+        onPlusClick={onMaxPriceMinusClick}
         value={minimumPrice}
-        text={renderMin}
-        range={lowerBoundaryPercentage}
+        text={renderMax}
+        range={-upperBoundaryPercentage}
         decimals={quoteTokenDecimals}
       />
 
       <Input
         label={t(translations.bobMarketMakingPage.depositModal.maxPrice)}
-        onMinusClick={onMaxPriceMinusClick}
-        onPlusClick={onMaxPricePlusClick}
+        onMinusClick={onMinPricePlusClick}
+        onPlusClick={onMinPriceMinusClick}
         value={maximumPrice}
-        text={renderMax}
-        range={upperBoundaryPercentage}
+        text={renderMin}
+        range={-lowerBoundaryPercentage}
         decimals={quoteTokenDecimals}
       />
     </div>

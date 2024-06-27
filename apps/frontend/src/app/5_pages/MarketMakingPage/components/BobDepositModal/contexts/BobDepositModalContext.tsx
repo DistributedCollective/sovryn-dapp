@@ -37,6 +37,10 @@ const defaultContextValue: DepositContextValue = {
   setSpotPrice: noop,
   usesBaseToken: true,
   setUsesBaseToken: noop,
+  isFirstAssetOutOfRange: false,
+  setIsFirstAssetOutOfRange: noop,
+  isSecondAssetOutOfRange: false,
+  setIsSecondAssetOutOfRange: noop,
 };
 
 const DepositContext = createContext<DepositContextValue>(defaultContextValue);
@@ -74,6 +78,12 @@ export const DepositContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [usesBaseToken, setUsesBaseToken] = useState(
     defaultContextValue.usesBaseToken,
   );
+  const [isFirstAssetOutOfRange, setIsFirstAssetOutOfRange] = useState(
+    defaultContextValue.isFirstAssetOutOfRange,
+  );
+  const [isSecondAssetOutOfRange, setIsSecondAssetOutOfRange] = useState(
+    defaultContextValue.isSecondAssetOutOfRange,
+  );
 
   return (
     <DepositContext.Provider
@@ -100,6 +110,10 @@ export const DepositContextProvider: FC<PropsWithChildren> = ({ children }) => {
         setSpotPrice,
         usesBaseToken,
         setUsesBaseToken,
+        isFirstAssetOutOfRange,
+        setIsFirstAssetOutOfRange,
+        isSecondAssetOutOfRange,
+        setIsSecondAssetOutOfRange,
       }}
     >
       {children}

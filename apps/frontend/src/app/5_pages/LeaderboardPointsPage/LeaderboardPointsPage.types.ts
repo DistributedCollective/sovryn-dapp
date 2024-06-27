@@ -4,6 +4,7 @@ export type User = {
   balance?: string;
   spice: number;
   extraSpice: number;
+  extraSpiceShot: number;
   runes: number;
 };
 
@@ -16,4 +17,9 @@ export type UserDeposit = {
 export type UserPoints = {
   wallet: string;
   points: number;
+};
+
+export type UserExtraPoints = {
+  wallet: string;
+  extraSpiceShot: number;
 };

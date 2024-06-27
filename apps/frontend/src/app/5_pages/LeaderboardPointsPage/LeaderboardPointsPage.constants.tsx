@@ -50,6 +50,13 @@ export const COLUMNS_CONFIG = (isSingleUser: boolean = false) => [
     cellRenderer: (user: User) => <AmountRenderer value={user.extraSpice} />,
   },
   {
+    id: 'extraSpiceShot',
+    title: t(translations.leaderboardPointsPage.table.extraSpiceShot),
+    cellRenderer: (user: User) => (
+      <AmountRenderer value={user.extraSpiceShot} />
+    ),
+  },
+  {
     id: 'runes',
     title: t(translations.leaderboardPointsPage.table.runes),
     cellRenderer: (user: User) => <AmountRenderer value={user.runes} />,

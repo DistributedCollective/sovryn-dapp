@@ -1981,7 +1981,7 @@
   resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-5.21.0.tgz#980e43d036a4c2074d37b887bd0ba748cca75e15"
   integrity sha512-F0lZCwHwGCryhyRAg9x9Aeq8FsYMxA41vwyBeyFHbh+er5UrQl/LuKdrRMSxz3kpaBdHppLP920voTSvooHiug==
 
-"@datadog/browser-logs@5.21.0", "@datadog/browser-logs@^5.21.0":
+"@datadog/browser-logs@^5.21.0":
   version "5.21.0"
   resolved "https://registry.yarnpkg.com/@datadog/browser-logs/-/browser-logs-5.21.0.tgz#86afe2595a6bb5ddbc095500a2f35733b35e5aad"
   integrity sha512-Nb1F2M0tQzSnDU3iI61U+fnqPskuYMuYTyMLD9KwvcKru4cGj3+k5nYVmszvwEKZZ+etYff+1iBvnpYIo2w6hw==
@@ -16994,11 +16994,6 @@ lodash.reduce@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.reduce/-/lodash.reduce-4.6.0.tgz#f1ab6b839299ad48f784abbf476596f03b914d3b"
   integrity sha512-6raRe2vxCYBhpBu+B+TtNGUzah+hQjVdu3E17wfusjyrXBka2nBS8OH/gjVZ5PvHOhWmIZTYri09Z6n/QfnNMw==
-
-lodash.set@4.3.2:
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/lodash.set/-/lodash.set-4.3.2.tgz#d8757b1da807dde24816b0d6a84bea1a76230b23"
-  integrity sha512-4hNPN5jlm/N/HLMCO43v8BXKq9Z7QdAGc/VGrRD61w8gN9g/6jF9A4L1pbUgBLCffi0w9VsXfTOij5x8iTyFvg==
 
 lodash.size@^4.2.0:
   version "4.2.0"

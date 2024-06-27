@@ -1,8 +1,8 @@
 import type { Provider } from '@ethersproject/providers';
 
 import { ContractInterface, Contract, Signer } from 'ethers';
+import { set } from 'lodash';
 import get from 'lodash.get';
-import set from 'lodash.set';
 
 import {
   ChainId,

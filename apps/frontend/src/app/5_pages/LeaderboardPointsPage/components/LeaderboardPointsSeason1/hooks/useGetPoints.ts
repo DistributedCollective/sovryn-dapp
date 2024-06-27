@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 
-import { useAccount } from '../../../../hooks/useAccount';
-import { areAddressesEqual } from '../../../../utils/helpers';
+import { useAccount } from '../../../../../../hooks/useAccount';
+import { areAddressesEqual } from '../../../../../../utils/helpers';
+import { User, UserPoints } from '../../../LeaderboardPointsPage.types';
 import {
   EXTRA_SPICE_POINTS_MULTIPLIER,
   RUNES_POINTS_MULTIPLIER,
-} from '../LeaderboardPointsPage.constants';
-import { User, UserPoints } from '../LeaderboardPointsPage.types';
+} from '../LeaderboardPointsSeason1.constants';
 import usersPointsList from '../data/usersPoints.json';
 
 const data: UserPoints[] = usersPointsList;

@@ -1,18 +1,18 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { Trans } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { Button, ButtonSize, Heading, Link, Paragraph } from '@sovryn/ui';
+import { Button, ButtonSize, Heading, Paragraph, Tabs } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
-import { CAMPAIGN_URL } from './LeaderboardPointsPage.constants';
-import { LeaderboardPointsFrame } from './components/LeaderboardPointsFrame/LeaderboardPointsFrame';
+import { TAB_ITEMS } from './LeaderboardPointsPage.constants';
 
 const LeaderboardPointsPage: FC = () => {
   const navigate = useNavigate();
+  const [tabIndex, setTabIndex] = useState(0);
 
   return (
     <>
@@ -39,14 +39,15 @@ const LeaderboardPointsPage: FC = () => {
             onClick={() => navigate('/claim-lp')}
             size={ButtonSize.large}
           />
-          <Link
-            href={CAMPAIGN_URL}
-            text={t(translations.leaderboardPointsPage.aboutCampaign)}
-          />
         </div>
 
         <div className="w-full md:bg-gray-90 md:py-7 md:px-6 rounded lg:mt-14 mt-7">
-          <LeaderboardPointsFrame />
+          <Tabs
+            index={tabIndex}
+            items={TAB_ITEMS}
+            onChange={setTabIndex}
+            className="w-full mt-12"
+          />
         </div>
       </div>
     </>

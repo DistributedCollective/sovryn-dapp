@@ -1,15 +1,15 @@
 import { useMemo } from 'react';
 
-import { useAccount } from '../../../../hooks/useAccount';
-import { areAddressesEqual } from '../../../../utils/helpers';
+import { useAccount } from '../../../../../../hooks/useAccount';
+import { areAddressesEqual } from '../../../../../../utils/helpers';
+import { UserPoints } from '../../../LeaderboardPointsPage.types';
 import {
   EXTRA_SPICE_POINTS_MULTIPLIER,
   RUNES_POINTS_MULTIPLIER,
-} from '../LeaderboardPointsPage.constants';
-import { UserPoints } from '../LeaderboardPointsPage.types';
-import { mergeExtraPoints } from '../LeaderboardPointsPage.utils';
-import usersExtraPointsList from '../data/usersExtraPoints.json';
+} from '../LeaderboardPointsSeason1.constants';
 import usersPointsList from '../data/usersPoints.json';
+import usersExtraPointsList from '../../../data/usersExtraPoints.json';
+import { mergeExtraPoints } from '../../../LeaderboardPointsPage.utils';
 
 const users: UserPoints[] = usersPointsList;
 const extraData = usersExtraPointsList.map(({ toAddress, points }) => ({

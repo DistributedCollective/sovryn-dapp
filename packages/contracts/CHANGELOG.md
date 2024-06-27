@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.1.5
+
+### Patch Changes
+
+- f599ddcc: SOV-4259: Migrate from lodash.set to lodash
+
 ## 1.1.4
 
 ### Patch Changes

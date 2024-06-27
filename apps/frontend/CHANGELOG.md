@@ -1,5 +1,16 @@
 # frontend
 
+## 1.1.8
+
+### Patch Changes
+
+- 11f153b0: SOV-4249: BoB Spice leaderboard - adding new column
+- f599ddcc: SOV-4259: Migrate from lodash.set to lodash
+- ef9fd55d: SOV-4179: Repositioning out of range
+- ef9fd55d: SOV-4162: Unbalanced single sided ranged liquidity deposits
+- Updated dependencies [f599ddcc]
+  - @sovryn/contracts@1.1.5
+
 ## 1.1.7
 
 ### Patch Changes

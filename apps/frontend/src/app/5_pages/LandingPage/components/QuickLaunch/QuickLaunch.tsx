@@ -13,7 +13,6 @@ import comingSoon from '../../../../../assets/images/QuickLaunch/Coming soon.svg
 import depositAMM from '../../../../../assets/images/QuickLaunch/Deposit in AMM.svg';
 import lendDLLR from '../../../../../assets/images/QuickLaunch/Lend DLLR.svg';
 import passiveYield from '../../../../../assets/images/QuickLaunch/Passive yield.svg';
-import stakeSOV2 from '../../../../../assets/images/QuickLaunch/Stake SOV2.svg';
 import stakeSOV from '../../../../../assets/images/QuickLaunch/Stake SOV.svg';
 import tradeRunes from '../../../../../assets/images/QuickLaunch/Trade Runes.svg';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
@@ -54,7 +53,7 @@ export const QuickLaunch: FC = () => {
         description: t(pageTranslations.quickLaunch.stake.description),
         action: t(pageTranslations.quickLaunch.stake.action),
         url: () => navigate('/earn/staking'),
-        backgroundImage: stakeSOV2,
+        backgroundImage: stakeSOV,
         chains: [Chains.RSK],
       },
       {

@@ -8,13 +8,14 @@ import { noop } from '@sovryn/ui';
 import { Chains } from '../../../../../config/chains';
 
 import { CTA } from '../../../../2_molecules/CTA/CTA';
-import borrowBg from '../../../../../assets/images/QuickLaunch/borrow_bg.svg';
-import earnBg from '../../../../../assets/images/QuickLaunch/earn_bg.svg';
-import lendBg from '../../../../../assets/images/QuickLaunch/lend_bg.svg';
-import runesBg from '../../../../../assets/images/QuickLaunch/runes_bg.svg';
-import runesTradeBg from '../../../../../assets/images/QuickLaunch/runes_trade_bg.svg';
-import stakeBg from '../../../../../assets/images/QuickLaunch/stake_bg.svg';
-import yieldBg from '../../../../../assets/images/QuickLaunch/yield_bg.svg';
+import borrowSovryn from '../../../../../assets/images/QuickLaunch/Borrow with Sovryn.svg';
+import comingSoon from '../../../../../assets/images/QuickLaunch/Coming soon.svg';
+import depositAMM from '../../../../../assets/images/QuickLaunch/Deposit in AMM.svg';
+import lendDLLR from '../../../../../assets/images/QuickLaunch/Lend DLLR.svg';
+import passiveYield from '../../../../../assets/images/QuickLaunch/Passive yield.svg';
+import stakeSOV2 from '../../../../../assets/images/QuickLaunch/Stake SOV2.svg';
+import stakeSOV from '../../../../../assets/images/QuickLaunch/Stake SOV.svg';
+import tradeRunes from '../../../../../assets/images/QuickLaunch/Trade Runes.svg';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../utils/asset';
@@ -53,7 +54,7 @@ export const QuickLaunch: FC = () => {
         description: t(pageTranslations.quickLaunch.stake.description),
         action: t(pageTranslations.quickLaunch.stake.action),
         url: () => navigate('/earn/staking'),
-        backgroundImage: stakeBg,
+        backgroundImage: stakeSOV2,
         chains: [Chains.RSK],
       },
       {
@@ -63,7 +64,7 @@ export const QuickLaunch: FC = () => {
         description: t(pageTranslations.quickLaunch.earn.description),
         action: t(pageTranslations.quickLaunch.earn.action),
         url: () => navigate('/earn/market-making'),
-        backgroundImage: earnBg,
+        backgroundImage: depositAMM,
         chains: [Chains.RSK],
       },
       {
@@ -73,7 +74,7 @@ export const QuickLaunch: FC = () => {
         description: t(pageTranslations.quickLaunch.lend.description),
         action: t(pageTranslations.quickLaunch.lend.action),
         url: () => navigate('/earn/lend'),
-        backgroundImage: lendBg,
+        backgroundImage: lendDLLR,
         chains: [Chains.RSK],
       },
       {
@@ -81,7 +82,7 @@ export const QuickLaunch: FC = () => {
         description: t(pageTranslations.quickLaunch.borrow.description),
         action: t(pageTranslations.quickLaunch.borrow.action),
         url: () => navigate('/borrow/fixed-interest'),
-        backgroundImage: borrowBg,
+        backgroundImage: borrowSovryn,
         chains: [Chains.RSK],
       },
       {
@@ -89,7 +90,7 @@ export const QuickLaunch: FC = () => {
         description: t(pageTranslations.quickLaunch.stake_BOB.description),
         action: t(pageTranslations.quickLaunch.stake_BOB.action),
         url: () => navigate('/earn/staking'),
-        backgroundImage: stakeBg,
+        backgroundImage: stakeSOV,
         chains: [Chains.BOB],
       },
       {
@@ -97,7 +98,7 @@ export const QuickLaunch: FC = () => {
         description: t(pageTranslations.quickLaunch.runes_BOB.description),
         action: t(pageTranslations.quickLaunch.runes_BOB.action),
         url: () => navigate('/convert'),
-        backgroundImage: runesBg,
+        backgroundImage: tradeRunes,
         chains: [Chains.BOB],
       },
       {
@@ -105,7 +106,7 @@ export const QuickLaunch: FC = () => {
         description: t(pageTranslations.quickLaunch.earnYield_BOB.description),
         action: t(pageTranslations.quickLaunch.earnYield_BOB.action),
         url: () => navigate('/earn/market-making'),
-        backgroundImage: yieldBg,
+        backgroundImage: passiveYield,
         chains: [Chains.BOB],
       },
       {
@@ -113,7 +114,7 @@ export const QuickLaunch: FC = () => {
         description: t(pageTranslations.quickLaunch.soon_BOB.description),
         action: t(pageTranslations.quickLaunch.soon_BOB.action),
         url: noop,
-        backgroundImage: runesTradeBg,
+        backgroundImage: comingSoon,
         chains: [Chains.BOB],
         disable: true,
       },

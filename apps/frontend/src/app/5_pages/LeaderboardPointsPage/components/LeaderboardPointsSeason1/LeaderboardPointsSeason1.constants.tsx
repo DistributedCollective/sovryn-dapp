@@ -9,9 +9,7 @@ import { translations } from '../../../../../locales/i18n';
 import { User } from '../../LeaderboardPointsPage.types';
 import { BalanceRenderer } from '../BalanceRenderer/BalanceRenderer';
 
-export const CAMPAIGN_URL = 'https://wiki.sovryn.com/en/spice-campaign';
-
-export const MAXIMUM_USERS_TO_SHOW = 50;
+export const PAGE_SIZE = 50;
 export const EXTRA_SPICE_POINTS_MULTIPLIER = 0.5;
 export const RUNES_POINTS_MULTIPLIER = 3.14;
 

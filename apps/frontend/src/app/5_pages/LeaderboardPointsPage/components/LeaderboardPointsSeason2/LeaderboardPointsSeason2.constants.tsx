@@ -7,9 +7,7 @@ import { prettyTx } from '@sovryn/ui';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../locales/i18n';
 
-export const CAMPAIGN_URL = 'https://wiki.sovryn.com/en/spice-campaign';
-
-export const MAXIMUM_USERS_TO_SHOW = 80;
+export const PAGE_SIZE = 80;
 
 export const COLUMNS_CONFIG = (isSingleUser: boolean = false) => [
   {

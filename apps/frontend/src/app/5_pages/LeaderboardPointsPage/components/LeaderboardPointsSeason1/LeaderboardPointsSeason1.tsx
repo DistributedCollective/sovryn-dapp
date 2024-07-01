@@ -11,18 +11,16 @@ import { translations } from '../../../../../locales/i18n';
 import { generateRowTitle } from '../../LeaderboardPointsPage.utils';
 import {
   COLUMNS_CONFIG,
-  MAXIMUM_USERS_TO_SHOW,
+  PAGE_SIZE,
 } from './LeaderboardPointsSeason1.constants';
 import { useGetPoints } from './hooks/useGetPoints';
-
-const pageSize = MAXIMUM_USERS_TO_SHOW;
 
 export const LeaderboardPointsSeason1: FC = () => {
   const { account } = useAccount();
   const { connectedWalletPoints, points } = useGetPoints();
 
   const { page, onPageChange, paginatedItems, isNextButtonDisabled } =
-    useHandlePagination(points, pageSize);
+    useHandlePagination(points, PAGE_SIZE);
 
   return (
     <div className="flex flex-col md:pt-0 pt-6">
@@ -55,16 +53,16 @@ export const LeaderboardPointsSeason1: FC = () => {
             rows={paginatedItems}
             rowTitle={row => generateRowTitle(row.id, row.wallet)}
             className="text-gray-10 lg:px-6 lg:py-4 text-xs"
-            dataAttribute="leaderboard-points-users-table"
+            dataAttribute="leaderboard-points-users-table-season-1"
           />
           <Pagination
             page={page}
             totalItems={points.length}
             className="lg:pb-6 mt-3 lg:mt-6 lg:max-w-3xl flex flex-wrap lg:flex-nowrap"
             onChange={onPageChange}
-            itemsPerPage={pageSize}
+            itemsPerPage={PAGE_SIZE}
             isNextButtonDisabled={isNextButtonDisabled}
-            dataAttribute="leaderboard-points-users-pagination"
+            dataAttribute="leaderboard-points-users-pagination-season-1"
           />
         </div>
       </div>

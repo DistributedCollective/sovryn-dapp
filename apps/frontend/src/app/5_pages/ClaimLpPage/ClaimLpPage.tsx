@@ -8,10 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Button,
   ButtonStyle,
-  Checkbox,
   Heading,
-  Icon,
-  IconNames,
   Link,
   Paragraph,
   ParagraphSize,
@@ -34,8 +31,6 @@ const ClaimLpPage: FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [claimable, setClaimable] = useState<Claim[]>([]);
-  const [hasDisclaimerBeenChecked, setHasDisclaimerBeenChecked] =
-    useState(false);
 
   const { claim, getUnclaimed } = useClaimLp();
   const { checkMaintenance, States } = useMaintenance();
@@ -46,15 +41,8 @@ const ClaimLpPage: FC = () => {
       chainId === BOB_CHAIN_ID &&
       claimable.length > 0 &&
       !loading &&
-      hasDisclaimerBeenChecked &&
       !isClaimLocked,
-    [
-      chainId,
-      claimable.length,
-      loading,
-      hasDisclaimerBeenChecked,
-      isClaimLocked,
-    ],
+    [chainId, claimable.length, loading, isClaimLocked],
   );
 
   const handleClaim = useCallback(() => {
@@ -161,29 +149,14 @@ const ClaimLpPage: FC = () => {
                 <Trans
                   i18nKey={t(translations.claimLpPage.eSovDescription)}
                   components={[
-                    <strong>date</strong>,
-                    <Link text="Read more" href={CAMPAIGN_URL} />,
+                    <Button
+                      style={ButtonStyle.ghost}
+                      text={t(translations.claimLpPage.leaderboard)}
+                      onClick={() => navigate('/bob-lp-points')}
+                    />,
                   ]}
                 />
               </Paragraph>
-            </div>
-            <div className="flex items-center rounded border border-warning p-4 pl-2 mt-2">
-              <div className="px-2 text-warning">
-                <Icon icon={IconNames.WARNING} size={24} />
-              </div>
-              <Paragraph>
-                <Trans
-                  i18nKey={t(translations.claimLpPage.claimWarning)}
-                  components={[<strong>date</strong>, <strong>date</strong>]}
-                />
-              </Paragraph>
-            </div>
-            <div className="mt-2">
-              <Checkbox
-                checked={hasDisclaimerBeenChecked}
-                onChangeValue={setHasDisclaimerBeenChecked}
-                label={t(translations.claimLpPage.disclaimer)}
-              />
             </div>
             <div className="mt-2 text-center">
               <Button

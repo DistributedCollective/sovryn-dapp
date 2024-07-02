@@ -2,10 +2,9 @@ import React, { FC, useState } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
-import { Trans } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { Button, ButtonSize, Heading, Paragraph, Tabs } from '@sovryn/ui';
+import { Button, ButtonSize, Heading, Tabs } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
 import { TAB_ITEMS } from './LeaderboardPointsPage.constants';
@@ -25,12 +24,12 @@ const LeaderboardPointsPage: FC = () => {
           {t(translations.leaderboardPointsPage.title)}
         </Heading>
 
-        <Paragraph className="text-center mb-6 lg:mb-6 text-xs leading-5 max-w-md">
+        {/* <Paragraph className="text-center mb-6 lg:mb-6 text-xs leading-5 max-w-md">
           <Trans
             i18nKey={t(translations.leaderboardPointsPage.claimWarning)}
             components={[<strong>date</strong>, <strong>date</strong>]}
           />
-        </Paragraph>
+        </Paragraph> */}
 
         <div className="flex lg:flex-row flex-col items-center justify-center max-w-md">
           <Button

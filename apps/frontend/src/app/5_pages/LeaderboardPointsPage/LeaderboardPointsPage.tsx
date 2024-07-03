@@ -11,7 +11,7 @@ import { TAB_ITEMS } from './LeaderboardPointsPage.constants';
 
 const LeaderboardPointsPage: FC = () => {
   const navigate = useNavigate();
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState(1);
 
   return (
     <>

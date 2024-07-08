@@ -1,5 +1,11 @@
 # frontend
 
+## 1.1.9
+
+### Patch Changes
+
+- bcdf3647: Disable claim powa button
+
 ## 1.1.8
 
 ### Patch Changes

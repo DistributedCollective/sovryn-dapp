@@ -2,63 +2,23 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { prettyTx } from '@sovryn/ui';
-
-import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../locales/i18n';
-import { User } from './LeaderboardPointsPage.types';
-import { BalanceRenderer } from './components/BalanceRenderer/BalanceRenderer';
+import { LeaderboardPointsSeason1 } from './components/LeaderboardPointsSeason1/LeaderboardPointsSeason1';
+import { LeaderboardPointsSeason2 } from './components/LeaderboardPointsSeason2/LeaderboardPointsSeason2';
 
-export const CAMPAIGN_URL = 'https://wiki.sovryn.com/en/spice-campaign';
+const ACTIVE_CLASSNAME = 'border-t-primary-30';
 
-export const MAXIMUM_USERS_TO_SHOW = 50;
-export const EXTRA_SPICE_POINTS_MULTIPLIER = 0.5;
-export const RUNES_POINTS_MULTIPLIER = 3.14;
-
-export const COLUMNS_CONFIG = (isSingleUser: boolean = false) => [
+export const TAB_ITEMS = [
   {
-    id: isSingleUser ? 'position' : '',
-    title: isSingleUser
-      ? t(translations.leaderboardPointsPage.table.yourPosition)
-      : '',
-    cellRenderer: (user: User) => user.id,
+    label: t(translations.leaderboardPointsPage.season1),
+    content: <LeaderboardPointsSeason1 />,
+    activeClassName: ACTIVE_CLASSNAME,
+    dataAttribute: 'season-1',
   },
   {
-    id: isSingleUser ? '' : 'wallet',
-    title: isSingleUser
-      ? ''
-      : t(translations.leaderboardPointsPage.table.participant),
-    cellRenderer: (user: User) => (
-      <div className="text-right lg:text-left w-full">
-        {prettyTx(user.wallet, 4)}
-      </div>
-    ),
-  },
-  {
-    id: 'balance',
-    title: t(translations.leaderboardPointsPage.table.balance),
-    cellRenderer: (user: User) => <BalanceRenderer user={user} />,
-  },
-  {
-    id: 'spice',
-    title: t(translations.leaderboardPointsPage.table.spice),
-    cellRenderer: (user: User) => <AmountRenderer value={user.spice} />,
-  },
-  {
-    id: 'extraSpice',
-    title: t(translations.leaderboardPointsPage.table.extraSpice),
-    cellRenderer: (user: User) => <AmountRenderer value={user.extraSpice} />,
-  },
-  {
-    id: 'extraSpiceShot',
-    title: t(translations.leaderboardPointsPage.table.extraSpiceShot),
-    cellRenderer: (user: User) => (
-      <AmountRenderer value={user.extraSpiceShot} />
-    ),
-  },
-  {
-    id: 'runes',
-    title: t(translations.leaderboardPointsPage.table.runes),
-    cellRenderer: (user: User) => <AmountRenderer value={user.runes} />,
+    label: t(translations.leaderboardPointsPage.season2),
+    content: <LeaderboardPointsSeason2 />,
+    activeClassName: ACTIVE_CLASSNAME,
+    dataAttribute: 'season-2',
   },
 ];

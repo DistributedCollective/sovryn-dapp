@@ -21,7 +21,7 @@ export const useGetPoints = () => {
 
           const result: UserPoints[] = data.map(user => ({
             wallet: user.toAddress,
-            points: parseFloat(user.points.replace(/,/g, '')),
+            points: user.points,
           }));
 
           setData(result);

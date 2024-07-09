@@ -1,5 +1,15 @@
 # frontend
 
+## 1.1.10
+
+### Patch Changes
+
+- bcb8f749: SOV-4235: Replace images on homepage
+- 5992d6e1: SOV-4243: Update merkle distributor for POWA claim page
+- aa616772: SOV-4251: Spice Season 2 Leaderboard
+- Updated dependencies [5992d6e1]
+  - @sovryn/contracts@1.1.6
+
 ## 1.1.9
 
 ### Patch Changes

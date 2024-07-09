@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.1.6
+
+### Patch Changes
+
+- 5992d6e1: SOV-4243: Update merkle distributor for POWA claim page
+
 ## 1.1.5
 
 ### Patch Changes

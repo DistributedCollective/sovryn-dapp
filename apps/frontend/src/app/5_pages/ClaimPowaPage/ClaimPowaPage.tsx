@@ -17,11 +17,7 @@ import { useAccount } from '../../../hooks/useAccount';
 import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
 import { isRskChain } from '../../../utils/chain';
-import {
-  ABOUT_POWA_URL,
-  SUBMIT_WALLET_URL,
-  TELEGRAM_POWA_URL,
-} from './ClaimPowaPage.constants';
+import { ABOUT_POWA_URL, TELEGRAM_POWA_URL } from './ClaimPowaPage.constants';
 import iconPowa from './assets/powa.svg';
 import { Claim, useClaimPowa } from './hooks/useClaimPowa';
 
@@ -79,22 +75,6 @@ const ClaimPowaPage: FC = () => {
                   translations.claimPowaPage.descriptionValues.aboutClaiming,
                 )}
               />
-              <div className="text-xs text-gray-30 mb-2">
-                <Trans
-                  i18nKey={t(
-                    translations.claimPowaPage.descriptionValues.rskAddress,
-                  )}
-                  components={[
-                    <Link
-                      text={t(
-                        translations.claimPowaPage.descriptionValues
-                          .rskAddressCTA,
-                      )}
-                      href={SUBMIT_WALLET_URL}
-                    />,
-                  ]}
-                />
-              </div>
               <div className="text-xs text-gray-30 mb-5">
                 <Trans
                   i18nKey={t(translations.claimPowaPage.descriptionValues.faq)}

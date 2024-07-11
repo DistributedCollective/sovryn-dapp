@@ -2013,7 +2013,6 @@
         "details": "Details about the POWA campaign",
         "descriptionValues": {
             "aboutClaiming": "Claim your POWA rune token to the same Rootstock address you used for the Trading and Staking leaderboards or the one you gave out in Gleam for the influence campaign. Make sure it’s connected now to Sovryn.",
-            "rskAddress": "Haven’t provided a Rootstock address yet? <0>Supply one here.</0>",
             "rskAddressCTA": "Supply one here.",
             "faq": "Got questions? Please ask in our <0>telegram channel.</0> ",
             "faqCTA": "telegram channel."

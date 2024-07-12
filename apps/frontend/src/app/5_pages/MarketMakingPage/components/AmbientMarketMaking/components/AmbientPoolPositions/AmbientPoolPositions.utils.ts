@@ -30,12 +30,12 @@ export const getPositionBalance = (
 
   if (position.positionType === PoolPositionType.ambient) {
     const positionLiq = position.ambientLiq;
-    const positionLiqBase = Number(positionLiq * Math.sqrt(spotPrice)).toFixed(
-      0,
-    );
-    const positionLiqQuote = Number(positionLiq / Math.sqrt(spotPrice)).toFixed(
-      0,
-    );
+    const positionLiqBase = Number(
+      Number(positionLiq) * Math.sqrt(spotPrice),
+    ).toFixed(0);
+    const positionLiqQuote = Number(
+      Number(positionLiq) / Math.sqrt(spotPrice),
+    ).toFixed(0);
 
     return {
       positionLiq,
@@ -47,7 +47,7 @@ export const getPositionBalance = (
     const positionLiqBase = bigNumToFloat(
       baseTokenForConcLiq(
         spotPrice,
-        floatToBigNum(position.concLiq),
+        floatToBigNum(Number(position.concLiq)),
         tickToPrice(position.bidTick),
         tickToPrice(position.askTick),
       ),
@@ -56,7 +56,7 @@ export const getPositionBalance = (
     const positionLiqQuote = bigNumToFloat(
       quoteTokenForConcLiq(
         spotPrice,
-        floatToBigNum(position.concLiq),
+        floatToBigNum(Number(position.concLiq)),
         tickToPrice(position.bidTick),
         tickToPrice(position.askTick),
       ),

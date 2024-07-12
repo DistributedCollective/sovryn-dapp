@@ -56,7 +56,7 @@ export const BobClaimFeesModal: FC<BobClaimFeesModalProps> = ({
       return 0;
     }
     return (
-      (position.rewardLiq * Math.sqrt(spotPrice)) /
+      (Number(position.rewardLiq) * Math.sqrt(spotPrice)) /
       Math.pow(10, baseTokenDecimals)
     );
   }, [position, spotPrice, baseTokenDecimals]);
@@ -66,7 +66,7 @@ export const BobClaimFeesModal: FC<BobClaimFeesModalProps> = ({
       return 0;
     }
     return (
-      position.rewardLiq /
+      Number(position.rewardLiq) /
       Math.sqrt(spotPrice) /
       Math.pow(10, quoteTokenDecimals)
     );

@@ -50,7 +50,7 @@ export const useHandleSubmit = (
     rangeWidth,
   } = useDepositContext();
 
-  const { liquidity } = useGetLiquidity(position);
+  const { liquidity } = useGetLiquidity(position, crocPool?.poolIndex || 0);
 
   const onSubmit = useCallback(async () => {
     if (!croc || !poolTokens || !signer || !crocPool || !liquidity) {

@@ -1,28 +1,25 @@
 import { PoolPositionType } from '../../MarketMakingPage.types';
 
 export interface AmbientPosition {
-  chainId: string;
   base: string;
   quote: string;
-  poolIdx: number;
+  ambientLiq: string;
+  time: string;
+  transactionHash: string;
+  concLiq: string;
+  rewardLiq: string;
+  baseQty: string;
+  quoteQty: string;
+  aggregatedLiquidity: string;
+  aggregatedBaseFlow: string;
+  aggregatedQuoteFlow: string;
+  positionType: PoolPositionType;
   bidTick: number;
   askTick: number;
-  isBid: boolean;
-  user: string;
-  timeFirstMint: number;
-  latestUpdateTime: number;
-  lastMintTx: string;
-  firstMintTx: string;
-  positionType: PoolPositionType;
-  ambientLiq: number;
-  concLiq: number;
-  rewardLiq: number;
-  liqRefreshTime: number;
-  aprDuration: number;
-  aprPostLiq: number;
-  aprContributedLiq: number;
-  aprEst: number;
-  positionId: string;
+  aprDuration: string;
+  aprPostLiq: string;
+  aprContributedLiq: string;
+  aprEst: string;
 }
 
 export interface AmbientTransaction {

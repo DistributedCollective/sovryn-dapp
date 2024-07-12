@@ -5,7 +5,7 @@ import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCachedData } from '../../../../../../hooks/useCachedData';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
-import { getIndexerUri } from '../../../../../../utils/indexer';
+import { getSdexUri } from '../../../../../../utils/indexer';
 import { PoolPositionType } from '../../../MarketMakingPage.types';
 import { AmbientPosition } from '../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../utils/AmbientLiquidityPool';
@@ -34,19 +34,15 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
         return [];
       }
 
-      console.log('fetching!');
       try {
         const { data } = await axios.get<any>(
-          `${getIndexerUri(chainId)}/user_pool_positions?user=${account}&base=${
-            baseToken?.address
-          }&quote=${quoteToken?.address}&poolIdx=${pool.poolIndex}&chainId=${
-            pool.chainId
-          }`,
+          `${getSdexUri(
+            chainId,
+          )}/user_pool_positions?user=${account.toLowerCase()}&base=${pool.baseAddress.toLowerCase()}&quote=${pool.quoteAddress.toLowerCase()}&poolIdx=${
+            pool.poolIndex
+          }&chainId=${chainId}`,
         );
 
-        console.log({
-          data,
-        });
         const positions = data.data as AmbientPosition[];
 
         if (pool.lpTokenAddress) {
@@ -58,30 +54,26 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
 
             if (ambientIndex !== -1) {
               const ambientPosition = positions[ambientIndex];
-              ambientPosition.ambientLiq = wallet.toString() as any;
+              ambientPosition.aggregatedLiquidity = wallet.toString();
             } else {
               positions.push({
-                chainId: pool.chainId,
-                base: pool.base,
-                quote: pool.quote,
-                poolIdx: pool.poolIndex,
+                ambientLiq: '0',
+                concLiq: '0',
+                rewardLiq: '0',
+                baseQty: '0',
+                quoteQty: '0',
+                aggregatedLiquidity: wallet.toString(),
+                aggregatedBaseFlow: '0',
+                aggregatedQuoteFlow: '0',
+                positionType: PoolPositionType.ambient,
                 bidTick: 0,
                 askTick: 0,
-                isBid: false,
-                user: account,
-                timeFirstMint: 0,
-                latestUpdateTime: 0,
-                lastMintTx: '',
-                firstMintTx: '',
-                positionType: PoolPositionType.ambient,
-                ambientLiq: wallet.toString() as any,
-                rewardLiq: 0,
-                liqRefreshTime: 0,
-                aprDuration: 0,
-                aprPostLiq: 0,
-                aprContributedLiq: 0,
-                aprEst: 0,
-                positionId: '',
+                aprDuration: '0',
+                aprPostLiq: '0',
+                aprContributedLiq: '0',
+                aprEst: '0',
+                transactionHash: '',
+                time: '',
               } as AmbientPosition);
             }
           }
@@ -89,7 +81,8 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
 
         const filteredPositions = positions.filter(
           (position: AmbientPosition) =>
-            position.ambientLiq > 0 || position.concLiq > 0,
+            Number(position.aggregatedLiquidity) > 0 ||
+            Number(position.concLiq) > 0,
         );
 
         return filteredPositions;

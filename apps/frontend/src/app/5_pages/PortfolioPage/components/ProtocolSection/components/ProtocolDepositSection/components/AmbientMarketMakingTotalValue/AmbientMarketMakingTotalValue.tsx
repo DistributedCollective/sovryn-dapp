@@ -36,7 +36,7 @@ export const AmbientMarketMakingTotalValue: FC<ProtocolSectionProps> = ({
       setPositionValues(prevBalances => {
         return {
           ...prevBalances,
-          [position.positionId]: {
+          [position.transactionHash]: {
             value: newBalance,
             poolId: `${position.base}-${position.quote}`,
           },

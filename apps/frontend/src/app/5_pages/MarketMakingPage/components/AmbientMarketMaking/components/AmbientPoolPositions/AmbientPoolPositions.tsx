@@ -8,7 +8,7 @@ import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/Amo
 import { TransactionIdRenderer } from '../../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { useIsMobile } from '../../../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../../../locales/i18n';
-import { useGetAmbientPositions } from '../../hooks/useGetAmbientPositions';
+import { useGetPoolPositions } from '../../hooks/useGetPoolPositions';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { COLUMNS_CONFIG } from './AmbientPoolPositions.constants';
 import styles from './AmbientPoolPositions.module.css';
@@ -26,22 +26,21 @@ type AmbientPoolPositionsProps = {
 export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
   pool,
 }) => {
-  const { positions, isLoading } = useGetAmbientPositions(pool);
-
+  const { positions, isLoading } = useGetPoolPositions(pool);
   const { isMobile } = useIsMobile();
 
   if (isMobile) {
     return (
       <div className="flex flex-col gap-4 w-full p-1">
         {positions.map(position => (
-          <div className="flex flex-col gap-2" key={position.positionId}>
+          <div className="flex flex-col gap-2" key={position.transactionHash}>
             <SimpleTableRow
               label={t(
                 translations.ambientMarketMaking.positionsTable.positionID,
               )}
               value={
                 <TransactionIdRenderer
-                  hash={position.firstMintTx}
+                  hash={position.transactionHash}
                   chainId={pool.chainId}
                 />
               }
@@ -95,10 +94,13 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
                 </span>
               }
               value={
-                <AmountRenderer value={position.aprEst * 100} suffix="%" />
+                <AmountRenderer
+                  value={Number(position.aprEst) * 100}
+                  suffix="%"
+                />
               }
             />
-            {position.rewardLiq > 0 && (
+            {Number(position.rewardLiq) > 0 && (
               <AmbientPoolPositionClaimFees
                 pool={pool}
                 position={position}
@@ -123,7 +125,7 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
         preventExpandOnClickClass="prevent-row-click"
         className={styles.table}
         isLoading={!positions.length ? isLoading : false}
-        rowKey={row => row.positionId}
+        rowKey={row => row.transactionHash}
       />
     </div>
   );

@@ -3,10 +3,10 @@ import { useMemo } from 'react';
 import { getPositionBalance } from '../components/AmbientPoolPositions/AmbientPoolPositions.utils';
 import { usePoolSpotPrice } from '../components/AmbientPoolPositions/hooks/usePoolSpotPrice';
 import { AmbientLiquidityPool } from '../utils/AmbientLiquidityPool';
-import { useGetAmbientPositions } from './useGetAmbientPositions';
+import { useGetPoolPositions } from './useGetPoolPositions';
 
 export const useGetPositionsTotalBalance = (pool: AmbientLiquidityPool) => {
-  const { positions } = useGetAmbientPositions(pool);
+  const { positions } = useGetPoolPositions(pool);
   const { value: price } = usePoolSpotPrice(pool.base, pool.quote);
 
   return useMemo(() => {
@@ -23,7 +23,7 @@ export const useGetPositionsTotalBalance = (pool: AmbientLiquidityPool) => {
       positionLiqQuote: 0,
     };
     balances.forEach(balance => {
-      sum.positionLiq += balance?.positionLiq || 0;
+      sum.positionLiq += Number(balance?.positionLiq) || 0;
       sum.positionLiqBase += balance?.positionLiqBase || 0;
       sum.positionLiqQuote += balance?.positionLiqQuote || 0;
     });

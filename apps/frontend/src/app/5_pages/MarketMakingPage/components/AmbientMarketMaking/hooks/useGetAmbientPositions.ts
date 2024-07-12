@@ -36,9 +36,9 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
 
       try {
         const { data } = await axios.get<any>(
-          `${getSdexUri(
-            chainId,
-          )}/user_pool_positions?user=${account.toLowerCase()}&base=${pool.baseAddress.toLowerCase()}&quote=${pool.quoteAddress.toLowerCase()}&poolIdx=${
+          `${getSdexUri(chainId)}/user_pool_positions?user=${account}&base=${
+            pool.baseAddress
+          }&quote=${pool.quoteAddress}&poolIdx=${
             pool.poolIndex
           }&chainId=${chainId}`,
         );
@@ -54,15 +54,15 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
 
             if (ambientIndex !== -1) {
               const ambientPosition = positions[ambientIndex];
-              ambientPosition.aggregatedLiquidity = wallet.toString();
+              ambientPosition.ambientLiq = wallet.toString();
             } else {
               positions.push({
-                ambientLiq: '0',
+                ambientLiq: wallet.toString(),
                 concLiq: '0',
                 rewardLiq: '0',
                 baseQty: '0',
                 quoteQty: '0',
-                aggregatedLiquidity: wallet.toString(),
+                aggregatedLiquidity: '0',
                 aggregatedBaseFlow: '0',
                 aggregatedQuoteFlow: '0',
                 positionType: PoolPositionType.ambient,

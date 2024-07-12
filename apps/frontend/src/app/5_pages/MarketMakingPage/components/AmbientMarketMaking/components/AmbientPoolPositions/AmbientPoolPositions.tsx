@@ -8,7 +8,7 @@ import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/Amo
 import { TransactionIdRenderer } from '../../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { useIsMobile } from '../../../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../../../locales/i18n';
-import { useGetPoolPositions } from '../../hooks/useGetPoolPositions';
+import { useGetAmbientPositions } from '../../hooks/useGetAmbientPositions';
 import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { COLUMNS_CONFIG } from './AmbientPoolPositions.constants';
 import styles from './AmbientPoolPositions.module.css';
@@ -26,7 +26,7 @@ type AmbientPoolPositionsProps = {
 export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
   pool,
 }) => {
-  const { positions, isLoading } = useGetPoolPositions(pool);
+  const { positions, isLoading } = useGetAmbientPositions(pool);
   const { isMobile } = useIsMobile();
 
   if (isMobile) {

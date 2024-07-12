@@ -3,10 +3,10 @@ import { useMemo } from 'react';
 import { getPositionBalance } from '../components/AmbientPoolPositions/AmbientPoolPositions.utils';
 import { usePoolSpotPrice } from '../components/AmbientPoolPositions/hooks/usePoolSpotPrice';
 import { AmbientLiquidityPool } from '../utils/AmbientLiquidityPool';
-import { useGetPoolPositions } from './useGetPoolPositions';
+import { useGetAmbientPositions } from './useGetAmbientPositions';
 
 export const useGetPositionsTotalBalance = (pool: AmbientLiquidityPool) => {
-  const { positions } = useGetPoolPositions(pool);
+  const { positions } = useGetAmbientPositions(pool);
   const { value: price } = usePoolSpotPrice(pool.base, pool.quote);
 
   return useMemo(() => {

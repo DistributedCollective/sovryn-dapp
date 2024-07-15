@@ -27,11 +27,9 @@ export type LockedDataResult = {
     totalBtc: number;
     totalUsd: number;
   };
-  total_btc: number;
   total_usd: number;
 };
 
 export type VolumeDataResult = {
-  btc: number;
   usd: number;
 };

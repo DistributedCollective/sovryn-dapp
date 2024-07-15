@@ -1,4 +1,4 @@
-import { getGraphWrapperUrl } from '../../../../../utils/helpers';
+import { getIndexerUrl } from '../../../../../utils/helpers';
 import { LockedDataResult, VolumeDataResult } from './ProtocolData.types';
 
 export const DEFAULT_LOCKED_DATA: LockedDataResult = {
@@ -30,19 +30,17 @@ export const DEFAULT_LOCKED_DATA: LockedDataResult = {
     totalBtc: 0,
     totalUsd: 0,
   },
-  total_btc: 0,
   total_usd: 0,
 };
 
 export const DEFAULT_VOLUME_DATA: VolumeDataResult = {
-  btc: 0,
   usd: 0,
 };
 
-const graphWrapper = getGraphWrapperUrl();
+const indexer = getIndexerUrl();
 
-export const LOCKED_DATA_URL = `${graphWrapper}/cmc/tvl`;
-export const VOLUME_DATA_URL = `${graphWrapper}/cmc/summary`;
+export const LOCKED_DATA_URL = `${indexer}legacycmc/tvl`;
+export const VOLUME_DATA_URL = `${indexer}legacy/cmc/summary`;
 
 export const BTC_VALUE_PRECISION = 4;
 export const USD_VALUE_PRECISION = 2;

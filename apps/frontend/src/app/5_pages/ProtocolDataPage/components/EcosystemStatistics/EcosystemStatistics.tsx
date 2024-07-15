@@ -6,6 +6,7 @@ import { t } from 'i18next';
 import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { NativeTokenAmount } from '../../../../2_molecules/NativeTokenAmount/NativeTokenAmount';
 import { BITCOIN, USD } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
 import { useGetData } from '../../../LandingPage/components/ProtocolData/hooks/useGetData';
@@ -66,48 +67,100 @@ export const EcosystemStatistics: FC = () => {
     () => [
       {
         title: t(pageTranslations.ecosystemStatistics.protocolContracts),
-        value: convertedValue(lockedData.tvlProtocol),
-        dataAttribute: 'ecosystem-statistics-protocol-contract-value',
+        value: (
+          <AmountRenderer
+            value={convertedValue(lockedData.tvlProtocol)}
+            suffix={selectedCurrency}
+            precision={getCurrencyPrecision(selectedCurrency)}
+            dataAttribute="'ecosystem-statistics-protocol-contract-value'"
+          />
+        ),
       },
       {
         title: t(pageTranslations.ecosystemStatistics.lendingContracts),
-        value: convertedValue(lockedData.tvlLending),
-        dataAttribute: 'ecosystem-statistics-lending-contract-value',
+        value: (
+          <AmountRenderer
+            value={convertedValue(lockedData.tvlLending)}
+            suffix={selectedCurrency}
+            precision={getCurrencyPrecision(selectedCurrency)}
+            dataAttribute="ecosystem-statistics-lending-contract-value"
+          />
+        ),
       },
       {
         title: t(pageTranslations.ecosystemStatistics.ammContracts),
-        value: convertedValue(lockedData.tvlAmm),
-        dataAttribute: 'ecosystem-statistics-amm-contract-value',
+        value: (
+          <AmountRenderer
+            value={convertedValue(lockedData.tvlAmm)}
+            suffix={selectedCurrency}
+            precision={getCurrencyPrecision(selectedCurrency)}
+            dataAttribute="ecosystem-statistics-amm-contract-value"
+          />
+        ),
       },
       {
         title: t(pageTranslations.ecosystemStatistics.zeroContracts),
-        value: convertedValue(lockedData.tvlZero),
-        dataAttribute: 'ecosystem-statistics-zero-contract-value',
+        value: (
+          <AmountRenderer
+            value={convertedValue(lockedData.tvlZero)}
+            suffix={selectedCurrency}
+            precision={getCurrencyPrecision(selectedCurrency)}
+            dataAttribute="ecosystem-statistics-zero-contract-value"
+          />
+        ),
       },
       {
         title: t(pageTranslations.ecosystemStatistics.myntAggregatorContract),
-        value: convertedValue(lockedData.tvlMynt),
-        dataAttribute: 'ecosystem-statistics-mynt-aggregator-value',
+        value: (
+          <AmountRenderer
+            value={convertedValue(lockedData.tvlMynt)}
+            suffix={selectedCurrency}
+            precision={getCurrencyPrecision(selectedCurrency)}
+            dataAttribute="ecosystem-statistics-mynt-aggregator-value"
+          />
+        ),
       },
       {
         title: t(pageTranslations.ecosystemStatistics.subTotal),
-        value:
-          selectedCurrency === BITCOIN ? subTotalBtcValue : subTotalUsdValue,
-        dataAttribute: 'ecosystem-statistics-subtotal-value',
+        value: (
+          <AmountRenderer
+            value={
+              selectedCurrency === BITCOIN ? subTotalBtcValue : subTotalUsdValue
+            }
+            suffix={selectedCurrency}
+            precision={getCurrencyPrecision(selectedCurrency)}
+            dataAttribute="ecosystem-statistics-subtotal-value"
+          />
+        ),
         highlight: true,
       },
       {
         title: t(pageTranslations.ecosystemStatistics.bitocracyStakingContract),
-        value: convertedValue(lockedData.tvlStaking),
-        dataAttribute: 'ecosystem-statistics-bitocracy-staking-value',
+        value: (
+          <AmountRenderer
+            value={convertedValue(lockedData.tvlStaking)}
+            suffix={selectedCurrency}
+            precision={getCurrencyPrecision(selectedCurrency)}
+            dataAttribute="ecosystem-statistics-bitocracy-staking-value"
+          />
+        ),
       },
       {
         title: t(pageTranslations.ecosystemStatistics.total),
         value:
-          selectedCurrency === BITCOIN
-            ? lockedData.total_btc
-            : lockedData.total_usd,
-        dataAttribute: 'ecosystem-statistics-total-value',
+          selectedCurrency === BITCOIN ? (
+            <NativeTokenAmount
+              usdValue={lockedData.total_usd}
+              dataAttribute="ecosystem-statistics-total-value"
+            />
+          ) : (
+            <AmountRenderer
+              value={lockedData.total_usd}
+              suffix={selectedCurrency}
+              precision={getCurrencyPrecision(selectedCurrency)}
+              dataAttribute="ecosystem-statistics-total-value"
+            />
+          ),
         highlight: true,
       },
     ],
@@ -154,14 +207,7 @@ export const EcosystemStatistics: FC = () => {
             )}
           >
             <Paragraph children={item.title} />
-            <div className="lg:text-base text-xs xl:mr-48">
-              <AmountRenderer
-                value={item.value}
-                suffix={selectedCurrency}
-                precision={getCurrencyPrecision(selectedCurrency)}
-                dataAttribute={item.dataAttribute}
-              />
-            </div>
+            <div className="lg:text-base text-xs xl:mr-48">{item.value}</div>
           </div>
         ))}
       </div>

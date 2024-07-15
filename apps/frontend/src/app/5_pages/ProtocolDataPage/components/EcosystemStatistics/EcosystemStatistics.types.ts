@@ -1,7 +1,8 @@
+import { ReactNode } from 'react';
+
 export type ContractData = {
   title: string;
-  value: number;
-  dataAttribute: string;
+  value: ReactNode;
   highlight?: boolean;
 };
 

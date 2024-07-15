@@ -2,7 +2,10 @@ import { useState, useRef, useCallback } from 'react';
 
 import axios, { Canceler } from 'axios';
 
+import { ChainId } from '@sovryn/ethers-provider';
+
 import { DATA_REFRESH_INTERVAL } from '../../../../../../constants/general';
+import { useChainStore } from '../../../../../../hooks/useChainStore';
 import { useInterval } from '../../../../../../hooks/useInterval';
 import {
   DEFAULT_LOCKED_DATA,
@@ -11,9 +14,10 @@ import {
   VOLUME_DATA_URL,
 } from '../ProtocolData.constants';
 
-export const useGetData = () => {
+export const useGetData = (chainId?: ChainId) => {
   const [lockedData, setLockedData] = useState(DEFAULT_LOCKED_DATA);
   const cancelLockedDataRequest = useRef<Canceler>();
+  const { currentChainId } = useChainStore();
 
   const [volumeData, setVolumeData] = useState(DEFAULT_VOLUME_DATA);
   const cancelVolumeDataRequest = useRef<Canceler>();
@@ -28,15 +32,16 @@ export const useGetData = () => {
     axios
       .get(LOCKED_DATA_URL, {
         params: {
+          chainId: Number(chainId || currentChainId),
           stmp: Date.now(),
         },
         cancelToken,
       })
       .then(result => {
-        setLockedData(result.data);
+        setLockedData(result.data.data);
       })
       .catch(() => {});
-  }, []);
+  }, [chainId, currentChainId]);
 
   const fetchVolumeData = useCallback(() => {
     cancelVolumeDataRequest.current && cancelVolumeDataRequest.current();
@@ -50,6 +55,7 @@ export const useGetData = () => {
         params: {
           extra: true,
           stmp: Date.now(),
+          chainId: Number(chainId || currentChainId),
         },
         headers: {
           'Cache-Control': 'no-cache',
@@ -60,12 +66,11 @@ export const useGetData = () => {
       })
       .then(result => {
         setVolumeData({
-          btc: result.data?.total_volume_btc || 0,
-          usd: result.data?.total_volume_usd || 0,
+          usd: result.data?.data?.total_volume_usd || 0,
         });
       })
       .catch(() => {});
-  }, []);
+  }, [chainId, currentChainId]);
 
   useInterval(
     () => {

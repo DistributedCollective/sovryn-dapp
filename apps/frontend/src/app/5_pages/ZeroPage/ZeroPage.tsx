@@ -46,6 +46,8 @@ import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { decimalic } from '../../../utils/math';
 import { OpenLocButton } from './components/OpenLocButton/OpenLocButton';
+import { RedemptionDialog } from './components/RedemptionDialog/RedemptionDialog';
+import { RedemptionDialogButton } from './components/RedemptionDialog/RedemptionDialogButton';
 import { useClaimCollateralSurplus } from './hooks/useClaimCollateralSurplus';
 import { useHandleTrove } from './hooks/useHandleTrove';
 import { useLiquityBaseParams } from './hooks/useLiquityBaseParams';
@@ -148,6 +150,9 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
       </Helmet>
       <div className="px-0 container lg:mx-8 mb-7">
         <NetworkBanner requiredChainId={RSK_CHAIN_ID}>
+          <RedemptionDialogButton />
+          <RedemptionDialog />
+
           {!account && <div className="mt-6 lg:mt-12"></div>}
           {account && !showWelcomeBanner && !isLoading && (
             <LOCStatus

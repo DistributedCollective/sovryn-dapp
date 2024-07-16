@@ -38,7 +38,9 @@ export const useGetData = (chainId?: ChainId) => {
         cancelToken,
       })
       .then(result => {
-        setLockedData(result.data.data);
+        if (result.data.data) {
+          setLockedData(result.data.data);
+        }
       })
       .catch(() => {});
   }, [chainId, currentChainId]);

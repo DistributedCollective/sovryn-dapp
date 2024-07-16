@@ -7,6 +7,6 @@ export type ContractData = {
 };
 
 export type ContractDataItem = {
-  totalBtc: number;
-  totalUsd: number;
+  totalBtc: string;
+  totalUsd: string;
 };

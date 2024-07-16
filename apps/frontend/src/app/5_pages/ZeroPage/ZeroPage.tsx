@@ -150,7 +150,6 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
       </Helmet>
       <div className="px-0 container lg:mx-8 mb-7">
         <NetworkBanner requiredChainId={RSK_CHAIN_ID}>
-          <RedemptionDialogButton />
           <RedemptionDialog />
 
           {!account && <div className="mt-6 lg:mt-12"></div>}
@@ -168,8 +167,9 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
             />
           )}
           {account && showWelcomeBanner && !isLoading && !openLocLocked && (
-            <div className="mt-6 lg:mt-12">
-              <OpenLocButton openLOC={toggle} className="mb-10 md:mb-4" />
+            <div className="mt-6 lg:mt-12 flex justify-end gap-x-4 mb-10 md:mb-4">
+              <OpenLocButton openLOC={toggle} />
+              <RedemptionDialogButton />
             </div>
           )}
 

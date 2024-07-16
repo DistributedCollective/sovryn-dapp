@@ -272,6 +272,7 @@
         },
         "redeem": {
           "title": "Redeem",
+          "cta": "Redeem",
           "form": {
             "description": "You can redeem your ZUSD for RBTC here. The corresponding RBTC is drawn from the lowest-collateralized loans, reducing the borrower's debt while you receive an equivalent value in RBTC.",
             "minimum": "Minimum {{value}} {{symbol}}",

@@ -39,7 +39,7 @@ export const DEFAULT_VOLUME_DATA: VolumeDataResult = {
 
 const indexer = getIndexerUrl();
 
-export const LOCKED_DATA_URL = `${indexer}legacycmc/tvl`;
+export const LOCKED_DATA_URL = `${indexer}legacy/cmc/tvl`;
 export const VOLUME_DATA_URL = `${indexer}legacy/cmc/summary`;
 
 export const BTC_VALUE_PRECISION = 4;

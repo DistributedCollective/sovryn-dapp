@@ -63,8 +63,8 @@ export const ProtocolData: FC = () => {
               <div className="text-xs text-gray-30 mb-2">
                 {t(pageTranslations.totalValueLockedAllNetworks)}
               </div>
-              <div className="sm:text-2xl text-gray-10 text-sm sm:font-medium font-semibold leading-8">
-                <NativeTokenAmount usdValue={total.lockedData} />
+              <div className="sm:text-xl text-gray-10 text-sm sm:font-medium font-semibold leading-8">
+                <NativeTokenAmount usdValue={total.lockedData} precision={4} />
               </div>
 
               <div className="text-gray-50 text-sm">

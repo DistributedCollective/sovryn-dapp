@@ -11,11 +11,13 @@ import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 type NativeTokenAmountProps = {
   usdValue: string | number;
   dataAttribute?: string;
+  precision?: number;
 };
 
 export const NativeTokenAmount: FC<NativeTokenAmountProps> = ({
   usdValue,
   dataAttribute,
+  precision,
 }) => {
   const { currentChainId } = useChainStore();
   const nativeToken = useMemo(
@@ -37,7 +39,7 @@ export const NativeTokenAmount: FC<NativeTokenAmountProps> = ({
     <AmountRenderer
       value={value}
       suffix={nativeToken}
-      precision={getCurrencyPrecision(nativeToken)}
+      precision={precision || getCurrencyPrecision(nativeToken)}
       dataAttribute={dataAttribute}
     />
   );

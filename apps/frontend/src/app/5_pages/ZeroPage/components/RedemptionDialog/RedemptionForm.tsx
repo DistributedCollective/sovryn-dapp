@@ -92,7 +92,11 @@ export const RedemptionForm = () => {
 
   useEffect(() => {
     (async () => {
-      if (amount.lte(0) || !entryToken) {
+      if (
+        amount.lte(0) ||
+        Decimal.fromBigNumberString(amount.toString()).lt(MIMIMUM_AMOUNT) ||
+        !entryToken
+      ) {
         setQuote(null);
         setError(null);
         return;

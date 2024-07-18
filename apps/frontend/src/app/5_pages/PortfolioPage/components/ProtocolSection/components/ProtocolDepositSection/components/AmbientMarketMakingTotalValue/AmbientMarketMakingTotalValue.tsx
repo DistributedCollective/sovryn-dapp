@@ -4,10 +4,9 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
+import { useBlockNumber } from '../../../../../../../../../hooks/useBlockNumber';
 import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
-import { findAssetByAddress } from '../../../../../../../../../utils/asset';
 import { AmbientPosition } from '../../../../../../../MarketMakingPage/components/AmbientMarketMaking/AmbientMarketMaking.types';
-import { useAmbientPositions } from '../../../../../../../MarketMakingPage/components/AmbientMarketMaking/hooks/useAmbientPositions';
 import { AmbientLiquidityPoolDictionary } from '../../../../../../../MarketMakingPage/components/AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 import {
   ProtocolTypes,
@@ -18,29 +17,37 @@ import {
   getConvertedValue,
 } from '../../../../ProtocolSection.utils';
 import { PositionValues } from './AmbientMarketMakingTotalValue.types';
-import { PositionBalance } from './components/PositionBalance';
+import { AmbientMarketMakingPositions } from './components/AmbientMarketMakingPositions';
 
 export const AmbientMarketMakingTotalValue: FC<ProtocolSectionProps> = ({
   selectedCurrency,
   nativeTokenPrice,
   onValueChange,
 }) => {
-  const { positions } = useAmbientPositions();
+  const { value: block } = useBlockNumber();
+  const chainId = useCurrentChain();
+  const ammPools = useMemo(
+    () => AmbientLiquidityPoolDictionary.list(chainId),
+    [chainId],
+  );
   const { account } = useAccount();
   const [positionValues, setPositionValues] = useState<PositionValues>({});
 
-  const chainId = useCurrentChain();
-
   const handleBalanceUpdate = useCallback(
     (newBalance: Decimal, position: AmbientPosition) => {
+      const poolId = `${position.base}-${position.quote}-${position.transactionHash}`;
       setPositionValues(prevBalances => {
-        return {
-          ...prevBalances,
-          [position.transactionHash]: {
+        const updatedBalances = { ...prevBalances };
+        if (updatedBalances[poolId]) {
+          updatedBalances[poolId].value = newBalance;
+        } else {
+          updatedBalances[poolId] = {
             value: newBalance,
-            poolId: `${position.base}-${position.quote}`,
-          },
-        };
+            poolId,
+          };
+        }
+
+        return updatedBalances;
       });
     },
     [],
@@ -72,39 +79,23 @@ export const AmbientMarketMakingTotalValue: FC<ProtocolSectionProps> = ({
     if (totalBalance.gt(Decimal.ZERO) && account) {
       onValueChange(totalBalance, ProtocolTypes.MARKET_MAKING);
     }
-  }, [onValueChange, account, totalBalance, nativeTokenPrice]);
+  }, [onValueChange, account, totalBalance, nativeTokenPrice, block]);
 
   useEffect(() => {
     if (!account || totalBalance.isZero()) {
       onValueChange(Decimal.ZERO, ProtocolTypes.MARKET_MAKING);
     }
-  }, [account, onValueChange, totalBalance]);
+  }, [account, onValueChange, totalBalance, block]);
 
   return (
     <>
-      {positions.map((position, index) => {
-        const assetA = findAssetByAddress(position.base, chainId);
-        const assetB = findAssetByAddress(position.quote, chainId);
-
-        const pool = AmbientLiquidityPoolDictionary.get(
-          assetA?.symbol,
-          assetB?.symbol,
-          chainId,
-        );
-        if (!pool) {
-          return null;
-        }
-        return (
-          <PositionBalance
-            key={index}
-            position={position}
-            pool={pool}
-            onBalanceChange={newBalance =>
-              handleBalanceUpdate(newBalance, position)
-            }
-          />
-        );
-      })}
+      {ammPools.map(pool => (
+        <AmbientMarketMakingPositions
+          key={`${pool.baseAddress}-${pool.quoteAddress}`}
+          pool={pool}
+          onBalanceChange={handleBalanceUpdate}
+        />
+      ))}
       <AmountRenderer
         value={renderTotalBalance}
         suffix={selectedCurrency}

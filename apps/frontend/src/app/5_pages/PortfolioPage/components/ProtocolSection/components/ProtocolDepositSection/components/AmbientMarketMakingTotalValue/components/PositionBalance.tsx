@@ -9,7 +9,7 @@ import { AmbientLiquidityPool } from '../../../../../../../../MarketMakingPage/c
 type PositionBalanceProps = {
   position: AmbientPosition;
   pool: AmbientLiquidityPool;
-  onBalanceChange: (balanceToAdd: Decimal) => void;
+  onBalanceChange: (balanceToAdd: Decimal, position: AmbientPosition) => void;
 };
 
 export const PositionBalance: FC<PositionBalanceProps> = ({
@@ -21,10 +21,9 @@ export const PositionBalance: FC<PositionBalanceProps> = ({
 
   useEffect(() => {
     if (value) {
-      onBalanceChange(Decimal.from(value));
+      onBalanceChange(Decimal.from(value), position);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [value, onBalanceChange, position]);
 
   return null;
 };

@@ -32,6 +32,8 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
@@ -42,7 +44,11 @@ import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useCurrentChain } from '../../../hooks/useChainStore';
 import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
-import { COMMON_SYMBOLS, listAssetsOfChain } from '../../../utils/asset';
+import {
+  COMMON_SYMBOLS,
+  findAsset,
+  listAssetsOfChain,
+} from '../../../utils/asset';
 import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei } from '../../../utils/math';
 import { FIXED_MYNT_RATE, FIXED_RATE_ROUTES } from './ConvertPage.constants';
@@ -77,7 +83,13 @@ const ConvertPage: FC = () => {
       callback: (options: SelectOption<string>[]) => void,
     ) =>
       Promise.all(
-        addresses.map(address => smartRouter.getTokenDetails(address, chain)),
+        addresses
+          .filter(
+            // filter out WBTC token on rsk chain
+            item =>
+              findAsset('WBTC', RSK_CHAIN_ID).address !== item.toLowerCase(),
+          )
+          .map(address => smartRouter.getTokenDetails(address, chain)),
       ).then(tokens =>
         callback(
           tokens.map(token => ({

@@ -18,6 +18,10 @@ export const rsk: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (await import('../../abis/btcWrapperProxy.json')).default,
   },
+  wrbtcMinter: {
+    address: '0x542fDA317318eBF1d3DEAf76E0b632741A7e677d',
+    getAbi: async () => (await import('../../abis/wrbtc.json')).default,
+  },
   massetManager: {
     address: '0x5F777270259E32F79589fe82269DB6209F7b7582',
     getAbi: async () => (await import('../../abis/massetManager.json')).default,

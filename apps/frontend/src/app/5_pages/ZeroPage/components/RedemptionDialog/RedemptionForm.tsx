@@ -267,7 +267,14 @@ export const RedemptionForm = () => {
   return (
     <>
       <div className="p-2 bg-gray-90 mb-4 rounded">
-        {t(translations.zeroPage.redeem.form.description)}
+        {t(translations.zeroPage.redeem.form.description)}{' '}
+        <a
+          href="https://wiki.sovryn.com/en/sovryn-dapp/using-zero#liquidations-and-redemptions"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t(translations.zeroPage.redeem.form.link)}
+        </a>
       </div>
       <div className="w-full flex justify-between items-center gap-x-4 mb-2">
         <div>

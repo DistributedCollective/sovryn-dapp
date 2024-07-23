@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { FC, PropsWithChildren, ReactNode } from 'react';
 
 import { Align, RowObject } from '../TableBase';
 
@@ -21,6 +21,7 @@ export type TableProps<RowType extends RowObject> = {
   rowClassName?: string;
   columns: ColumnOptions<RowType>[];
   rows?: RowType[];
+  rowComponent?: FC<PropsWithChildren>;
   rowKey?: (row: RowType) => number | string;
   rowTitle?: (row: RowType, isOpen?: boolean) => ReactNode;
   noData?: ReactNode;

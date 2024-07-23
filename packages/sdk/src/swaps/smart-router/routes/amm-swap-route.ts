@@ -1,4 +1,4 @@
-import { Contract, constants, providers } from 'ethers';
+import { BigNumber, Contract, constants, providers } from 'ethers';
 
 import { getAssetContract, getProtocolContract } from '@sovryn/contracts';
 import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
@@ -23,6 +23,7 @@ export const ammSwapRoute: SwapRouteFunction = (
   let swapConverter: Contract;
   let rbtcConverter: Contract;
   let protocolContract: Contract;
+  let wrbtcMinter: Contract;
 
   const getChainId = async () => {
     if (!chainId) {
@@ -68,15 +69,26 @@ export const ammSwapRoute: SwapRouteFunction = (
     return protocolContract;
   };
 
-  const isNativeToken = async (token: string) =>
-    token === constants.AddressZero ||
-    token ===
-      (
-        await getAssetContract('WBTC', await getChainId())
-      ).address.toLowerCase();
+  const getWrbtcMinter = async () => {
+    if (!wrbtcMinter) {
+      const chainId = await getChainId();
+      const { address, abi } = await getProtocolContract(
+        'wrbtcMinter',
+        chainId,
+      );
+      wrbtcMinter = new Contract(address, abi, provider);
+    }
+    return wrbtcMinter;
+  };
 
-  const validatedTokenAddress = async (token: string) => {
-    token = token.toLowerCase();
+  const isNativeToken = async (token: string) =>
+    token === constants.AddressZero;
+
+  const isNativeWrapper = async (token: string) =>
+    token ===
+    (await getAssetContract('WBTC', await getChainId())).address.toLowerCase();
+
+  const getTokenAddress = async (token: string) => {
     if (await isNativeToken(token)) {
       if (wrbtcAddress) {
         return wrbtcAddress;
@@ -98,6 +110,7 @@ export const ammSwapRoute: SwapRouteFunction = (
 
         const swapTokens = [
           'BTC',
+          'WBTC',
           'DLLR',
           'FISH',
           'MOC',
@@ -147,8 +160,16 @@ export const ammSwapRoute: SwapRouteFunction = (
       return pairCache;
     },
     quote: async (entry, destination, amount) => {
-      const baseToken = await validatedTokenAddress(entry);
-      const quoteToken = await validatedTokenAddress(destination);
+      if (
+        ((await isNativeToken(entry)) &&
+          (await isNativeWrapper(destination))) ||
+        ((await isNativeToken(destination)) && (await isNativeWrapper(entry)))
+      ) {
+        return BigNumber.from(amount);
+      }
+
+      const baseToken = await getTokenAddress(entry);
+      const quoteToken = await getTokenAddress(destination);
       return (await getSwapQuoteContract())
         .getSwapExpectedReturn(baseToken, quoteToken, amount)
         .catch(e => {
@@ -158,6 +179,14 @@ export const ammSwapRoute: SwapRouteFunction = (
     approve: async (entry, destination, amount, from, overrides) => {
       // native token is always approved
       if (await isNativeToken(entry)) {
+        return undefined;
+      }
+
+      // swapping from WRBTC to RBTC is always approved
+      if (
+        (await isNativeWrapper(entry)) &&
+        (await isNativeToken(destination))
+      ) {
         return undefined;
       }
 
@@ -194,8 +223,37 @@ export const ammSwapRoute: SwapRouteFunction = (
         );
       }
 
-      const baseToken = await validatedTokenAddress(entry);
-      const quoteToken = await validatedTokenAddress(destination);
+      // RBTC -> WRBTC
+      if (
+        (await isNativeToken(entry)) &&
+        (await isNativeWrapper(destination))
+      ) {
+        const minter = await getWrbtcMinter();
+        return {
+          to: minter.address,
+          data: minter.interface.encodeFunctionData('deposit'),
+          value: amount.toString(),
+          gasLimit: 30_000,
+          ...overrides,
+        };
+      }
+
+      // WRBTC -> RBTC
+      if (
+        (await isNativeWrapper(entry)) &&
+        (await isNativeToken(destination))
+      ) {
+        const minter = await getWrbtcMinter();
+        return {
+          to: minter.address,
+          data: minter.interface.encodeFunctionData('withdraw', [amount]),
+          // gasLimit: 30_000,
+          ...overrides,
+        };
+      }
+
+      const baseToken = await getTokenAddress(entry);
+      const quoteToken = await getTokenAddress(destination);
 
       const entryIsNative = await isNativeToken(entry);
       const destinationIsNative = await isNativeToken(destination);

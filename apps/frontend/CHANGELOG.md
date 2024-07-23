@@ -1,5 +1,11 @@
 # frontend
 
+## 1.1.11
+
+### Patch Changes
+
+- 3c3730b4: SOV-4278: hide POWA claim page
+
 ## 1.1.10
 
 ### Patch Changes

@@ -1,5 +1,7 @@
-import { BigNumber, constants } from 'ethers';
+import { BigNumber, constants, Contract, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
+
+import { getProtocolContract } from '@sovryn/contracts';
 
 import { ammSwapRoute } from '../../../swaps/smart-router/routes/amm-swap-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
@@ -14,6 +16,9 @@ describe('AMM Route', () => {
   let sov: string;
   let rbtc: string;
   let dllr: string;
+  let wbtc: string;
+  let swapNetwork: Contract;
+  let wbtcProxy: Contract;
 
   const AddressOne = '0x0000000000000000000000000000000000000001';
 
@@ -23,6 +28,9 @@ describe('AMM Route', () => {
     sov = await makeTokenAddress('SOV');
     dllr = await makeTokenAddress('DLLR');
     rbtc = await makeTokenAddress('BTC');
+    wbtc = await makeTokenAddress('WBTC');
+    swapNetwork = (await getProtocolContract('swapNetwork')).contract();
+    wbtcProxy = (await getProtocolContract('btcWrapperProxy')).contract();
   });
 
   it('has correct name', () => {
@@ -137,6 +145,79 @@ describe('AMM Route', () => {
         to: expect.any(String),
         data: expect.any(String),
         value: '0',
+      });
+    });
+
+    it('BTC -> WBTC uses WBTC contract to mint tokens.', async () => {
+      const amount = parseUnits('0.01');
+      await expect(
+        route.swap(rbtc, wbtc, amount, constants.AddressZero),
+      ).resolves.toMatchObject({
+        to: wbtc,
+        data: '0xd0e30db0', // deposit()
+        value: amount.toString(),
+      });
+    });
+
+    it('WBTC -> BTC uses WBTC contract to burn tokens.', async () => {
+      const amount = parseUnits('0.01');
+      const iface = new ethers.utils.Interface([
+        'function withdraw(uint256) external',
+      ]);
+      await expect(
+        route.swap(wbtc, rbtc, amount, constants.AddressZero),
+      ).resolves.toMatchObject({
+        to: wbtc,
+        data: iface.encodeFunctionData('withdraw', [amount]),
+      });
+    });
+
+    it('BTC -> SOV uses WBTC proxy to swap.', async () => {
+      const amount = parseUnits('0.01');
+      await expect(
+        route.swap(rbtc, sov, amount, constants.AddressZero),
+      ).resolves.toMatchObject({
+        to: wbtcProxy.address,
+        data: expect.stringContaining(
+          wbtcProxy.interface.getSighash('convertByPath'),
+        ),
+        value: amount.toString(),
+      });
+    });
+
+    it('SOV -> BTC uses WBTC proxy to swap.', async () => {
+      const amount = parseUnits('0.01');
+      await expect(
+        route.swap(sov, rbtc, amount, constants.AddressZero),
+      ).resolves.toMatchObject({
+        to: wbtcProxy.address,
+        data: expect.stringContaining(
+          wbtcProxy.interface.getSighash('convertByPath'),
+        ),
+      });
+    });
+
+    it('WBTC -> SOV uses swap network to swap.', async () => {
+      const amount = parseUnits('0.01');
+      await expect(
+        route.swap(wbtc, sov, amount, constants.AddressZero),
+      ).resolves.toMatchObject({
+        to: swapNetwork.address,
+        data: expect.stringContaining(
+          swapNetwork.interface.getSighash('convertByPath'),
+        ),
+      });
+    });
+
+    it('SOV -> WBTC uses swap network to swap.', async () => {
+      const amount = parseUnits('0.01');
+      await expect(
+        route.swap(sov, wbtc, amount, constants.AddressZero),
+      ).resolves.toMatchObject({
+        to: swapNetwork.address,
+        data: expect.stringContaining(
+          swapNetwork.interface.getSighash('convertByPath'),
+        ),
       });
     });
   });

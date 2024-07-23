@@ -63,6 +63,7 @@ export const LeaderboardPointsSeason2: FC = () => {
             itemsPerPage={PAGE_SIZE}
             isNextButtonDisabled={isNextButtonDisabled}
             dataAttribute="leaderboard-points-users-pagination-season-2"
+            pageLimit={10}
           />
         </div>
       </div>

@@ -18,6 +18,7 @@ type PaginationProps = {
   hideFirstPageButton?: boolean;
   hideLastPageButton?: boolean;
   isNextButtonDisabled?: boolean;
+  pageLimit?: number;
 };
 
 const DEFAULT_ITEMS_PER_PAGE = 5;
@@ -32,6 +33,7 @@ export const Pagination: FC<PaginationProps> = ({
   hideFirstPageButton,
   hideLastPageButton,
   isNextButtonDisabled,
+  pageLimit,
 }) => {
   const {
     isNextButtonDisabled: nextButtonDisabled,
@@ -68,17 +70,32 @@ export const Pagination: FC<PaginationProps> = ({
       />
       {totalPages !== undefined ? (
         <>
-          {new Array(totalPages).fill(0).map((_item, index) => (
-            <button
-              key={index}
-              className={classNames(styles.page, {
-                [styles.active]: index === page,
-              })}
-              onClick={() => onChange(index)}
-            >
-              {index + 1}
-            </button>
-          ))}
+          {new Array(
+            pageLimit && pageLimit < totalPages ? pageLimit : totalPages,
+          )
+            .fill(0)
+            .map((_item, index) => {
+              let start = pageLimit
+                ? Math.max(Math.floor(page - pageLimit / 2), 0)
+                : 0;
+
+              if (pageLimit && start + pageLimit > totalPages) {
+                start = totalPages - pageLimit;
+              }
+              const pageNumber = index + start;
+
+              return (
+                <button
+                  key={pageNumber}
+                  className={classNames(styles.page, {
+                    [styles.active]: pageNumber === page,
+                  })}
+                  onClick={() => onChange(pageNumber)}
+                >
+                  {pageNumber + 1}
+                </button>
+              );
+            })}
         </>
       ) : (
         <button className={classNames(styles.page, styles.active)}>

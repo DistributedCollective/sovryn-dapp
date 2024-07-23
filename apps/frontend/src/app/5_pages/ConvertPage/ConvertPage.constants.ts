@@ -16,7 +16,7 @@ export const SWAP_ROUTES = [
   smartRoutes.myntFixedRateRoute,
   smartRoutes.mocIntegrationSwapRoute,
   smartRoutes.ambientRoute,
-  smartRoutes.zeroRedemptionSwapRoute,
+  // smartRoutes.zeroRedemptionSwapRoute,
 ];
 
 export const SMART_ROUTER_RSK = new SmartRouter(

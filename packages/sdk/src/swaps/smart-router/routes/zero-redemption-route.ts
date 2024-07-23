@@ -23,6 +23,8 @@ import {
 import { SwapPairs, SwapRouteFunction } from '../types';
 import { prepareERC2612Permit, preparePermitResponse } from '../utils/permit';
 
+export const MINIMUM_AMOUNT = 200;
+
 export const zeroRedemptionSwapRoute: SwapRouteFunction = (
   provider: providers.Provider,
 ) => {
@@ -93,6 +95,10 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
           `Cannot swap ${entry} to ${destination}`,
           SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
         );
+      }
+
+      if (Decimal.fromBigNumberString(amount.toString()).lt(MINIMUM_AMOUNT)) {
+        return BigNumber.from(0);
       }
 
       const readable = await ReadableEthersLiquity.connect(provider, {

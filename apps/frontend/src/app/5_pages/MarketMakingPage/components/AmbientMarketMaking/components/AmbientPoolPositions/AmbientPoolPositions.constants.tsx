@@ -23,7 +23,7 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
     title: t(translations.ambientMarketMaking.positionsTable.positionID),
     cellRenderer: (position: AmbientPosition) => (
       <TransactionIdRenderer
-        hash={position.firstMintTx}
+        hash={position.transactionHash}
         chainId={pool.chainId}
       />
     ),
@@ -55,7 +55,7 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
       </span>
     ),
     cellRenderer: (position: AmbientPosition) => (
-      <AmountRenderer value={position.aprEst * 100} suffix="%" />
+      <AmountRenderer value={Number(position.aprEst) * 100} suffix="%" />
     ),
   },
   {
@@ -84,7 +84,7 @@ export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
     title: '',
     cellRenderer: (position: AmbientPosition) => (
       <div className="flex justify-end items-center">
-        {position.rewardLiq > 0 && (
+        {Number(position.rewardLiq) > 0 && (
           <AmbientPoolPositionClaimFees
             pool={pool}
             position={position}

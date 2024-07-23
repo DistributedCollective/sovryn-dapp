@@ -23,7 +23,7 @@ export const useGetPositionsTotalBalance = (pool: AmbientLiquidityPool) => {
       positionLiqQuote: 0,
     };
     balances.forEach(balance => {
-      sum.positionLiq += balance?.positionLiq || 0;
+      sum.positionLiq += Number(balance?.positionLiq) || 0;
       sum.positionLiqBase += balance?.positionLiqBase || 0;
       sum.positionLiqQuote += balance?.positionLiqQuote || 0;
     });

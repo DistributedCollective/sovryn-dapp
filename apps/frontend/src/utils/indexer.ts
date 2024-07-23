@@ -15,3 +15,11 @@ export const getIndexerUri = (chainId: ChainId) => {
 
   return SEPOLIA.indexer.testnet;
 };
+
+export const getSdexUri = (chainId: ChainId) => {
+  if (isBobChain(chainId)) {
+    return BOB.sdex[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+  }
+
+  return SEPOLIA.indexer.testnet;
+};

@@ -18,6 +18,7 @@ import { Decimal } from '@sovryn/utils';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { useCrocContext } from '../../../../../contexts/CrocContext';
+import { useAccount } from '../../../../../hooks/useAccount';
 import { useIsMounted } from '../../../../../hooks/useIsMounted';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
@@ -49,6 +50,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   pool,
   position,
 }) => {
+  const { account } = useAccount();
   const { croc } = useCrocContext();
   const deposits = useAmbientPositionBalance(pool, position);
   const isMounted = useIsMounted();
@@ -82,7 +84,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
       const pos = croc.positions(
         position.base,
         position.quote,
-        position.user,
+        account,
         pool.poolIndex,
       );
 
@@ -90,9 +92,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
 
       if (position.positionType === PoolPositionType.ambient) {
         if (pool.lpTokenAddress) {
-          const wallet = await croc
-            .token(pool.lpTokenAddress)
-            .wallet(position.user);
+          const wallet = await croc.token(pool.lpTokenAddress).wallet(account);
           liquidity = wallet;
         } else {
           liquidity = (await pos.queryAmbient()).seeds;
@@ -107,7 +107,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
     } catch (error) {
       console.error(error);
     }
-  }, [croc, pool.lpTokenAddress, pool.poolIndex, position]);
+  }, [croc, pool.lpTokenAddress, pool.poolIndex, position, account]);
 
   const isFullWithdrawal = useMemo(
     () =>
@@ -272,7 +272,12 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
               </>
             }
             label2={t(pageTranslations.currentBalance)}
-            value1={<AmountRenderer value={position.aprEst * 100} suffix="%" />}
+            value1={
+              <AmountRenderer
+                value={Number(position.aprEst) * 100}
+                suffix="%"
+              />
+            }
             value2={<AmbientPositionBalance pool={pool} position={position} />}
           />
         </div>

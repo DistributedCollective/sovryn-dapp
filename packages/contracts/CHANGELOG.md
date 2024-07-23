@@ -1,5 +1,12 @@
 # @sovryn/contracts
 
+## 1.1.7
+
+### Patch Changes
+
+- c7b7d38e: SOV-4286: allow WRBTC to be traded on smart router
+- 9ed0c28d: SOV-4264: update MoneyOnChain tokens logo
+
 ## 1.1.6
 
 ### Patch Changes

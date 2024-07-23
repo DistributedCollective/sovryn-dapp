@@ -1,5 +1,11 @@
 # @sovryn/ui
 
+## 1.0.28
+
+### Patch Changes
+
+- 8d41bc74: SOV-4302: add pagination page limit
+
 ## 1.0.27
 
 ### Patch Changes

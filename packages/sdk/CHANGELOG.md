@@ -1,5 +1,16 @@
 # @sovryn/sdk
 
+## 1.0.7
+
+### Patch Changes
+
+- 6bdb10b2: fix: add minimum amount to zero smart swap route
+- c7b7d38e: SOV-4286: allow WRBTC to be traded on smart router
+- Updated dependencies [c7b7d38e]
+- Updated dependencies [9ed0c28d]
+  - @sovryn/contracts@1.1.7
+  - @sovryn/sdex@0.3.13
+
 ## 1.0.6
 
 ### Patch Changes

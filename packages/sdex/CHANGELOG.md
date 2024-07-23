@@ -1,5 +1,11 @@
 # @sovryn/sdex
 
+## 0.3.13
+
+### Patch Changes
+
+- c7b7d38e: SOV-4286: allow WRBTC to be traded on smart router
+
 ## 0.3.12
 
 ### Patch Changes

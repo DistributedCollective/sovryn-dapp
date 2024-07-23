@@ -1,5 +1,21 @@
 # frontend
 
+## 1.1.12
+
+### Patch Changes
+
+- 3d906cb6: SOV-4270: Pull AMM user position data from Sovryn Indexer
+- c7b7d38e: SOV-4286: allow WRBTC to be traded on smart router
+- 8d41bc74: SOV-4302: add pagination page limit
+- Updated dependencies [6bdb10b2]
+- Updated dependencies [c7b7d38e]
+- Updated dependencies [9ed0c28d]
+- Updated dependencies [8d41bc74]
+  - @sovryn/sdk@1.0.7
+  - @sovryn/contracts@1.1.7
+  - @sovryn/sdex@0.3.13
+  - @sovryn/ui@1.0.28
+
 ## 1.1.11
 
 ### Patch Changes

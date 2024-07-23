@@ -3,12 +3,13 @@ import React, { FC } from 'react';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
+import { TokenPricesProvider } from '../../../contexts/TokenPricesContext';
 import { translations } from '../../../locales/i18n';
 import { AssetSection } from './components/AssetSection/AssetSection';
 import { ProtocolSection } from './components/ProtocolSection/ProtocolSection';
 
 const PortfolioPage: FC = () => (
-  <>
+  <TokenPricesProvider>
     <Helmet>
       <title>{t(translations.portfolioPage.meta.title)}</title>
     </Helmet>
@@ -23,7 +24,7 @@ const PortfolioPage: FC = () => (
         </div>
       </div>
     </div>
-  </>
+  </TokenPricesProvider>
 );
 
 export default PortfolioPage;

@@ -36,7 +36,9 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
 
       try {
         const { data } = await axios.get<any>(
-          `${getSdexUri(chainId)}/user_pool_positions?user=${account}&base=${
+          `${getSdexUri(
+            chainId,
+          )}/sdex/user_pool_positions?user=${account}&base=${
             pool.baseAddress
           }&quote=${pool.quoteAddress}&poolIdx=${
             pool.poolIndex

@@ -1,20 +1,13 @@
 import { useMemo } from 'react';
 
-import { formatUnits } from 'ethers/lib/utils';
-
-import { ChainId, ChainIds, getProvider } from '@sovryn/ethers-provider';
+import { ChainId, ChainIds } from '@sovryn/ethers-provider';
 import { toDisplayPrice } from '@sovryn/sdex';
-import { SmartRouter } from '@sovryn/sdk';
 import { Decimal } from '@sovryn/utils';
 
-import {
-  SWAP_ROUTES,
-  SMART_ROUTER_STABLECOINS,
-} from '../app/5_pages/ConvertPage/ConvertPage.constants';
+import { useTokenPrices } from '../contexts/TokenPricesContext';
 import { COMMON_SYMBOLS } from '../utils/asset';
 import { isRskChain } from '../utils/chain';
-import { fromWei, toWei } from '../utils/math';
-import { useCacheCall } from './useCacheCall';
+import { fromWei } from '../utils/math';
 import { useCurrentChain } from './useChainStore';
 import { useTokenDetailsByAsset } from './useTokenDetailsByAsset';
 
@@ -33,6 +26,7 @@ export function useDollarValue(
 ) {
   const currentChainId = useCurrentChain();
   const chain = chainId || currentChainId;
+  const { prices, loading: pricesLoading } = useTokenPrices();
 
   const destination = useMemo(
     () => (STABLECOINS[chain]?.[0] ?? COMMON_SYMBOLS.DLLR).toUpperCase(),
@@ -53,55 +47,12 @@ export function useDollarValue(
   const assetDetails = useTokenDetailsByAsset(entry, chain);
   const destinationDetails = useTokenDetailsByAsset(destination, chain);
 
-  const { value: usdPrice, loading } = useCacheCall(
-    `dollarValue/${chain}/${entry}`,
-    chain,
-    async () => {
-      if (
-        entry === destination ||
-        (STABLECOINS[chain]?.includes(entry) &&
-          STABLECOINS[chain]?.includes(destination))
-      ) {
-        return formatUnits('1', assetDetails?.decimals || 18);
-      }
-
-      if (
-        !assetDetails?.address ||
-        !destinationDetails?.address ||
-        SMART_ROUTER_STABLECOINS.includes(entry)
-      ) {
-        return '0';
-      }
-
-      const smartRouter = new SmartRouter(getProvider(chain), SWAP_ROUTES);
-      // todo: use correct router for chain
-      const result = await smartRouter.getBestQuote(
-        chain,
-        assetDetails?.address,
-        destinationDetails?.address,
-        toWei('0.01'),
-      );
-
-      return toWei(
-        toDisplayPrice(
-          Decimal.fromBigNumberString(result.quote.toString()).toNumber(),
-          assetDetails?.decimals || 18,
-          destinationDetails?.decimals || 18,
-        ),
-      )
-        .mul(100)
-        .toString();
-    },
-    [
-      weiAmount,
-      assetDetails?.address,
-      destinationDetails?.address,
-      assetDetails,
-      destinationDetails,
-      chain,
-    ],
-    '0',
-  );
+  const usdPrice = useMemo(() => {
+    if (assetDetails && assetDetails.address) {
+      return prices[assetDetails.address.toLowerCase()] || '0';
+    }
+    return '0';
+  }, [prices, assetDetails]);
 
   const usdValue = useMemo(() => {
     if (
@@ -110,7 +61,6 @@ export function useDollarValue(
         STABLECOINS[chain]?.includes(destination))
     ) {
       const amount = Number(fromWei(weiAmount, assetDetails?.decimals || 18));
-
       return toDisplayPrice(
         amount,
         destinationDetails?.decimals || 18,
@@ -118,7 +68,7 @@ export function useDollarValue(
       ).toString();
     } else {
       const amount = Decimal.fromBigNumberString(weiAmount)
-        .mul(fromWei(usdPrice))
+        .mul(usdPrice)
         .toNumber();
 
       return toDisplayPrice(
@@ -138,7 +88,7 @@ export function useDollarValue(
   ]);
 
   return {
-    loading,
+    loading: pricesLoading,
     usdValue,
     usdPrice,
   };

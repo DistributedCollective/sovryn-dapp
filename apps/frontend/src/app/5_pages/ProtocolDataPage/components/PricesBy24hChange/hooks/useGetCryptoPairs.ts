@@ -2,9 +2,9 @@ import { useState, useRef, useCallback, useMemo } from 'react';
 
 import axios, { Canceler } from 'axios';
 
+import { DATA_REFRESH_INTERVAL } from '../../../../../../constants/general';
 import { useInterval } from '../../../../../../hooks/useInterval';
 import { isMainnet, isStaging } from '../../../../../../utils/helpers';
-import { DATA_REFRESH_INTERVAL } from '../../../../LandingPage/components/ProtocolData/ProtocolData.constants';
 import { VOLUME_DATA_URL } from '../../../ProtocolData.constants';
 import { PairData } from '../PricesBy24hChange.types';
 

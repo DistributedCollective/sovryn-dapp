@@ -2,13 +2,13 @@ import { useState, useRef, useCallback } from 'react';
 
 import axios, { Canceler } from 'axios';
 
+import { DATA_REFRESH_INTERVAL } from '../../../../../../constants/general';
 import { useInterval } from '../../../../../../hooks/useInterval';
 import {
   DEFAULT_LOCKED_DATA,
   DEFAULT_VOLUME_DATA,
   LOCKED_DATA_URL,
   VOLUME_DATA_URL,
-  DATA_REFRESH_INTERVAL,
 } from '../ProtocolData.constants';
 
 export const useGetData = () => {

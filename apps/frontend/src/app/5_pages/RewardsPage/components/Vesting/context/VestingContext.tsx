@@ -9,8 +9,11 @@ import React, {
 
 import { produce } from 'immer';
 
+import { VestingContractTableRecord } from '../Vesting.types';
+
 export type State = {
   count: number;
+  item?: VestingContractTableRecord;
 };
 
 type Update = (state: State) => void;
@@ -21,6 +24,7 @@ type Actions = {
 
 const defaultValue: State & Actions = {
   count: 0,
+  item: undefined,
   update: () => {},
 };
 
@@ -39,6 +43,7 @@ export function useVestingContext() {
 export const VestingContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [state, setState] = useState<State>({
     count: 0,
+    item: undefined,
   });
 
   const handleOnChange = useCallback(

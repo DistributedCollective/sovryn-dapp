@@ -16819,6 +16819,25 @@ export type GetVestingHistoryQuery = {
   }>;
 };
 
+export type GetUserVestingsOfTypeQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<VestingContractType>;
+}>;
+
+export type GetUserVestingsOfTypeQuery = {
+  __typename?: 'Query';
+  vestingContracts: Array<{
+    __typename?: 'VestingContract';
+    id: string;
+    stakeHistory?: Array<{
+      __typename?: 'VestingHistoryItem';
+      id: string;
+      amount: string;
+      lockedUntil?: number | null;
+    }> | null;
+  }>;
+};
+
 export type GetVestingHistoryItemsQueryVariables = Exact<{
   stakers?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
   skip: Scalars['Int'];
@@ -19763,6 +19782,75 @@ export type GetVestingHistoryLazyQueryHookResult = ReturnType<
 export type GetVestingHistoryQueryResult = Apollo.QueryResult<
   GetVestingHistoryQuery,
   GetVestingHistoryQueryVariables
+>;
+export const GetUserVestingsOfTypeDocument = gql`
+  query getUserVestingsOfType($user: String, $type: VestingContractType) {
+    vestingContracts(where: { user: $user, type: $type }) {
+      id
+      stakeHistory(
+        where: { action: TokensStaked }
+        orderBy: lockedUntil
+        orderDirection: desc
+        first: 250
+      ) {
+        id
+        amount
+        lockedUntil
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetUserVestingsOfTypeQuery__
+ *
+ * To run a query within a React component, call `useGetUserVestingsOfTypeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserVestingsOfTypeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserVestingsOfTypeQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useGetUserVestingsOfTypeQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetUserVestingsOfTypeQuery,
+    GetUserVestingsOfTypeQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetUserVestingsOfTypeQuery,
+    GetUserVestingsOfTypeQueryVariables
+  >(GetUserVestingsOfTypeDocument, options);
+}
+export function useGetUserVestingsOfTypeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetUserVestingsOfTypeQuery,
+    GetUserVestingsOfTypeQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetUserVestingsOfTypeQuery,
+    GetUserVestingsOfTypeQueryVariables
+  >(GetUserVestingsOfTypeDocument, options);
+}
+export type GetUserVestingsOfTypeQueryHookResult = ReturnType<
+  typeof useGetUserVestingsOfTypeQuery
+>;
+export type GetUserVestingsOfTypeLazyQueryHookResult = ReturnType<
+  typeof useGetUserVestingsOfTypeLazyQuery
+>;
+export type GetUserVestingsOfTypeQueryResult = Apollo.QueryResult<
+  GetUserVestingsOfTypeQuery,
+  GetUserVestingsOfTypeQueryVariables
 >;
 export const GetVestingHistoryItemsDocument = gql`
   query getVestingHistoryItems(

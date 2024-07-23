@@ -1,13 +1,15 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { Button, ButtonStyle, ButtonType } from '@sovryn/ui';
 
 import { VestingContractTableRecord } from '../../Vesting.types';
 import { vestingTypeToTitleMapping } from '../../Vestings.utils';
+import { useVestingContext } from '../../context/VestingContext';
 import { useGetUnlockSchedule } from '../../hooks/useGetUnlockSchedule';
 import { UnlockScheduleDialog } from '../UnlockScheduleDialog/UnlockScheduleDialog';
 
 export const UnlockSchedule = (item: VestingContractTableRecord) => {
+  const update = useVestingContext().update;
   const unlockSchedule = useGetUnlockSchedule(item);
 
   const [showDialog, setShowDialog] = useState(false);
@@ -16,6 +18,12 @@ export const UnlockSchedule = (item: VestingContractTableRecord) => {
     () => vestingTypeToTitleMapping(item.type),
     [item.type],
   );
+
+  useEffect(() => {
+    update(state => {
+      state.item = item;
+    });
+  }, [item, update]);
 
   return (
     <>

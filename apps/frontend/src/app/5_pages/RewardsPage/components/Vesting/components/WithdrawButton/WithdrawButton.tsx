@@ -11,15 +11,17 @@ import { useGetUnlockedBalance } from '../../hooks/useGetUnlockedBalance';
 import { useHandleWithdraw } from '../../hooks/useHandleWithdraw';
 
 export const WithdrawButton = (item: VestingContractTableRecord) => {
-  const count = useVestingContext().count;
+  const { count } = useVestingContext();
   const handleWithdraw = useHandleWithdraw(item);
 
   const { isLoading, result } = useGetUnlockedBalance(item);
-  const isDisabled = useMemo(() => !result || result === 0, [result]);
+  const isDisabled = useMemo(
+    () => !result || result === 0 || (count >= 43 && item.type === 'Rewards'),
+    [count, item.type, result],
+  );
 
   return (
     <div className="flex justify-end w-full md:w-auto h-full pt-3">
-      <p>{count}</p>
       <Button
         onClick={handleWithdraw}
         loading={isLoading}

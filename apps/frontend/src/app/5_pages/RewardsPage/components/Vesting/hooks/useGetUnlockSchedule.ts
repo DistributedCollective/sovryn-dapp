@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import dayjs from 'dayjs';
 
@@ -50,16 +50,21 @@ export const useGetUnlockSchedule = (
 
     const pastDatesLength = unlockDates?.filter(item => item.isUnlocked).length;
 
-    update(state => {
-      state.count = pastDatesLength || 0;
-    });
-
     if (!pastDatesLength || pastDatesLength < MAXIMUM_UNLOCKED_DATES) {
-      return unlockDates;
+      return { unlockDates, pastDatesLength };
     }
 
-    return unlockDates.slice(pastDatesLength - MAXIMUM_UNLOCKED_DATES);
-  }, [data?.vestingContracts, update]);
+    return {
+      unlockDates: unlockDates.slice(pastDatesLength - MAXIMUM_UNLOCKED_DATES),
+      pastDatesLength,
+    };
+  }, [data?.vestingContracts]);
 
-  return result;
+  useEffect(() => {
+    update(state => {
+      state.count = result?.pastDatesLength || 0;
+    });
+  }, [result?.pastDatesLength, update]);
+
+  return result?.unlockDates;
 };

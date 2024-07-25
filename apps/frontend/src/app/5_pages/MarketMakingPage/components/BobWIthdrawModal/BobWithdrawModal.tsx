@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
 import {
@@ -28,6 +29,7 @@ import { useGetPool } from '../../hooks/useGetPool';
 import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.types';
 import { AmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionBalance/AmbientPositionBalance';
 import { useAmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/hooks/useAmbientPositionBalance';
+import { useGetLpTokenBalance } from '../AmbientMarketMaking/hooks/useGetLpTokenBalance';
 import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useGetPoolInfo } from '../BobDepositModal/hooks/useGetPoolInfo';
 import { AmountForm } from './components/AmountForm/AmountForm';
@@ -56,6 +58,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   const isMounted = useIsMounted();
   const { checkMaintenance, States } = useMaintenance();
   const withdrawLocked = checkMaintenance(States.BOB_WITHDRAW_LIQUIDITY);
+  const lpTokenBalance = useGetLpTokenBalance(pool);
 
   const [depositedAmountBase, setDepositedAmountBase] = useState(Decimal.ZERO);
   const [depositedAmountQuote, setDepositedAmountQuote] = useState(
@@ -92,8 +95,12 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
 
       if (position.positionType === PoolPositionType.ambient) {
         if (pool.lpTokenAddress) {
-          const wallet = await croc.token(pool.lpTokenAddress).wallet(account);
-          liquidity = wallet;
+          const walletBalance = await croc
+            .token(pool.lpTokenAddress)
+            .wallet(account);
+          liquidity = walletBalance.gt(0)
+            ? walletBalance
+            : BigNumber.from(lpTokenBalance);
         } else {
           liquidity = (await pos.queryAmbient()).seeds;
         }
@@ -107,7 +114,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
     } catch (error) {
       console.error(error);
     }
-  }, [croc, pool.lpTokenAddress, pool.poolIndex, position, account]);
+  }, [croc, position, account, lpTokenBalance, pool]);
 
   const isFullWithdrawal = useMemo(
     () =>

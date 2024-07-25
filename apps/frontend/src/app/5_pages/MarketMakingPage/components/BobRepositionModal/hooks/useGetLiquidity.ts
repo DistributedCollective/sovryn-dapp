@@ -10,7 +10,9 @@ export const useGetLiquidity = (position: AmbientPosition, poolIdx: number) => {
   const [liquidity, setLiquidity] = useState('');
 
   const updateConcLiq = useCallback(async () => {
-    if (!croc || !position) return;
+    if (!croc || !position) {
+      return;
+    }
     const pos = croc.positions(position.quote, position.base, account, poolIdx);
 
     const liquidity = (

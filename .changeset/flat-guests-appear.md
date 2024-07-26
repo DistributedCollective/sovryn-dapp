@@ -2,4 +2,4 @@
 "frontend": patch
 ---
 
-SOV-4318: Some users reporting seeing 0 values for LP deposits on BOB
+SOV-4318: Fix for distributed LP token not showing user balances

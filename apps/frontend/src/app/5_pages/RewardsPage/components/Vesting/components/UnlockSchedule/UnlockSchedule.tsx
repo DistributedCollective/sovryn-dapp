@@ -20,9 +20,7 @@ export const UnlockSchedule = (item: VestingContractTableRecord) => {
   );
 
   useEffect(() => {
-    update(state => {
-      state.item = item;
-    });
+    update(state => (state.item = item));
   }, [item, update]);
 
   return (

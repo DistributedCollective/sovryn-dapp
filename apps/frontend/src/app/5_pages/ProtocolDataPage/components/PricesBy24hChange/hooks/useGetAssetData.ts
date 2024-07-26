@@ -2,8 +2,8 @@ import { useState, useRef, useCallback } from 'react';
 
 import axios, { Canceler } from 'axios';
 
+import { DATA_REFRESH_INTERVAL } from '../../../../../../constants/general';
 import { useInterval } from '../../../../../../hooks/useInterval';
-import { DATA_REFRESH_INTERVAL } from '../../../../LandingPage/components/ProtocolData/ProtocolData.constants';
 import { ASSET_DATA_URL } from '../../../ProtocolData.constants';
 import { AssetsData } from '../PricesBy24hChange.types';
 

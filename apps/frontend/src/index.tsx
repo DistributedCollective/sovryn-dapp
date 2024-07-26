@@ -20,6 +20,7 @@ import { NetworkProvider } from './app/3_organisms/NetworkProvider/NetworkProvid
 import { SharedStateProvider } from './app/3_organisms/SharedStateProvider/SharedStateProvider';
 import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { TokenPricesProvider } from './contexts/TokenPricesContext';
 import { TransactionProvider } from './contexts/TransactionContext';
 import './locales/dayjs';
 import './locales/i18n';
@@ -37,18 +38,20 @@ root.render(
       <TransactionProvider>
         <NotificationProvider>
           <ServiceWorkerProvider>
-            <ApolloProvider client={rskClient}>
-              <HelmetProvider>
-                <MaintenanceModeContextProvider>
-                  <LoaderProvider>
-                    <SharedStateProvider>
-                      <RouterProvider router={router} />
-                      <OnboardProvider dataAttribute="dapp-onboard" />
-                    </SharedStateProvider>
-                  </LoaderProvider>
-                </MaintenanceModeContextProvider>
-              </HelmetProvider>
-            </ApolloProvider>
+            <TokenPricesProvider>
+              <ApolloProvider client={rskClient}>
+                <HelmetProvider>
+                  <MaintenanceModeContextProvider>
+                    <LoaderProvider>
+                      <SharedStateProvider>
+                        <RouterProvider router={router} />
+                        <OnboardProvider dataAttribute="dapp-onboard" />
+                      </SharedStateProvider>
+                    </LoaderProvider>
+                  </MaintenanceModeContextProvider>
+                </HelmetProvider>
+              </ApolloProvider>
+            </TokenPricesProvider>
             <TransactionStepDialog disableFocusTrap />
           </ServiceWorkerProvider>
         </NotificationProvider>

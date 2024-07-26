@@ -1,8 +1,6 @@
 import { getGraphWrapperUrl } from '../../../../../utils/helpers';
 import { LockedDataResult, VolumeDataResult } from './ProtocolData.types';
 
-export const DATA_REFRESH_INTERVAL = 60000; // 1 minute
-
 export const DEFAULT_LOCKED_DATA: LockedDataResult = {
   tvlLending: {
     totalBtc: 0,

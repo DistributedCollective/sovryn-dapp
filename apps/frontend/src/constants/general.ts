@@ -38,3 +38,5 @@ export const SECONDS_IN_DAY = 86400;
 export const SECONDS_IN_YEAR = 31536000;
 
 export const TAB_ACTIVE_CLASSNAME = 'bg-gray-70 text-primary-20';
+
+export const DATA_REFRESH_INTERVAL = 60000; // 1 minute

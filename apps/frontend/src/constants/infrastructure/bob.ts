@@ -18,8 +18,8 @@ export const BOB = {
       'https://bob-ambient-graphcache.test.sovryn.app/gcgo',
   },
   sdex: {
-    [Environments.Mainnet]: 'https://indexer.sovryn.app/sdex',
-    [Environments.Testnet]: 'https://indexer.test.sovryn.app/sdex',
+    [Environments.Mainnet]: 'https://indexer.sovryn.app',
+    [Environments.Testnet]: 'https://indexer.test.sovryn.app',
   },
   bridge: {
     [Environments.Mainnet]: 'https://app.gobob.xyz/bridge',

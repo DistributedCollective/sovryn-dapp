@@ -1,5 +1,12 @@
 # frontend
 
+## 1.1.13
+
+### Patch Changes
+
+- b5d47fe8: SOV-4318: Fix for distributed LP token not showing user balances
+- 0bca7b5f: SOV-4120: Pull USD prices from indexer
+
 ## 1.1.12
 
 ### Patch Changes

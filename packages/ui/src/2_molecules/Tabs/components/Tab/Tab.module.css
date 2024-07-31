@@ -1,5 +1,5 @@
 .button {
-  @apply cursor-pointer inline-flex box-border items-center justify-center text-center rounded cursor-pointer transition-colors relative flex-grow;
+  @apply cursor-pointer inline-flex box-border items-center justify-center text-center rounded transition-colors relative flex-grow;
 
   &.primary {
     @apply border-t-2 border-t-transparent border-b text-base text-gray-10/50 rounded-b-none h-12;
@@ -58,6 +58,29 @@
 
     &.active {
       @apply bg-gray-70;
+    }
+
+    &:not(.active) {
+      @apply text-gray-30/75;
+      &:not(:disabled):hover {
+        @apply text-gray-10;
+      }
+    }
+  }
+
+  &.slider {
+    &.normal {
+      @apply text-sm font-semibold px-3 py-1.5;
+      min-width: 5rem;
+    }
+
+    &.small {
+      @apply font-semibold text-xs px-2 py-1;
+      min-width: 3rem;
+    }
+
+    &.active {
+      @apply text-primary-20 bg-gray-70;
     }
 
     &:not(.active) {

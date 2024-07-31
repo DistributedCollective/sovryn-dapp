@@ -94,6 +94,20 @@ export const bobMainnet: AmbientLiquidityPool[] = [
     420,
     '0xbFB1bF6dCc02baCeB8C4c336457798c9b4ED1225',
   ),
+  new AmbientLiquidityPool(
+    'WBTC',
+    'SAT',
+    ChainIds.BOB_MAINNET,
+    410,
+    '', // todo
+  ),
+  new AmbientLiquidityPool(
+    'USDT',
+    'SAT',
+    ChainIds.BOB_MAINNET,
+    400,
+    '', // todo
+  ),
   // new AmbientLiquidityPool('DAI', 'DLLR', ChainIds.BOB_MAINNET, 400),
   // new AmbientLiquidityPool('RETH', 'ETH', ChainIds.BOB_MAINNET, 400),
   // new AmbientLiquidityPool('WSTETH', 'ETH', ChainIds.BOB_MAINNET, 400),

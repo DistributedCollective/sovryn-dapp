@@ -6,4 +6,5 @@ export enum TabSize {
 export enum TabType {
   primary = 'primary',
   secondary = 'secondary',
+  slider = 'slider',
 }

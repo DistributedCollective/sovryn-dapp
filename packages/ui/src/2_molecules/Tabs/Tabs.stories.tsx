@@ -125,3 +125,22 @@ Secondary.args = {
 Secondary.argTypes = {
   ...Primary.argTypes,
 };
+
+export const Slider = Template.bind({});
+Slider.args = {
+  items: [
+    {
+      label: 'Lend',
+      dataAttribute: 'lend',
+    },
+    {
+      label: 'Borrow',
+      dataAttribute: 'borrow',
+    },
+  ],
+  index: 0,
+  contentClassName: '',
+  className: '',
+  size: TabSize.normal,
+  type: TabType.slider,
+};

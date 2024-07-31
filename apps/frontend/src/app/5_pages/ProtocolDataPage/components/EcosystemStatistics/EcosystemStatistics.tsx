@@ -10,13 +10,13 @@ import { BITCOIN, USD } from '../../../../../constants/currencies';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
 import { isBobChain } from '../../../../../utils/chain';
-import { useGetData } from '../../../LandingPage/components/ProtocolData/hooks/useGetData';
+import { useGetLockedData } from '../../../LandingPage/components/ProtocolData/hooks/useGetLockedData';
 import { getCurrencyPrecision } from '../../../PortfolioPage/components/ProtocolSection/ProtocolSection.utils';
 import { pageTranslations } from '../../ProtocolDataPage.constants';
 import { ContractData, ContractDataItem } from './EcosystemStatistics.types';
 
 export const EcosystemStatistics: FC = () => {
-  const { lockedData } = useGetData();
+  const lockedData = useGetLockedData();
   const currencies = useMemo(() => [BITCOIN, USD], []);
   const [selectedCurrency, setSelectedCurrency] = useState(BITCOIN);
 
@@ -42,59 +42,79 @@ export const EcosystemStatistics: FC = () => {
       ),
     [selectedCurrency],
   );
+  const totalValue = useMemo(() => {
+    if (selectedCurrency === BITCOIN) {
+      if (isBobChain(chainId)) {
+        return (
+          Number(lockedData.tvlSdex?.totalBtc || 0) +
+          Number(lockedData.tvlStaking?.totalBtc || 0)
+        );
+      } else {
+        return (
+          Number(lockedData.tvlProtocol?.totalBtc || 0) +
+          Number(lockedData.tvlLending?.totalBtc || 0) +
+          Number(lockedData.tvlAmm?.totalBtc || 0) +
+          Number(lockedData.tvlZero?.totalBtc || 0) +
+          Number(lockedData.tvlMynt?.totalBtc || 0) +
+          Number(lockedData.tvlStaking?.totalBtc || 0)
+        );
+      }
+    } else {
+      if (isBobChain(chainId)) {
+        return (
+          Number(lockedData.tvlSdex?.totalUsd || 0) +
+          Number(lockedData.tvlStaking?.totalUsd || 0)
+        );
+      }
 
-  const subTotalBtcValue = useMemo(() => {
-    if (selectedCurrency !== BITCOIN) {
-      return 0;
+      return (
+        Number(lockedData.tvlProtocol?.totalUsd || 0) +
+        Number(lockedData.tvlLending?.totalUsd || 0) +
+        Number(lockedData.tvlAmm?.totalUsd || 0) +
+        Number(lockedData.tvlZero?.totalUsd || 0) +
+        Number(lockedData.tvlMynt?.totalUsd || 0) +
+        Number(lockedData.tvlStaking?.totalUsd || 0)
+      );
     }
-
-    if (isBobChain(chainId)) {
-      return Number(lockedData.tvlSdex?.totalBtc || 0);
-    }
-
-    return (
-      Number(lockedData.tvlProtocol?.totalBtc || 0) +
-      Number(lockedData.tvlLending?.totalBtc || 0) +
-      Number(lockedData.tvlAmm?.totalBtc || 0) +
-      Number(lockedData.tvlZero?.totalBtc || 0) +
-      Number(lockedData.tvlMynt?.totalBtc || 0)
-    );
   }, [
     chainId,
     lockedData.tvlAmm?.totalBtc,
+    lockedData.tvlAmm?.totalUsd,
     lockedData.tvlLending?.totalBtc,
+    lockedData.tvlLending?.totalUsd,
     lockedData.tvlMynt?.totalBtc,
+    lockedData.tvlMynt?.totalUsd,
     lockedData.tvlProtocol?.totalBtc,
+    lockedData.tvlProtocol?.totalUsd,
     lockedData.tvlSdex?.totalBtc,
+    lockedData.tvlSdex?.totalUsd,
+    lockedData.tvlStaking?.totalBtc,
+    lockedData.tvlStaking?.totalUsd,
     lockedData.tvlZero?.totalBtc,
+    lockedData.tvlZero?.totalUsd,
     selectedCurrency,
   ]);
 
-  const subTotalUsdValue = useMemo(() => {
-    if (selectedCurrency !== USD) {
-      return 0;
+  const subTotalValue = useMemo(() => {
+    if (selectedCurrency === BITCOIN) {
+      if (isBobChain(chainId)) {
+        return totalValue - Number(lockedData.tvlStaking?.totalBtc || 0);
+      } else {
+        return totalValue - Number(lockedData.tvlStaking?.totalBtc || 0);
+      }
+    } else {
+      if (isBobChain(chainId)) {
+        return totalValue - Number(lockedData.tvlStaking?.totalUsd || 0);
+      } else {
+        return totalValue - Number(lockedData.tvlStaking?.totalUsd || 0);
+      }
     }
-
-    if (isBobChain(chainId)) {
-      return Number(lockedData.tvlSdex?.totalUsd || 0);
-    }
-
-    return (
-      Number(lockedData.tvlProtocol?.totalUsd || 0) +
-      Number(lockedData.tvlLending?.totalUsd || 0) +
-      Number(lockedData.tvlAmm?.totalUsd || 0) +
-      Number(lockedData.tvlZero?.totalUsd || 0) +
-      Number(lockedData.tvlMynt?.totalUsd || 0)
-    );
   }, [
     chainId,
-    lockedData.tvlAmm?.totalUsd,
-    lockedData.tvlLending?.totalUsd,
-    lockedData.tvlMynt?.totalUsd,
-    lockedData.tvlProtocol?.totalUsd,
-    lockedData.tvlSdex?.totalUsd,
-    lockedData.tvlZero?.totalUsd,
+    lockedData.tvlStaking?.totalBtc,
+    lockedData.tvlStaking?.totalUsd,
     selectedCurrency,
+    totalValue,
   ]);
 
   const list: ContractData[] = useMemo(() => {
@@ -202,9 +222,7 @@ export const EcosystemStatistics: FC = () => {
         title: t(pageTranslations.ecosystemStatistics.subTotal),
         value: (
           <AmountRenderer
-            value={
-              selectedCurrency === BITCOIN ? subTotalBtcValue : subTotalUsdValue
-            }
+            value={subTotalValue}
             suffix={selectedCurrency}
             precision={getCurrencyPrecision(selectedCurrency)}
             dataAttribute="ecosystem-statistics-subtotal-value"
@@ -227,11 +245,7 @@ export const EcosystemStatistics: FC = () => {
         title: t(pageTranslations.ecosystemStatistics.total),
         value: (
           <AmountRenderer
-            value={
-              selectedCurrency === BITCOIN
-                ? lockedData.total_btc
-                : lockedData.total_usd
-            }
+            value={totalValue}
             suffix={selectedCurrency}
             precision={getCurrencyPrecision(selectedCurrency)}
             dataAttribute="ecosystem-statistics-total-value"
@@ -249,12 +263,12 @@ export const EcosystemStatistics: FC = () => {
     lockedData.tvlZero,
     lockedData.tvlMynt,
     lockedData.tvlStaking,
+    lockedData.tvlSdex,
     lockedData.total_btc,
     lockedData.total_usd,
-    lockedData.tvlSdex,
     selectedCurrency,
-    subTotalBtcValue,
-    subTotalUsdValue,
+    subTotalValue,
+    totalValue,
   ]);
 
   return (

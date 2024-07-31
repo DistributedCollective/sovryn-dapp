@@ -23,7 +23,7 @@ interface TokenPricesProviderProps {
   children: ReactNode;
 }
 
-type TokenDataProps = {
+export type TokenData = {
   symbol: string;
   name: string;
   decimals: number;
@@ -55,7 +55,7 @@ export const TokenPricesProvider: React.FC<TokenPricesProviderProps> = ({
 
       if (data) {
         const prices = data.reduce(
-          (acc: Record<string, string>, tokenData: TokenDataProps) => {
+          (acc: Record<string, string>, tokenData: TokenData) => {
             acc[tokenData.address.toLowerCase()] = decimalic(
               tokenData.usdPrice,
             ).toString();

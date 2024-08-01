@@ -7,15 +7,8 @@ import { Environments } from '../types/global';
 import { isBobChain, isRskChain } from './chain';
 import { isMainnet } from './helpers';
 
-export const getIndexerUri = (chainId: ChainId) => {
-  if (isBobChain(chainId)) {
-    return BOB.indexer[
-      isMainnet() ? Environments.Mainnet : Environments.Testnet
-    ];
-  }
-
-  return SEPOLIA.indexer.testnet;
-};
+export const getIndexerUri = (chainId: ChainId) =>
+  BOB.indexer[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
 export const getSovrynIndexerUri = (chainId: ChainId) => {
   if (isBobChain(chainId) || isRskChain(chainId)) {

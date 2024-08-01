@@ -1,5 +1,16 @@
 # frontend
 
+## 1.1.14
+
+### Patch Changes
+
+- cbb71ce0: SOV-4265: Slippage settings + price impact
+- d0899e6c: SOV-3945: prevent "dead vestings" from LM rewards
+- 68e9c968: SOV-4346: add bitget wallet
+- Updated dependencies [d0899e6c]
+- Updated dependencies [b08b93dc]
+  - @sovryn/ui@1.0.29
+
 ## 1.1.13
 
 ### Patch Changes

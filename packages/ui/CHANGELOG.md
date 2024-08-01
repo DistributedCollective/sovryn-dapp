@@ -1,5 +1,12 @@
 # @sovryn/ui
 
+## 1.0.29
+
+### Patch Changes
+
+- d0899e6c: feat: allow custom row wrapper in table component
+- b08b93dc: SOV-4297: add Slider variation of Tabs component
+
 ## 1.0.28
 
 ### Patch Changes

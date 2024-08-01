@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import dayjs from 'dayjs';
 
@@ -8,12 +8,14 @@ import {
   VestingContractTableRecord,
   VestingHistoryItem,
 } from '../Vesting.types';
+import { useVestingContext } from '../context/VestingContext';
 
 const MAXIMUM_UNLOCKED_DATES = 2;
 
 export const useGetUnlockSchedule = (
   item: VestingContractTableRecord,
 ): VestingHistoryItem[] | undefined => {
+  const update = useVestingContext().update;
   const { data } = useGetVestingHistoryQuery({
     variables: { vestingAddress: item.address },
     client: rskClient,
@@ -49,11 +51,20 @@ export const useGetUnlockSchedule = (
     const pastDatesLength = unlockDates?.filter(item => item.isUnlocked).length;
 
     if (!pastDatesLength || pastDatesLength < MAXIMUM_UNLOCKED_DATES) {
-      return unlockDates;
+      return { unlockDates, pastDatesLength };
     }
 
-    return unlockDates.slice(pastDatesLength - MAXIMUM_UNLOCKED_DATES);
+    return {
+      unlockDates: unlockDates.slice(pastDatesLength - MAXIMUM_UNLOCKED_DATES),
+      pastDatesLength,
+    };
   }, [data?.vestingContracts]);
 
-  return result;
+  useEffect(() => {
+    update(state => {
+      state.count = result?.pastDatesLength || 0;
+    });
+  }, [result?.pastDatesLength, update]);
+
+  return result?.unlockDates;
 };

@@ -13,3 +13,19 @@ query getVestingHistory($vestingAddress: ID) {
     }
   }
 }
+
+query getUserVestingsOfType($user: String, $type: VestingContractType) {
+  vestingContracts(where: { user: $user, type: $type }) {
+    id
+    stakeHistory(
+      where: { action: TokensStaked }
+      orderBy: lockedUntil
+      orderDirection: desc
+      first: 250
+    ) {
+      id
+      amount
+      lockedUntil
+    }
+  }
+}

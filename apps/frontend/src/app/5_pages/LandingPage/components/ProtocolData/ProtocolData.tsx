@@ -157,7 +157,7 @@ export const ProtocolData: FC = () => {
                 <div className="text-xs text-gray-30 mb-2">
                   {t(pageTranslations.tvlBobNetwork)}
                 </div>
-                <div className="text-gray-10 text-sm italic">
+                <div className="text-gray-10 text-sm">
                   <NativeTokenAmount usdValue={bobLockedData.total_usd} />
                 </div>
                 <div className="text-gray-50 text-sm">

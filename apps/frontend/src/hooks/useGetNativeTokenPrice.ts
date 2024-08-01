@@ -4,20 +4,21 @@ import axios from 'axios';
 
 import { RSK_CHAIN_ID } from '../config/chains';
 
+import { BITCOIN, ETH } from '../constants/currencies';
 import { COMMON_SYMBOLS } from '../utils/asset';
-import { isRskChain } from '../utils/chain';
+import { isBobChain } from '../utils/chain';
 import { getIndexerUrl } from '../utils/helpers';
 import { toWei } from '../utils/math';
 import { useCacheCall } from './useCacheCall';
-import { getCurrentChain, useCurrentChain } from './useChainStore';
+import { useCurrentChain } from './useChainStore';
 import { useDollarValue } from './useDollarValue';
 
 export const useGetNativeTokenPrice = () => {
-  const chainId = useCurrentChain();
+  const currentChainId = useCurrentChain();
 
   const { value: rBTCPrice } = useCacheCall(
     'rbtc-price/indexer',
-    getCurrentChain(),
+    RSK_CHAIN_ID,
     async () => {
       const { data } = await axios.get(getIndexerUrl() + 'tokens', {
         params: {
@@ -38,9 +39,14 @@ export const useGetNativeTokenPrice = () => {
   );
 
   const price = useMemo(
-    () => (isRskChain(chainId) ? rBTCPrice : ethPrice),
-    [chainId, ethPrice, rBTCPrice],
+    () => (isBobChain(currentChainId) ? ethPrice : rBTCPrice),
+    [currentChainId, ethPrice, rBTCPrice],
   );
 
-  return { price };
+  const nativeToken = useMemo(
+    () => (isBobChain(currentChainId) ? ETH : BITCOIN),
+    [currentChainId],
+  );
+
+  return { price, nativeToken };
 };

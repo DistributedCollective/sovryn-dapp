@@ -1,3 +1,4 @@
+import bitgetModule from '@sovryn/onboard-bitget';
 import Onboard from '@sovryn/onboard-core';
 import { Asset, BasePath } from '@sovryn/onboard-hw-common';
 import injectedModule from '@sovryn/onboard-injected';
@@ -14,6 +15,7 @@ const basePaths: BasePath[] = [
 const assets: Asset[] = [{ label: 'RBTC' }, { label: 'ETH' }];
 
 const injected = injectedModule();
+const bitget = bitgetModule();
 const ledger = ledgerModule({
   basePaths,
   assets,
@@ -30,7 +32,7 @@ const walletConnect = walletConnectModule({
 });
 
 export const onboard = Onboard({
-  wallets: [injected, walletConnect, ledger, trezor],
+  wallets: [injected, bitget, walletConnect, ledger, trezor],
   chains: APP_CHAIN_LIST.map(item => ({
     ...item,
     rpcUrl: typeof item.rpcUrl === 'string' ? item.rpcUrl : item.rpcUrl[0],

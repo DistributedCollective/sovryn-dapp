@@ -138,7 +138,7 @@ const ConvertPage: FC = () => {
 
   const [sourceToken, setSourceToken] = useState<string>(defaultSourceToken);
 
-  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
+  const [showAdvancedSettings, setShowAdvancedSettings] = useState(true);
 
   const [tokenOptions, setTokenOptions] = useState<SelectOption<string>[]>([]);
 
@@ -385,12 +385,14 @@ const ConvertPage: FC = () => {
   const renderPriceAmount = useMemo(() => {
     if (price) {
       return (
-        <AmountRenderer
-          value={price}
-          suffix={getTokenDisplayName(priceToken)}
-          precision={TOKEN_RENDER_PRECISION}
-          trigger={TooltipTrigger.hover}
-        />
+        <>
+          <AmountRenderer
+            value={price}
+            suffix={getTokenDisplayName(priceToken)}
+            precision={TOKEN_RENDER_PRECISION}
+            trigger={TooltipTrigger.hover}
+          />
+        </>
       );
     }
     return t(commonTranslations.na);
@@ -549,63 +551,50 @@ const ConvertPage: FC = () => {
             </div>
           </div>
 
-          {
-            sourceToken && destinationToken && quote ? (
-              <>
-                <Accordion
-                  className="mt-4 mb-3 text-xs"
-                  label={t(translations.common.advancedSettings)}
-                  open={showAdvancedSettings}
-                  onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
-                  dataAttribute="convert-settings"
-                >
-                  <div className="mt-2 mb-4">
-                    <AmountInput
-                      value={slippageTolerance}
-                      onChange={e => setSlippageTolerance(e.target.value)}
-                      label={t(pageTranslations.slippageTolerance)}
-                      className="max-w-none w-full"
-                      unit="%"
-                      step="0.01"
-                      decimalPrecision={2}
-                      placeholder="0"
-                      max="100"
-                    />
-                  </div>
-                </Accordion>
+          <Accordion
+            className="mt-4 mb-3 text-xs"
+            label={t(translations.common.advancedSettings)}
+            open={showAdvancedSettings}
+            onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
+            dataAttribute="convert-settings"
+          >
+            <div className="mt-2 mb-4">
+              <AmountInput
+                value={slippageTolerance}
+                onChange={e => setSlippageTolerance(e.target.value)}
+                label={t(pageTranslations.slippageTolerance)}
+                className="max-w-none w-full"
+                unit="%"
+                step="0.01"
+                decimalPrecision={2}
+                placeholder="0"
+                max="100"
+              />
+            </div>
+          </Accordion>
 
-                <SimpleTable className="mt-3">
-                  <SimpleTableRow
-                    label={t(pageTranslations.minimumReceived)}
-                    valueClassName="text-primary-10"
-                    value={
-                      <AmountRenderer
-                        value={minimumReceived}
-                        suffix={getTokenDisplayName(destinationToken)}
-                        precision={TOKEN_RENDER_PRECISION}
-                      />
-                    }
+          {sourceToken && destinationToken && quote ? (
+            <SimpleTable className="mt-3">
+              <SimpleTableRow
+                label={t(pageTranslations.minimumReceived)}
+                valueClassName="text-primary-10"
+                value={
+                  <AmountRenderer
+                    value={minimumReceived}
+                    suffix={getTokenDisplayName(destinationToken)}
+                    precision={TOKEN_RENDER_PRECISION}
                   />
-                  <SimpleTableRow
-                    label={t(pageTranslations.maximumPrice)}
-                    valueClassName="text-primary-10"
-                    className="cursor-pointer"
-                    onClick={togglePriceQuote}
-                    value={renderPriceAmount}
-                  />
-                </SimpleTable>
-              </>
-            ) : null
-            // <SimpleTable className="mt-3">
-            //   <SimpleTableRow
-            //     label={t(pageTranslations.price)}
-            //     valueClassName="text-primary-10"
-            //     className="cursor-pointer"
-            //     value={renderPriceAmount}
-            //     onClick={() => setPriceQuote(value => !value)}
-            //   />
-            // </SimpleTable>
-          }
+                }
+              />
+              <SimpleTableRow
+                label={t(pageTranslations.maximumPrice)}
+                valueClassName="text-primary-10"
+                className="cursor-pointer"
+                onClick={togglePriceQuote}
+                value={renderPriceAmount}
+              />
+            </SimpleTable>
+          ) : null}
 
           {hasQuoteError && (
             <ErrorBadge

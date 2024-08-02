@@ -21,7 +21,7 @@ export const UnclaimcedVestingAlert = () => {
         <Paragraph>
           {t(translations.unclaimedVestings.text, { value: count })}{' '}
           <Link
-            to="/rewards"
+            to="/rewards?tab=vesting"
             className="underline text-primary-20 hover:text-primary-10"
           >
             {t(translations.unclaimedVestings.cta)}

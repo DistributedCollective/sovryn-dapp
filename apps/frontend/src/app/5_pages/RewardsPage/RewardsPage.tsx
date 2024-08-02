@@ -3,7 +3,7 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { Trans } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import {
   SelectOption,
@@ -38,6 +38,8 @@ import { Vesting } from './components/Vesting/Vesting';
 const ACTIVE_CLASSNAME = 'border-t-primary-30';
 
 const RewardsPage: FC = () => {
+  const [params] = useSearchParams({ tab: '' });
+  const tab = params.get('tab');
   const navigate = useNavigate();
   const { checkMaintenance, States } = useMaintenance();
   const rewardsLocked = checkMaintenance(States.REWARDS_FULL);
@@ -108,6 +110,25 @@ const RewardsPage: FC = () => {
       setIndex(items.findIndex(item => !item.disabled));
     }
   }, [items, index]);
+
+  useEffect(() => {
+    switch (tab) {
+      case 'liquidityMining':
+        setIndex(0);
+        break;
+      case 'stabilityPool':
+        setIndex(1);
+        break;
+      case 'staking':
+        setIndex(2);
+        break;
+      case 'vesting':
+        setIndex(3);
+        break;
+      default:
+        break;
+    }
+  }, [tab]);
 
   return (
     <>

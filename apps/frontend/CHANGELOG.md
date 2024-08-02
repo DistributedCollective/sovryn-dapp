@@ -1,5 +1,11 @@
 # frontend
 
+## 1.1.15
+
+### Patch Changes
+
+- 1e8f3c4d: fix: LM Vesting crashes rewards page
+
 ## 1.1.14
 
 ### Patch Changes

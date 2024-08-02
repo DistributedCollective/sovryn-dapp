@@ -5,19 +5,36 @@ import dayjs from 'dayjs';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { rskClient } from '../../../../../../utils/clients';
 import {
+  useGetLastWithdrawOfVestingTypeQuery,
   useGetUserVestingsOfTypeQuery,
   VestingContractType,
 } from '../../../../../../utils/graphql/rsk/generated';
 
 export const useGetUnclaimedUserVestingCount = () => {
   const { account } = useAccount();
-  const { data } = useGetUserVestingsOfTypeQuery({
+  const { data, loading } = useGetUserVestingsOfTypeQuery({
     variables: {
       user: account.toLowerCase(),
       type: VestingContractType.Rewards,
     },
     client: rskClient,
   });
+
+  const { data: withdraws, loading: loadingWithdraws } =
+    useGetLastWithdrawOfVestingTypeQuery({
+      variables: {
+        user: account,
+        type: VestingContractType.Rewards,
+      },
+      client: rskClient,
+    });
+
+  const lastWithdrawTimestamp = useMemo(
+    () =>
+      withdraws?.vestingContracts[0]?.stakeHistory?.[0]?.timestamp ||
+      dayjs().subtract(4, 'year').unix(),
+    [withdraws?.vestingContracts],
+  );
 
   const result = useMemo(() => {
     const stakeHistoryItems = data?.vestingContracts[0]?.stakeHistory?.map(
@@ -46,10 +63,12 @@ export const useGetUnclaimedUserVestingCount = () => {
       }),
     ).sort((a, b) => a.lockedUntil - b.lockedUntil);
 
-    const pastDatesLength = unlockDates?.filter(item => item.isUnlocked).length;
+    const pastDatesLength = unlockDates
+      ?.filter(item => item.isUnlocked)
+      .filter(item => item.lockedUntil > lastWithdrawTimestamp).length;
 
     return pastDatesLength;
-  }, [data?.vestingContracts]);
+  }, [data?.vestingContracts, lastWithdrawTimestamp]);
 
-  return result;
+  return loading || loadingWithdraws ? 0 : result;
 };

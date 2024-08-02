@@ -29,3 +29,19 @@ query getUserVestingsOfType($user: String, $type: VestingContractType) {
     }
   }
 }
+
+query getLastWithdrawOfVestingType($user: String, $type: VestingContractType) {
+  vestingContracts(where: { user: $user, type: $type }) {
+    id
+    stakeHistory(
+      where: { action: TokensWithdrawn }
+      orderBy: timestamp
+      orderDirection: desc
+      first: 1
+    ) {
+      id
+      amount
+      timestamp
+    }
+  }
+}

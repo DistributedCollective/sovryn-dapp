@@ -16838,6 +16838,25 @@ export type GetUserVestingsOfTypeQuery = {
   }>;
 };
 
+export type GetLastWithdrawOfVestingTypeQueryVariables = Exact<{
+  user?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<VestingContractType>;
+}>;
+
+export type GetLastWithdrawOfVestingTypeQuery = {
+  __typename?: 'Query';
+  vestingContracts: Array<{
+    __typename?: 'VestingContract';
+    id: string;
+    stakeHistory?: Array<{
+      __typename?: 'VestingHistoryItem';
+      id: string;
+      amount: string;
+      timestamp: number;
+    }> | null;
+  }>;
+};
+
 export type GetVestingHistoryItemsQueryVariables = Exact<{
   stakers?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
   skip: Scalars['Int'];
@@ -19851,6 +19870,78 @@ export type GetUserVestingsOfTypeLazyQueryHookResult = ReturnType<
 export type GetUserVestingsOfTypeQueryResult = Apollo.QueryResult<
   GetUserVestingsOfTypeQuery,
   GetUserVestingsOfTypeQueryVariables
+>;
+export const GetLastWithdrawOfVestingTypeDocument = gql`
+  query getLastWithdrawOfVestingType(
+    $user: String
+    $type: VestingContractType
+  ) {
+    vestingContracts(where: { user: $user, type: $type }) {
+      id
+      stakeHistory(
+        where: { action: TokensWithdrawn }
+        orderBy: timestamp
+        orderDirection: desc
+        first: 1
+      ) {
+        id
+        amount
+        timestamp
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetLastWithdrawOfVestingTypeQuery__
+ *
+ * To run a query within a React component, call `useGetLastWithdrawOfVestingTypeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLastWithdrawOfVestingTypeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLastWithdrawOfVestingTypeQuery({
+ *   variables: {
+ *      user: // value for 'user'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useGetLastWithdrawOfVestingTypeQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetLastWithdrawOfVestingTypeQuery,
+    GetLastWithdrawOfVestingTypeQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetLastWithdrawOfVestingTypeQuery,
+    GetLastWithdrawOfVestingTypeQueryVariables
+  >(GetLastWithdrawOfVestingTypeDocument, options);
+}
+export function useGetLastWithdrawOfVestingTypeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetLastWithdrawOfVestingTypeQuery,
+    GetLastWithdrawOfVestingTypeQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetLastWithdrawOfVestingTypeQuery,
+    GetLastWithdrawOfVestingTypeQueryVariables
+  >(GetLastWithdrawOfVestingTypeDocument, options);
+}
+export type GetLastWithdrawOfVestingTypeQueryHookResult = ReturnType<
+  typeof useGetLastWithdrawOfVestingTypeQuery
+>;
+export type GetLastWithdrawOfVestingTypeLazyQueryHookResult = ReturnType<
+  typeof useGetLastWithdrawOfVestingTypeLazyQuery
+>;
+export type GetLastWithdrawOfVestingTypeQueryResult = Apollo.QueryResult<
+  GetLastWithdrawOfVestingTypeQuery,
+  GetLastWithdrawOfVestingTypeQueryVariables
 >;
 export const GetVestingHistoryItemsDocument = gql`
   query getVestingHistoryItems(

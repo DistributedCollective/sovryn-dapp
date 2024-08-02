@@ -4,34 +4,44 @@ import path from 'path';
 
 //import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
+
 // import { // bobMainnetMockAmbientPoolConfigs,
 // bobMainnetAmbientPoolConfigs //bobMainnetConcentratedPoolConfigs //bobMainnetAmbientPoolConfigs, //, // bobMainnetMockConcentratedPoolConfigs,
 // } from './config';
-import {
-  createPositionAmbientLiquidity, //createPositionAmbientLiquidity, //, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
-} from './helper';
+// import {
+//   createPositionAmbientLiquidity, //createPositionAmbientLiquidity, //, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
+// } from './helper';
 
 let configPath = '';
+let requiredConfig = true;
 
 // Iterate over the command-line arguments
 process.argv.forEach((arg, index) => {
   if (arg === '--path' && index + 1 < process.argv.length) {
     configPath = process.argv[index + 1];
   }
+  if (arg === '--not-required-config') {
+    requiredConfig = false;
+  }
 });
-let config;
+let config = '';
+let fullPath = '';
 if (configPath) {
-  const fullPath = path.resolve(configPath);
+  fullPath = path.resolve(configPath);
   try {
     config = require(fullPath);
   } catch (err) {
     console.error('Error requiring config:', err);
   }
-} else {
+} else if (requiredConfig) {
   console.error('No path provided. Please provide a path using --path');
 }
+if (config) {
+  console.log('Using config', fullPath);
+}
 //console.log(config);
-const { bobMainnetAmbientPoolConfigs } = config;
+
+// const { bobMainnetAmbientPoolConfigs } = config;
 
 // import { priceToTick } from '../utils/price';
 
@@ -104,23 +114,26 @@ async function demo() {
     DLLR: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
     POWA: '0xd0C2f08a873186db5cFB7b767dB62BEF9e495BFF',
     wstETH: '0x85008aE6198BC91aC0735CB5497CF125ddAAc528',
+    SAT: '0x78fea795cbfcc5ffd6fb5b845a4f53d25c283bdb',
   };
 
   //eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  const [ETH, WBTC, tBTC, rETH, USDT, DAI, SOV, USDC, DLLR, POWA, wstETH] = [
-    bobMainnetTokens.ETH,
-    bobMainnetTokens.WBTC,
-    bobMainnetTokens.tBTC,
-    bobMainnetTokens.rETH,
-    bobMainnetTokens.USDT,
-    bobMainnetTokens.DAI,
-    bobMainnetTokens.SOV,
-    bobMainnetTokens.USDC,
-    bobMainnetTokens.DLLR,
-    bobMainnetTokens.POWA,
-    bobMainnetTokens.wstETH,
-  ];
+  const [ETH, WBTC, tBTC, rETH, USDT, DAI, SOV, USDC, DLLR, POWA, wstETH, SAT] =
+    [
+      bobMainnetTokens.ETH,
+      bobMainnetTokens.WBTC,
+      bobMainnetTokens.tBTC,
+      bobMainnetTokens.rETH,
+      bobMainnetTokens.USDT,
+      bobMainnetTokens.DAI,
+      bobMainnetTokens.SOV,
+      bobMainnetTokens.USDC,
+      bobMainnetTokens.DLLR,
+      bobMainnetTokens.POWA,
+      bobMainnetTokens.wstETH,
+      bobMainnetTokens.SAT,
+    ];
 
   // ----- AMBIENT LIQUIDITY -----
   // USDT/SOV
@@ -136,6 +149,22 @@ async function demo() {
   //   .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
   // console.log('Encoded data to deposit', amountParam, ' USDT:', encodedData);
 
+  // DEPLOY (INITIALIZE) AMBIENT POOLS
+
+  const pool = croc.pool(WBTC, SAT, 410);
+  const { fn, args } = await pool.initPool(64550);
+  console.log({ fn, args });
+  // const poolPrice = await pool.displayPrice();
+  // console.log(`Pool Price: ${poolPrice.toString()}`);
+
+  // const pool = croc.pool(USDT, SAT, 400);
+  // const { fn, args } = await pool.initPool(1);
+  // console.log({ fn, args });
+  // const poolPrice = await pool.displayPrice();
+  // console.log(`Pool Price: ${poolPrice.toString()}`);
+
+  // DEPOSIT AMBIENT
+  /*
   const slippageTolerancePercentage = 10; // 10%
 
   for (const poolConfig of bobMainnetAmbientPoolConfigs) {
@@ -152,7 +181,7 @@ async function demo() {
       price: price, // price
       slippageTolerancePercentage,
     });
-  }
+  }*/
 
   // CONCENTRATED LIQUIDITY
   // for (const poolConfig of bobMainnetConcentratedPoolConfigs) {

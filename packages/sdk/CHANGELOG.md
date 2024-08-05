@@ -1,5 +1,13 @@
 # @sovryn/sdk
 
+## 1.0.8
+
+### Patch Changes
+
+- ab40c983: feat: add SAT pools
+- Updated dependencies [ab40c983]
+  - @sovryn/contracts@1.1.8
+
 ## 1.0.7
 
 ### Patch Changes

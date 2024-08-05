@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.1.8
+
+### Patch Changes
+
+- ab40c983: feat: add SAT token to list
+
 ## 1.1.7
 
 ### Patch Changes

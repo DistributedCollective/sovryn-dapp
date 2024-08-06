@@ -524,7 +524,7 @@
             },
             "earnYield_BOB": {
                 "title": "Passive Yield",
-                "description": "Earn Spice, Rune points & trading fees in the Sovryn AMM.",
+                "description": "Earn Spice & Trading fees in the Sovryn AMM.",
                 "action": "Deposit in AMM"
             },
             "soon_BOB": {
@@ -1963,7 +1963,7 @@
             "title": "Market Making - Sovryn"
         },
         "title": "Market making",
-        "subtitle": "Earn Spice & Rune points and fees from AMM swaps on BoB chain",
+        "subtitle": "Earn Spice and fees from AMM swaps on BoB chain",
         "poolsTable": {
             "pair": "Pair",
             "liquidity": "Liquidity",

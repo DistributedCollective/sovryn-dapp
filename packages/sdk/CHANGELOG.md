@@ -1,5 +1,11 @@
 # @sovryn/sdk
 
+## 1.0.9
+
+### Patch Changes
+
+- 065c937d: SOV-4350: Disable SAT/WBTC pool and conversions via smart-router route
+
 ## 1.0.8
 
 ### Patch Changes

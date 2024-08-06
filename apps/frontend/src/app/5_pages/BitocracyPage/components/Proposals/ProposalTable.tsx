@@ -61,7 +61,7 @@ export const ProposalTable: FC<ProposalTableProps> = ({
               {t(translations.common.tables.noData)}
             </span>
           }
-          dataAttribute="bitocracy-live-proposals-table"
+          dataAttribute="bitocracy-proposals-table"
           onRowClick={handleRowClick}
         />
         <Pagination
@@ -70,13 +70,22 @@ export const ProposalTable: FC<ProposalTableProps> = ({
           onChange={onActivePageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={proposals.length < pageSize}
-          dataAttribute="close-with-swaps-pagination"
+          dataAttribute="bitocracy-proposals-pagination"
           totalItems={proposals.length}
         />
       </div>
 
       <div className="block lg:hidden">
-        <ProposalCardsMobile isLoading={loading} proposals={proposals} />
+        <ProposalCardsMobile isLoading={loading} proposals={data} />
+        <Pagination
+          page={page}
+          className="lg:pb-6 mt-3 lg:mt-6 justify-center lg:justify-start"
+          onChange={onActivePageChange}
+          itemsPerPage={pageSize}
+          isNextButtonDisabled={proposals.length < pageSize}
+          dataAttribute="bitocracy-proposals-pagination"
+          totalItems={proposals.length}
+        />
       </div>
     </>
   );

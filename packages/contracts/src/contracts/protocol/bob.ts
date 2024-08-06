@@ -19,4 +19,12 @@ export const bob: Record<string, AsyncContractConfigData> = {
     address: '0x8989E07E565966463C73dadE4c095DaC991e1dD2',
     getAbi: async () => (await import('../../abis/RuneBridge.json')).default,
   },
+  lbFactory: {
+    address: '0x603764D0D819C50a6A9aab009410ABAC6482C874', //TODO: Update this address
+    getAbi: async () => (await import('../../abis/LBFactory.json')).default,
+  },
+  lbRouter: {
+    address: '0xbab96CC58a312a5f09E18630416794EC6C3D971D', //TODO: Update this address
+    getAbi: async () => (await import('../../abis/LBRouter.json')).default,
+  },
 };

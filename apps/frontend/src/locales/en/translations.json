@@ -791,6 +791,27 @@
         "collateralRatio": "collateral ratio"
     },
 
+    "aavePage": {
+        "meta": {
+            "title": "Lend and borrow"
+        },
+        "topPanel": {
+            "title": "Lend and borrow",
+            "subtitle": "Borrow and earn interest by providing liquidity",
+            "netWorth": "Net worth",
+            "netApy": "Net API",
+            "n/a": "N/A"
+        },
+        "borrowingPositionsList": {
+            "title": "Your loans",
+            "connectWallet": "Connect wallet to see the available data"
+        },
+        "lendingPositionsList": {
+            "title": "Your lending deposits",
+            "connectWallet": "Connect wallet to see the available data"
+        }
+    },
+
     "bitocracyPage": {
         "meta": {
             "title": "Bitocracy - Sovryn",

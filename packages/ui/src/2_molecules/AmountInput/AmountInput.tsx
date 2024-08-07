@@ -107,10 +107,12 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
 
     const onChangeTextHandler = useCallback(
       (value: string) => {
-        const formattedValue = formatValue(value);
-
-        onChangeText?.(formattedValue);
-        setFormattedValue(formattedValue);
+        const newValue = formatValue(value);
+        onChangeText?.(newValue);
+        setFormattedValue(newValue);
+        if (inputRef.current) {
+          inputRef.current.value = newValue;
+        }
       },
       [formatValue, onChangeText],
     );
@@ -154,7 +156,6 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
               {tooltip && <HelperButton content={tooltip} />}
             </div>
           )}
-
           <InputBase
             ref={inputRef}
             lang={navigator.language}

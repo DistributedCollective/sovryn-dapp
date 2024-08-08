@@ -12,7 +12,7 @@ import {
 } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
-import { WalletStatCard } from '../WalletStatCard/WalletStatCard';
+import { WalletStatCard } from './components/WalletStatCard/WalletStatCard';
 
 const pageTranslations = translations.aavePage.topPanel;
 
@@ -38,20 +38,21 @@ export const TopPanel: FC<TopPanelProps> = ({ account }) => {
             label={t(pageTranslations.netWorth)}
             prefix="$"
             value="1,234,567.58"
-            tooltipContent="Net APY is the combined effect of all supply and borrow positions on net worth, including incentives. It is possible to have a negative net APY if debt APY is higher than supply APY."
+            // TODO: update content and translations
+            helperContent="Net APY is the combined effect of all supply and borrow positions on net worth, including incentives. It is possible to have a negative net APY if debt APY is higher than supply APY."
           />
           <div className="flex gap-9">
             <WalletStatCard
               label={t(pageTranslations.netWorth)}
               value="200"
               suffix="%"
-              tooltipContent="Net APY is the combined effect of all supply and borrow positions on net worth, including incentives. It is possible to have a negative net APY if debt APY is higher than supply APY."
+              helperContent="Net APY is the combined effect of all supply and borrow positions on net worth, including incentives. It is possible to have a negative net APY if debt APY is higher than supply APY."
             />
             <WalletStatCard
               label={t(pageTranslations.netWorth)}
               value="11.69"
               suffix="%"
-              tooltipContent="Net APY is the combined effect of all supply and borrow positions on net worth, including incentives. It is possible to have a negative net APY if debt APY is higher than supply APY."
+              helperContent="Net APY is the combined effect of all supply and borrow positions on net worth, including incentives. It is possible to have a negative net APY if debt APY is higher than supply APY."
             />
           </div>
         </div>

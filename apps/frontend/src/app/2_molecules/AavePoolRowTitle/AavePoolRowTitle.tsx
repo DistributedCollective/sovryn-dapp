@@ -16,7 +16,7 @@ export const AavePoolRowTitle: FC<AavePoolRowTitleProps> = ({
   asset,
   isBorrow = false,
 }) => (
-  <div className="flex justify-between items-center w-full">
+  <div className="flex justify-between items-center w-full pr-3">
     <AssetRenderer
       dataAttribute={`${isBorrow ? 'borrow-table' : 'lend-frame'}-asset`}
       showAssetLogo

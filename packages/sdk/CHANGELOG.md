@@ -1,5 +1,11 @@
 # @sovryn/sdk
 
+## 1.0.10
+
+### Patch Changes
+
+- 7625e9fc: chore: bring back WBTC/SAT pool
+
 ## 1.0.9
 
 ### Patch Changes

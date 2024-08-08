@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { HelperButton } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { LendPosition } from '../../LendPositionsList.types';
 import { LendPositionAction } from '../LendPositionAction/LendPositionAction';
@@ -19,7 +20,7 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
   return (
     <div className="space-y-3">
       <div className="space-y-2">
-        {/* Available */}
+        {/* Balance */}
         <div className="grid grid-cols-2">
           <div className="flex items-center gap-1">
             <span className="text-xs font-medium text-gray-30">
@@ -27,13 +28,12 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
             </span>
           </div>
 
-          {/* TODO: review amount renderer component */}
           <div className="text-right text-xs text-gray-30 font-medium">
-            {position.balance} {position.asset}
+            <AmountRenderer value={position.balance} suffix={position.asset} />
           </div>
         </div>
 
-        {/* APR */}
+        {/* APY */}
         <div className="grid grid-cols-2">
           <div className="flex items-center gap-1">
             <span className="text-xs font-medium text-gray-30">
@@ -44,8 +44,9 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
               className="text-gray-30"
             />
           </div>
+
           <div className="text-right text-xs text-gray-30 font-medium">
-            {position.apy}
+            <AmountRenderer value={position.apy} />
           </div>
         </div>
 

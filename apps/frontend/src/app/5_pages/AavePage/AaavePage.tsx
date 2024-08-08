@@ -6,7 +6,6 @@ import { Helmet } from 'react-helmet-async';
 
 import { Tabs, TabSize, TabType } from '@sovryn/ui';
 
-import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import { BorrowAssetsList } from './components/BorrowAssetsList/BorrowAssetsList';
 import { BorrowPositionsList } from './components/BorrowPositionsList/BorrowPositionsList';
@@ -22,7 +21,6 @@ enum LiquidityTabs {
 }
 
 const AavePage: FC = () => {
-  const { account } = useAccount();
   const [activeLiquidityTab, setActiveLiquidityTab] = useState<LiquidityTabs>(
     LiquidityTabs.LEND,
   );
@@ -33,7 +31,7 @@ const AavePage: FC = () => {
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
 
-      <TopPanel account={account} />
+      <TopPanel />
 
       <div className="pt-6 mt-6 space-y-6 lg:pt-0 lg:mt-0 lg:space-y-0">
         {/* Tab selector */}

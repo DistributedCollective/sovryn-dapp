@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { HelperButton, Icon } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { LendPoolDetails } from '../../LendAssetsList.types';
 import { LendAssetAction } from '../LendAssetAction/LendAssetAction';
@@ -24,13 +25,12 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
             </span>
           </div>
 
-          {/* TODO: review amount renderer component */}
           <div className="text-right text-xs text-gray-30 font-medium">
-            {pool.walletBalance} {pool.asset}
+            <AmountRenderer value={pool.walletBalance} suffix={pool.asset} />
           </div>
         </div>
 
-        {/* APR */}
+        {/* APY */}
         <div className="grid grid-cols-2">
           <div className="flex items-center gap-1">
             <span className="text-xs font-medium text-gray-30">
@@ -42,9 +42,8 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
             />
           </div>
 
-          {/* TODO: review amount renderer component */}
           <div className="text-right text-xs text-gray-30 font-medium">
-            {pool.apy}
+            <AmountRenderer value={pool.apy} />
           </div>
         </div>
 

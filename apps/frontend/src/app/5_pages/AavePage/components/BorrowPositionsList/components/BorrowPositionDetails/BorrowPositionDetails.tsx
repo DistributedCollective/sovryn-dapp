@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { HelperButton } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { BorrowPosition } from '../../BorrowPositionsList.types';
 import { BorrowPositionAction } from '../BorrowPositionAction/BorrowPositionAction';
@@ -26,9 +27,8 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
             </span>
           </div>
 
-          {/* TODO: review amount renderer component */}
           <div className="text-right text-xs text-gray-30 font-medium">
-            {position.balance} {position.asset}
+            <AmountRenderer value={position.balance} suffix={position.asset} />
           </div>
         </div>
 
@@ -43,8 +43,9 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
               className="text-gray-30"
             />
           </div>
+
           <div className="text-right text-xs text-gray-30 font-medium">
-            {position.apr}
+            <AmountRenderer value={position.apr} />
           </div>
         </div>
 
@@ -55,6 +56,7 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
               {t(translations.aavePage.common.apyType)}
             </span>
           </div>
+
           <div className="flex justify-end text-xs text-positive font-medium">
             {position.apyType}
           </div>

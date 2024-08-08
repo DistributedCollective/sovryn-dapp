@@ -11,16 +11,17 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
+import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { WalletStatCard } from './components/WalletStatCard/WalletStatCard';
 
 const pageTranslations = translations.aavePage.topPanel;
 
-type TopPanelProps = {
-  account: string;
-};
+type TopPanelProps = {};
 
-export const TopPanel: FC<TopPanelProps> = ({ account }) => {
+export const TopPanel: FC<TopPanelProps> = () => {
+  const { account } = useAccount();
+
   return (
     <div className="w-full flex flex-col gap-6">
       <div className="text-center py-6 px-10 space-y-3 md:hidden">
@@ -34,21 +35,22 @@ export const TopPanel: FC<TopPanelProps> = ({ account }) => {
 
       <div className="flex flex-col gap-6 md:flex-row">
         <div className="flex flex-col gap-4 md:py-12 md:flex-row md:gap-9 flex-shrink-0">
+          {/* TODO: mock values */}
           <WalletStatCard
             label={t(pageTranslations.netWorth)}
             prefix="$"
-            value="1,234,567.58"
+            value={account ? 1234567.58 : undefined}
           />
           <div className="flex gap-9">
             <WalletStatCard
               label={t(pageTranslations.netApy)}
-              value="200"
+              value={account ? 2.69 : undefined}
               suffix="%"
               helperContent={t(pageTranslations.netApyInfo)}
             />
             <WalletStatCard
               label={t(pageTranslations.collateralRatio)}
-              value="11.69"
+              value={account ? 11.5 : undefined}
               suffix="%"
               helperContent={t(pageTranslations.collateralRatioInfo)}
             />

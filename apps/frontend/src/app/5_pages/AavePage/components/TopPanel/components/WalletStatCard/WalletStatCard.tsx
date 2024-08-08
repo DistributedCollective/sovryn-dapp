@@ -1,21 +1,25 @@
 import React, { FC } from 'react';
 
+import { t } from 'i18next';
+
 import { HelperButton } from '@sovryn/ui';
 
-type WalletStatCardProps = {
+import {
+  AmountRenderer,
+  AmountRendererProps,
+} from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { translations } from '../../../../../../../locales/i18n';
+
+type WalletStatCardProps = Partial<AmountRendererProps> & {
   label: string;
-  value: string;
-  prefix?: string;
-  suffix?: string;
   helperContent?: string;
 };
 
 export const WalletStatCard: FC<WalletStatCardProps> = ({
   label,
   value,
-  prefix,
-  suffix,
   helperContent,
+  ...props
 }) => {
   return (
     <div className="space-y-3">
@@ -23,10 +27,13 @@ export const WalletStatCard: FC<WalletStatCardProps> = ({
         <span className="text-xs text-gray-30">{label}</span>
         {helperContent && <HelperButton content={helperContent} />}
       </div>
+
       <div className="text-2xl text-white">
-        {prefix && <span>{prefix}</span>}
-        <span>{value}</span>
-        {suffix && <span>{suffix}</span>}
+        {value ? (
+          <AmountRenderer value={value} {...props} />
+        ) : (
+          <span>{t(translations.aavePage.topPanel['n/a'])}</span>
+        )}
       </div>
     </div>
   );

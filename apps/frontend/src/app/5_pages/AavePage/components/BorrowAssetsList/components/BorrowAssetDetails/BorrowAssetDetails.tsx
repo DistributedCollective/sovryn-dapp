@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { HelperButton } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { BorrowPoolDetails } from '../../BorrowAssetsList.types';
 import { BorrowAssetAction } from '../BorrowAssetAction/BorrowAssetAction';
@@ -30,9 +31,8 @@ export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => {
             />
           </div>
 
-          {/* TODO: amount renderer */}
           <div className="text-right text-xs text-gray-30 font-medium">
-            {pool.apr}
+            <AmountRenderer value={pool.apr} />
           </div>
         </div>
 
@@ -44,9 +44,8 @@ export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => {
             </span>
           </div>
 
-          {/* TODO: amount renderer */}
           <div className="text-right text-xs text-gray-30 font-medium">
-            {pool.available} {pool.asset}
+            <AmountRenderer value={pool.available} suffix={pool.asset} />
           </div>
         </div>
       </div>

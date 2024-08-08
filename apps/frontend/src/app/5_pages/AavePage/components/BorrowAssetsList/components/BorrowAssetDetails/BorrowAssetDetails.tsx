@@ -8,7 +8,7 @@ import { translations } from '../../../../../../../locales/i18n';
 import { BorrowPoolAssetDetails } from '../../BorrowAssetsList.types';
 import { BorrowAssetAction } from '../BorrowAssetAction/BorrowAssetAction';
 
-const pageTranslations = translations.aavePage.borrowAssetsList;
+const pageTranslations = translations.aavePage;
 
 type BorrowAssetDetailsProps = {
   pool: BorrowPoolAssetDetails;
@@ -22,10 +22,10 @@ export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => {
         <div className="grid grid-cols-2">
           <div className="flex items-center gap-1">
             <span className="text-xs font-medium text-gray-30">
-              {t(pageTranslations.apr)}
+              {t(pageTranslations.common.apr)}
             </span>
             <HelperButton
-              content={t(pageTranslations.aprInfo)}
+              content={t(pageTranslations.common.aprInfo)}
               className="text-gray-30"
             />
           </div>
@@ -38,7 +38,7 @@ export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => {
         <div className="grid grid-cols-2">
           <div className="flex items-center gap-1">
             <span className="text-xs font-medium text-gray-30">
-              {t(pageTranslations.available)}
+              {t(pageTranslations.borrowAssetsList.available)}
             </span>
           </div>
           <div className="text-right text-xs text-gray-30 font-medium">

@@ -2,17 +2,17 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { HelperButton, Icon } from '@sovryn/ui';
+import { HelperButton, Toggle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { LendPoolAssetDetails } from '../../LendAssetsList.types';
-import { LendAssetAction } from '../LendAssetAction/LendAssetAction';
+import { LendPosition } from '../../LendPositionsList.types';
+import { LendPositionAction } from '../LendPositionAction/LendPositionAction';
 
-type LendAssetDetailsProps = {
-  pool: LendPoolAssetDetails;
+type LendPositionDetailsProps = {
+  pool: LendPosition;
 };
 
-export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
+export const LendPositionDetails: FC<LendPositionDetailsProps> = ({ pool }) => {
   return (
     <div className="space-y-3">
       <div className="space-y-2">
@@ -20,13 +20,13 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
         <div className="grid grid-cols-2">
           <div className="flex items-center gap-1">
             <span className="text-xs font-medium text-gray-30">
-              {t(translations.aavePage.lendAssetsList.walletBalance)}
+              {t(translations.aavePage.common.balance)}
             </span>
           </div>
 
           {/* TODO: review amount renderer component */}
           <div className="text-right text-xs text-gray-30 font-medium">
-            {pool.walletBalance} {pool.asset}
+            {pool.balance} {pool.asset}
           </div>
         </div>
 
@@ -34,7 +34,7 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
         <div className="grid grid-cols-2">
           <div className="flex items-center gap-1">
             <span className="text-xs font-medium text-gray-30">
-              {t(translations.aavePage.common.apy)}
+              {t(translations.aavePage.lendAssetsList.apy)}
             </span>
             <HelperButton
               content={t(translations.aavePage.common.apyInfo)}
@@ -54,14 +54,12 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
             </span>
           </div>
           <div className="flex justify-end text-xs text-positive font-medium">
-            {pool.canBeCollateral ? (
-              <Icon icon="check" className="w-[10px]" />
-            ) : null}
+            <Toggle checked={pool.collateral} onChange={() => 'TODO:'} />
           </div>
         </div>
       </div>
 
-      <LendAssetAction pool={pool} />
+      <LendPositionAction pool={pool} />
     </div>
   );
 };

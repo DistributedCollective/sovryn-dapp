@@ -788,6 +788,19 @@
         "meta": {
             "title": "Lend and borrow"
         },
+        "common": {
+            "connectWallet": "Connect wallet to see the available data",
+            "asset": "Asset",
+            "collateral": "Collateral",
+            "balance": "Balance",
+            "apy": "APY",
+            "apyInfo": "TODO:",
+            "apr": "APR",
+            "aprInfo": "APR is estimated based on previous fees earned at the defined price range, if no trades were made previously or you have recently claimed fees/withdrawn liquidity, you may see 0 value",
+            "details": "Details",
+            "borrow": "Borrow",
+            "lend": "Lend"
+        },
         "topPanel": {
             "title": "Lend and borrow",
             "subtitle": "Borrow and earn interest by providing liquidity",
@@ -796,31 +809,23 @@
             "n/a": "N/A"
         },
         "borrowPositionsList": {
-            "title": "Your loans",
-            "connectWallet": "Connect wallet to see the available data"
+            "title": "Your loans"
         },
         "borrowAssetsList": {
             "title": "Assets to borrow",
-            "asset": "Asset",
-            "apr": "APR",
             "available": "Available",
-            "borrow": "Borrow",
-            "details": "Details",
-            "availableInfo": "TODO:",
-            "aprInfo": "APR is estimated based on previous fees earned at the defined price range, if no trades were made previously or you have recently claimed fees/withdrawn liquidity, you may see 0 value"
+            "availableInfo": "TODO:"
         },
         "lendPositionsList": {
             "title": "Your lending deposits",
-            "connectWallet": "Connect wallet to see the available data"
+            "usedAsCollateral": "Used as collateral",
+            "withdraw": "Withdraw"
         },
         "lendAssetsList": {
             "title": "Assets to lend",
             "asset": "Asset",
             "apy": "APY",
-            "apyInfo": "TODO:",
             "walletBalance": "Wallet balance",
-            "lend": "Lend",
-            "details": "Details",
             "canBeCollateral": "Can be collateral"
         },
         "assetCard": {}

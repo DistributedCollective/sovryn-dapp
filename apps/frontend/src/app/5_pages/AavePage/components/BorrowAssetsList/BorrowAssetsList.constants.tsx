@@ -14,7 +14,7 @@ export const COLUMNS_CONFIG = [
     id: 'asset',
     title: (
       <span className="text-gray-30">
-        {t(translations.aavePage.borrowAssetsList.asset)}
+        {t(translations.aavePage.common.asset)}
       </span>
     ),
     cellRenderer: (pool: BorrowPoolAssetDetails) => (
@@ -45,10 +45,8 @@ export const COLUMNS_CONFIG = [
     id: 'apr',
     title: (
       <span className="flex items-center gap-1 text-gray-30">
-        {t(translations.aavePage.borrowAssetsList.apr)}{' '}
-        <HelperButton
-          content={t(translations.aavePage.borrowAssetsList.aprInfo)}
-        />
+        {t(translations.aavePage.common.apr)}{' '}
+        <HelperButton content={t(translations.aavePage.common.aprInfo)} />
       </span>
     ),
     sortable: true,

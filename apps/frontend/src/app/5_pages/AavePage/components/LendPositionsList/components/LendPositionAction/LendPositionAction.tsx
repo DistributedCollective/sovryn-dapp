@@ -5,24 +5,20 @@ import { t } from 'i18next';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { LendPoolAssetDetails } from '../../LendAssetsList.types';
+import { LendPosition } from '../../LendPositionsList.types';
 
-type LendAssetActionProps = {
-  pool: LendPoolAssetDetails;
+type LendPositionActionProps = {
+  pool: LendPosition;
 };
 
-export const LendAssetAction: FC<LendAssetActionProps> = () => {
+export const LendPositionAction: FC<LendPositionActionProps> = () => {
   return (
     <div className="flex items-center justify-center lg:justify-end space-x-2">
       {/* TODO: these should be modal triggers */}
       <Button
-        className="flex-grow"
-        text={t(translations.aavePage.common.lend)}
-      />
-      <Button
-        className="flex-grow"
-        text={t(translations.aavePage.common.details)}
         style={ButtonStyle.secondary}
+        className="flex-grow"
+        text={t(translations.aavePage.lendPositionsList.withdraw)}
       />
     </div>
   );

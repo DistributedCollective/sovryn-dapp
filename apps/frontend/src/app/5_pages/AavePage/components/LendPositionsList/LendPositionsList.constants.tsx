@@ -2,12 +2,12 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { Align, HelperButton, Icon } from '@sovryn/ui';
+import { Align, HelperButton, Toggle } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
-import { LendPoolAssetDetails } from './LendAssetsList.types';
-import { LendAssetAction } from './components/LendAssetAction/LendAssetAction';
+import { LendPosition } from './LendPositionsList.types';
+import { LendPositionAction } from './components/LendPositionAction/LendPositionAction';
 
 const pageTranslations = translations.aavePage;
 
@@ -15,11 +15,9 @@ export const COLUMNS_CONFIG = [
   {
     id: 'asset',
     title: (
-      <span className="text-gray-30">
-        {t(pageTranslations.lendAssetsList.asset)}
-      </span>
+      <span className="text-gray-30">{t(pageTranslations.common.asset)}</span>
     ),
-    cellRenderer: (pool: LendPoolAssetDetails) => (
+    cellRenderer: (pool: LendPosition) => (
       <AssetRenderer
         dataAttribute="borrow-asset"
         showAssetLogo
@@ -31,7 +29,7 @@ export const COLUMNS_CONFIG = [
     sortable: true,
   },
   {
-    id: 'walletBalance',
+    id: 'balance',
     title: (
       <span className="flex items-center gap-1 text-gray-30">
         {t(pageTranslations.lendAssetsList.walletBalance)}{' '}
@@ -44,7 +42,7 @@ export const COLUMNS_CONFIG = [
     id: 'apy',
     title: (
       <span className="flex items-center gap-1 text-gray-30">
-        {t(pageTranslations.lendAssetsList.apy)}{' '}
+        {t(translations.aavePage.common.apy)}{' '}
         <HelperButton content={t(pageTranslations.common.apyInfo)} />
       </span>
     ),
@@ -52,19 +50,18 @@ export const COLUMNS_CONFIG = [
     align: Align.center,
   },
   {
-    id: 'canBeCollateral',
+    id: 'collateral',
     title: (
       <span className="flex items-center gap-1 text-gray-30">
-        {t(pageTranslations.lendAssetsList.walletBalance)}{' '}
+        {t(pageTranslations.common.collateral)}{' '}
       </span>
     ),
     sortable: true,
     align: Align.center,
-    cellRenderer: (pool: LendPoolAssetDetails) => (
+    cellRenderer: (pool: LendPosition) => (
       <div className="flex justify-center">
-        {pool.canBeCollateral && (
-          <Icon icon="check" className="w-[10px] text-positive" />
-        )}
+        {/* TODO: This should actually be a switch */}
+        <Toggle checked={pool.collateral} onChange={() => 'TODO:'} />
       </div>
     ),
   },
@@ -72,8 +69,6 @@ export const COLUMNS_CONFIG = [
     id: 'actions',
     align: Align.center,
     title: ' ',
-    cellRenderer: (pool: LendPoolAssetDetails) => (
-      <LendAssetAction pool={pool} />
-    ),
+    cellRenderer: (pool: LendPosition) => <LendPositionAction pool={pool} />,
   },
 ];

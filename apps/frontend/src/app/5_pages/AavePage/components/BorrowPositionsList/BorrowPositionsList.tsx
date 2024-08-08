@@ -6,7 +6,7 @@ import { Accordion, Paragraph } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
 
-const pageTranslations = translations.aavePage.borrowPositionsList;
+const pageTranslations = translations.aavePage;
 
 type BorrowPositionsListProps = {
   account?: string;
@@ -21,7 +21,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
     <Accordion
       label={
         <span className="text-base font-medium">
-          {t(pageTranslations.title)}
+          {t(pageTranslations.borrowPositionsList.title)}
         </span>
       }
       className="bg-gray-70 px-4 py-3 rounded space-y-3 lg:bg-gray-90 lg:p-6 lg:border lg:border-gray-60"
@@ -34,7 +34,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
       ) : (
         <div className="flex items-center justify-center lg:h-12">
           <Paragraph className="text-xs text-center text-gray-30 italic font-medium leading-5 lg:text-white">
-            {t(pageTranslations.connectWallet)}
+            {t(pageTranslations.common.connectWallet)}
           </Paragraph>
         </div>
       )}

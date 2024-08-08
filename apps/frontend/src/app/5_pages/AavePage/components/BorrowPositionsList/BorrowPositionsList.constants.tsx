@@ -14,64 +14,65 @@ const pageTranslations = translations.aavePage;
 export const COLUMNS_CONFIG = [
   {
     id: 'asset',
+    sortable: true,
+    align: Align.center,
     title: (
       <span className="text-gray-30">{t(pageTranslations.common.asset)}</span>
     ),
-    cellRenderer: (pool: BorrowPosition) => (
+    cellRenderer: (position: BorrowPosition) => (
       <AssetRenderer
         dataAttribute="borrow-asset"
         showAssetLogo
-        asset={pool.asset}
+        asset={position.asset}
         className="lg:justify-start justify-end"
       />
     ),
-    align: Align.center,
-    sortable: true,
   },
   {
     id: 'balance',
+    sortable: true,
+    align: Align.center,
+    className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
     title: (
       <span className="flex items-center pl-5 gap-1 text-gray-30">
         {t(pageTranslations.common.balance)}{' '}
       </span>
     ),
-    sortable: true,
-    align: Align.center,
-    className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
   },
   {
     id: 'apr',
+    sortable: true,
+    align: Align.center,
+    className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
     title: (
       <span className="flex items-center gap-1 text-gray-30">
         {t(translations.aavePage.common.apr)}{' '}
         <HelperButton content={t(pageTranslations.common.aprInfo)} />
       </span>
     ),
-    sortable: true,
-    align: Align.center,
-    className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
   },
   {
     id: 'apyType',
+    sortable: true,
+    align: Align.center,
+    className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
     title: (
       <span className="flex items-center gap-1 text-gray-30">
         {t(pageTranslations.common.apyType)}{' '}
         <HelperButton content={t(pageTranslations.common.apyTypeInfo)} />
       </span>
     ),
-    sortable: true,
-    align: Align.center,
-    cellRenderer: (pos: BorrowPosition) => (
-      <span>{t(pageTranslations.common[pos.apyType])}</span>
+
+    cellRenderer: (position: BorrowPosition) => (
+      <span>{t(pageTranslations.common[position.apyType])}</span>
     ),
-    className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
   },
   {
     id: 'actions',
     align: Align.center,
     title: ' ',
-    cellRenderer: (pool: BorrowPosition) => (
-      <BorrowPositionAction pool={pool} />
+    cellRenderer: (position: BorrowPosition) => (
+      <BorrowPositionAction position={position} />
     ),
   },
 ];

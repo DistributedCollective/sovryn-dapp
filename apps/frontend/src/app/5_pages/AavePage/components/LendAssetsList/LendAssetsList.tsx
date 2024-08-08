@@ -9,7 +9,7 @@ import { translations } from '../../../../../locales/i18n';
 import { COLUMNS_CONFIG } from './LendAssetsList.constants';
 import { LendAssetDetails } from './components/LendAssetDetails/LendAssetDetails';
 
-const pageTranslations = translations.aavePage.lendAssetsList;
+const pageTranslations = translations.aavePage;
 
 type LendAssetsListProps = {
   account?: string;
@@ -17,12 +17,13 @@ type LendAssetsListProps = {
 
 export const LendAssetsList: FC<LendAssetsListProps> = ({ account }) => {
   const [open, setOpen] = useState<boolean>(true);
+  const [showZeroBalances, setShowZeroBalances] = useState<boolean>(true);
 
   return (
     <Accordion
       label={
         <span className="text-base font-medium">
-          {t(pageTranslations.title)}
+          {t(pageTranslations.lendAssetsList.title)}
         </span>
       }
       className="bg-gray-70 px-4 py-3 rounded space-y-3 lg:bg-gray-90 lg:p-6"
@@ -31,7 +32,11 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({ account }) => {
       onClick={setOpen}
     >
       <div className="py-2 mb-2">
-        <Checkbox label="Show assets with 0 balance" />
+        <Checkbox
+          label={t(pageTranslations.lendAssetsList.showZeroBalances)}
+          checked={showZeroBalances}
+          onChange={s => setShowZeroBalances(s)}
+        />
       </div>
 
       <Table
@@ -40,6 +45,7 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({ account }) => {
         accordionClassName="bg-gray-60 border border-gray-70"
         rowTitle={r => <AavePoolRowTitle asset={r.asset} />}
         rows={[
+          // TODO: mocked values
           {
             asset: 'BTC',
             apy: 2,

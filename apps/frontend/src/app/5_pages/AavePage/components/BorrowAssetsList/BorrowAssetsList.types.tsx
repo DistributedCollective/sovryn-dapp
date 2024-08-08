@@ -1,4 +1,4 @@
-export type BorrowPoolAssetDetails = {
+export type BorrowPoolDetails = {
   asset: string;
   apr: number;
   available: number;

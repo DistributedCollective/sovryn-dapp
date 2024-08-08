@@ -2,17 +2,20 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { HelperButton, Toggle } from '@sovryn/ui';
+import { HelperButton } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
 import { LendPosition } from '../../LendPositionsList.types';
 import { LendPositionAction } from '../LendPositionAction/LendPositionAction';
+import { ToggleCollateralAction } from '../ToggleCollateralAction/ToggleCollateralAction';
 
 type LendPositionDetailsProps = {
-  pool: LendPosition;
+  position: LendPosition;
 };
 
-export const LendPositionDetails: FC<LendPositionDetailsProps> = ({ pool }) => {
+export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
+  position,
+}) => {
   return (
     <div className="space-y-3">
       <div className="space-y-2">
@@ -26,7 +29,7 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({ pool }) => {
 
           {/* TODO: review amount renderer component */}
           <div className="text-right text-xs text-gray-30 font-medium">
-            {pool.balance} {pool.asset}
+            {position.balance} {position.asset}
           </div>
         </div>
 
@@ -34,7 +37,7 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({ pool }) => {
         <div className="grid grid-cols-2">
           <div className="flex items-center gap-1">
             <span className="text-xs font-medium text-gray-30">
-              {t(translations.aavePage.lendAssetsList.apy)}
+              {t(translations.aavePage.common.apy)}
             </span>
             <HelperButton
               content={t(translations.aavePage.common.apyInfo)}
@@ -42,7 +45,7 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({ pool }) => {
             />
           </div>
           <div className="text-right text-xs text-gray-30 font-medium">
-            {pool.apy}
+            {position.apy}
           </div>
         </div>
 
@@ -53,13 +56,14 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({ pool }) => {
               {t(translations.aavePage.lendAssetsList.canBeCollateral)}
             </span>
           </div>
-          <div className="flex justify-end text-xs text-positive font-medium">
-            <Toggle checked={pool.collateral} onChange={() => 'TODO:'} />
+
+          <div className="flex justify-end">
+            <ToggleCollateralAction position={position} />
           </div>
         </div>
       </div>
 
-      <LendPositionAction pool={pool} />
+      <LendPositionAction position={position} />
     </div>
   );
 };

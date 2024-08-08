@@ -5,10 +5,10 @@ import { t } from 'i18next';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { LendPoolAssetDetails } from '../../LendAssetsList.types';
+import { LendPoolDetails } from '../../LendAssetsList.types';
 
 type LendAssetActionProps = {
-  pool: LendPoolAssetDetails;
+  pool: LendPoolDetails;
 };
 
 export const LendAssetAction: FC<LendAssetActionProps> = () => {

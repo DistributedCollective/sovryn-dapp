@@ -8,7 +8,7 @@ import { translations } from '../../../../../../../locales/i18n';
 import { LendPosition } from '../../LendPositionsList.types';
 
 type LendPositionActionProps = {
-  pool: LendPosition;
+  position: LendPosition;
 };
 
 export const LendPositionAction: FC<LendPositionActionProps> = () => {

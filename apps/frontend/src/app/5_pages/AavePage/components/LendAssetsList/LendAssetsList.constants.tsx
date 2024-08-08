@@ -6,7 +6,7 @@ import { Align, HelperButton, Icon } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
-import { LendPoolAssetDetails } from './LendAssetsList.types';
+import { LendPoolDetails } from './LendAssetsList.types';
 import { LendAssetAction } from './components/LendAssetAction/LendAssetAction';
 
 const pageTranslations = translations.aavePage;
@@ -14,12 +14,12 @@ const pageTranslations = translations.aavePage;
 export const COLUMNS_CONFIG = [
   {
     id: 'asset',
+    sortable: true,
+    align: Align.center,
     title: (
-      <span className="text-gray-30">
-        {t(pageTranslations.lendAssetsList.asset)}
-      </span>
+      <span className="text-gray-30">{t(pageTranslations.common.asset)}</span>
     ),
-    cellRenderer: (pool: LendPoolAssetDetails) => (
+    cellRenderer: (pool: LendPoolDetails) => (
       <AssetRenderer
         dataAttribute="borrow-asset"
         showAssetLogo
@@ -27,40 +27,38 @@ export const COLUMNS_CONFIG = [
         className="lg:justify-start justify-end"
       />
     ),
-    align: Align.center,
-    sortable: true,
   },
   {
     id: 'walletBalance',
+    sortable: true,
+    align: Align.center,
     title: (
-      <span className="flex items-center gap-1 text-gray-30">
+      <span className="text-gray-30">
         {t(pageTranslations.lendAssetsList.walletBalance)}{' '}
       </span>
     ),
-    sortable: true,
-    align: Align.center,
   },
   {
     id: 'apy',
+    sortable: true,
+    align: Align.center,
     title: (
       <span className="flex items-center gap-1 text-gray-30">
-        {t(pageTranslations.lendAssetsList.apy)}{' '}
+        {t(pageTranslations.common.apy)}{' '}
         <HelperButton content={t(pageTranslations.common.apyInfo)} />
       </span>
     ),
-    sortable: true,
-    align: Align.center,
   },
   {
     id: 'canBeCollateral',
-    title: (
-      <span className="flex items-center gap-1 text-gray-30">
-        {t(pageTranslations.lendAssetsList.canBeCollateral)}{' '}
-      </span>
-    ),
     sortable: true,
     align: Align.center,
-    cellRenderer: (pool: LendPoolAssetDetails) => (
+    title: (
+      <span className="text-gray-30">
+        {t(pageTranslations.lendAssetsList.canBeCollateral)}
+      </span>
+    ),
+    cellRenderer: (pool: LendPoolDetails) => (
       <div className="flex justify-center">
         {pool.canBeCollateral && (
           <Icon icon="check" className="w-[10px] text-positive" />
@@ -72,8 +70,6 @@ export const COLUMNS_CONFIG = [
     id: 'actions',
     align: Align.center,
     title: ' ',
-    cellRenderer: (pool: LendPoolAssetDetails) => (
-      <LendAssetAction pool={pool} />
-    ),
+    cellRenderer: (pool: LendPoolDetails) => <LendAssetAction pool={pool} />,
   },
 ];

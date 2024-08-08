@@ -6,18 +6,20 @@ import { Align, HelperButton } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
-import { BorrowPoolAssetDetails } from './BorrowAssetsList.types';
+import { BorrowPoolDetails } from './BorrowAssetsList.types';
 import { BorrowAssetAction } from './components/BorrowAssetAction/BorrowAssetAction';
+
+const pageTranslations = translations.aavePage;
 
 export const COLUMNS_CONFIG = [
   {
     id: 'asset',
+    sortable: true,
+    align: Align.center,
     title: (
-      <span className="text-gray-30">
-        {t(translations.aavePage.common.asset)}
-      </span>
+      <span className="text-gray-30">{t(pageTranslations.common.asset)}</span>
     ),
-    cellRenderer: (pool: BorrowPoolAssetDetails) => (
+    cellRenderer: (pool: BorrowPoolDetails) => (
       <AssetRenderer
         dataAttribute="borrow-asset"
         showAssetLogo
@@ -25,40 +27,38 @@ export const COLUMNS_CONFIG = [
         className="lg:justify-start justify-end"
       />
     ),
-    align: Align.center,
-    sortable: true,
   },
   {
     id: 'available',
+    sortable: true,
+    align: Align.center,
+    className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
     title: (
       <span className="flex items-center gap-1 text-gray-30">
-        {t(translations.aavePage.borrowAssetsList.available)}{' '}
+        {t(pageTranslations.borrowAssetsList.available)}{' '}
         <HelperButton
-          content={t(translations.aavePage.borrowAssetsList.availableInfo)}
+          content={t(pageTranslations.borrowAssetsList.availableInfo)}
         />
       </span>
     ),
-    sortable: true,
-    align: Align.center,
-    className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
   },
   {
     id: 'apr',
-    title: (
-      <span className="flex items-center gap-1 text-gray-30">
-        {t(translations.aavePage.common.apr)}{' '}
-        <HelperButton content={t(translations.aavePage.common.aprInfo)} />
-      </span>
-    ),
     sortable: true,
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
+    title: (
+      <span className="flex items-center gap-1 text-gray-30">
+        {t(pageTranslations.common.apr)}{' '}
+        <HelperButton content={t(pageTranslations.common.aprInfo)} />
+      </span>
+    ),
   },
   {
     id: 'actions',
     align: Align.center,
     title: ' ',
-    cellRenderer: (pool: BorrowPoolAssetDetails) => (
+    cellRenderer: (pool: BorrowPoolDetails) => (
       <BorrowAssetAction pool={pool} />
     ),
   },

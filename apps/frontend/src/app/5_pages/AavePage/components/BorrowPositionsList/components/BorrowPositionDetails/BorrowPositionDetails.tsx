@@ -9,11 +9,11 @@ import { BorrowPosition } from '../../BorrowPositionsList.types';
 import { BorrowPositionAction } from '../BorrowPositionAction/BorrowPositionAction';
 
 type BorrowPositionDetailsProps = {
-  pool: BorrowPosition;
+  position: BorrowPosition;
 };
 
 export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
-  pool,
+  position,
 }) => {
   return (
     <div className="space-y-3">
@@ -28,7 +28,7 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
 
           {/* TODO: review amount renderer component */}
           <div className="text-right text-xs text-gray-30 font-medium">
-            {pool.balance} {pool.asset}
+            {position.balance} {position.asset}
           </div>
         </div>
 
@@ -44,7 +44,7 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
             />
           </div>
           <div className="text-right text-xs text-gray-30 font-medium">
-            {pool.apr}
+            {position.apr}
           </div>
         </div>
 
@@ -56,12 +56,12 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
             </span>
           </div>
           <div className="flex justify-end text-xs text-positive font-medium">
-            {pool.apyType}
+            {position.apyType}
           </div>
         </div>
       </div>
 
-      <BorrowPositionAction pool={pool} />
+      <BorrowPositionAction position={position} />
     </div>
   );
 };

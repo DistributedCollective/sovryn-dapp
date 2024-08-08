@@ -34,6 +34,7 @@ export const LendPositionsList: FC<LendPositionsListProps> = () => {
       {account ? (
         <>
           <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:gap-6 lg:mb-6">
+            {/* TODO: mock data */}
             <PoolPositionStat
               label={t(pageTranslations.common.balance)}
               value={123.45}
@@ -60,6 +61,7 @@ export const LendPositionsList: FC<LendPositionsListProps> = () => {
             accordionClassName="bg-gray-60 border border-gray-70"
             rowTitle={r => <AavePoolRowTitle asset={r.asset} />}
             rows={[
+              // TODO: mocked data
               {
                 asset: 'BTC',
                 apy: 2,
@@ -73,7 +75,7 @@ export const LendPositionsList: FC<LendPositionsListProps> = () => {
                 collateral: false,
               },
             ]}
-            mobileRenderer={p => <LendPositionDetails pool={p} />}
+            mobileRenderer={p => <LendPositionDetails position={p} />}
           />
         </>
       ) : (

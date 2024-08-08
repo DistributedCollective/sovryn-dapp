@@ -37,6 +37,7 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({ account }) => {
           accordionClassName="bg-gray-60 border border-gray-70"
           rowTitle={r => <AavePoolRowTitle asset={r.asset} />}
           rows={[
+            // TODO: just a mock for now
             {
               asset: 'BTC',
               apr: 2,

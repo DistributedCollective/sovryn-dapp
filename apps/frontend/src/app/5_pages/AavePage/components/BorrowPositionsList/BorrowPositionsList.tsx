@@ -34,6 +34,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
       {account ? (
         <>
           <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:gap-6 lg:mb-6">
+            {/* TODO: mocked values */}
             <PoolPositionStat
               label={t(pageTranslations.common.balance)}
               value={123.45}
@@ -59,6 +60,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
             accordionClassName="bg-gray-60 border border-gray-70"
             rowTitle={r => <AavePoolRowTitle asset={r.asset} />}
             rows={[
+              // TODO: mocked values
               {
                 asset: 'BTC',
                 apr: 2,
@@ -72,7 +74,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
                 apyType: 'fixed',
               },
             ]}
-            mobileRenderer={p => <BorrowPositionDetails pool={p} />}
+            mobileRenderer={p => <BorrowPositionDetails position={p} />}
           />
         </>
       ) : (

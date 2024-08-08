@@ -8,7 +8,7 @@ import { translations } from '../../../../../../../locales/i18n';
 import { BorrowPosition } from '../../BorrowPositionsList.types';
 
 type BorrowPositionActionProps = {
-  pool: BorrowPosition;
+  position: BorrowPosition;
 };
 
 export const BorrowPositionAction: FC<BorrowPositionActionProps> = () => {

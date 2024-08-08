@@ -5,13 +5,13 @@ import { t } from 'i18next';
 import { HelperButton } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { BorrowPoolAssetDetails } from '../../BorrowAssetsList.types';
+import { BorrowPoolDetails } from '../../BorrowAssetsList.types';
 import { BorrowAssetAction } from '../BorrowAssetAction/BorrowAssetAction';
 
 const pageTranslations = translations.aavePage;
 
 type BorrowAssetDetailsProps = {
-  pool: BorrowPoolAssetDetails;
+  pool: BorrowPoolDetails;
 };
 
 export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => {
@@ -29,6 +29,8 @@ export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => {
               className="text-gray-30"
             />
           </div>
+
+          {/* TODO: amount renderer */}
           <div className="text-right text-xs text-gray-30 font-medium">
             {pool.apr}
           </div>
@@ -41,6 +43,8 @@ export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => {
               {t(pageTranslations.borrowAssetsList.available)}
             </span>
           </div>
+
+          {/* TODO: amount renderer */}
           <div className="text-right text-xs text-gray-30 font-medium">
             {pool.available} {pool.asset}
           </div>

@@ -14,6 +14,8 @@ import { LendAssetsList } from './components/LendAssetsList/LendAssetsList';
 import { LendPositionsList } from './components/LendPositionsList/LendPositionsList';
 import { TopPanel } from './components/TopPanel/TopPanel';
 
+const pageTranslations = translations.aavePage;
+
 enum LiquidityTabs {
   LEND = 0,
   BORROW,
@@ -26,9 +28,9 @@ const AavePage: FC = () => {
   );
 
   return (
-    <div className="w-full pb-6">
+    <div className="w-full pb-6 2xl:px-12">
       <Helmet>
-        <title>{t(translations.aavePage.meta.title)}</title>
+        <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
 
       <TopPanel account={account} />
@@ -42,12 +44,12 @@ const AavePage: FC = () => {
             {
               activeClassName: 'text-primary-20',
               dataAttribute: 'lending',
-              label: 'Lend', // TODO: translations
+              label: t(pageTranslations.common.lend),
             },
             {
               activeClassName: 'text-primary-20',
               dataAttribute: 'borrowing',
-              label: 'Borrow', // TODO: translations
+              label: t(pageTranslations.common.borrow),
             },
           ]}
           onChange={e => setActiveLiquidityTab(e)}

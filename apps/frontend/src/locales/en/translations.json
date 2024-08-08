@@ -832,8 +832,7 @@
         },
         "lendAssetsList": {
             "title": "Assets to lend",
-            "asset": "Asset",
-            "apy": "APY",
+            "showZeroBalances": "Show assets with 0 balance",
             "walletBalance": "Wallet balance",
             "canBeCollateral": "Can be collateral"
         },

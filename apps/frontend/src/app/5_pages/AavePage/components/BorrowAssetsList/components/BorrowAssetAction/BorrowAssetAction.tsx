@@ -5,12 +5,12 @@ import { t } from 'i18next';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { BorrowPoolAssetDetails } from '../../BorrowAssetsList.types';
+import { BorrowPoolDetails } from '../../BorrowAssetsList.types';
 
 const pageTranslations = translations.aavePage;
 
 type BorrowAssetActionProps = {
-  pool: BorrowPoolAssetDetails;
+  pool: BorrowPoolDetails;
 };
 
 export const BorrowAssetAction: FC<BorrowAssetActionProps> = () => {

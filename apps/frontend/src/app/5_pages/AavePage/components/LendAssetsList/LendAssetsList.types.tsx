@@ -1,4 +1,4 @@
-export type LendPoolAssetDetails = {
+export type LendPoolDetails = {
   asset: string;
   walletBalance: number;
   apy: number;

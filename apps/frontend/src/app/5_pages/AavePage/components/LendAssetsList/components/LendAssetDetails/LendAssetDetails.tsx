@@ -5,11 +5,11 @@ import { t } from 'i18next';
 import { HelperButton, Icon } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { LendPoolAssetDetails } from '../../LendAssetsList.types';
+import { LendPoolDetails } from '../../LendAssetsList.types';
 import { LendAssetAction } from '../LendAssetAction/LendAssetAction';
 
 type LendAssetDetailsProps = {
-  pool: LendPoolAssetDetails;
+  pool: LendPoolDetails;
 };
 
 export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
@@ -41,6 +41,8 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
               className="text-gray-30"
             />
           </div>
+
+          {/* TODO: review amount renderer component */}
           <div className="text-right text-xs text-gray-30 font-medium">
             {pool.apy}
           </div>
@@ -53,6 +55,7 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
               {t(translations.aavePage.lendAssetsList.canBeCollateral)}
             </span>
           </div>
+
           <div className="flex justify-end text-xs text-positive font-medium">
             {pool.canBeCollateral ? (
               <Icon icon="check" className="w-[10px]" />

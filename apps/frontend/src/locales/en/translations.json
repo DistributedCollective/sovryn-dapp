@@ -185,7 +185,6 @@
         "resetValues": "Reset values",
         "notEnoughBalance": "Estimated gas fee exceeds {{asset}} balance"
     },
-
     "zeroPage": {
         "meta": {
             "title": "Zero line of credit - Sovryn",
@@ -271,17 +270,17 @@
             "withdrawCollateral": "Withdraw collateral"
         },
         "redeem": {
-          "title": "Redeem",
-          "cta": "Redeem",
-          "form": {
-            "description": "You can redeem your ZUSD for RBTC here. The corresponding RBTC is drawn from the lowest-collateralized loans, reducing the borrower's debt while you receive an equivalent value in RBTC.",
-            "link": "Learn more about Redemptions.",
-            "minimum": "Minimum {{value}} {{symbol}}",
-            "confirm": "Confirm"
-          },
-          "tx": {
-            "title": "Redeem {{symbol}}"
-          }
+            "title": "Redeem",
+            "cta": "Redeem",
+            "form": {
+                "description": "You can redeem your ZUSD for RBTC here. The corresponding RBTC is drawn from the lowest-collateralized loans, reducing the borrower's debt while you receive an equivalent value in RBTC.",
+                "link": "Learn more about Redemptions.",
+                "minimum": "Minimum {{value}} {{symbol}}",
+                "confirm": "Confirm"
+            },
+            "tx": {
+                "title": "Redeem {{symbol}}"
+            }
         }
     },
     "stats": {
@@ -385,7 +384,6 @@
         "inputLabel": "Maximum origination fee rate",
         "errorMessage": "Value entered must be between {{min}} and {{max}}"
     },
-
     "earnPage": {
         "meta": {
             "title": "Stability pool - Sovryn",
@@ -411,7 +409,6 @@
         },
         "apr": "APR"
     },
-
     "convertPage": {
         "meta": {
             "title": "Sovryn - DeFi for bitcoin",
@@ -436,7 +433,6 @@
         "minimumReceived": "Minimum received",
         "maximumPrice": "Maximum price"
     },
-
     "landingPage": {
         "meta": {
             "title": "Welcome to Sovryn",
@@ -579,7 +575,6 @@
             "dataComingSoon": "Data coming soon"
         }
     },
-
     "stakePage": {
         "meta": {
             "title": "Staking - Sovryn"
@@ -674,7 +669,6 @@
             "signUp": "Sign up"
         }
     },
-
     "fixedInterestPage": {
         "meta": {
             "title": "Fixed-interest loans - Sovryn",
@@ -790,7 +784,6 @@
         },
         "collateralRatio": "collateral ratio"
     },
-
     "aavePage": {
         "meta": {
             "title": "Lend and borrow"
@@ -806,12 +799,18 @@
             "title": "Your loans",
             "connectWallet": "Connect wallet to see the available data"
         },
+        "borrowingAssetsList": {
+            "title": "Assets to borrow"
+        },
         "lendingPositionsList": {
             "title": "Your lending deposits",
             "connectWallet": "Connect wallet to see the available data"
-        }
+        },
+        "lendingAssetsList": {
+            "title": "Assets to lend"
+        },
+        "assetCard": {}
     },
-
     "bitocracyPage": {
         "meta": {
             "title": "Bitocracy - Sovryn",
@@ -886,7 +885,6 @@
             "accountBalance": "Account balance:"
         }
     },
-
     "proposalPage": {
         "meta": {
             "title": "Bitocracy - Sovryn"
@@ -952,7 +950,6 @@
             "calldata": "Calldata"
         }
     },
-
     "leaderboardPage": {
         "headerLink": "POWA Points",
         "headerDescription": "Earn Points, Earn POWA",
@@ -1154,7 +1151,6 @@
             }
         }
     },
-
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -1238,7 +1234,6 @@
             }
         }
     },
-
     "rewardPage": {
         "meta": {
             "title": "Rewards - Sovryn",
@@ -1351,7 +1346,6 @@
             }
         }
     },
-
     "historyPage": {
         "meta": {
             "title": "History - Sovryn",
@@ -1399,7 +1393,6 @@
         },
         "apr": "APR"
     },
-
     "marketMakingPage": {
         "meta": {
             "title": "Market Making - Sovryn"
@@ -1468,7 +1461,6 @@
             "24hVolume": "24h volume (BTC)"
         }
     },
-
     "bobMarketMakingPage": {
         "depositModal": {
             "title": "Deposit liquidity",
@@ -1525,7 +1517,6 @@
         },
         "loading": "Loading..."
     },
-
     "borrowHistory": {
         "types": {
             "lineOfCredit": "Line of credit",
@@ -2057,7 +2048,7 @@
         }
     },
     "unclaimedVestings": {
-      "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",
-      "cta": "Open Rewards page"
+        "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",
+        "cta": "Open Rewards page"
     }
 }

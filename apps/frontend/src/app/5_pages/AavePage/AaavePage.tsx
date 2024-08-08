@@ -8,7 +8,9 @@ import { Tabs, TabSize, TabType } from '@sovryn/ui';
 
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
+import { BorrowingAssetsList } from './components/BorrowingAssetsList/BorrowingAssetsList';
 import { BorrowingPositionsList } from './components/BorrowingPositionsList/BorrowingPositionsList';
+import { LendingAssetsList } from './components/LendingAssetsList/LendingAssetsList';
 import { LendingPositionsList } from './components/LendingPositionsList/LendingPositionsList';
 import { TopPanel } from './components/TopPanel/TopPanel';
 
@@ -20,62 +22,60 @@ enum LiquidityTabs {
 const AavePage: FC = () => {
   const { account } = useAccount();
   const [activeLiquidityTab, setActiveLiquidityTab] = useState<LiquidityTabs>(
-    LiquidityTabs.BORROW,
+    LiquidityTabs.LEND,
   );
 
   return (
-    <div className="w-full">
+    <div className="w-full pb-6">
       <Helmet>
         <title>{t(translations.aavePage.meta.title)}</title>
       </Helmet>
 
       <TopPanel account={account} />
 
-      <div className="pt-6 mt-6 space-y-6">
+      <div className="pt-6 mt-6 space-y-6 lg:pt-0 lg:mt-0 lg:space-y-0">
         {/* Tab selector */}
-        <div className="bg-gray-80 rounded p-1 border border-gray-60">
-          <Tabs
-            className="w-full"
-            index={activeLiquidityTab}
-            items={[
-              {
-                activeClassName: 'text-primary-20',
-                dataAttribute: 'lending',
-                label: 'Lend', // TODO: translations
-              },
-              {
-                activeClassName: 'text-primary-20',
-                dataAttribute: 'borrowing',
-                label: 'Borrow', // TODO: translations
-              },
-            ]}
-            onChange={e => setActiveLiquidityTab(e)}
-            size={TabSize.normal}
-            type={TabType.secondary}
-          />
-        </div>
+        <Tabs
+          className="w-full bg-gray-80 rounded p-1 border border-gray-60 lg:hidden"
+          index={activeLiquidityTab}
+          items={[
+            {
+              activeClassName: 'text-primary-20',
+              dataAttribute: 'lending',
+              label: 'Lend', // TODO: translations
+            },
+            {
+              activeClassName: 'text-primary-20',
+              dataAttribute: 'borrowing',
+              label: 'Borrow', // TODO: translations
+            },
+          ]}
+          onChange={e => setActiveLiquidityTab(e)}
+          size={TabSize.normal}
+          type={TabType.secondary}
+        />
 
         {/* Lending and borrowing columns */}
-        <div>
-          {/* Lending column */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-5">
           <div
             className={classNames(
               activeLiquidityTab !== LiquidityTabs.LEND ? 'hidden' : '',
+              'lg:block space-y-4',
             )}
           >
             <LendingPositionsList />
-            {/* LendingAssetsList */}
+            <LendingAssetsList />
           </div>
 
           {/* Borrowing column */}
           <div
             className={classNames(
-              activeLiquidityTab !== LiquidityTabs.BORROW ? 'hidden' : '',
+              activeLiquidityTab !== LiquidityTabs.BORROW && 'hidden',
+              'lg:block space-y-4',
             )}
           >
             <BorrowingPositionsList />
-
-            {/* BorrowAssetsList */}
+            <BorrowingAssetsList />
           </div>
         </div>
       </div>

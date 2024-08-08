@@ -6,18 +6,16 @@ import { Accordion, Table } from '@sovryn/ui';
 
 import { AavePoolRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { translations } from '../../../../../locales/i18n';
-import { COLUMNS_CONFIG } from './BorrowingAssetsList.constants';
+import { COLUMNS_CONFIG } from './BorrowAssetsList.constants';
 import { BorrowAssetDetails } from './components/BorrowAssetDetails/BorrowAssetDetails';
 
 const pageTranslations = translations.aavePage.borrowingAssetsList;
 
-type BorrowingAssetsListProps = {
+type BorrowAssetsListProps = {
   account?: string;
 };
 
-export const BorrowingAssetsList: FC<BorrowingAssetsListProps> = ({
-  account,
-}) => {
+export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({ account }) => {
   const [open, setOpen] = useState<boolean>(true);
 
   return (
@@ -32,27 +30,29 @@ export const BorrowingAssetsList: FC<BorrowingAssetsListProps> = ({
       open={open}
       onClick={setOpen}
     >
-      <Table
-        columns={COLUMNS_CONFIG}
-        rowClassName="bg-gray-80"
-        accordionClassName="bg-gray-60 border border-gray-70"
-        rowTitle={r => <AavePoolRowTitle asset={r.asset} />}
-        rows={[
-          {
-            asset: 'BTC',
-            apr: 2,
-            available: 12.34,
-            availableUsd: 100,
-          },
-          {
-            asset: 'ETH',
-            apr: 2,
-            available: 12.34,
-            availableUsd: 100,
-          },
-        ]}
-        mobileRenderer={p => <BorrowAssetDetails pool={p} />}
-      />
+      <div className="pt-3">
+        <Table
+          columns={COLUMNS_CONFIG}
+          rowClassName="bg-gray-80"
+          accordionClassName="bg-gray-60 border border-gray-70"
+          rowTitle={r => <AavePoolRowTitle asset={r.asset} />}
+          rows={[
+            {
+              asset: 'BTC',
+              apr: 2,
+              available: 12.34,
+              availableUsd: 100,
+            },
+            {
+              asset: 'ETH',
+              apr: 2,
+              available: 12.34,
+              availableUsd: 100,
+            },
+          ]}
+          mobileRenderer={p => <BorrowAssetDetails pool={p} />}
+        />
+      </div>
     </Accordion>
   );
 };

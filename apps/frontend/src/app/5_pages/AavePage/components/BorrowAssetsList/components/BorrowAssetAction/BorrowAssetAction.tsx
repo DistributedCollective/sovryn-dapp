@@ -5,7 +5,7 @@ import { t } from 'i18next';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { BorrowPoolAssetDetails } from '../../BorrowingAssetsList.types';
+import { BorrowPoolAssetDetails } from '../../BorrowAssetsList.types';
 
 type BorrowAssetActionProps = {
   pool: BorrowPoolAssetDetails;

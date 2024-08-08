@@ -6,15 +6,13 @@ import { Accordion, Paragraph } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
 
-const pageTranslations = translations.aavePage.borrowingPositionsList;
+const pageTranslations = translations.aavePage.lendingPositionsList;
 
-type BorrowingPositionsListProps = {
+type LendPositionsListProps = {
   account?: string;
 };
 
-export const BorrowingPositionsList: FC<BorrowingPositionsListProps> = ({
-  account,
-}) => {
+export const LendPositionsList: FC<LendPositionsListProps> = ({ account }) => {
   const [open, setOpen] = useState<boolean>(true);
 
   return (

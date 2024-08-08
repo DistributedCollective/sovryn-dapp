@@ -8,11 +8,11 @@ import { translations } from '../../../../../locales/i18n';
 
 const pageTranslations = translations.aavePage.lendingAssetsList;
 
-type LendingAssetsListProps = {
+type LendAssetsListProps = {
   account?: string;
 };
 
-export const LendingAssetsList: FC<LendingAssetsListProps> = ({ account }) => {
+export const LendAssetsList: FC<LendAssetsListProps> = ({ account }) => {
   const [open, setOpen] = useState<boolean>(true);
 
   return (

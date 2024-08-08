@@ -5,7 +5,7 @@ import { t } from 'i18next';
 import { HelperButton } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { BorrowPoolAssetDetails } from '../../BorrowingAssetsList.types';
+import { BorrowPoolAssetDetails } from '../../BorrowAssetsList.types';
 import { BorrowAssetAction } from '../BorrowAssetAction/BorrowAssetAction';
 
 type BorrowAssetDetailsProps = {

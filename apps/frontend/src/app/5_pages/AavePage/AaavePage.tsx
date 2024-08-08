@@ -8,10 +8,10 @@ import { Tabs, TabSize, TabType } from '@sovryn/ui';
 
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
-import { BorrowingAssetsList } from './components/BorrowingAssetsList/BorrowingAssetsList';
-import { BorrowingPositionsList } from './components/BorrowingPositionsList/BorrowingPositionsList';
-import { LendingAssetsList } from './components/LendingAssetsList/LendingAssetsList';
-import { LendingPositionsList } from './components/LendingPositionsList/LendingPositionsList';
+import { BorrowAssetsList } from './components/BorrowAssetsList/BorrowAssetsList';
+import { BorrowPositionsList } from './components/BorrowPositionsList/BorrowPositionsList';
+import { LendAssetsList } from './components/LendAssetsList/LendAssetsList';
+import { LendPositionsList } from './components/LendPositionsList/LendPositionsList';
 import { TopPanel } from './components/TopPanel/TopPanel';
 
 enum LiquidityTabs {
@@ -63,8 +63,8 @@ const AavePage: FC = () => {
               'lg:block space-y-4',
             )}
           >
-            <LendingPositionsList />
-            <LendingAssetsList />
+            <LendPositionsList />
+            <LendAssetsList />
           </div>
 
           {/* Borrowing column */}
@@ -74,8 +74,8 @@ const AavePage: FC = () => {
               'lg:block space-y-4',
             )}
           >
-            <BorrowingPositionsList />
-            <BorrowingAssetsList />
+            <BorrowPositionsList />
+            <BorrowAssetsList />
           </div>
         </div>
       </div>

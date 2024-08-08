@@ -6,13 +6,17 @@ import { Align, HelperButton } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
-import { BorrowPoolAssetDetails } from './BorrowingAssetsList.types';
+import { BorrowPoolAssetDetails } from './BorrowAssetsList.types';
 import { BorrowAssetAction } from './components/BorrowAssetAction/BorrowAssetAction';
 
 export const COLUMNS_CONFIG = [
   {
     id: 'asset',
-    title: t(translations.aavePage.borrowingAssetsList.asset),
+    title: (
+      <span className="text-gray-30">
+        {t(translations.aavePage.borrowingAssetsList.asset)}
+      </span>
+    ),
     cellRenderer: (pool: BorrowPoolAssetDetails) => (
       <AssetRenderer
         dataAttribute="borrow-asset"
@@ -27,7 +31,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'available',
     title: (
-      <span className="flex items-center gap-1">
+      <span className="flex items-center gap-1 text-gray-30">
         {t(translations.aavePage.borrowingAssetsList.available)}{' '}
         <HelperButton
           content={t(translations.aavePage.borrowingAssetsList.availableInfo)}
@@ -40,7 +44,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'apr',
     title: (
-      <span className="flex items-center gap-1">
+      <span className="flex items-center gap-1 text-gray-30">
         {t(translations.aavePage.borrowingAssetsList.apr)}{' '}
         <HelperButton
           content={t(translations.aavePage.borrowingAssetsList.aprInfo)}

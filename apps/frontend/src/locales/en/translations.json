@@ -795,11 +795,11 @@
             "netApy": "Net API",
             "n/a": "N/A"
         },
-        "borrowingPositionsList": {
+        "borrowPositionsList": {
             "title": "Your loans",
             "connectWallet": "Connect wallet to see the available data"
         },
-        "borrowingAssetsList": {
+        "borrowAssetsList": {
             "title": "Assets to borrow",
             "asset": "Asset",
             "apr": "APR",
@@ -809,12 +809,19 @@
             "availableInfo": "TODO:",
             "aprInfo": "APR is estimated based on previous fees earned at the defined price range, if no trades were made previously or you have recently claimed fees/withdrawn liquidity, you may see 0 value"
         },
-        "lendingPositionsList": {
+        "lendPositionsList": {
             "title": "Your lending deposits",
             "connectWallet": "Connect wallet to see the available data"
         },
-        "lendingAssetsList": {
-            "title": "Assets to lend"
+        "lendAssetsList": {
+            "title": "Assets to lend",
+            "asset": "Asset",
+            "apy": "APY",
+            "apyInfo": "TODO:",
+            "walletBalance": "Wallet balance",
+            "lend": "Lend",
+            "details": "Details",
+            "canBeCollateral": "Can be collateral"
         },
         "assetCard": {}
     },

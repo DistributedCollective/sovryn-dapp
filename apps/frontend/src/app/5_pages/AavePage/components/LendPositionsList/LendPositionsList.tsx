@@ -6,7 +6,7 @@ import { Accordion, Paragraph } from '@sovryn/ui';
 
 import { translations } from '../../../../../locales/i18n';
 
-const pageTranslations = translations.aavePage.lendingPositionsList;
+const pageTranslations = translations.aavePage.lendPositionsList;
 
 type LendPositionsListProps = {
   account?: string;

@@ -9,7 +9,7 @@ import { translations } from '../../../../../locales/i18n';
 import { COLUMNS_CONFIG } from './BorrowAssetsList.constants';
 import { BorrowAssetDetails } from './components/BorrowAssetDetails/BorrowAssetDetails';
 
-const pageTranslations = translations.aavePage.borrowingAssetsList;
+const pageTranslations = translations.aavePage.borrowAssetsList;
 
 type BorrowAssetsListProps = {
   account?: string;

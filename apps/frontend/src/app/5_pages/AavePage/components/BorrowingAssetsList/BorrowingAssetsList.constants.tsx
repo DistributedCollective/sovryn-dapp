@@ -1,19 +1,23 @@
 import React from 'react';
 
-import { Align, Button, ButtonStyle } from '@sovryn/ui';
+import { t } from 'i18next';
+
+import { Align, HelperButton } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { AssetRowElement } from './BorrowingAssetsList.types';
+import { translations } from '../../../../../locales/i18n';
+import { BorrowPoolAssetDetails } from './BorrowingAssetsList.types';
+import { BorrowAssetAction } from './components/BorrowAssetAction/BorrowAssetAction';
 
 export const COLUMNS_CONFIG = [
   {
     id: 'asset',
-    title: 'Asset', // TODO: transalations
-    cellRenderer: (asset: AssetRowElement) => (
+    title: t(translations.aavePage.borrowingAssetsList.asset),
+    cellRenderer: (pool: BorrowPoolAssetDetails) => (
       <AssetRenderer
         dataAttribute="borrow-asset"
         showAssetLogo
-        asset={asset.asset}
+        asset={pool.asset}
         className="lg:justify-start justify-end"
       />
     ),
@@ -22,13 +26,27 @@ export const COLUMNS_CONFIG = [
   },
   {
     id: 'available',
-    title: 'Available',
+    title: (
+      <span className="flex items-center gap-1">
+        {t(translations.aavePage.borrowingAssetsList.available)}{' '}
+        <HelperButton
+          content={t(translations.aavePage.borrowingAssetsList.availableInfo)}
+        />
+      </span>
+    ),
     sortable: true,
     align: Align.center,
   },
   {
     id: 'apr',
-    title: 'APR', // TODO: transalations
+    title: (
+      <span className="flex items-center gap-1">
+        {t(translations.aavePage.borrowingAssetsList.apr)}{' '}
+        <HelperButton
+          content={t(translations.aavePage.borrowingAssetsList.aprInfo)}
+        />
+      </span>
+    ),
     sortable: true,
     align: Align.center,
   },
@@ -36,12 +54,8 @@ export const COLUMNS_CONFIG = [
     id: 'actions',
     align: Align.center,
     title: ' ',
-    // TODO: create component here
-    cellRenderer: (asset: AssetRowElement) => (
-      <div className="hidden lg:flex space-x-2">
-        <Button text="Borrow" />
-        <Button text="Details" style={ButtonStyle.secondary} />
-      </div>
+    cellRenderer: (pool: BorrowPoolAssetDetails) => (
+      <BorrowAssetAction pool={pool} />
     ),
   },
 ];

@@ -2,19 +2,12 @@ import React, { FC, useState } from 'react';
 
 import { t } from 'i18next';
 
-import {
-  Accordion,
-  Align,
-  Button,
-  ButtonStyle,
-  HelperButton,
-  Table,
-} from '@sovryn/ui';
+import { Accordion, Table } from '@sovryn/ui';
 
 import { AavePoolRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
-import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
-import { AssetRowElement } from './BorrowingAssetsList.types';
+import { COLUMNS_CONFIG } from './BorrowingAssetsList.constants';
+import { BorrowAssetDetails } from './components/BorrowAssetDetails/BorrowAssetDetails';
 
 const pageTranslations = translations.aavePage.borrowingAssetsList;
 
@@ -40,46 +33,7 @@ export const BorrowingAssetsList: FC<BorrowingAssetsListProps> = ({
       onClick={setOpen}
     >
       <Table
-        columns={[
-          {
-            id: 'asset',
-            title: 'Asset', // TODO: transalations
-            cellRenderer: (asset: AssetRowElement) => (
-              <AssetRenderer
-                dataAttribute="borrow-asset"
-                showAssetLogo
-                asset={asset.asset}
-                className="lg:justify-start justify-end"
-              />
-            ),
-            align: Align.center,
-            sortable: true,
-          },
-          {
-            id: 'available',
-            title: 'Available',
-            sortable: true,
-            align: Align.center,
-          },
-          {
-            id: 'apr',
-            title: 'APR', // TODO: transalations
-            sortable: true,
-            align: Align.center,
-          },
-          {
-            id: 'actions',
-            align: Align.center,
-            title: ' ',
-            // TODO: create component here
-            cellRenderer: (asset: AssetRowElement) => (
-              <div className="hidden lg:flex space-x-2 justify-end">
-                <Button text="Borrow" />
-                <Button text="Details" style={ButtonStyle.secondary} />
-              </div>
-            ),
-          },
-        ]}
+        columns={COLUMNS_CONFIG}
         rowClassName="bg-gray-80"
         accordionClassName="bg-gray-60 border border-gray-70"
         rowTitle={r => <AavePoolRowTitle asset={r.asset} />}
@@ -88,47 +42,16 @@ export const BorrowingAssetsList: FC<BorrowingAssetsListProps> = ({
             asset: 'BTC',
             apr: 2,
             available: 12.34,
+            availableUsd: 100,
           },
           {
             asset: 'ETH',
             apr: 2,
             available: 12.34,
+            availableUsd: 100,
           },
         ]}
-        mobileRenderer={r => (
-          <div className="space-y-3">
-            <div className="space-y-2">
-              {/* APR */}
-              <div className="grid grid-cols-2">
-                <div className="flex items-center gap-1">
-                  <span className="text-xs font-medium text-gray-30">APR</span>
-                  <HelperButton content="TODO:" className="text-gray-30" />
-                </div>
-                <div className="text-right text-xs text-gray-30 font-medium">
-                  {r.apr}
-                </div>
-              </div>
-
-              {/* Available */}
-              <div className="grid grid-cols-2">
-                <div className="flex items-center gap-1">
-                  <span className="text-xs font-medium text-gray-30">
-                    Available
-                  </span>
-                </div>
-                <div className="text-right text-xs text-gray-30 font-medium">
-                  {r.available} {r.asset}
-                </div>
-              </div>
-            </div>
-
-            {/* Actions TODO: same component as above */}
-            <div className="grid grid-cols-2 gap-2">
-              <Button text="Borrow" />
-              <Button text="Details" style={ButtonStyle.secondary} />
-            </div>
-          </div>
-        )}
+        mobileRenderer={p => <BorrowAssetDetails pool={p} />}
       />
     </Accordion>
   );

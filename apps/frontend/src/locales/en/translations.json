@@ -800,7 +800,14 @@
             "connectWallet": "Connect wallet to see the available data"
         },
         "borrowingAssetsList": {
-            "title": "Assets to borrow"
+            "title": "Assets to borrow",
+            "asset": "Asset",
+            "apr": "APR",
+            "available": "Available",
+            "borrow": "Borrow",
+            "details": "Details",
+            "availableInfo": "TODO:",
+            "aprInfo": "APR is estimated based on previous fees earned at the defined price range, if no trades were made previously or you have recently claimed fees/withdrawn liquidity, you may see 0 value"
         },
         "lendingPositionsList": {
             "title": "Your lending deposits",

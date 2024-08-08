@@ -4,7 +4,7 @@ import { t } from 'i18next';
 
 import { Accordion, Paragraph, Table } from '@sovryn/ui';
 
-import { AavePoolRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
+import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { PoolPositionStat } from '../PoolPositionStat/PoolPositionStat';
@@ -58,18 +58,24 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
             columns={COLUMNS_CONFIG}
             rowClassName="bg-gray-80"
             accordionClassName="bg-gray-60 border border-gray-70"
-            rowTitle={r => <AavePoolRowTitle asset={r.asset} />}
+            rowTitle={r => (
+              <AaveRowTitle
+                asset={r.asset}
+                value={r.balance}
+                suffix={r.asset}
+              />
+            )}
             rows={[
               // TODO: mocked values
               {
                 asset: 'BTC',
-                apr: 2,
+                apr: 2.24,
                 balance: 12.34,
                 apyType: 'variable',
               },
               {
                 asset: 'ETH',
-                apr: 2,
+                apr: 2.33,
                 balance: 12.34,
                 apyType: 'fixed',
               },

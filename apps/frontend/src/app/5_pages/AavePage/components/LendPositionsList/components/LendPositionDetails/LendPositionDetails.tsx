@@ -46,7 +46,7 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
           </div>
 
           <div className="text-right text-xs text-gray-30 font-medium">
-            <AmountRenderer value={position.apy} />
+            <AmountRenderer value={position.apy} suffix={'%'} />
           </div>
         </div>
 
@@ -54,7 +54,7 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
         <div className="grid grid-cols-2">
           <div className="flex items-center gap-1">
             <span className="text-xs font-medium text-gray-30">
-              {t(translations.aavePage.lendAssetsList.canBeCollateral)}
+              {t(translations.aavePage.lendPositionsList.usedAsCollateral)}
             </span>
           </div>
 

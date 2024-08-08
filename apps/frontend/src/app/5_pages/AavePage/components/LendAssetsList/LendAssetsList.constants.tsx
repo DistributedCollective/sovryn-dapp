@@ -2,7 +2,7 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { Align, HelperButton, Icon } from '@sovryn/ui';
+import { Align, HelperButton, Icon, IconNames } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
@@ -60,8 +60,10 @@ export const COLUMNS_CONFIG = [
     ),
     cellRenderer: (pool: LendPoolDetails) => (
       <div className="flex justify-center">
-        {pool.canBeCollateral && (
-          <Icon icon="check" className="w-[10px] text-positive" />
+        {pool.canBeCollateral ? (
+          <Icon icon={IconNames.CHECK} className="w-[10px] text-positive" />
+        ) : (
+          <Icon icon={IconNames.X_MARK} className="w-[10px] text-negative" />
         )}
       </div>
     ),

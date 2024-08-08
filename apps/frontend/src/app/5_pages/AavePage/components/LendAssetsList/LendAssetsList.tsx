@@ -4,7 +4,7 @@ import { t } from 'i18next';
 
 import { Accordion, Checkbox, Table } from '@sovryn/ui';
 
-import { AavePoolRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
+import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { translations } from '../../../../../locales/i18n';
 import { COLUMNS_CONFIG } from './LendAssetsList.constants';
 import { LendAssetDetails } from './components/LendAssetDetails/LendAssetDetails';
@@ -43,18 +43,20 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({ account }) => {
         columns={COLUMNS_CONFIG}
         rowClassName="bg-gray-80"
         accordionClassName="bg-gray-60 border border-gray-70"
-        rowTitle={r => <AavePoolRowTitle asset={r.asset} />}
+        rowTitle={r => (
+          <AaveRowTitle asset={r.asset} value={r.apy} suffix="%" label="APY" />
+        )}
         rows={[
           // TODO: mocked values
           {
             asset: 'BTC',
-            apy: 2,
+            apy: 2.02,
             walletBalance: 12.34,
             canBeCollateral: true,
           },
           {
             asset: 'ETH',
-            apy: 2,
+            apy: 2.02,
             walletBalance: 12.34,
             canBeCollateral: false,
           },

@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { HelperButton, Icon } from '@sovryn/ui';
+import { HelperButton, Icon, IconNames } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../locales/i18n';
@@ -43,7 +43,7 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
           </div>
 
           <div className="text-right text-xs text-gray-30 font-medium">
-            <AmountRenderer value={pool.apy} />
+            <AmountRenderer value={pool.apy} suffix="%" />
           </div>
         </div>
 
@@ -55,10 +55,15 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
             </span>
           </div>
 
-          <div className="flex justify-end text-xs text-positive font-medium">
+          <div className="flex justify-end text-xs  font-medium">
             {pool.canBeCollateral ? (
-              <Icon icon="check" className="w-[10px]" />
-            ) : null}
+              <Icon icon={IconNames.CHECK} className="w-[10px] text-positive" />
+            ) : (
+              <Icon
+                icon={IconNames.X_MARK}
+                className="w-[10px] text-negative"
+              />
+            )}
           </div>
         </div>
       </div>

@@ -45,7 +45,7 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
           </div>
 
           <div className="text-right text-xs text-gray-30 font-medium">
-            <AmountRenderer value={position.apr} />
+            <AmountRenderer value={position.apr} suffix="%" />
           </div>
         </div>
 
@@ -57,8 +57,8 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
             </span>
           </div>
 
-          <div className="flex justify-end text-xs text-positive font-medium">
-            {position.apyType}
+          <div className="text-right text-xs text-gray-30 font-medium">
+            {t(translations.aavePage.common[position.apyType])}
           </div>
         </div>
       </div>

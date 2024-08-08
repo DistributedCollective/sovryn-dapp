@@ -32,7 +32,7 @@ export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => {
           </div>
 
           <div className="text-right text-xs text-gray-30 font-medium">
-            <AmountRenderer value={pool.apr} />
+            <AmountRenderer value={pool.apr} suffix={'%'} />
           </div>
         </div>
 

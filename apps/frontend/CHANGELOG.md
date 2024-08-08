@@ -1,5 +1,13 @@
 # frontend
 
+## 1.1.18
+
+### Patch Changes
+
+- 7625e9fc: chore: bring back WBTC/SAT pool
+- Updated dependencies [7625e9fc]
+  - @sovryn/sdk@1.0.10
+
 ## 1.1.17
 
 ### Patch Changes

@@ -55,7 +55,7 @@ export const COLUMNS_CONFIG = [
     id: 'canBeCollateral',
     title: (
       <span className="flex items-center gap-1 text-gray-30">
-        {t(pageTranslations.lendAssetsList.walletBalance)}{' '}
+        {t(pageTranslations.lendAssetsList.canBeCollateral)}{' '}
       </span>
     ),
     sortable: true,

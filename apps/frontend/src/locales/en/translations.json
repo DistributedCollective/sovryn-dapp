@@ -795,21 +795,30 @@
             "balance": "Balance",
             "apy": "APY",
             "apyInfo": "TODO:",
+            "apyType": "APY type",
+            "apyTypeInfo": "APY type info",
             "apr": "APR",
             "aprInfo": "APR is estimated based on previous fees earned at the defined price range, if no trades were made previously or you have recently claimed fees/withdrawn liquidity, you may see 0 value",
             "details": "Details",
             "borrow": "Borrow",
-            "lend": "Lend"
+            "lend": "Lend",
+            "variable": "Variable",
+            "fixed": "Fixed"
         },
         "topPanel": {
             "title": "Lend and borrow",
             "subtitle": "Borrow and earn interest by providing liquidity",
             "netWorth": "Net worth",
             "netApy": "Net API",
+            "netApyInfo": "Net apy info",
+            "collateralRatio": "Collateral ratio",
+            "collateralRatioInfo": "Collateral ratio info",
             "n/a": "N/A"
         },
         "borrowPositionsList": {
-            "title": "Your loans"
+            "title": "Your loans",
+            "repay": "Repay",
+            "borrowPowerUsed": "Borrow power used"
         },
         "borrowAssetsList": {
             "title": "Assets to borrow",

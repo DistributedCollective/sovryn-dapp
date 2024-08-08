@@ -40,6 +40,7 @@ export const COLUMNS_CONFIG = [
     ),
     sortable: true,
     align: Align.center,
+    className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
   },
   {
     id: 'apr',
@@ -51,6 +52,7 @@ export const COLUMNS_CONFIG = [
     ),
     sortable: true,
     align: Align.center,
+    className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
   },
   {
     id: 'actions',

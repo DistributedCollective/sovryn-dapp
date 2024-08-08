@@ -38,21 +38,19 @@ export const TopPanel: FC<TopPanelProps> = ({ account }) => {
             label={t(pageTranslations.netWorth)}
             prefix="$"
             value="1,234,567.58"
-            // TODO: update content and translations
-            helperContent="Net APY is the combined effect of all supply and borrow positions on net worth, including incentives. It is possible to have a negative net APY if debt APY is higher than supply APY."
           />
           <div className="flex gap-9">
             <WalletStatCard
-              label={t(pageTranslations.netWorth)}
+              label={t(pageTranslations.netApy)}
               value="200"
               suffix="%"
-              helperContent="Net APY is the combined effect of all supply and borrow positions on net worth, including incentives. It is possible to have a negative net APY if debt APY is higher than supply APY."
+              helperContent={t(pageTranslations.netApyInfo)}
             />
             <WalletStatCard
-              label={t(pageTranslations.netWorth)}
+              label={t(pageTranslations.collateralRatio)}
               value="11.69"
               suffix="%"
-              helperContent="Net APY is the combined effect of all supply and borrow positions on net worth, including incentives. It is possible to have a negative net APY if debt APY is higher than supply APY."
+              helperContent={t(pageTranslations.collateralRatioInfo)}
             />
           </div>
         </div>

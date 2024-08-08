@@ -7,9 +7,9 @@ import { Accordion, Paragraph, Table } from '@sovryn/ui';
 import { AavePoolRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
+import { PoolPositionStat } from '../PoolPositionStat/PoolPositionStat';
 import { COLUMNS_CONFIG } from './LendPositionsList.constants';
 import { LendPositionDetails } from './components/LendPositionDetails/LendPositionDetails';
-import { LendPositionStat } from './components/LendPositionStat/LendPositionStat';
 
 const pageTranslations = translations.aavePage;
 
@@ -34,19 +34,20 @@ export const LendPositionsList: FC<LendPositionsListProps> = () => {
       {account ? (
         <>
           <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:gap-6 lg:mb-6">
-            <LendPositionStat
+            <PoolPositionStat
               label={t(pageTranslations.common.balance)}
               value={123.45}
               prefix="$"
               precision={2}
             />
-            <LendPositionStat
+            <PoolPositionStat
               label={t(pageTranslations.common.apy)}
+              labelInfo={t(pageTranslations.common.apyInfo)}
               value={2.05}
               suffix="%"
               precision={2}
             />
-            <LendPositionStat
+            <PoolPositionStat
               label={t(pageTranslations.common.collateral)}
               value={123.45}
               prefix="$"

@@ -59,7 +59,7 @@ const AavePage: FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-5">
           <div
             className={classNames(
-              activeLiquidityTab !== LiquidityTabs.LEND ? 'hidden' : '',
+              { hidden: activeLiquidityTab !== LiquidityTabs.LEND },
               'lg:block space-y-4',
             )}
           >
@@ -70,7 +70,7 @@ const AavePage: FC = () => {
           {/* Borrowing column */}
           <div
             className={classNames(
-              activeLiquidityTab !== LiquidityTabs.BORROW && 'hidden',
+              { hidden: activeLiquidityTab !== LiquidityTabs.BORROW },
               'lg:block space-y-4',
             )}
           >

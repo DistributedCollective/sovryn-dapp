@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo, useState } from 'react';
+import React, { ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Accordion, AccordionStyle } from '../../../../../1_atoms';
 import { noop } from '../../../../../utils';
@@ -9,6 +9,7 @@ import styles from './TableMobileRow.module.css';
 type TableMobileRowProps<RowType extends RowObject> = {
   columns: ColumnOptions<RowType>[];
   row: RowType;
+  accordionClassName?: string;
   onRowClick?: (row: RowType) => void;
   dataAttribute?: string;
   titleRenderer:
@@ -24,6 +25,7 @@ type TableMobileRowProps<RowType extends RowObject> = {
 export const TableMobileRow = <RowType extends RowObject>({
   columns,
   row,
+  accordionClassName,
   onRowClick = noop,
   dataAttribute,
   titleRenderer,
@@ -55,6 +57,7 @@ export const TableMobileRow = <RowType extends RowObject>({
         dataAttribute={dataAttribute}
         style={AccordionStyle.secondary}
         flatMode={flatMode}
+        className={accordionClassName}
       >
         <div onClick={onClick} className={styles.row}>
           {!renderer &&

@@ -64,6 +64,11 @@ export const WithdrawForm: FC<WithdrawFormProps> = () => {
     [withdrawSize, maximumWithdrawAmount],
   );
 
+  const submitButtonDisabled = useMemo(
+    () => !isValidWithdrawAmount || withdrawSize.lte(0),
+    [isValidWithdrawAmount, withdrawSize],
+  );
+
   return (
     <form className="flex flex-col gap-6">
       <div className="space-y-3">
@@ -149,7 +154,10 @@ export const WithdrawForm: FC<WithdrawFormProps> = () => {
         </SimpleTable>
       </div>
 
-      <Button text={t(translations.common.buttons.confirm)} />
+      <Button
+        disabled={submitButtonDisabled}
+        text={t(translations.common.buttons.confirm)}
+      />
     </form>
   );
 };

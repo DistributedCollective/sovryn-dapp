@@ -803,7 +803,9 @@
             "borrow": "Borrow",
             "lend": "Lend",
             "variable": "Variable",
-            "fixed": "Fixed"
+            "fixed": "Fixed",
+            "withdraw": "Withdraw"
+
         },
         "topPanel": {
             "title": "Lend and borrow",
@@ -827,8 +829,7 @@
         },
         "lendPositionsList": {
             "title": "Your lending deposits",
-            "usedAsCollateral": "Used as collateral",
-            "withdraw": "Withdraw"
+            "usedAsCollateral": "Used as collateral"
         },
         "lendAssetsList": {
             "title": "Assets to lend",
@@ -836,7 +837,10 @@
             "walletBalance": "Wallet balance",
             "canBeCollateral": "Can be collateral"
         },
-        "assetCard": {}
+        "withdrawForm": {
+            "remainingSupply": "Remaining supply",
+            "invalidAmountError": "Invalid amount"
+        }
     },
     "bitocracyPage": {
         "meta": {

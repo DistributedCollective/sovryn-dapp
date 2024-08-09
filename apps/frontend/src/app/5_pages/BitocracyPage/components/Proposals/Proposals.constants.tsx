@@ -21,7 +21,7 @@ export const columnsConfig = [
     id: 'status',
     title: t(translations.bitocracyPage.table.status),
     cellRenderer: (proposal: Proposal) => (
-      <ProposalStatus proposal={proposal} />
+      <ProposalStatus className="min-w-[13rem]" proposal={proposal} />
     ),
   },
   {

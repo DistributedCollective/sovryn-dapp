@@ -806,7 +806,6 @@
             "variable": "Variable",
             "fixed": "Fixed",
             "withdraw": "Withdraw"
-
         },
         "topPanel": {
             "title": "Lend and borrow",
@@ -847,7 +846,7 @@
             "newCollateralBalance": "New collateral balance",
             "invalidAmountError": "Invalid amount",
             "tokenPrice": "{{token}} price",
-            "walletBalance":"Wallet balance",
+            "walletBalance": "Wallet balance",
             "priceImpact": "Price impact",
             "priceImpactInfo": "Price impact information TODO:",
             "expectedAmountToRepay": "Expected amount to repay",
@@ -856,6 +855,14 @@
         "withdrawForm": {
             "remainingSupply": "Remaining supply",
             "invalidAmountError": "Invalid amount"
+        },
+        "lendModal": {
+            "title": "Deposit",
+            "invalidAmountError": "Invalid amount",
+            "collateralization": "Collateralization",
+            "lendApy": "Lend APY",
+            "deposit": "Deposit",
+            "enabled": "Enabled"
         }
     },
     "bitocracyPage": {

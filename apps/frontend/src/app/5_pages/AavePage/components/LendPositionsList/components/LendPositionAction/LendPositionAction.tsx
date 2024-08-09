@@ -16,13 +16,13 @@ export const LendPositionAction: FC<LendPositionActionProps> = () => {
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] =
     useState<boolean>(false);
 
-  const handleWithdrawClick = useCallback(() => {
+  const handleWithdrawClick = () => {
     setIsWithdrawModalOpen(true);
-  }, []);
+  };
 
-  const handleWithdrawClose = useCallback(() => {
+  const handleWithdrawClose = () => {
     setIsWithdrawModalOpen(false);
-  }, []);
+  };
 
   return (
     <div className="flex items-center justify-center lg:justify-end space-x-2">

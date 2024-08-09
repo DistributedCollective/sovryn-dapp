@@ -19,11 +19,11 @@ export const WithdrawModalContainer: FC<WithdrawModalContainerProps> = ({
   return (
     <Dialog disableFocusTrap isOpen={isOpen}>
       <DialogHeader
-        title={t(translations.lendingAdjust.title)}
+        title={t(translations.aavePage.common.withdraw)}
         onClose={handleCloseModal}
       />
       <DialogBody className="flex flex-col gap-6">
-        <WithdrawForm />
+        <WithdrawForm onSuccess={handleCloseModal} />
       </DialogBody>
     </Dialog>
   );

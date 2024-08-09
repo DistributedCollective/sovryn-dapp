@@ -5,27 +5,35 @@ import { t } from 'i18next';
 import {
   AmountInput,
   Button,
+  ErrorBadge,
+  ErrorLevel,
   Select,
   SimpleTable,
   SimpleTableRow,
   Tabs,
   TabType,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
 import { translations } from '../../../../../../../locales/i18n';
 
-type WithdrawFormProps = {};
+const pageTranslations = translations.aavePage;
+
+type WithdrawFormProps = {
+  onSuccess: () => unknown;
+};
 
 export const WithdrawForm: FC<WithdrawFormProps> = () => {
-  const withdrawableAssets = useMemo(() => ['BTC', 'SOV'], []); // TODO: Mock data
+  const withdrawableAssets = useMemo(() => ['BTC', 'SOV'], []); // TODO: this is mocked data. Replace with proper hook
+  const [maximumWithdrawAmount] = useState<Decimal>(Decimal.from(10)); // TODO: this is mocked data. Replace with proper hook
   const [withdrawAsset, setWithdrawAsset] = useState<string>(
     withdrawableAssets[0],
   );
-  const [maxWithdrawableAmount] = useState(10);
-  const [withdrawAmount, setWithdrawAmount] = useDecimalAmountInput('');
+  const [withdrawAmount, setWithdrawAmount, withdrawSize] =
+    useDecimalAmountInput('');
 
   const onWithdrawAssetChange = useCallback(v => {
     setWithdrawAsset(v);
@@ -46,6 +54,16 @@ export const WithdrawForm: FC<WithdrawFormProps> = () => {
     [withdrawableAssets],
   );
 
+  const isValidWithdrawAmount = useMemo(
+    () => (withdrawSize.gt(0) ? withdrawSize.lte(maximumWithdrawAmount) : true),
+    [withdrawSize, maximumWithdrawAmount],
+  );
+
+  const remainingSupply = useMemo(
+    () => maximumWithdrawAmount.sub(withdrawSize),
+    [withdrawSize, maximumWithdrawAmount],
+  );
+
   return (
     <form className="flex flex-col gap-6">
       <div className="space-y-3">
@@ -58,14 +76,14 @@ export const WithdrawForm: FC<WithdrawFormProps> = () => {
               {
                 activeClassName: 'text-primary-20',
                 dataAttribute: 'withdraw',
-                label: 'Withdraw',
+                label: t(translations.common.withdraw),
               },
             ]}
           />
           <span className="text-xs underline">
             (Max{' '}
             <AmountRenderer
-              value={maxWithdrawableAmount}
+              value={maximumWithdrawAmount}
               suffix={withdrawAsset}
               prefix="~"
             />
@@ -80,6 +98,7 @@ export const WithdrawForm: FC<WithdrawFormProps> = () => {
               value={withdrawAmount}
               onChangeText={setWithdrawAmount}
               placeholder="0"
+              invalid={!isValidWithdrawAmount}
             />
             <div className=" pr-4">
               <AmountRenderer
@@ -88,6 +107,14 @@ export const WithdrawForm: FC<WithdrawFormProps> = () => {
                 prefix="$"
               />
             </div>
+
+            {!isValidWithdrawAmount && (
+              <ErrorBadge
+                level={ErrorLevel.Critical}
+                message={t(pageTranslations.withdrawForm.invalidAmountError)}
+                dataAttribute="withdraw-amount-error"
+              />
+            )}
           </div>
 
           <Select
@@ -96,14 +123,14 @@ export const WithdrawForm: FC<WithdrawFormProps> = () => {
             options={withdrawableAssetsOptions}
             labelRenderer={({ value }) => (
               <AssetRenderer
-                dataAttribute="new-loan-collateral-asset"
+                dataAttribute="withdraw-asset-asset"
                 showAssetLogo
                 asset={value}
               />
             )}
             className="min-w-[6.7rem]"
             menuClassName="max-h-[10rem] sm:max-h-[20rem]"
-            dataAttribute="new-loan-collateral-select"
+            dataAttribute="withdraw-asset-select"
           />
         </div>
       </div>
@@ -111,13 +138,18 @@ export const WithdrawForm: FC<WithdrawFormProps> = () => {
       <div>
         <SimpleTable>
           <SimpleTableRow
-            label={'Remaining'}
-            value={<AmountRenderer value={1} suffix={withdrawAsset} />}
+            label={t(translations.aavePage.withdrawForm.remainingSupply)}
+            value={
+              <AmountRenderer
+                value={remainingSupply.toNumber()}
+                suffix={withdrawAsset}
+              />
+            }
           />
         </SimpleTable>
       </div>
 
-      <Button text="Confirm" />
+      <Button text={t(translations.common.buttons.confirm)} />
     </form>
   );
 };

@@ -29,7 +29,7 @@ export const LendPositionAction: FC<LendPositionActionProps> = () => {
       <Button
         style={ButtonStyle.secondary}
         className="flex-grow"
-        text={t(translations.aavePage.lendPositionsList.withdraw)}
+        text={t(translations.common.buttons.withdraw)}
         onClick={handleWithdrawClick}
       />
 

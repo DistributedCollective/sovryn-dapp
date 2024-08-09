@@ -69,6 +69,17 @@ export const WithdrawForm: FC<WithdrawFormProps> = () => {
     [isValidWithdrawAmount, withdrawSize],
   );
 
+  const withdrawLabelRenderer = useCallback(
+    ({ value }) => (
+      <AssetRenderer
+        dataAttribute="withdraw-asset-select"
+        showAssetLogo
+        asset={value}
+      />
+    ),
+    [],
+  );
+
   return (
     <form className="flex flex-col gap-6">
       <div className="space-y-3">
@@ -118,32 +129,12 @@ export const WithdrawForm: FC<WithdrawFormProps> = () => {
             value={withdrawAsset}
             onChange={onWithdrawAssetChange}
             options={withdrawableAssetsOptions}
-            labelRenderer={({ value }) => (
-              <AssetRenderer
-                dataAttribute="withdraw-asset-asset"
-                showAssetLogo
-                asset={value}
-              />
-            )}
+            labelRenderer={withdrawLabelRenderer}
             className="min-w-[6.7rem]"
             menuClassName="max-h-[10rem] sm:max-h-[20rem]"
             dataAttribute="withdraw-asset-select"
           />
         </div>
-      </div>
-
-      <div>
-        <SimpleTable>
-          <SimpleTableRow
-            label={t(translations.aavePage.withdrawForm.remainingSupply)}
-            value={
-              <AmountRenderer
-                value={remainingSupply.toNumber()}
-                suffix={withdrawAsset}
-              />
-            }
-          />
-        </SimpleTable>
       </div>
 
       <div>
@@ -155,6 +146,18 @@ export const WithdrawForm: FC<WithdrawFormProps> = () => {
           />
         )}
       </div>
+
+      <SimpleTable>
+        <SimpleTableRow
+          label={t(translations.aavePage.withdrawForm.remainingSupply)}
+          value={
+            <AmountRenderer
+              value={remainingSupply.toNumber()}
+              suffix={withdrawAsset}
+            />
+          }
+        />
+      </SimpleTable>
 
       <Button
         disabled={submitButtonDisabled}

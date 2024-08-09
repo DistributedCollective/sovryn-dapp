@@ -32,6 +32,7 @@ export const useAmbientPositionValue = (
     const baseValue = decimalic(result?.positionLiqBase || '0')
       .toUnits(baseToken?.decimals)
       .mul(baseUsdPrice);
+
     const quoteValue = decimalic(result?.positionLiqQuote || '0')
       .toUnits(quoteToken?.decimals)
       .mul(quoteUsdPrice);

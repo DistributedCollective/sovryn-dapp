@@ -8,7 +8,7 @@ import {
 
 import { PageContainer } from './app/4_templates';
 import { EmailVerificationStateContainer } from './app/4_templates/EmailVerificationStateContainer/EmailVerificationStateContainer';
-import AavePage from './app/5_pages/AavePage/AaavePage';
+import AavePage from './app/5_pages/AavePage/AavePage';
 import { earnPageLoader } from './app/5_pages/EarnPage/loader';
 import { EmailDuplicateVerifiedPage } from './app/5_pages/EmailDuplicateVerifiedPage/EmailDuplicateVerifiedPage';
 import { EmailErrorPage } from './app/5_pages/EmailErrorPage/EmailErrorPage';

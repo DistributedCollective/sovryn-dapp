@@ -803,7 +803,9 @@
             "borrow": "Borrow",
             "lend": "Lend",
             "variable": "Variable",
-            "fixed": "Fixed"
+            "fixed": "Fixed",
+            "withdraw": "Withdraw"
+
         },
         "topPanel": {
             "title": "Lend and borrow",
@@ -827,8 +829,7 @@
         },
         "lendPositionsList": {
             "title": "Your lending deposits",
-            "usedAsCollateral": "Used as collateral",
-            "withdraw": "Withdraw"
+            "usedAsCollateral": "Used as collateral"
         },
         "lendAssetsList": {
             "title": "Assets to lend",
@@ -843,6 +844,10 @@
             "acknowledge": "I understand that my collateral may be liquidated or used to pay rollover fees if applicable.",
             "invalidAmountError": "Invalid amount",
             "tokenPrice": "{{token}} price"
+        },
+        "withdrawForm": {
+            "remainingSupply": "Remaining supply",
+            "invalidAmountError": "Invalid amount"
         }
     },
     "bitocracyPage": {

@@ -112,14 +112,6 @@ export const WithdrawForm: FC<WithdrawFormProps> = () => {
                 prefix="$"
               />
             </div>
-
-            {!isValidWithdrawAmount && (
-              <ErrorBadge
-                level={ErrorLevel.Critical}
-                message={t(pageTranslations.withdrawForm.invalidAmountError)}
-                dataAttribute="withdraw-amount-error"
-              />
-            )}
           </div>
 
           <Select
@@ -152,6 +144,16 @@ export const WithdrawForm: FC<WithdrawFormProps> = () => {
             }
           />
         </SimpleTable>
+      </div>
+
+      <div>
+        {!isValidWithdrawAmount && (
+          <ErrorBadge
+            level={ErrorLevel.Critical}
+            message={t(pageTranslations.withdrawForm.invalidAmountError)}
+            dataAttribute="withdraw-amount-error"
+          />
+        )}
       </div>
 
       <Button

@@ -11,9 +11,9 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
+import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
-import { WalletStatCard } from './components/WalletStatCard/WalletStatCard';
 
 const pageTranslations = translations.aavePage.topPanel;
 
@@ -36,19 +36,19 @@ export const TopPanel: FC<TopPanelProps> = () => {
       <div className="flex flex-col gap-6 md:flex-row">
         <div className="flex flex-col gap-4 md:py-12 md:flex-row md:gap-9 flex-shrink-0">
           {/* TODO: mock values */}
-          <WalletStatCard
+          <StatisticsCard
             label={t(pageTranslations.netWorth)}
             prefix="$"
             value={account ? 1234567.58 : undefined}
           />
           <div className="flex gap-9">
-            <WalletStatCard
+            <StatisticsCard
               label={t(pageTranslations.netApy)}
               value={account ? 2.69 : undefined}
               suffix="%"
               helperContent={t(pageTranslations.netApyInfo)}
             />
-            <WalletStatCard
+            <StatisticsCard
               label={t(pageTranslations.collateralRatio)}
               value={account ? 11.5 : undefined}
               suffix="%"

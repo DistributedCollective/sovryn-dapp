@@ -882,6 +882,19 @@
         },
         "yourWalletTab": {
             "title": "Your wallet"
+        },
+        "eModeDetails": {
+            "title": "E-Mode details",
+            "category": "E-Mode category",
+            "ethCorrelatedCategory": "ETH correlated",
+            "maxLtv": "Max LTV",
+            "maxLtvInfo": "The Maximum LTV ratio represents the maximum borrowing power of a specific collateral. For example, if a collateral has an LTV of 75%, the user can borrow up to 0.75 worth of ETH in the principal currency for every 1 ETH worth of collateral.",
+            "liquidationThreshold": "Liquidation threshold",
+            "liquidationThresholdInfo": "This represents the threshold at which a borrow position will be considered undercollateralized and subject to liquidation for each collateral. For example, if a collateral has a liquidation threshold of 80%, it means that the position will be liquidated when the debt value is worth 80% of the collateral value.",
+            "liquidationPenalty": "Liquidation penalty",
+            "liquidationPenaltyInfo": "When a liquidation occurs, liquidators repay up to 50% of the outstanding borrowed amount on behalf of the borrower. In return, they can buy the collateral at a discount and keep the difference (liquidation penalty) as a bonus.",
+            "body": "E-Mode increases your LTV for a selected category of assets, meaning that when E-mode is enabled, you will have higher borrowing power over assets of the same E-mode category which are defined by Aave Governance. You can enter E-Mode from your Dashboard.",
+            "learnMore": "Learn more"
         }
     },
     "bitocracyPage": {

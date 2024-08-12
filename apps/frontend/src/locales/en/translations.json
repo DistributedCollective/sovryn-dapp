@@ -792,6 +792,7 @@
             "connectWallet": "Connect wallet to see the available data",
             "asset": "Asset",
             "collateral": "Collateral",
+            "collateralRatio": "Collateral ratio",
             "balance": "Balance",
             "apy": "APY",
             "apyInfo": "TODO:",
@@ -836,6 +837,21 @@
             "showZeroBalances": "Show assets with 0 balance",
             "walletBalance": "Wallet balance",
             "canBeCollateral": "Can be collateral"
+        },
+        "repayModal": {
+            "title": "Repay",
+            "repayWith": "Repay with",
+            "borrowApr": "Borrow APR",
+            "collateralRatio": "Collateral ratio",
+            "remainingDebt": "Remaining debt",
+            "newCollateralBalance": "New collateral balance",
+            "invalidAmountError": "Invalid amount",
+            "tokenPrice": "{{token}} price",
+            "walletBalance":"Wallet balance",
+            "priceImpact": "Price impact",
+            "priceImpactInfo": "Price impact information TODO:",
+            "expectedAmountToRepay": "Expected amount to repay",
+            "collateralToRepayWith": "Collateral to repay with"
         },
         "borrowForm": {
             "borrowApr": "Borrow APR",

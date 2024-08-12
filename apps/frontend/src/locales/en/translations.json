@@ -837,6 +837,14 @@
             "walletBalance": "Wallet balance",
             "canBeCollateral": "Can be collateral"
         },
+        "borrowForm": {
+            "borrowApr": "Borrow APR",
+            "collateralRatio": "Collateral ratio",
+            "liquidationPrice":"Liquidation price",
+            "acknowledge": "I understand that my collateral may be liquidated or used to pay rollover fees if applicable.",
+            "invalidAmountError": "Invalid amount",
+            "tokenPrice": "{{token}} price"
+        },
         "withdrawForm": {
             "remainingSupply": "Remaining supply",
             "invalidAmountError": "Invalid amount"

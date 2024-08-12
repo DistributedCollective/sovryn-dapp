@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { Align, HelperButton, Icon, IconNames } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { LendPoolDetails } from './LendAssetsList.types';
@@ -25,6 +26,7 @@ export const COLUMNS_CONFIG = [
         showAssetLogo
         asset={pool.asset}
         className="lg:justify-start justify-end"
+        logoClassName="[&>svg]:h-8 [&>svg]:w-8 [&>svg]:mr-[10px]"
       />
     ),
   },
@@ -37,6 +39,9 @@ export const COLUMNS_CONFIG = [
         {t(pageTranslations.lendAssetsList.walletBalance)}{' '}
       </span>
     ),
+    cellRenderer: (pool: LendPoolDetails) => (
+      <AmountRenderer value={pool.walletBalance} suffix={pool.asset} />
+    ),
   },
   {
     id: 'apy',
@@ -47,6 +52,9 @@ export const COLUMNS_CONFIG = [
         {t(pageTranslations.common.apy)}{' '}
         <HelperButton content={t(pageTranslations.common.apyInfo)} />
       </span>
+    ),
+    cellRenderer: (pool: LendPoolDetails) => (
+      <AmountRenderer value={pool.apy} suffix={'%'} />
     ),
   },
   {

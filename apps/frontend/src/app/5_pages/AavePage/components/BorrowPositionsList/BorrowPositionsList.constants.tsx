@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { Align, HelperButton } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { BorrowPosition } from './BorrowPositionsList.types';
@@ -25,6 +26,7 @@ export const COLUMNS_CONFIG = [
         showAssetLogo
         asset={position.asset}
         className="lg:justify-start justify-end"
+        logoClassName="[&>svg]:h-8 [&>svg]:w-8 [&>svg]:mr-[10px]"
       />
     ),
   },
@@ -38,6 +40,9 @@ export const COLUMNS_CONFIG = [
         {t(pageTranslations.common.balance)}{' '}
       </span>
     ),
+    cellRenderer: (pool: BorrowPosition) => (
+      <AmountRenderer value={pool.balance} suffix={pool.asset} />
+    ),
   },
   {
     id: 'apr',
@@ -49,6 +54,9 @@ export const COLUMNS_CONFIG = [
         {t(translations.aavePage.common.apr)}{' '}
         <HelperButton content={t(pageTranslations.common.aprInfo)} />
       </span>
+    ),
+    cellRenderer: (position: BorrowPosition) => (
+      <AmountRenderer value={position.apr} suffix={'%'} />
     ),
   },
   {
@@ -62,7 +70,6 @@ export const COLUMNS_CONFIG = [
         <HelperButton content={t(pageTranslations.common.apyTypeInfo)} />
       </span>
     ),
-
     cellRenderer: (position: BorrowPosition) => (
       <span>{t(pageTranslations.common[position.apyType])}</span>
     ),

@@ -4,6 +4,8 @@ import { t } from 'i18next';
 
 import { Align, HelperButton } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { AssetAmountPriceRenderer } from '../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { LendPosition } from './LendPositionsList.types';
@@ -26,6 +28,7 @@ export const COLUMNS_CONFIG = [
         showAssetLogo
         asset={position.asset}
         className="lg:justify-start justify-end"
+        logoClassName="[&>svg]:h-8 [&>svg]:w-8 [&>svg]:mr-[10px]"
       />
     ),
   },
@@ -36,6 +39,12 @@ export const COLUMNS_CONFIG = [
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
     title: (
       <span className="text-gray-30">{t(pageTranslations.common.balance)}</span>
+    ),
+    cellRenderer: (position: LendPosition) => (
+      <AssetAmountPriceRenderer
+        value={position.balance}
+        asset={position.asset}
+      />
     ),
   },
   {
@@ -48,6 +57,9 @@ export const COLUMNS_CONFIG = [
         {t(translations.aavePage.common.apy)}{' '}
         <HelperButton content={t(pageTranslations.common.apyInfo)} />
       </span>
+    ),
+    cellRenderer: (position: LendPosition) => (
+      <AmountRenderer value={position.balance} suffix={position.asset} />
     ),
   },
   {

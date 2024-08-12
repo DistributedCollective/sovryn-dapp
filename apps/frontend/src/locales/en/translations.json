@@ -881,7 +881,18 @@
             "title": "Reserve status"
         },
         "yourWalletTab": {
-            "title": "Your wallet"
+            "title": "Your wallet",
+            "walletBalance": "Wallet balance",
+            "availableToSupply": "Available to supply",
+            "availableToSupplyInfo": "How much you can borrow of this token with this wallet",
+            "availableToBorrow": "Available to borrow",
+            "availableToBorrowInfo": "How much you can borrow of this token with this wallet",
+            "supply": "Supply",
+            "borrow": "Borrow",
+            "yourWalletIsEmpty": "Your wallet is empty. Purchase or transfer assets",
+            "noSupply": "Protocol supply cap is at 100% for this asset. Further supply unavailable. Learn more",
+            "connectWalletToSeeData": "Connect wallet to see available data",
+            "connectWallet": "Connect Wallet"
         }
     },
     "bitocracyPage": {

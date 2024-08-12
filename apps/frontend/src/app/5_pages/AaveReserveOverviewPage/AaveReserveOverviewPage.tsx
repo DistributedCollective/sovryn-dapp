@@ -8,6 +8,7 @@ import { Tabs, TabSize, TabType } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
 import { EModeDetails } from './components/EModeDetails/EModeDetails';
+import { WalletOverview } from './components/WalletOverview/WalletOverview';
 
 const pageTranslations = translations.aaveReserveOverviewPage;
 
@@ -65,10 +66,10 @@ const AaveReserveOverviewPage: FC = () => {
           <div
             className={classNames(
               { hidden: activeOverviewTab !== OverviewTab.WALLET },
-              'lg:block space-y-4 bg-blue-2 h-10',
+              'lg:block space-y-4',
             )}
           >
-            {/* TODO: wallet components */}
+            <WalletOverview asset="ETH" />
           </div>
         </div>
       </div>

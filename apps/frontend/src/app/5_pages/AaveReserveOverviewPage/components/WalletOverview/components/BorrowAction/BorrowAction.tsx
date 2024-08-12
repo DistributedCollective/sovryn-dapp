@@ -1,0 +1,51 @@
+import React, { FC, useMemo } from 'react';
+
+import { t } from 'i18next';
+
+import { Button, HelperButton, Paragraph, ParagraphSize } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
+
+import { AssetAmountPriceRenderer } from '../../../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
+import { translations } from '../../../../../../../locales/i18n';
+
+const pageTranslations = translations.aaveReserveOverviewPage;
+
+type BorrowActionProps = {
+  asset: string;
+};
+
+export const BorrowAction: FC<BorrowActionProps> = ({ asset }) => {
+  const availableToBorrow = 0; // TODO: this is mocked
+
+  const isBorrowDisabled = useMemo(() => {
+    // TODO: add conditions
+    return Decimal.from(availableToBorrow).lte(0);
+  }, [availableToBorrow]);
+
+  return (
+    <div className="flex justify-between items-center">
+      <div>
+        <Paragraph
+          size={ParagraphSize.small}
+          className="text-gray-30 flex items-center gap-1"
+        >
+          {t(pageTranslations.yourWalletTab.availableToBorrow)}{' '}
+          <HelperButton
+            content={t(pageTranslations.yourWalletTab.availableToBorrowInfo)}
+          />
+        </Paragraph>
+        <AssetAmountPriceRenderer
+          value={availableToBorrow}
+          asset={asset}
+          className="text-left flex flex-col"
+          valueClassName="font-medium"
+        />
+      </div>
+
+      <Button
+        text={t(pageTranslations.yourWalletTab.borrow)}
+        disabled={isBorrowDisabled}
+      />
+    </div>
+  );
+};

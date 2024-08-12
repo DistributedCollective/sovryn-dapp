@@ -877,6 +877,14 @@
         "meta": {
             "title": "Pool details"
         },
+        "topPanel": {
+            "title": "Lend and borrow",
+            "subtitle": "Borrow and earn interest by providing liquidity",
+            "reserveSize": "Reserve size",
+            "availableLiquidity": "Available liquidity",
+            "utilizationRate": "Utilization rate",
+            "oraclePrice": "Oracle price"
+        },
         "reserveStatusTab": {
             "title": "Reserve status"
         },

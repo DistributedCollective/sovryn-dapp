@@ -8,6 +8,7 @@ import { Tabs, TabSize, TabType } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
 import { EModeDetails } from './components/EModeDetails/EModeDetails';
+import { TopPanel } from './components/TopPanel/TopPanel';
 import { WalletOverview } from './components/WalletOverview/WalletOverview';
 
 const pageTranslations = translations.aaveReserveOverviewPage;
@@ -28,9 +29,9 @@ const AaveReserveOverviewPage: FC = () => {
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
 
-      {/* TODO: <TopPanel /> */}
+      <TopPanel className="lg:mb-[110px] lg:mt-[52px]" />
 
-      <div className="pt-6 mt-6 space-y-6 lg:pt-0 lg:mt-0 lg:space-y-0 w-full">
+      <div className="pt-6 space-y-6 lg:pt-0 lg:space-y-0 w-full">
         <Tabs
           className="w-full bg-gray-80 rounded p-1 border border-gray-60 lg:hidden"
           index={activeOverviewTab}

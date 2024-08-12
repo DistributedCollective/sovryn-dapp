@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import { Tabs, TabSize, TabType } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
+import { EModeDetails } from './components/EModeDetails/EModeDetails';
 import { WalletOverview } from './components/WalletOverview/WalletOverview';
 
 const pageTranslations = translations.aaveReserveOverviewPage;
@@ -55,10 +56,10 @@ const AaveReserveOverviewPage: FC = () => {
           <div
             className={classNames(
               { hidden: activeOverviewTab !== OverviewTab.RESERVE },
-              'lg:block space-y-4 w-full bg-positive h-10',
+              'lg:block space-y-4 w-full',
             )}
           >
-            {/* TODO: reserve graphic components */}
+            <EModeDetails />
           </div>
 
           {/* wallet column */}

@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
+import { useNavigate } from 'react-router-dom';
 
 import { Button, ButtonStyle } from '@sovryn/ui';
 
@@ -15,6 +16,7 @@ type BorrowAssetActionProps = {
 };
 
 export const BorrowAssetAction: FC<BorrowAssetActionProps> = () => {
+  const navigate = useNavigate();
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState<boolean>(false);
 
   const handleBorrowClick = useCallback(() => {
@@ -33,11 +35,11 @@ export const BorrowAssetAction: FC<BorrowAssetActionProps> = () => {
         onClick={handleBorrowClick}
       />
 
-      {/* TODO: details link */}
       <Button
         className="flex-grow"
         text={t(pageTranslations.common.details)}
         style={ButtonStyle.secondary}
+        onClick={() => navigate('/aave/reserve-overview')}
       />
 
       <BorrowModalContainer

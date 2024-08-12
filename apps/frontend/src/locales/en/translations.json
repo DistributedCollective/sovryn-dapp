@@ -855,7 +855,7 @@
         "borrowForm": {
             "borrowApr": "Borrow APR",
             "collateralRatio": "Collateral ratio",
-            "liquidationPrice":"Liquidation price",
+            "liquidationPrice": "Liquidation price",
             "acknowledge": "I understand that my collateral may be liquidated or used to pay rollover fees if applicable.",
             "invalidAmountError": "Invalid amount",
             "tokenPrice": "{{token}} price"
@@ -871,6 +871,17 @@
             "lendApy": "Lend APY",
             "deposit": "Deposit",
             "enabled": "Enabled"
+        }
+    },
+    "aaveReserveOverviewPage": {
+        "meta": {
+            "title": "Pool details"
+        },
+        "reserveStatusTab": {
+            "title": "Reserve status"
+        },
+        "yourWalletTab": {
+            "title": "Your wallet"
         }
     },
     "bitocracyPage": {

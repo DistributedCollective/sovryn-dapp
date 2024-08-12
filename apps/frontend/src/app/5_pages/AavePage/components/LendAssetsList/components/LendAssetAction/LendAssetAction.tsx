@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react';
 
 import { t } from 'i18next';
+import { useNavigate } from 'react-router-dom';
 
 import { Button, ButtonStyle } from '@sovryn/ui';
 
@@ -13,6 +14,7 @@ type LendAssetActionProps = {
 };
 
 export const LendAssetAction: FC<LendAssetActionProps> = () => {
+  const navigate = useNavigate();
   const [isLendModalOpen, setIsLendModalOpen] = useState<boolean>(false);
 
   const handleLendClick = () => {
@@ -31,11 +33,11 @@ export const LendAssetAction: FC<LendAssetActionProps> = () => {
         onClick={handleLendClick}
       />
 
-      {/* TODO: Add action for details */}
       <Button
         className="flex-grow"
         text={t(translations.aavePage.common.details)}
         style={ButtonStyle.secondary}
+        onClick={() => navigate('/aave/reserve-overview')}
       />
 
       <LendModalContainer

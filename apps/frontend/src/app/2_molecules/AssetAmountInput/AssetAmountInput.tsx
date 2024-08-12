@@ -1,6 +1,12 @@
 import React, { FC, useCallback } from 'react';
 
-import { AmountInput, Paragraph, Select, SelectOption } from '@sovryn/ui';
+import {
+  AmountInput,
+  Paragraph,
+  ParagraphSize,
+  Select,
+  SelectOption,
+} from '@sovryn/ui';
 import { Decimalish } from '@sovryn/utils';
 
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
@@ -43,7 +49,12 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
   return (
     <div>
       {label && (
-        <Paragraph className="mb-1 text-gray-30 font-medium">{label}</Paragraph>
+        <Paragraph
+          size={ParagraphSize.base}
+          className="mb-1 text-gray-30 font-medium"
+        >
+          {label}
+        </Paragraph>
       )}
 
       <div className="relative">

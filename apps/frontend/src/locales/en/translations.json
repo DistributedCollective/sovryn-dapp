@@ -795,9 +795,9 @@
             "collateralRatio": "Collateral ratio",
             "balance": "Balance",
             "apy": "APY",
-            "apyInfo": "TODO:",
+            "apyInfo": "Compounding interest accrued by deposit or borrow on the lending pool",
             "apyType": "APY type",
-            "apyTypeInfo": "APY type info",
+            "apyTypeInfo": "Variable interest rate will fluctuate based on the market conditions. Recommended for short-term positions.",
             "apr": "APR",
             "aprInfo": "APR is estimated based on previous fees earned at the defined price range, if no trades were made previously or you have recently claimed fees/withdrawn liquidity, you may see 0 value",
             "details": "Details",
@@ -812,9 +812,9 @@
             "subtitle": "Borrow and earn interest by providing liquidity",
             "netWorth": "Net worth",
             "netApy": "Net API",
-            "netApyInfo": "Net apy info",
+            "netApyInfo": "Net APY is the combined effect of all supply and borrow positions on net worth, including incentives. It is possible to have a negative net APY if debt APY is higher than supply APY.",
             "collateralRatio": "Collateral ratio",
-            "collateralRatioInfo": "Collateral ratio info",
+            "collateralRatioInfo": "The collateral ratio defines the maximum amount of assets that can be borrowed with a specific collatera",
             "n/a": "N/A"
         },
         "borrowPositionsList": {
@@ -825,7 +825,7 @@
         "borrowAssetsList": {
             "title": "Assets to borrow",
             "available": "Available",
-            "availableInfo": "TODO:"
+            "availableInfo": "This is the total amount available for you to borrow. You can borrow based on your collateral and until the borrow cap is reached."
         },
         "lendPositionsList": {
             "title": "Your lending deposits",
@@ -848,7 +848,7 @@
             "tokenPrice": "{{token}} price",
             "walletBalance": "Wallet balance",
             "priceImpact": "Price impact",
-            "priceImpactInfo": "Price impact information TODO:",
+            "priceImpactInfo": "The impact your trade has on the market price of this pool.",
             "expectedAmountToRepay": "Expected amount to repay",
             "collateralToRepayWith": "Collateral to repay with"
         },

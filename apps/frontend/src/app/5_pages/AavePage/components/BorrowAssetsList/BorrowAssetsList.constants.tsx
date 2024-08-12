@@ -4,6 +4,8 @@ import { t } from 'i18next';
 
 import { Align, HelperButton } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { AssetAmountPriceRenderer } from '../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { BorrowPoolDetails } from './BorrowAssetsList.types';
@@ -25,6 +27,7 @@ export const COLUMNS_CONFIG = [
         showAssetLogo
         asset={pool.asset}
         className="lg:justify-start justify-end"
+        logoClassName="[&>svg]:h-8 [&>svg]:w-8 [&>svg]:mr-[10px]"
       />
     ),
   },
@@ -41,6 +44,12 @@ export const COLUMNS_CONFIG = [
         />
       </span>
     ),
+    cellRenderer: (position: BorrowPoolDetails) => (
+      <AssetAmountPriceRenderer
+        value={position.available}
+        asset={position.asset}
+      />
+    ),
   },
   {
     id: 'apr',
@@ -52,6 +61,9 @@ export const COLUMNS_CONFIG = [
         {t(pageTranslations.common.apr)}{' '}
         <HelperButton content={t(pageTranslations.common.aprInfo)} />
       </span>
+    ),
+    cellRenderer: (pool: BorrowPoolDetails) => (
+      <AmountRenderer value={pool.apr} suffix={'%'} />
     ),
   },
   {

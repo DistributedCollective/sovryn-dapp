@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
-import { HelperButton } from '@sovryn/ui';
+import { HelperButton, SimpleTableRow } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../locales/i18n';
@@ -18,36 +18,23 @@ type BorrowAssetDetailsProps = {
 export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => {
   return (
     <div className="space-y-3">
-      <div className="space-y-2">
+      <div>
         {/* APR */}
-        <div className="grid grid-cols-2">
-          <div className="flex items-center gap-1">
-            <span className="text-xs font-medium text-gray-30">
-              {t(pageTranslations.common.apr)}
+        <SimpleTableRow
+          label={
+            <span className="text-xs font-medium text-gray-30 items-center flex gap-1">
+              {t(pageTranslations.common.apr)}{' '}
+              <HelperButton content={t(pageTranslations.common.aprInfo)} />
             </span>
-            <HelperButton
-              content={t(pageTranslations.common.aprInfo)}
-              className="text-gray-30"
-            />
-          </div>
-
-          <div className="text-right text-xs text-gray-30 font-medium">
-            <AmountRenderer value={pool.apr} suffix={'%'} />
-          </div>
-        </div>
+          }
+          value={<AmountRenderer value={pool.apr} suffix={'%'} />}
+        />
 
         {/* Available */}
-        <div className="grid grid-cols-2">
-          <div className="flex items-center gap-1">
-            <span className="text-xs font-medium text-gray-30">
-              {t(pageTranslations.borrowAssetsList.available)}
-            </span>
-          </div>
-
-          <div className="text-right text-xs text-gray-30 font-medium">
-            <AmountRenderer value={pool.available} suffix={pool.asset} />
-          </div>
-        </div>
+        <SimpleTableRow
+          label={t(pageTranslations.borrowAssetsList.available)}
+          value={<AmountRenderer value={pool.available} suffix={pool.asset} />}
+        />
       </div>
 
       <BorrowAssetAction pool={pool} />

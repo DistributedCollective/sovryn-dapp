@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
 
+import classNames from 'classnames';
 import { t } from 'i18next';
 
-import { HelperButton, Icon, IconNames } from '@sovryn/ui';
+import { HelperButton, Icon, IconNames, SimpleTableRow } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../locales/i18n';
@@ -16,56 +17,39 @@ type LendAssetDetailsProps = {
 export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
   return (
     <div className="space-y-3">
-      <div className="space-y-2">
+      <div>
         {/* Available */}
-        <div className="grid grid-cols-2">
-          <div className="flex items-center gap-1">
-            <span className="text-xs font-medium text-gray-30">
-              {t(translations.aavePage.lendAssetsList.walletBalance)}
-            </span>
-          </div>
-
-          <div className="text-right text-xs text-gray-30 font-medium">
+        <SimpleTableRow
+          label={t(translations.aavePage.lendAssetsList.walletBalance)}
+          value={
             <AmountRenderer value={pool.walletBalance} suffix={pool.asset} />
-          </div>
-        </div>
+          }
+        />
 
         {/* APY */}
-        <div className="grid grid-cols-2">
-          <div className="flex items-center gap-1">
-            <span className="text-xs font-medium text-gray-30">
+        <SimpleTableRow
+          label={
+            <span className="text-xs font-medium text-gray-30 flex gap-1 items-center">
               {t(translations.aavePage.common.apy)}
+              <HelperButton content={t(translations.aavePage.common.apyInfo)} />
             </span>
-            <HelperButton
-              content={t(translations.aavePage.common.apyInfo)}
-              className="text-gray-30"
-            />
-          </div>
-
-          <div className="text-right text-xs text-gray-30 font-medium">
-            <AmountRenderer value={pool.apy} suffix="%" />
-          </div>
-        </div>
+          }
+          value={<AmountRenderer value={pool.apy} suffix="%" />}
+        />
 
         {/* Can be collateral */}
-        <div className="grid grid-cols-2">
-          <div className="flex items-center gap-1">
-            <span className="text-xs font-medium text-gray-30">
-              {t(translations.aavePage.lendAssetsList.canBeCollateral)}
-            </span>
-          </div>
-
-          <div className="flex justify-end text-xs  font-medium">
-            {pool.canBeCollateral ? (
-              <Icon icon={IconNames.CHECK} className="w-[10px] text-positive" />
-            ) : (
-              <Icon
-                icon={IconNames.X_MARK}
-                className="w-[10px] text-negative"
-              />
-            )}
-          </div>
-        </div>
+        <SimpleTableRow
+          label={t(translations.aavePage.lendAssetsList.canBeCollateral)}
+          value={
+            <Icon
+              icon={pool.canBeCollateral ? IconNames.CHECK : IconNames.X_MARK}
+              className={classNames(
+                'w-[10px]',
+                pool.canBeCollateral ? 'text-positive' : 'text-negative',
+              )}
+            />
+          }
+        />
       </div>
 
       <LendAssetAction pool={pool} />

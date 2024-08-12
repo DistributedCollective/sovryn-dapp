@@ -795,7 +795,7 @@
             "collateralRatio": "Collateral ratio",
             "balance": "Balance",
             "apy": "APY",
-            "apyInfo": "The weighted average of APY for all supplied assets, including incentives.",
+            "apyInfo": "Compounding interest accrued by deposit or borrow on the lending pool",
             "apyType": "APY type",
             "apyTypeInfo": "Variable interest rate will fluctuate based on the market conditions. Recommended for short-term positions.",
             "apr": "APR",

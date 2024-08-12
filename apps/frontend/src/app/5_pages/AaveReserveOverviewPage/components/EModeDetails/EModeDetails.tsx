@@ -35,7 +35,7 @@ export const EModeDetails: FC<EModeDetailsProps> = () => {
       flatMode={!isMobile}
     >
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center max-w-[260px]">
           <Paragraph className="text-sm font-medium">
             {t(pageTranslations.category)}
           </Paragraph>

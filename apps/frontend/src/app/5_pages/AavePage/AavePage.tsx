@@ -15,15 +15,13 @@ import { TopPanel } from './components/TopPanel/TopPanel';
 
 const pageTranslations = translations.aavePage;
 
-enum LiquidityTabs {
+enum ActiveTab {
   LEND = 0,
   BORROW,
 }
 
 const AavePage: FC = () => {
-  const [activeLiquidityTab, setActiveLiquidityTab] = useState<LiquidityTabs>(
-    LiquidityTabs.LEND,
-  );
+  const [activeTab, setActiveTab] = useState<ActiveTab>(ActiveTab.LEND);
 
   return (
     <div className="w-full pb-6 2xl:px-12">
@@ -37,7 +35,7 @@ const AavePage: FC = () => {
         {/* Tab selector */}
         <Tabs
           className="w-full bg-gray-80 rounded p-1 border border-gray-60 lg:hidden"
-          index={activeLiquidityTab}
+          index={activeTab}
           items={[
             {
               activeClassName: 'text-primary-20',
@@ -50,7 +48,7 @@ const AavePage: FC = () => {
               label: t(pageTranslations.common.borrow),
             },
           ]}
-          onChange={e => setActiveLiquidityTab(e)}
+          onChange={e => setActiveTab(e)}
           size={TabSize.normal}
           type={TabType.secondary}
         />
@@ -59,7 +57,7 @@ const AavePage: FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-5">
           <div
             className={classNames(
-              { hidden: activeLiquidityTab !== LiquidityTabs.LEND },
+              { hidden: activeTab !== ActiveTab.LEND },
               'lg:block space-y-4',
             )}
           >
@@ -70,7 +68,7 @@ const AavePage: FC = () => {
           {/* Borrowing column */}
           <div
             className={classNames(
-              { hidden: activeLiquidityTab !== LiquidityTabs.BORROW },
+              { hidden: activeTab !== ActiveTab.BORROW },
               'lg:block space-y-4',
             )}
           >

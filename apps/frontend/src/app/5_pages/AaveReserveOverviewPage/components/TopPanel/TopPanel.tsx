@@ -13,12 +13,12 @@ import { translations } from '../../../../../locales/i18n';
 const pageTranslations = translations.aaveReserveOverviewPage.topPanel;
 
 type TopPanelProps = {
+  asset: string;
   className?: string;
 };
 
-export const TopPanel: FC<TopPanelProps> = ({ className }) => {
+export const TopPanel: FC<TopPanelProps> = ({ asset, className }) => {
   // TODO: Mocked data
-  const asset = 'BTC';
   const assetName = 'Bitcoin';
   const reserveSizeInM = 1234.58;
   const availableLiquidityM = 1234.58;
@@ -60,7 +60,6 @@ export const TopPanel: FC<TopPanelProps> = ({ className }) => {
           </div>
         </div>
 
-        {/* TODO: mock values */}
         <StatisticsCard
           label={t(pageTranslations.reserveSize)}
           prefix="$"

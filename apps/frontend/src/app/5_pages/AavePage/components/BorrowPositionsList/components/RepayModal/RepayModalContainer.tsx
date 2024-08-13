@@ -21,7 +21,7 @@ type RepayModalContainerProps = {
   handleCloseModal: () => unknown;
 };
 
-enum PaymentTabs {
+enum RepayWith {
   BALANCE = 0,
   COLLATERAL,
 }
@@ -30,7 +30,7 @@ export const RepayModalContainer: FC<RepayModalContainerProps> = ({
   isOpen,
   handleCloseModal,
 }) => {
-  const [activeTab, setActiveTab] = useState<PaymentTabs>(PaymentTabs.BALANCE);
+  const [activeTab, setActiveTab] = useState<RepayWith>(RepayWith.BALANCE);
 
   return (
     <Dialog disableFocusTrap isOpen={isOpen}>
@@ -66,7 +66,7 @@ export const RepayModalContainer: FC<RepayModalContainerProps> = ({
           type={TabType.secondary}
         />
 
-        {activeTab === PaymentTabs.BALANCE ? (
+        {activeTab === RepayWith.BALANCE ? (
           <RepayWithWalletBalanceForm onSuccess={handleCloseModal} />
         ) : (
           <RepayWithCollateralForm onSuccess={handleCloseModal} />

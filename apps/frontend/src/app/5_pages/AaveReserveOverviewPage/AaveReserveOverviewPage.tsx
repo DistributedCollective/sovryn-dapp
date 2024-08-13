@@ -19,6 +19,7 @@ enum OverviewTab {
 }
 
 const AaveReserveOverviewPage: FC = () => {
+  const [asset] = useState('BTC'); // TODO: mock
   const [activeOverviewTab, setActiveOverviewTab] = useState<OverviewTab>(
     OverviewTab.RESERVE,
   );
@@ -29,7 +30,7 @@ const AaveReserveOverviewPage: FC = () => {
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
 
-      <TopPanel className="lg:mb-[110px] lg:mt-[52px]" />
+      <TopPanel asset={asset} className="lg:mb-[110px] lg:mt-[52px]" />
 
       <div className="pt-6 space-y-6 lg:pt-0 lg:space-y-0 w-full">
         <Tabs
@@ -70,7 +71,7 @@ const AaveReserveOverviewPage: FC = () => {
               'lg:block space-y-4',
             )}
           >
-            <WalletOverview asset="ETH" />
+            <WalletOverview asset={asset} />
           </div>
         </div>
       </div>

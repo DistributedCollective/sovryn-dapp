@@ -63,6 +63,7 @@ export const RepayWithWalletBalanceForm: FC<
     return collateralSize.mul(collateralToLoanRate).div(totalBorrowed).mul(100);
   }, [collateralSize, totalBorrowed, repaySize, collateralToLoanRate]);
 
+  // TODO: Add validations
   const submitButtonDisabled = useMemo(
     () => !isValidRepayAmount || repaySize.lte(0),
     [isValidRepayAmount, repaySize],

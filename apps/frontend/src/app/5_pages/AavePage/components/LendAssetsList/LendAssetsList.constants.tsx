@@ -36,7 +36,7 @@ export const COLUMNS_CONFIG = [
     align: Align.center,
     title: (
       <span className="text-gray-30">
-        {t(pageTranslations.lendAssetsList.walletBalance)}{' '}
+        {t(pageTranslations.lendAssetsList.walletBalance)}
       </span>
     ),
     cellRenderer: (pool: LendPoolDetails) => (
@@ -49,7 +49,7 @@ export const COLUMNS_CONFIG = [
     align: Align.center,
     title: (
       <span className="flex items-center gap-1 text-gray-30">
-        {t(pageTranslations.common.apy)}{' '}
+        {t(pageTranslations.common.apy)}
         <HelperButton content={t(pageTranslations.common.apyInfo)} />
       </span>
     ),

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -9,6 +9,7 @@ import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { PoolPositionStat } from '../PoolPositionStat/PoolPositionStat';
 import { COLUMNS_CONFIG } from './BorrowPositionsList.constants';
+import { BorrowPosition } from './BorrowPositionsList.types';
 import { BorrowPositionDetails } from './components/BorrowPositionDetails/BorrowPositionDetails';
 
 const pageTranslations = translations.aavePage;
@@ -18,6 +19,35 @@ type BorrowPositionsListProps = {};
 export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
   const { account } = useAccount();
   const [open, setOpen] = useState<boolean>(true);
+  const [balance] = useState(123.45); // TODO: mock
+  const [apy] = useState(2.05); // TODO: mock
+  const [borrowPowerUsed] = useState(2.05); // TODO: mock
+
+  const rowTitleRenderer = useCallback(
+    r => <AaveRowTitle asset={r.asset} value={r.balance} suffix={r.asset} />,
+    [],
+  );
+
+  const mobileRenderer = useCallback(
+    p => <BorrowPositionDetails position={p} />,
+    [],
+  );
+
+  // TODO: mocked values
+  const borrowPositions: BorrowPosition[] = [
+    {
+      asset: 'BTC',
+      apr: 2.24,
+      balance: 12.34,
+      apyType: 'variable',
+    },
+    {
+      asset: 'ETH',
+      apr: 2.33,
+      balance: 12.34,
+      apyType: 'fixed',
+    },
+  ];
 
   return (
     <Accordion
@@ -34,22 +64,21 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
       {account ? (
         <>
           <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:gap-6 lg:mb-6">
-            {/* TODO: mocked values */}
             <PoolPositionStat
               label={t(pageTranslations.common.balance)}
-              value={123.45}
+              value={balance}
               prefix="$"
               precision={2}
             />
             <PoolPositionStat
               label={t(pageTranslations.common.apy)}
-              value={2.05}
+              value={apy}
               suffix="%"
               precision={2}
             />
             <PoolPositionStat
               label={t(pageTranslations.borrowPositionsList.borrowPowerUsed)}
-              value={99}
+              value={borrowPowerUsed}
               suffix="%"
               precision={2}
             />
@@ -58,29 +87,9 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
             columns={COLUMNS_CONFIG}
             rowClassName="bg-gray-80"
             accordionClassName="bg-gray-60 border border-gray-70"
-            rowTitle={r => (
-              <AaveRowTitle
-                asset={r.asset}
-                value={r.balance}
-                suffix={r.asset}
-              />
-            )}
-            rows={[
-              // TODO: mocked values
-              {
-                asset: 'BTC',
-                apr: 2.24,
-                balance: 12.34,
-                apyType: 'variable',
-              },
-              {
-                asset: 'ETH',
-                apr: 2.33,
-                balance: 12.34,
-                apyType: 'fixed',
-              },
-            ]}
-            mobileRenderer={p => <BorrowPositionDetails position={p} />}
+            rowTitle={rowTitleRenderer}
+            mobileRenderer={mobileRenderer}
+            rows={borrowPositions}
           />
         </>
       ) : (

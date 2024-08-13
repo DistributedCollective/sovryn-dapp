@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import {
   AmountInput,
@@ -7,10 +7,11 @@ import {
   Select,
   SelectOption,
 } from '@sovryn/ui';
-import { Decimalish } from '@sovryn/utils';
+import { Decimal, Decimalish } from '@sovryn/utils';
 
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
+import { MaxButton } from '../MaxButton/MaxButton';
 
 type AssetAmountInputProps = {
   label?: string;
@@ -35,13 +36,11 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
   assetOptions,
   onAssetChange,
 }) => {
+  const [assetUsdValue] = useState(0); // TODO: mock
+
   const assetOptionRenderer = useCallback(
     ({ value }) => (
-      <AssetRenderer
-        dataAttribute="borrow-asset-asset"
-        showAssetLogo
-        asset={value}
-      />
+      <AssetRenderer dataAttribute="asset-amount" showAssetLogo asset={value} />
     ),
     [],
   );
@@ -59,9 +58,15 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
 
       <div className="relative">
         {maxAmount !== undefined && (
-          <span className="text-xs underline absolute right-0 -top-3 -translate-y-1/2">
-            (Max{' '}
-            <AmountRenderer value={maxAmount} suffix={assetValue} prefix="~" />)
+          <span className="absolute right-0 -top-3 -translate-y-1/2">
+            <MaxButton
+              token={assetValue}
+              value={maxAmount ?? 0}
+              onClick={() =>
+                onAmountChange &&
+                onAmountChange(Decimal.from(maxAmount).toString())
+              }
+            />
           </span>
         )}
 
@@ -74,13 +79,11 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
               placeholder="0"
               invalid={invalid}
             />
-            <div className="pr-4">
-              <AmountRenderer
-                className="text-gray-40"
-                value={0} // TODO: usd equivalent
-                prefix="$"
-              />
-            </div>
+            <AmountRenderer
+              className="text-gray-40 mr-4"
+              value={assetUsdValue}
+              prefix="$"
+            />
           </div>
 
           <Select
@@ -90,7 +93,7 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
             labelRenderer={assetOptionRenderer}
             className="min-w-[6.7rem]"
             menuClassName="max-h-[10rem] sm:max-h-[20rem]"
-            dataAttribute="borrow-asset-select"
+            dataAttribute="asset-select"
           />
         </div>
       </div>

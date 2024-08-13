@@ -40,6 +40,7 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
         {/* Can be collateral */}
         <SimpleTableRow
           label={t(translations.aavePage.lendAssetsList.canBeCollateral)}
+          valueClassName="flex justify-end"
           value={
             <Icon
               icon={pool.canBeCollateral ? IconNames.CHECK : IconNames.X_MARK}

@@ -37,7 +37,7 @@ export const SupplyAction: FC<SupplyActionProps> = ({ asset }) => {
         <AssetAmountPriceRenderer
           value={availableToSupply}
           asset={asset}
-          className="text-left flex flex-col"
+          //   className="text-left flex flex-col"
           valueClassName="font-medium"
         />
       </div>

@@ -8,7 +8,6 @@ import {
 
 import { PageContainer } from './app/4_templates';
 import { EmailVerificationStateContainer } from './app/4_templates/EmailVerificationStateContainer/EmailVerificationStateContainer';
-import AavePage from './app/5_pages/AavePage/AavePage';
 import AaveReserveOverviewPage from './app/5_pages/AaveReserveOverviewPage/AaveReserveOverviewPage';
 import { earnPageLoader } from './app/5_pages/EarnPage/loader';
 import { EmailDuplicateVerifiedPage } from './app/5_pages/EmailDuplicateVerifiedPage/EmailDuplicateVerifiedPage';
@@ -96,10 +95,6 @@ const routes = [
         element: <ConvertPage />,
       },
       {
-        path: '/borrow/aave',
-        element: <AavePage />,
-      },
-      {
         path: '/borrow/line-of-credit',
         element: <Zero />,
         loader: zeroPageLoader,
@@ -120,10 +115,6 @@ const routes = [
       {
         path: '/earn/lend',
         element: <LendPage />,
-      },
-      {
-        path: '/earn/lend/aave',
-        element: <AavePage />,
       },
       {
         path: '/aave/reserve-overview',

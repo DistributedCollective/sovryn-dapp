@@ -3,8 +3,9 @@ import React, { FC } from 'react';
 import classNames from 'classnames';
 import { t } from 'i18next';
 
-import { HelperButton } from '@sovryn/ui';
+import { HelperButton, Icon } from '@sovryn/ui';
 
+import { LinkIcon } from '../../1_atoms/Icons/Icons';
 import { translations } from '../../../locales/i18n';
 import {
   AmountRenderer,
@@ -13,11 +14,13 @@ import {
 
 type StatisticsCardProps = Partial<AmountRendererProps> & {
   label: string;
+  link?: string;
   helperContent?: string;
   amountRendererClassName?: string;
 };
 
 export const StatisticsCard: FC<StatisticsCardProps> = ({
+  link,
   label,
   value,
   helperContent,
@@ -32,13 +35,20 @@ export const StatisticsCard: FC<StatisticsCardProps> = ({
         {helperContent && <HelperButton content={helperContent} />}
       </div>
 
-      <div className="text-2xl text-white">
+      <div className="text-2xl text-white flex items-center">
         {value ? (
-          <AmountRenderer
-            value={value}
-            {...props}
-            className={amountRendererClassName}
-          />
+          <>
+            <AmountRenderer
+              value={value}
+              {...props}
+              className={amountRendererClassName}
+            />
+            {link && (
+              <a href={link} className="ml-3">
+                <Icon icon={LinkIcon} />
+              </a>
+            )}
+          </>
         ) : (
           <span className={amountRendererClassName}>
             {t(translations.aavePage.topPanel['n/a'])}

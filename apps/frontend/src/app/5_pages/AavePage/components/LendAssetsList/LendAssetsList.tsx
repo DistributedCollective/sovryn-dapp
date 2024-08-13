@@ -25,7 +25,7 @@ export const LendAssetsList: FC<LendAssetsListProps> = () => {
     [],
   );
 
-  // TODO: mocked values
+  // TODO: mocked values and filter
   const lendPools: LendPoolDetails[] = [
     {
       asset: 'BTC',
@@ -57,7 +57,7 @@ export const LendAssetsList: FC<LendAssetsListProps> = () => {
         containerClassName="mt-2 mb-4"
         label={t(pageTranslations.lendAssetsList.showZeroBalances)}
         checked={showZeroBalances}
-        onChange={s => setShowZeroBalances(s)}
+        onClick={() => setShowZeroBalances(s => !s)}
       />
 
       <Table

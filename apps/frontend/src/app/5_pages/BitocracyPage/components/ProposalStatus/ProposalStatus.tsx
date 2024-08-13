@@ -5,7 +5,6 @@ import { t } from 'i18next';
 
 import { Paragraph } from '@sovryn/ui';
 
-import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
 import { ProposalProps, ProposalState } from '../../BitocracyPage.types';
 import { shouldProposalBeDefeated } from '../../BitocracyPage.utils';
@@ -16,14 +15,15 @@ import { getStatusIcon } from '../Proposals/Proposals.utils';
 type ProposalStatusProps = ProposalProps & {
   className?: string;
   isProposalDetail?: boolean;
+  blockNumber: number;
 };
 export const ProposalStatus: FC<ProposalStatusProps> = ({
   proposal,
   className,
   isProposalDetail = false,
+  blockNumber,
 }) => {
-  const { value: blockNumber } = useBlockNumber();
-  const status = useProposalStatus(proposal);
+  const status = useProposalStatus(proposal, blockNumber);
   const isExecutableProposal = useIsExecutableProposal(proposal);
 
   const activeProposalDetailMessage = useMemo(() => {
@@ -57,12 +57,12 @@ export const ProposalStatus: FC<ProposalStatusProps> = ({
     );
   }, [isExecutableProposal, status]);
 
-  if (!blockNumber) {
-    return <div className={className} />;
-  }
-
   return (
-    <div className={classNames('flex items-start', className)}>
+    <div
+      className={classNames('flex items-start', className, {
+        invisible: !blockNumber,
+      })}
+    >
       {getStatusIcon(status)}
       <Paragraph
         className={`${

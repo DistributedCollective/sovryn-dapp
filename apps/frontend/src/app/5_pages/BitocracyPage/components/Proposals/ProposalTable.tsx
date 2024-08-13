@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Pagination, Table } from '@sovryn/ui';
 
 import { DEFAULT_HISTORY_FRAME_PAGE_SIZE } from '../../../../../constants/general';
+import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { generateRowTitle } from '../../BitocracyPage.utils';
@@ -24,6 +25,7 @@ export const ProposalTable: FC<ProposalTableProps> = ({
   loading,
 }) => {
   const [page, setPage] = useState(0);
+  const { value: blockNumber } = useBlockNumber();
 
   const navigate = useNavigate();
 
@@ -51,7 +53,7 @@ export const ProposalTable: FC<ProposalTableProps> = ({
     <>
       <div className="bg-gray-80 p-4 rounded hidden lg:block">
         <Table
-          columns={columnsConfig}
+          columns={columnsConfig(blockNumber)}
           rows={data}
           rowTitle={generateRowTitle}
           isLoading={loading}

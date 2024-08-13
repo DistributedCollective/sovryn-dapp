@@ -5,6 +5,7 @@ import { t } from 'i18next';
 import { HelperButton, SimpleTableRow } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { AssetAmountPriceRenderer } from '../../../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { BorrowPoolDetails } from '../../BorrowAssetsList.types';
 import { BorrowAssetAction } from '../BorrowAssetAction/BorrowAssetAction';
@@ -33,7 +34,12 @@ export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => {
         {/* Available */}
         <SimpleTableRow
           label={t(pageTranslations.borrowAssetsList.available)}
-          value={<AmountRenderer value={pool.available} suffix={pool.asset} />}
+          value={
+            <AssetAmountPriceRenderer
+              value={pool.available}
+              asset={pool.asset}
+            />
+          }
         />
       </div>
 

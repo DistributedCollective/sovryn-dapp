@@ -2,7 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { Accordion, Checkbox, Table } from '@sovryn/ui';
+import { Accordion, Checkbox, OrderOptions, Table } from '@sovryn/ui';
 
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { translations } from '../../../../../locales/i18n';
@@ -12,13 +12,12 @@ import { LendAssetDetails } from './components/LendAssetDetails/LendAssetDetails
 
 const pageTranslations = translations.aavePage;
 
-type LendAssetsListProps = {
-  account?: string;
-};
+type LendAssetsListProps = {};
 
-export const LendAssetsList: FC<LendAssetsListProps> = ({ account }) => {
+export const LendAssetsList: FC<LendAssetsListProps> = () => {
   const [open, setOpen] = useState<boolean>(true);
   const [showZeroBalances, setShowZeroBalances] = useState<boolean>(true);
+  const [orderOptions, setOrderOptions] = useState<OrderOptions>();
 
   const mobileRenderer = useCallback(p => <LendAssetDetails pool={p} />, []);
   const rowTitleRenderer = useCallback(
@@ -68,6 +67,8 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({ account }) => {
         rowTitle={rowTitleRenderer}
         mobileRenderer={mobileRenderer}
         rows={lendPools}
+        orderOptions={orderOptions}
+        setOrderOptions={setOrderOptions}
       />
     </Accordion>
   );

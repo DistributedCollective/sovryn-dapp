@@ -2,7 +2,13 @@ import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { Accordion, Paragraph, Table } from '@sovryn/ui';
+import {
+  Accordion,
+  OrderDirection,
+  OrderOptions,
+  Paragraph,
+  Table,
+} from '@sovryn/ui';
 
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { useAccount } from '../../../../../hooks/useAccount';
@@ -22,6 +28,10 @@ export const LendPositionsList: FC<LendPositionsListProps> = () => {
   const [balance] = useState(100); // TODO: mocked data
   const [apy] = useState(2.3); // TODO: mocked data
   const [collateral] = useState(3); // TODO: mocked data
+  const [orderOptions, setOrderOptions] = useState<OrderOptions>({
+    orderBy: 'balance',
+    orderDirection: OrderDirection.Asc,
+  });
 
   const rowTitleRenderer = useCallback(
     r => <AaveRowTitle asset={r.asset} value={r.balance} suffix={r.asset} />,
@@ -43,7 +53,7 @@ export const LendPositionsList: FC<LendPositionsListProps> = () => {
     {
       asset: 'ETH',
       apy: 2.04,
-      balance: 12.34,
+      balance: 1.34,
       collateral: false,
     },
   ];
@@ -90,6 +100,8 @@ export const LendPositionsList: FC<LendPositionsListProps> = () => {
             rowTitle={rowTitleRenderer}
             mobileRenderer={mobileRenderer}
             rows={lendPositions}
+            orderOptions={orderOptions}
+            setOrderOptions={setOrderOptions}
           />
         </>
       ) : (

@@ -2,7 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { Accordion, Paragraph, Table } from '@sovryn/ui';
+import { Accordion, OrderOptions, Paragraph, Table } from '@sovryn/ui';
 
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { useAccount } from '../../../../../hooks/useAccount';
@@ -23,6 +23,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
   const [balance] = useState(123.45); // TODO: mock
   const [apy] = useState(2.05); // TODO: mock
   const [borrowPowerUsed] = useState(2.05); // TODO: mock
+  const [orderOptions, setOrderOptions] = useState<OrderOptions>();
 
   const rowTitleRenderer = useCallback(
     r => <AaveRowTitle asset={r.asset} value={r.balance} suffix={r.asset} />,
@@ -96,6 +97,8 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
             rowTitle={rowTitleRenderer}
             mobileRenderer={mobileRenderer}
             rows={borrowPositions}
+            orderOptions={orderOptions}
+            setOrderOptions={setOrderOptions}
           />
         </>
       ) : (

@@ -2,7 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { Accordion, Table } from '@sovryn/ui';
+import { Accordion, OrderOptions, Table } from '@sovryn/ui';
 
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { translations } from '../../../../../locales/i18n';
@@ -16,6 +16,7 @@ type BorrowAssetsListProps = {};
 
 export const BorrowAssetsList: FC<BorrowAssetsListProps> = () => {
   const [open, setOpen] = useState<boolean>(true);
+  const [orderOptions, setOrderOptions] = useState<OrderOptions>();
 
   const rowTitleRenderer = useCallback(
     r => <AaveRowTitle asset={r.asset} value={r.apr} suffix="%" label="APY" />,
@@ -59,6 +60,8 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = () => {
         rowTitle={rowTitleRenderer}
         mobileRenderer={mobileRenderer}
         rows={borrowPools}
+        orderOptions={orderOptions}
+        setOrderOptions={setOrderOptions}
       />
     </Accordion>
   );

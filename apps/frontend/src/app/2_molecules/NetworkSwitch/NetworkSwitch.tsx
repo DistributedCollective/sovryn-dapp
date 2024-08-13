@@ -12,10 +12,13 @@ type NetworkSwitchProps = {
 export const NetworkSwitch: FC<NetworkSwitchProps> = ({ components }) => {
   const { currentChainId } = useChainStore();
 
-  if (components[currentChainId] !== undefined) {
-    return components[currentChainId] as ReactElement;
-  } else {
-    const requiredChainId = Object.keys(components)[0];
-    return <NetworkBanner requiredChainId={requiredChainId} />;
-  }
+  const componentToRender = React.useMemo(() => {
+    return (
+      components[currentChainId] || (
+        <NetworkBanner requiredChainId={Object.keys(components)[0]} />
+      )
+    );
+  }, [currentChainId, components]);
+
+  return componentToRender;
 };

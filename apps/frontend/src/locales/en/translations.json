@@ -22,7 +22,9 @@
             "close": "Close",
             "retry": "Retry",
             "skip": "Skip",
-            "back": "Back"
+            "back": "Back",
+            "enable": "Enable",
+            "disable": "Disable"
         },
         "na": "N/A",
         "tables": {
@@ -871,6 +873,12 @@
             "lendApy": "Lend APY",
             "deposit": "Deposit",
             "enabled": "Enabled"
+        },
+        "eModeCard": {
+            "title": "Efficiency mode (E-Mode)",
+            "description": "E-Mode increases your LTV for a selected category of assets up to 97%.",
+            "enabled": "Enabled",
+            "disabled": "Disabled"
         }
     },
     "aaveReserveOverviewPage": {

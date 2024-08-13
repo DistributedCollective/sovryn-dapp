@@ -11,6 +11,7 @@ import { PoolPositionStat } from '../PoolPositionStat/PoolPositionStat';
 import { COLUMNS_CONFIG } from './BorrowPositionsList.constants';
 import { BorrowPosition } from './BorrowPositionsList.types';
 import { BorrowPositionDetails } from './components/BorrowPositionDetails/BorrowPositionDetails';
+import { EfficiencyModeCard } from './components/EfficiencyModeCard/EfficiencyModeCard';
 
 const pageTranslations = translations.aavePage;
 
@@ -52,17 +53,22 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
   return (
     <Accordion
       label={
-        <span className="text-base font-medium">
-          {t(pageTranslations.borrowPositionsList.title)}
-        </span>
+        <div className="text-base font-medium text-left lg:flex lg:items-center lg:gap-8">
+          <span>{t(pageTranslations.borrowPositionsList.title)}</span>
+          <div className="hidden lg:flex gap-3">
+            <span className="text-gray-30 font-medium text-sm">E-Mode</span>
+            <EfficiencyModeCard />
+          </div>
+        </div>
       }
       className="bg-gray-70 px-4 py-3 rounded space-y-3 lg:bg-gray-90 lg:p-6 lg:border lg:border-gray-60"
-      labelClassName="justify-between  h-7 flex items-center"
+      labelClassName="justify-between  lg:h-7 flex items-center"
       open={open}
       onClick={setOpen}
     >
       {account ? (
         <>
+          <EfficiencyModeCard className="lg:hidden mb-3" />
           <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:gap-6 lg:mb-6">
             <PoolPositionStat
               label={t(pageTranslations.common.balance)}

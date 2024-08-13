@@ -20,7 +20,7 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
   return (
     <div className="space-y-3">
       <div>
-        {/* Available */}
+        {/* Balance */}
         <SimpleTableRow
           label={t(translations.aavePage.common.balance)}
           value={

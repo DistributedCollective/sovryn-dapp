@@ -13,13 +13,15 @@ import { translations } from '../../../../../locales/i18n';
 const pageTranslations = translations.aaveReserveOverviewPage.topPanel;
 
 type TopPanelProps = {
-  asset: string;
+  asset: {
+    name: string;
+    symbol: string;
+  };
   className?: string;
 };
 
 export const TopPanel: FC<TopPanelProps> = ({ asset, className }) => {
   // TODO: Mocked data
-  const assetName = 'Bitcoin';
   const reserveSizeInM = 1234.58;
   const availableLiquidityM = 1234.58;
   const utilizationRate = 2.79;
@@ -40,13 +42,13 @@ export const TopPanel: FC<TopPanelProps> = ({ asset, className }) => {
         <div className="col-span-2 flex items-center lg:items-start gap-3">
           <div className="flex items-center gap-1">
             <AssetRenderer
-              asset={asset}
+              asset={asset.symbol}
               showAssetLogo
               assetClassName="text-base"
               logoClassName="[&>svg]:h-8 [&>svg]:w-8 [&>svg]:mr-[10px]"
             />
             <span className="text-gray-40 text-base font-medium">
-              {assetName}
+              {asset.name}
             </span>
           </div>
 

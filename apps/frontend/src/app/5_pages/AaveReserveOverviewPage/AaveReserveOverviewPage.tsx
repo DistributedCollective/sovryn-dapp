@@ -19,7 +19,7 @@ enum OverviewTab {
 }
 
 const AaveReserveOverviewPage: FC = () => {
-  const [asset] = useState('BTC'); // TODO: mock
+  const [asset] = useState({ symbol: 'BTC', name: 'Bitcoin' }); // TODO: mock
   const [activeOverviewTab, setActiveOverviewTab] = useState<OverviewTab>(
     OverviewTab.RESERVE,
   );

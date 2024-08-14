@@ -6,6 +6,7 @@ import { t } from 'i18next';
 import { Heading, Icon, Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { LinkIcon, WalletIcon } from '../../../../1_atoms/Icons/Icons';
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { translations } from '../../../../../locales/i18n';
@@ -64,26 +65,46 @@ export const TopPanel: FC<TopPanelProps> = ({ asset, className }) => {
 
         <StatisticsCard
           label={t(pageTranslations.reserveSize)}
-          prefix="$"
-          suffix="M"
-          value={reserveSizeInM}
+          value={
+            <AmountRenderer
+              prefix="$"
+              suffix="M"
+              value={reserveSizeInM}
+              className="text-2xl"
+            />
+          }
         />
         <StatisticsCard
           label={t(pageTranslations.availableLiquidity)}
-          prefix="$"
-          suffix="M"
-          value={availableLiquidityM}
+          value={
+            <AmountRenderer
+              prefix="$"
+              suffix="M"
+              value={availableLiquidityM}
+              className="text-2xl"
+            />
+          }
         />
         <StatisticsCard
           label={t(pageTranslations.utilizationRate)}
-          value={utilizationRate}
-          suffix="%"
+          value={
+            <AmountRenderer
+              suffix="%"
+              value={utilizationRate}
+              className="text-2xl"
+            />
+          }
         />
         <StatisticsCard
           label={t(pageTranslations.oraclePrice)}
-          value={oraclePrice}
-          prefix="$"
           link="#oracle-price"
+          value={
+            <AmountRenderer
+              prefix="$"
+              value={oraclePrice}
+              className="text-2xl"
+            />
+          }
         />
       </div>
     </div>

@@ -5,6 +5,7 @@ import { t } from 'i18next';
 import { Accordion, Icon, Link, Paragraph } from '@sovryn/ui';
 
 import { EModeIcon } from '../../../../1_atoms/Icons/Icons';
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
@@ -14,7 +15,7 @@ const pageTranslations = translations.aaveReserveOverviewPage.eModeDetails;
 type EModeDetailsProps = {};
 
 export const EModeDetails: FC<EModeDetailsProps> = () => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(true);
   const { isMobile } = useIsMobile();
 
   // TODO: All this data is mocked
@@ -49,27 +50,21 @@ export const EModeDetails: FC<EModeDetailsProps> = () => {
         <div className="grid grid-cols-3 gap-5">
           <StatisticsCard
             label={t(pageTranslations.maxLtv)}
-            amountRendererClassName="text-base shrink-0"
             className="space-y-2"
-            helperContent={t(pageTranslations.maxLtvInfo)}
-            value={maxLtv}
-            suffix="%"
+            help={t(pageTranslations.maxLtvInfo)}
+            value={<AmountRenderer value={maxLtv} suffix="%" />}
           />
           <StatisticsCard
             label={t(pageTranslations.liquidationThreshold)}
-            amountRendererClassName="text-base shrink-0"
             className="space-y-2 "
-            helperContent={t(pageTranslations.liquidationThresholdInfo)}
-            value={liquidationThreshold}
-            suffix="%"
+            help={t(pageTranslations.liquidationThresholdInfo)}
+            value={<AmountRenderer value={liquidationThreshold} suffix="%" />}
           />
           <StatisticsCard
             label={t(pageTranslations.liquidationPenalty)}
-            amountRendererClassName="text-base shrink-0"
             className="space-y-2"
-            helperContent={t(pageTranslations.liquidationPenaltyInfo)}
-            value={liquidationPenalty}
-            suffix="%"
+            help={t(pageTranslations.liquidationPenaltyInfo)}
+            value={<AmountRenderer value={liquidationPenalty} suffix="%" />}
           />
         </div>
 

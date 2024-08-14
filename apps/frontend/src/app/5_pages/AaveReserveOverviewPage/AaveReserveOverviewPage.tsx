@@ -7,7 +7,10 @@ import { Helmet } from 'react-helmet-async';
 import { Tabs, TabSize, TabType } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
+import { BorrowDetailsGraph } from './components/BorrowDetailsGraph/BorrowDetailsGraph';
 import { EModeDetails } from './components/EModeDetails/EModeDetails';
+import { InterestRateModelGraph } from './components/InterestRateModelGraph/InterestRateModelGraph';
+import { SupplyDetailsGraph } from './components/SupplyDetailsGraph/SupplyDetailsGraph';
 import { TopPanel } from './components/TopPanel/TopPanel';
 import { WalletOverview } from './components/WalletOverview/WalletOverview';
 
@@ -61,7 +64,10 @@ const AaveReserveOverviewPage: FC = () => {
               'lg:block space-y-4 w-full',
             )}
           >
+            <SupplyDetailsGraph />
+            <BorrowDetailsGraph />
             <EModeDetails />
+            <InterestRateModelGraph />
           </div>
 
           {/* wallet column */}

@@ -11,6 +11,7 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
@@ -40,21 +41,42 @@ export const TopPanel: FC<TopPanelProps> = () => {
         <div className="flex flex-col gap-4 md:py-12 md:flex-row md:gap-9 flex-shrink-0">
           <StatisticsCard
             label={t(pageTranslations.netWorth)}
-            prefix="$"
-            value={account ? netWorth : undefined}
+            value={
+              account ? (
+                <AmountRenderer
+                  prefix="$"
+                  value={netWorth}
+                  className="text-2xl"
+                />
+              ) : undefined
+            }
           />
           <div className="flex gap-9">
             <StatisticsCard
               label={t(pageTranslations.netApy)}
-              value={account ? netApy : undefined}
-              suffix="%"
-              helperContent={t(pageTranslations.netApyInfo)}
+              value={
+                account ? (
+                  <AmountRenderer
+                    suffix="%"
+                    value={netApy}
+                    className="text-2xl"
+                  />
+                ) : undefined
+              }
+              help={t(pageTranslations.netApyInfo)}
             />
             <StatisticsCard
               label={t(pageTranslations.collateralRatio)}
-              value={account ? collateralRatio : undefined}
-              suffix="%"
-              helperContent={t(pageTranslations.collateralRatioInfo)}
+              value={
+                account ? (
+                  <AmountRenderer
+                    suffix="%"
+                    value={collateralRatio}
+                    className="text-2xl"
+                  />
+                ) : undefined
+              }
+              help={t(pageTranslations.collateralRatioInfo)}
             />
           </div>
         </div>

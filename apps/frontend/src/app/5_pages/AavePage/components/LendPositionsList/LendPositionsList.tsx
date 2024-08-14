@@ -1,14 +1,21 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { Accordion, Paragraph, Table } from '@sovryn/ui';
+import {
+  Accordion,
+  OrderDirection,
+  OrderOptions,
+  Paragraph,
+  Table,
+} from '@sovryn/ui';
 
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
 import { PoolPositionStat } from '../PoolPositionStat/PoolPositionStat';
 import { COLUMNS_CONFIG } from './LendPositionsList.constants';
+import { LendPosition } from './LendPositionsList.types';
 import { LendPositionDetails } from './components/LendPositionDetails/LendPositionDetails';
 
 const pageTranslations = translations.aavePage;
@@ -18,6 +25,38 @@ type LendPositionsListProps = {};
 export const LendPositionsList: FC<LendPositionsListProps> = () => {
   const { account } = useAccount();
   const [open, setOpen] = useState<boolean>(true);
+  const [balance] = useState(100); // TODO: mocked data
+  const [apy] = useState(2.3); // TODO: mocked data
+  const [collateral] = useState(3); // TODO: mocked data
+  const [orderOptions, setOrderOptions] = useState<OrderOptions>({
+    orderBy: 'balance',
+    orderDirection: OrderDirection.Asc,
+  });
+
+  const rowTitleRenderer = useCallback(
+    r => <AaveRowTitle asset={r.asset} value={r.balance} suffix={r.asset} />,
+    [],
+  );
+  const mobileRenderer = useCallback(
+    p => <LendPositionDetails position={p} />,
+    [],
+  );
+
+  // TODO: mocked data
+  const lendPositions: LendPosition[] = [
+    {
+      asset: 'BTC',
+      apy: 2.01,
+      balance: 12.34,
+      collateral: true,
+    },
+    {
+      asset: 'ETH',
+      apy: 2.04,
+      balance: 1.34,
+      collateral: false,
+    },
+  ];
 
   return (
     <Accordion
@@ -34,23 +73,22 @@ export const LendPositionsList: FC<LendPositionsListProps> = () => {
       {account ? (
         <>
           <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:gap-6 lg:mb-6">
-            {/* TODO: mock data */}
             <PoolPositionStat
               label={t(pageTranslations.common.balance)}
-              value={123.45}
+              value={balance}
               prefix="$"
               precision={2}
             />
             <PoolPositionStat
               label={t(pageTranslations.common.apy)}
               labelInfo={t(pageTranslations.common.apyInfo)}
-              value={2.05}
+              value={apy}
               suffix="%"
               precision={2}
             />
             <PoolPositionStat
               label={t(pageTranslations.common.collateral)}
-              value={123.45}
+              value={collateral}
               prefix="$"
               precision={2}
             />
@@ -59,29 +97,11 @@ export const LendPositionsList: FC<LendPositionsListProps> = () => {
             columns={COLUMNS_CONFIG}
             rowClassName="bg-gray-80"
             accordionClassName="bg-gray-60 border border-gray-70"
-            rowTitle={r => (
-              <AaveRowTitle
-                asset={r.asset}
-                value={r.balance}
-                suffix={r.asset}
-              />
-            )}
-            rows={[
-              // TODO: mocked data
-              {
-                asset: 'BTC',
-                apy: 2.01,
-                balance: 12.34,
-                collateral: true,
-              },
-              {
-                asset: 'ETH',
-                apy: 2.04,
-                balance: 12.34,
-                collateral: false,
-              },
-            ]}
-            mobileRenderer={p => <LendPositionDetails position={p} />}
+            rowTitle={rowTitleRenderer}
+            mobileRenderer={mobileRenderer}
+            rows={lendPositions}
+            orderOptions={orderOptions}
+            setOrderOptions={setOrderOptions}
           />
         </>
       ) : (

@@ -26,13 +26,16 @@ const pageTranslations = translations.aaveReserveOverviewPage;
 const ETH_ASSET_SYMBOLS = [ETH, WETH];
 
 type WalletOverviewProps = {
-  asset: string;
+  asset: {
+    symbol: string;
+    name: string;
+  };
 };
 
 export const WalletOverview: FC<WalletOverviewProps> = ({
   asset: initialAsset,
 }) => {
-  const [asset, setAsset] = useState(initialAsset);
+  const [asset, setAsset] = useState(initialAsset.symbol);
   const { account, connectWallet, pending } = useWalletConnect();
 
   const assetBalance = Decimal.from(0); // TODO: mocked

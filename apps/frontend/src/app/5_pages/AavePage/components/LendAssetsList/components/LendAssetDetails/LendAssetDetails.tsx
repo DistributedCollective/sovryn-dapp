@@ -6,6 +6,7 @@ import { t } from 'i18next';
 import { HelperButton, Icon, IconNames, SimpleTableRow } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { AssetAmountPriceRenderer } from '../../../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { LendPoolDetails } from '../../LendAssetsList.types';
 import { LendAssetAction } from '../LendAssetAction/LendAssetAction';
@@ -22,7 +23,10 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
         <SimpleTableRow
           label={t(translations.aavePage.lendAssetsList.walletBalance)}
           value={
-            <AmountRenderer value={pool.walletBalance} suffix={pool.asset} />
+            <AssetAmountPriceRenderer
+              value={pool.walletBalance}
+              asset={pool.asset}
+            />
           }
         />
 
@@ -40,6 +44,7 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
         {/* Can be collateral */}
         <SimpleTableRow
           label={t(translations.aavePage.lendAssetsList.canBeCollateral)}
+          valueClassName="flex justify-end"
           value={
             <Icon
               icon={pool.canBeCollateral ? IconNames.CHECK : IconNames.X_MARK}

@@ -5,6 +5,7 @@ import { t } from 'i18next';
 import { HelperButton, SimpleTableRow } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { AssetAmountPriceRenderer } from '../../../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { LendPosition } from '../../LendPositionsList.types';
 import { LendPositionAction } from '../LendPositionAction/LendPositionAction';
@@ -24,7 +25,10 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
         <SimpleTableRow
           label={t(translations.aavePage.common.balance)}
           value={
-            <AmountRenderer value={position.balance} suffix={position.asset} />
+            <AssetAmountPriceRenderer
+              value={position.balance}
+              asset={position.asset}
+            />
           }
         />
 

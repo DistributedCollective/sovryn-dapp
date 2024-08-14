@@ -36,8 +36,8 @@ export const COLUMNS_CONFIG = [
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
     title: (
-      <span className="flex items-center pl-5 gap-1 text-gray-30">
-        {t(pageTranslations.common.balance)}{' '}
+      <span className="flex items-center pl-5 text-gray-30">
+        {t(pageTranslations.common.balance)}
       </span>
     ),
     cellRenderer: (pool: BorrowPosition) => (

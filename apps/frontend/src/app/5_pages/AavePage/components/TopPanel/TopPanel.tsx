@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -21,6 +21,9 @@ type TopPanelProps = {};
 
 export const TopPanel: FC<TopPanelProps> = () => {
   const { account } = useAccount();
+  const [netWorth] = useState(1234567.58); // TODO: mock
+  const [netApy] = useState(2.69); // TODO: mock
+  const [collateralRatio] = useState(11); // TODO: mock
 
   return (
     <div className="w-full flex flex-col gap-6">
@@ -35,22 +38,21 @@ export const TopPanel: FC<TopPanelProps> = () => {
 
       <div className="flex flex-col gap-6 md:flex-row">
         <div className="flex flex-col gap-4 md:py-12 md:flex-row md:gap-9 flex-shrink-0">
-          {/* TODO: mock values */}
           <StatisticsCard
             label={t(pageTranslations.netWorth)}
             prefix="$"
-            value={account ? 1234567.58 : undefined}
+            value={account ? netWorth : undefined}
           />
           <div className="flex gap-9">
             <StatisticsCard
               label={t(pageTranslations.netApy)}
-              value={account ? 2.69 : undefined}
+              value={account ? netApy : undefined}
               suffix="%"
               helperContent={t(pageTranslations.netApyInfo)}
             />
             <StatisticsCard
               label={t(pageTranslations.collateralRatio)}
-              value={account ? 11.5 : undefined}
+              value={account ? collateralRatio : undefined}
               suffix="%"
               helperContent={t(pageTranslations.collateralRatioInfo)}
             />
@@ -59,7 +61,7 @@ export const TopPanel: FC<TopPanelProps> = () => {
 
         <div className="md:flex md:justify-end md:w-full md:items-end md:pb-5">
           <Button
-            text="View transactions"
+            text={t(pageTranslations.viewTransactions)}
             style={ButtonStyle.secondary}
             size={ButtonSize.small}
           />

@@ -34,9 +34,7 @@ export const CollateralRatioHealthBar: FC<CollateralRatioHealthBarProps> = ({
         <div className="flex flex-row justify-start items-center gap-2">
           <span>{t(translations.aavePage.common.collateralRatio)}</span>
         </div>
-        <div className="">
-          <AmountRenderer value={ratio.toString()} suffix="%" />
-        </div>
+        <AmountRenderer value={ratio.toString()} suffix="%" />
       </div>
 
       <HealthBar

@@ -28,9 +28,9 @@ export const PoolPositionStat: React.FC<PoolPositionStatProps> = ({
       )}
     >
       <span className="text-xs  font-medium flex">
-        {label}{' '}
+        {label}
         {labelInfo && (
-          <HelperButton className="ml-1 lg:hidden" content={labelInfo} />
+          <HelperButton className="ml-2 lg:hidden" content={labelInfo} />
         )}
       </span>
 

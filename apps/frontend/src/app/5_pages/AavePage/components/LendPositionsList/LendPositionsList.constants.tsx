@@ -54,7 +54,7 @@ export const COLUMNS_CONFIG = [
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
     title: (
       <span className="flex items-center gap-1 text-gray-30">
-        {t(translations.aavePage.common.apy)}{' '}
+        {t(translations.aavePage.common.apy)}
         <HelperButton content={t(pageTranslations.common.apyInfo)} />
       </span>
     ),
@@ -67,8 +67,8 @@ export const COLUMNS_CONFIG = [
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
     title: (
-      <span className="flex items-center gap-1 text-gray-30">
-        {t(pageTranslations.common.collateral)}{' '}
+      <span className="flex items-center text-gray-30">
+        {t(pageTranslations.common.collateral)}
       </span>
     ),
     cellRenderer: (position: LendPosition) => (

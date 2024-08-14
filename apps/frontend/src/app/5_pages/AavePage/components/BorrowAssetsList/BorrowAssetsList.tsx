@@ -1,22 +1,44 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { Accordion, Table } from '@sovryn/ui';
+import { Accordion, OrderOptions, Table } from '@sovryn/ui';
 
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { translations } from '../../../../../locales/i18n';
 import { COLUMNS_CONFIG } from './BorrowAssetsList.constants';
+import { BorrowPoolDetails } from './BorrowAssetsList.types';
 import { BorrowAssetDetails } from './components/BorrowAssetDetails/BorrowAssetDetails';
 
 const pageTranslations = translations.aavePage.borrowAssetsList;
 
-type BorrowAssetsListProps = {
-  account?: string;
-};
+type BorrowAssetsListProps = {};
 
-export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({ account }) => {
+export const BorrowAssetsList: FC<BorrowAssetsListProps> = () => {
   const [open, setOpen] = useState<boolean>(true);
+  const [orderOptions, setOrderOptions] = useState<OrderOptions>();
+
+  const rowTitleRenderer = useCallback(
+    r => <AaveRowTitle asset={r.asset} value={r.apr} suffix="%" label="APY" />,
+    [],
+  );
+  const mobileRenderer = useCallback(p => <BorrowAssetDetails pool={p} />, []);
+
+  // TODO: just a mock for now
+  const borrowPools: BorrowPoolDetails[] = [
+    {
+      asset: 'BTC',
+      apr: 2.01,
+      available: 12.34,
+      availableUsd: 100,
+    },
+    {
+      asset: 'ETH',
+      apr: 2.01,
+      available: 12.34,
+      availableUsd: 100,
+    },
+  ];
 
   return (
     <Accordion
@@ -30,37 +52,17 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({ account }) => {
       open={open}
       onClick={setOpen}
     >
-      <div className="pt-3">
-        <Table
-          columns={COLUMNS_CONFIG}
-          rowClassName="bg-gray-80"
-          accordionClassName="bg-gray-60 border border-gray-70"
-          rowTitle={r => (
-            <AaveRowTitle
-              asset={r.asset}
-              value={r.apr}
-              suffix="%"
-              label="APY"
-            />
-          )}
-          rows={[
-            // TODO: just a mock for now
-            {
-              asset: 'BTC',
-              apr: 2.01,
-              available: 12.34,
-              availableUsd: 100,
-            },
-            {
-              asset: 'ETH',
-              apr: 2.01,
-              available: 12.34,
-              availableUsd: 100,
-            },
-          ]}
-          mobileRenderer={p => <BorrowAssetDetails pool={p} />}
-        />
-      </div>
+      <Table
+        className="mt-3"
+        columns={COLUMNS_CONFIG}
+        rowClassName="bg-gray-80"
+        accordionClassName="bg-gray-60 border border-gray-70"
+        rowTitle={rowTitleRenderer}
+        mobileRenderer={mobileRenderer}
+        rows={borrowPools}
+        orderOptions={orderOptions}
+        setOrderOptions={setOrderOptions}
+      />
     </Accordion>
   );
 };

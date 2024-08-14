@@ -44,14 +44,14 @@ export const StatisticsCard: FC<StatisticsCardProps> = ({
               className={amountRendererClassName}
             />
             {link && (
-              <a href={link} className="ml-3">
-                <Icon icon={LinkIcon} />
+              <a href={link} className="ml-3" target="_blank" rel="noreferrer">
+                <Icon icon={LinkIcon} className="h-4 w-4 text-gray-30" />
               </a>
             )}
           </>
         ) : (
           <span className={amountRendererClassName}>
-            {t(translations.aavePage.topPanel['n/a'])}
+            {t(translations.common.na)}
           </span>
         )}
       </div>

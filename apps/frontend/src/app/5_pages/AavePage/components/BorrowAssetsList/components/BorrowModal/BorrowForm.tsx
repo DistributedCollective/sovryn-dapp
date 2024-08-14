@@ -32,9 +32,10 @@ export const BorrowForm: FC<BorrowFormProps> = () => {
   const totalBorrow = Decimal.from(10); // TODO: this is mocked data. Replace with proper hook
   const collateralToLoanRate = Decimal.from(10); // TODO: this is mocked data. Replace with proper hook
   const collateralSize = Decimal.from(10); // TODO: this is mockd data. Replace with proper hook
-  const borrowableAssets = useMemo(() => ['BTC', 'SOV'], []); // TODO: this is mocked data. Replace with proper hook
+  const availablePools = useMemo(() => ['BTC', 'SOV'], []); // TODO: this is mocked data. Replace with proper hook
   const [maximumBorrowAmount] = useState<Decimal>(Decimal.from(10)); // TODO: this is mocked data. Replace with proper hook
-  const [borrowAsset, setBorrowAsset] = useState<string>(borrowableAssets[0]);
+  const [borrowApr] = useState(2);
+  const [borrowAsset, setBorrowAsset] = useState<string>(availablePools[0]);
   const [borrowAmount, setBorrowAmount, borrowSize] = useDecimalAmountInput('');
   const [acknowledge, setAcknowledge] = useState<boolean>(false);
 
@@ -44,7 +45,7 @@ export const BorrowForm: FC<BorrowFormProps> = () => {
 
   const borrowableAssetsOptions = useMemo(
     () =>
-      borrowableAssets.map(token => ({
+      availablePools.map(token => ({
         value: token,
         label: (
           <AssetRenderer
@@ -54,16 +55,11 @@ export const BorrowForm: FC<BorrowFormProps> = () => {
           />
         ),
       })),
-    [borrowableAssets],
+    [availablePools],
   );
 
   const isValidBorrowAmount = useMemo(
     () => (borrowSize.gt(0) ? borrowSize.lte(maximumBorrowAmount) : true),
-    [borrowSize, maximumBorrowAmount],
-  );
-
-  const remainingSupply = useMemo(
-    () => maximumBorrowAmount.sub(borrowSize),
     [borrowSize, maximumBorrowAmount],
   );
 
@@ -80,6 +76,7 @@ export const BorrowForm: FC<BorrowFormProps> = () => {
     return collateralSize.mul(collateralToLoanRate).div(totalBorrow).mul(100);
   }, [collateralSize, totalBorrow, borrowSize, collateralToLoanRate]);
 
+  // TODO: expand validations
   const submitButtonDisabled = useMemo(
     () => !isValidBorrowAmount || borrowSize.lte(0) || !acknowledge,
     [isValidBorrowAmount, borrowSize, acknowledge],
@@ -112,12 +109,7 @@ export const BorrowForm: FC<BorrowFormProps> = () => {
       <SimpleTable>
         <SimpleTableRow
           label={t(translations.aavePage.borrowForm.borrowApr)}
-          value={
-            <AmountRenderer
-              value={remainingSupply.toNumber()}
-              suffix={borrowAsset}
-            />
-          }
+          value={<AmountRenderer value={borrowApr} suffix={'%'} />}
         />
       </SimpleTable>
 
@@ -126,9 +118,7 @@ export const BorrowForm: FC<BorrowFormProps> = () => {
           <div className="flex flex-row justify-start items-center gap-2">
             <span>{t(translations.aavePage.borrowForm.collateralRatio)}</span>
           </div>
-          <div className="">
-            <AmountRenderer value={collateralRatio.toString()} suffix="%" />
-          </div>
+          <AmountRenderer value={collateralRatio.toString()} suffix="%" />
         </div>
 
         <HealthBar
@@ -143,7 +133,7 @@ export const BorrowForm: FC<BorrowFormProps> = () => {
       <SimpleTable>
         <SimpleTableRow
           label={t(translations.aavePage.borrowForm.liquidationPrice)}
-          value={t(translations.aavePage.common['n/a'])}
+          value={<span>{t(translations.common.na)}</span>}
         />
         <SimpleTableRow
           label={t(translations.aavePage.borrowForm.tokenPrice, {
@@ -159,7 +149,7 @@ export const BorrowForm: FC<BorrowFormProps> = () => {
         label={
           <span>
             {t(translations.aavePage.borrowForm.acknowledge)}{' '}
-            <Link text="Learn more" href="#learn-more" />{' '}
+            <Link text="Learn more" href="#learn-more" />
             {/* TODO: Add proper learn more href */}
           </span>
         }

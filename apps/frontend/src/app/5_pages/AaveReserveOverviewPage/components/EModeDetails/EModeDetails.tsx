@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { Accordion, Icon, Link, Paragraph } from '@sovryn/ui';
 
+import { EModeIcon } from '../../../../1_atoms/Icons/Icons';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
@@ -40,26 +41,7 @@ export const EModeDetails: FC<EModeDetailsProps> = () => {
             {t(pageTranslations.category)}
           </Paragraph>
           <Paragraph className="text-sm font-medium flex items-center">
-            <Icon
-              size={16}
-              className="mr-2"
-              icon={
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M2.78855 9.33172C2.68495 9.33172 2.62901 9.21023 2.69637 9.13151L9.96892 0.632031C10.0508 0.536295 10.2063 0.613419 10.1797 0.736569L8.89046 6.695C8.87411 6.7706 8.9317 6.84199 9.00905 6.84199L13.8675 6.84199C13.9755 6.84199 14.0296 6.97243 13.9535 7.04893L5.54013 15.4971C5.44923 15.5884 5.29749 15.4938 5.33946 15.372L7.36524 9.49257C7.39238 9.41378 7.33385 9.33172 7.25053 9.33172H2.78855Z"
-                    fill="#F58C31"
-                  />
-                </svg>
-              }
-            />
+            <Icon size={16} className="mr-2 text-primary-30" icon={EModeIcon} />
             {t(pageTranslations.ethCorrelatedCategory)}
           </Paragraph>
         </div>

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -8,16 +8,28 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
+import { Chart } from './components/Chart/Chart';
+import { harcodedData, LINE_COLOR } from './components/Chart/Chart.constants';
+import { MockData } from './components/Chart/Chart.types';
 
 const pageTranslations = translations.aaveReserveOverviewPage.supplyDetails;
 
 type SupplyDetailsGraphProps = {};
 
-// TODO: mocked amounts
-
 export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = () => {
   const [open, setOpen] = useState<boolean>(true);
   const { isMobile } = useIsMobile();
+  // TODO: mocked amounts
+  const mockData: MockData<{ x: string; y: number }> = useMemo(() => {
+    const data1 = harcodedData;
+
+    return {
+      data1,
+      label1: t(pageTranslations.chart.label1),
+      lineColor: LINE_COLOR,
+      xLabels: data1.map(item => item.x),
+    };
+  }, []);
 
   return (
     <Accordion
@@ -63,9 +75,7 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = () => {
           />
         </div>
 
-        <div className="h-10 bg-blue-2">
-          <span>TODO: Graph</span>
-        </div>
+        <Chart mockData={mockData} yLabel1="" />
 
         <div className="space-y-6">
           {/* heading */}

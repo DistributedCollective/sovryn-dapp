@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -8,17 +8,33 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
+import { Chart } from './components/Chart/Chart';
+import { harcodedData, LINE_COLOR } from './components/Chart/Chart.constants';
+import { MockData } from './components/Chart/Chart.types';
 
 const pageTranslations = translations.aaveReserveOverviewPage.interestRateModel;
 
 type InterestRateModelGraphProps = {};
 
-// TODO: mocked amounts
-
 export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = () => {
   const [open, setOpen] = useState<boolean>(true);
   const { isMobile } = useIsMobile();
 
+  // TODO: mocked amounts
+  const mockData: MockData<{ x: number; y: number }> = useMemo(() => {
+    const data = harcodedData.values;
+    const currentData = harcodedData.annotations.current;
+    const optimalData = harcodedData.annotations.optimal;
+
+    return {
+      data1: data,
+      data2: currentData,
+      data3: optimalData,
+      label1: t(pageTranslations.chart.label1),
+      lineColor: LINE_COLOR,
+      xLabels: data.map(() => ''),
+    };
+  }, []);
   return (
     <Accordion
       label={
@@ -41,8 +57,18 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = () => {
           <Link href="#" text={t(pageTranslations.interestRateStrategy)} />
         </div>
 
-        <div className="h-10 bg-blue-2">
-          <span>TODO: Graph</span>
+        <Chart mockData={mockData} yLabel1="" />
+        {/* statistics */}
+        <div className="flex gap-8">
+          <StatisticsCard
+            label={t(pageTranslations.reserveFactor)}
+            help={t(pageTranslations.reserveFactorInfo)}
+            value={<AmountRenderer value={85.94} suffix="%" />}
+          />
+          <StatisticsCard
+            label={t(pageTranslations.collectorContract)}
+            value={<Link href="#" text={t(pageTranslations.viewContract)} />}
+          />
         </div>
       </div>
     </Accordion>

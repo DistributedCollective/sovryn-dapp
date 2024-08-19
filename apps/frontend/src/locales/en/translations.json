@@ -936,7 +936,10 @@
             "totalSupplied": "Total supplied",
             "totalSuppliedInfo": "Asset supply is limited to a certain amount to reduce protocol exposure to the asset and to help manage risks involved.",
             "of": "of",
-            "apy": "APY"
+            "apy": "APY",
+            "chart": {
+                "label1": "Supply APR"
+            }
         },
         "borrowDetails": {
             "title": "Borrow details",
@@ -949,12 +952,22 @@
             "reserveFactor": "Reserve factor",
             "reserveFactorInfo": "Reserve factor is a percentage of interest which goes to a collector contract that is controlled by Aave governance to promote ecosystem growth.",
             "collectorContract": "Collector contract",
-            "viewContract": "View contract"
+            "viewContract": "View contract",
+            "chart": {
+                "label1": "Borrow APR, variable"
+            }
         },
         "interestRateModel": {
             "title": "Interest rate model",
             "utilizationRate": "Utilization rate",
-            "interestRateStrategy": "Interest rate strategy"
+            "interestRateStrategy": "Interest rate strategy",
+            "reserveFactor": "Reserve factor",
+            "reserveFactorInfo": "Reserve factor is a percentage of interest which goes to a collector contract that is controlled by Aave governance to promote ecosystem growth.",
+            "collectorContract": "Collector contract",
+            "viewContract": "View contract",
+            "chart": {
+                "label1": "Borrow APR, variable"
+            }
         }
     },
     "bitocracyPage": {

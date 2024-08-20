@@ -34,24 +34,32 @@ export const PoolsStatistics: FC<PoolsStatisticsProps> = ({ pool }) => {
     refetch: protocolFeeRefetch,
   } = useGetProtocolFee();
 
-  const renderLpFeeRate = useMemo(
-    () =>
-      !conversionFeeLoading && !!conversionFee ? (
+  const renderLpFeeRate = useMemo(() => {
+    if (pool.converterVersion === 2) {
+      return (
         <AmountRenderer
-          value={conversionFee}
+          value={0.1}
           suffix="%"
-          showRoundingPrefix={false}
           dataAttribute="market-making-pool-statistics-lp-fee-rate"
         />
-      ) : (
-        0
-      ),
-    [conversionFee, conversionFeeLoading],
-  );
+      );
+    }
+
+    return !conversionFeeLoading && !!conversionFee ? (
+      <AmountRenderer
+        value={conversionFee}
+        suffix="%"
+        showRoundingPrefix={false}
+        dataAttribute="market-making-pool-statistics-lp-fee-rate"
+      />
+    ) : (
+      0
+    );
+  }, [conversionFee, conversionFeeLoading, pool.converterVersion]);
 
   const renderBitocracyFeeRate = useMemo(
     () =>
-      !protocolFeeLoading ? (
+      !protocolFeeLoading && pool.converterVersion !== 2 ? (
         <AmountRenderer
           value={protocolFee}
           suffix="%"
@@ -61,23 +69,36 @@ export const PoolsStatistics: FC<PoolsStatisticsProps> = ({ pool }) => {
       ) : (
         0
       ),
-    [protocolFee, protocolFeeLoading],
+    [pool.converterVersion, protocolFee, protocolFeeLoading],
   );
 
-  const renderTotalSwapFeeRate = useMemo(
-    () =>
-      !protocolFeeLoading && !conversionFeeLoading ? (
+  const renderTotalSwapFeeRate = useMemo(() => {
+    if (pool.converterVersion === 2) {
+      return (
         <AmountRenderer
-          value={conversionFee + protocolFee}
+          value={0.1}
           suffix="%"
-          showRoundingPrefix={false}
           dataAttribute="market-making-pool-statistics-total-swap-fee-rate"
         />
-      ) : (
-        0
-      ),
-    [protocolFee, conversionFee, protocolFeeLoading, conversionFeeLoading],
-  );
+      );
+    }
+    return !protocolFeeLoading && !conversionFeeLoading ? (
+      <AmountRenderer
+        value={conversionFee + protocolFee}
+        suffix="%"
+        showRoundingPrefix={false}
+        dataAttribute="market-making-pool-statistics-total-swap-fee-rate"
+      />
+    ) : (
+      0
+    );
+  }, [
+    pool.converterVersion,
+    protocolFeeLoading,
+    conversionFeeLoading,
+    conversionFee,
+    protocolFee,
+  ]);
 
   useEffect(() => {
     conversionFeeRefetch();

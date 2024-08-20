@@ -57,11 +57,11 @@ const AaveReserveOverviewPage: FC = () => {
         />
 
         {/* reserve graphics columns */}
-        <div className="grid grid-cols-1 lg:gap-5 lg:grid-cols-[auto_465px]">
+        <div className="flex gap-5">
           <div
             className={classNames(
               { hidden: activeOverviewTab !== OverviewTab.RESERVE },
-              'lg:block space-y-4 w-full',
+              'lg:block space-y-4 flex-grow w-min',
             )}
           >
             <SupplyDetailsGraph />
@@ -74,7 +74,7 @@ const AaveReserveOverviewPage: FC = () => {
           <div
             className={classNames(
               { hidden: activeOverviewTab !== OverviewTab.WALLET },
-              'lg:block space-y-4',
+              'lg:block space-y-4 w-[450px] shrink-0',
             )}
           >
             <WalletOverview asset={asset} />

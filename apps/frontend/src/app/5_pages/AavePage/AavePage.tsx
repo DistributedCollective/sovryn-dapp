@@ -31,10 +31,10 @@ const AavePage: FC = () => {
 
       <TopPanel />
 
-      <div className="pt-6 mt-6 space-y-6 lg:pt-0 lg:mt-0 lg:space-y-0">
+      <div className="pt-6 mt-6 space-y-6 2xl:pt-0 2xl:mt-0 2xl:space-y-0">
         {/* Tab selector */}
         <Tabs
-          className="w-full bg-gray-80 rounded p-1 border border-gray-60 lg:hidden"
+          className="w-full bg-gray-80 rounded p-1 border border-gray-60 2xl:hidden"
           index={activeTab}
           items={[
             {
@@ -54,11 +54,11 @@ const AavePage: FC = () => {
         />
 
         {/* Lending and borrowing columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-5">
+        <div className="grid grid-cols-1 2xl:grid-cols-2 2xl:gap-5">
           <div
             className={classNames(
               { hidden: activeTab !== ActiveTab.LEND },
-              'lg:block space-y-4',
+              '2xl:block space-y-4',
             )}
           >
             <LendPositionsList />
@@ -69,7 +69,7 @@ const AavePage: FC = () => {
           <div
             className={classNames(
               { hidden: activeTab !== ActiveTab.BORROW },
-              'lg:block space-y-4',
+              '2xl:block space-y-4',
             )}
           >
             <BorrowPositionsList />

@@ -2,14 +2,7 @@ import React, { FC, useState } from 'react';
 
 import { t } from 'i18next';
 
-import {
-  Button,
-  ButtonSize,
-  ButtonStyle,
-  Heading,
-  Paragraph,
-  ParagraphSize,
-} from '@sovryn/ui';
+import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
@@ -79,14 +72,6 @@ export const TopPanel: FC<TopPanelProps> = () => {
               help={t(pageTranslations.collateralRatioInfo)}
             />
           </div>
-        </div>
-
-        <div className="md:flex md:justify-end md:w-full md:items-end md:pb-5">
-          <Button
-            text={t(pageTranslations.viewTransactions)}
-            style={ButtonStyle.secondary}
-            size={ButtonSize.small}
-          />
         </div>
       </div>
     </div>

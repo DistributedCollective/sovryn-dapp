@@ -16,6 +16,7 @@ type BorrowActionProps = {
 
 export const BorrowAction: FC<BorrowActionProps> = ({ asset }) => {
   const availableToBorrow = 0; // TODO: this is mocked
+  const availableToBorrowUsd = 0;
 
   const isBorrowDisabled = useMemo(() => {
     // TODO: add conditions
@@ -36,6 +37,7 @@ export const BorrowAction: FC<BorrowActionProps> = ({ asset }) => {
         </Paragraph>
         <AssetAmountPriceRenderer
           value={availableToBorrow}
+          valueUSD={availableToBorrowUsd}
           asset={asset}
           className="text-left flex flex-col"
           valueClassName="font-medium"

@@ -25,8 +25,9 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
           label={t(translations.aavePage.common.balance)}
           value={
             <AssetAmountPriceRenderer
-              value={position.balance}
               asset={position.asset}
+              value={position.borrowed}
+              valueUSD={position.borrowedUSD}
             />
           }
         />
@@ -39,7 +40,9 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
               <HelperButton content={t(translations.aavePage.common.aprInfo)} />
             </span>
           }
-          value={<AmountRenderer value={position.apr} suffix="%" />}
+          value={
+            <AmountRenderer value={position.apy} suffix="%" precision={2} />
+          }
         />
 
         {/* Apy type */}

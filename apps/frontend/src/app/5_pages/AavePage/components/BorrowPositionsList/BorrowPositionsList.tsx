@@ -3,6 +3,7 @@ import React, { FC, useCallback, useState } from 'react';
 import { t } from 'i18next';
 
 import { Accordion, OrderOptions, Paragraph, Table } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { useAccount } from '../../../../../hooks/useAccount';
@@ -15,18 +16,34 @@ import { EfficiencyModeCard } from './components/EfficiencyModeCard/EfficiencyMo
 
 const pageTranslations = translations.aavePage;
 
-type BorrowPositionsListProps = {};
+type BorrowPositionsListProps = {
+  borrowPositions: BorrowPosition[];
+  borrowBalance?: Decimal;
+  borrowWeightedApy?: Decimal;
+  borrowPowerUsed?: Decimal;
+  eModeEnabled: boolean;
+};
 
-export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
+export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
+  borrowPositions,
+  borrowBalance,
+  borrowPowerUsed,
+  borrowWeightedApy,
+  eModeEnabled,
+}) => {
   const { account } = useAccount();
   const [open, setOpen] = useState<boolean>(true);
-  const [balance] = useState(123.45); // TODO: mock
-  const [apy] = useState(2.05); // TODO: mock
-  const [borrowPowerUsed] = useState(2.05); // TODO: mock
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
 
   const rowTitleRenderer = useCallback(
-    r => <AaveRowTitle asset={r.asset} value={r.balance} suffix={r.asset} />,
+    (r: BorrowPosition) => (
+      <AaveRowTitle
+        asset={r.asset}
+        value={r.borrowed}
+        suffix={r.asset}
+        precision={2}
+      />
+    ),
     [],
   );
 
@@ -35,22 +52,6 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
     [],
   );
 
-  // TODO: mocked values
-  const borrowPositions: BorrowPosition[] = [
-    {
-      asset: 'BTC',
-      apr: 2.24,
-      balance: 12.34,
-      apyType: 'variable',
-    },
-    {
-      asset: 'ETH',
-      apr: 2.33,
-      balance: 12.34,
-      apyType: 'fixed',
-    },
-  ];
-
   return (
     <Accordion
       label={
@@ -58,7 +59,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
           <span>{t(pageTranslations.borrowPositionsList.title)}</span>
           <div className="hidden lg:flex gap-3">
             <span className="text-gray-30 font-medium text-sm">E-Mode</span>
-            <EfficiencyModeCard />
+            <EfficiencyModeCard enabled={eModeEnabled} />
           </div>
         </div>
       }
@@ -69,23 +70,26 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
     >
       {account ? (
         <>
-          <EfficiencyModeCard className="lg:hidden mb-3" />
+          <EfficiencyModeCard
+            enabled={eModeEnabled}
+            className="lg:hidden mb-3"
+          />
           <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:gap-6 lg:mb-6">
             <PoolPositionStat
               label={t(pageTranslations.common.balance)}
-              value={balance}
+              value={borrowBalance ?? 0}
               prefix="$"
               precision={2}
             />
             <PoolPositionStat
               label={t(pageTranslations.common.apy)}
-              value={apy}
+              value={borrowWeightedApy ?? 0}
               suffix="%"
               precision={2}
             />
             <PoolPositionStat
               label={t(pageTranslations.borrowPositionsList.borrowPowerUsed)}
-              value={borrowPowerUsed}
+              value={borrowPowerUsed ?? 0}
               suffix="%"
               precision={2}
             />

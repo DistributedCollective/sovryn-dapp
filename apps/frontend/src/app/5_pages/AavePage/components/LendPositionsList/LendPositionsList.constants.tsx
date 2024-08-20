@@ -42,7 +42,8 @@ export const COLUMNS_CONFIG = [
     ),
     cellRenderer: (position: LendPosition) => (
       <AssetAmountPriceRenderer
-        value={position.balance}
+        value={position.supplied}
+        valueUSD={position.suppliedUSD}
         asset={position.asset}
       />
     ),
@@ -59,7 +60,7 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (position: LendPosition) => (
-      <AmountRenderer value={position.balance} suffix={position.asset} />
+      <AmountRenderer value={position.apy} suffix={'%'} precision={2} />
     ),
   },
   {

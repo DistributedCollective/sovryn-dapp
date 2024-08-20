@@ -5,11 +5,11 @@ import { t } from 'i18next';
 import { Align, HelperButton } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { AssetAmountPriceRenderer } from '../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { BorrowPoolDetails } from './BorrowAssetsList.types';
 import { BorrowAssetAction } from './components/BorrowAssetAction/BorrowAssetAction';
+import { AssetAmountPriceRenderer } from '../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 
 const pageTranslations = translations.aavePage;
 
@@ -44,15 +44,20 @@ export const COLUMNS_CONFIG = [
         />
       </span>
     ),
-    cellRenderer: (position: BorrowPoolDetails) => (
-      <AssetAmountPriceRenderer
-        value={position.available}
-        asset={position.asset}
-      />
-    ),
+    cellRenderer: (position: BorrowPoolDetails) =>
+      position.available !== undefined &&
+      position.availableUSD !== undefined ? (
+        <AssetAmountPriceRenderer
+          value={position.available}
+          valueUSD={position.availableUSD}
+          asset={position.asset}
+        />
+      ) : (
+        <span>-</span>
+      ),
   },
   {
-    id: 'apr',
+    id: 'apy',
     sortable: true,
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
@@ -63,7 +68,7 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (pool: BorrowPoolDetails) => (
-      <AmountRenderer value={pool.apr} suffix={'%'} />
+      <AmountRenderer value={pool.apy} suffix={'%'} precision={2} />
     ),
   },
   {

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
@@ -12,6 +12,13 @@ import { BorrowPositionsList } from './components/BorrowPositionsList/BorrowPosi
 import { LendAssetsList } from './components/LendAssetsList/LendAssetsList';
 import { LendPositionsList } from './components/LendPositionsList/LendPositionsList';
 import { TopPanel } from './components/TopPanel/TopPanel';
+import { useAaveUserReservesData } from '../../../hooks/useAaveUserReservesData';
+import { LendPosition } from './components/LendPositionsList/LendPositionsList.types';
+import { BorrowPosition } from './components/BorrowPositionsList/BorrowPositionsList.types';
+import { useAaveReservesData } from '../../../hooks/useAaveReservesData';
+import { Decimal } from '@sovryn/utils';
+import { BorrowPoolDetails } from './components/BorrowAssetsList/BorrowAssetsList.types';
+import { LendPoolDetails } from './components/LendAssetsList/LendAssetsList.types';
 
 const pageTranslations = translations.aavePage;
 
@@ -21,7 +28,57 @@ enum ActiveTab {
 }
 
 const AavePage: FC = () => {
+  const { reserves } = useAaveReservesData();
+  const { userReservesSummary } = useAaveUserReservesData();
   const [activeTab, setActiveTab] = useState<ActiveTab>(ActiveTab.LEND);
+
+  const lendPositions: LendPosition[] = useMemo(() => {
+    if (!userReservesSummary) return [];
+    return userReservesSummary.suppliedAssets.map(s => ({
+      asset: s.asset,
+      apy: s.apy,
+      supplied: s.supplied,
+      suppliedUSD: s.suppliedUSD,
+      collateral: s.isCollateral,
+    }));
+  }, [userReservesSummary]);
+
+  const borrowPositions: BorrowPosition[] = useMemo(() => {
+    if (!userReservesSummary) return [];
+    return userReservesSummary.borrowedAssets.map(ba => ({
+      asset: ba.asset,
+      apy: ba.apy,
+      borrowed: ba.borrowed,
+      borrowedUSD: ba.borrowedUSD,
+      apyType: ba.apyType,
+    }));
+  }, [userReservesSummary]);
+
+  const borrowPools: BorrowPoolDetails[] = useMemo(() => {
+    if (!userReservesSummary) {
+      return reserves.map(r => ({
+        asset: r.symbol,
+        apy: Decimal.from(r.variableBorrowAPY).mul(100),
+      }));
+    } else {
+      return reserves.map(r => ({
+        asset: r.symbol,
+        apy: Decimal.from(r.variableBorrowAPY).mul(100),
+        available: userReservesSummary.borrowPower.div(r.priceInUSD),
+        availableUSD: userReservesSummary.borrowPower,
+      }));
+    }
+  }, [reserves, userReservesSummary]);
+
+  const lendPools: LendPoolDetails[] = useMemo(
+    () =>
+      reserves.map(r => ({
+        asset: r.symbol,
+        apy: Decimal.from(r.supplyAPY).mul(100),
+        canBeCollateral: r.usageAsCollateralEnabled,
+      })),
+    [reserves],
+  );
 
   return (
     <div className="w-full pb-6 2xl:px-12">
@@ -29,7 +86,11 @@ const AavePage: FC = () => {
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
 
-      <TopPanel />
+      <TopPanel
+        healthFactor={userReservesSummary?.healthFactor}
+        netApy={userReservesSummary?.netApy}
+        netWorth={userReservesSummary?.netWorth}
+      />
 
       <div className="pt-6 mt-6 space-y-6 lg:pt-0 lg:mt-0 lg:space-y-0">
         {/* Tab selector */}
@@ -61,8 +122,13 @@ const AavePage: FC = () => {
               'lg:block space-y-4',
             )}
           >
-            <LendPositionsList />
-            <LendAssetsList />
+            <LendPositionsList
+              lendPositions={lendPositions}
+              supplyBalance={userReservesSummary?.supplyBalance}
+              collateralBalance={userReservesSummary?.collateralBalance}
+              supplyWeightedApy={userReservesSummary?.supplyWeightedApy}
+            />
+            <LendAssetsList lendPools={lendPools} />
           </div>
 
           {/* Borrowing column */}
@@ -72,8 +138,14 @@ const AavePage: FC = () => {
               'lg:block space-y-4',
             )}
           >
-            <BorrowPositionsList />
-            <BorrowAssetsList />
+            <BorrowPositionsList
+              eModeEnabled={userReservesSummary?.eModeEnabled ?? false}
+              borrowPositions={borrowPositions}
+              borrowBalance={userReservesSummary?.borrowBalance}
+              borrowPowerUsed={userReservesSummary?.borrowPowerUsed}
+              borrowWeightedApy={userReservesSummary?.borrowWeightedApy}
+            />
+            <BorrowAssetsList borrowPools={borrowPools} />
           </div>
         </div>
       </div>

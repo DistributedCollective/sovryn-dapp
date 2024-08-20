@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
@@ -8,16 +8,22 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
+import { Decimalish } from '@sovryn/utils';
 
 const pageTranslations = translations.aavePage.topPanel;
 
-type TopPanelProps = {};
+type TopPanelProps = {
+  netWorth?: Decimalish;
+  netApy?: Decimalish;
+  healthFactor?: Decimalish;
+};
 
-export const TopPanel: FC<TopPanelProps> = () => {
+export const TopPanel: FC<TopPanelProps> = ({
+  netApy,
+  netWorth,
+  healthFactor,
+}) => {
   const { account } = useAccount();
-  const [netWorth] = useState(1234567.58); // TODO: mock
-  const [netApy] = useState(2.69); // TODO: mock
-  const [collateralRatio] = useState(11); // TODO: mock
 
   return (
     <div className="w-full flex flex-col gap-6">
@@ -35,9 +41,10 @@ export const TopPanel: FC<TopPanelProps> = () => {
           <StatisticsCard
             label={t(pageTranslations.netWorth)}
             value={
-              account ? (
+              account && netWorth ? (
                 <AmountRenderer
                   prefix="$"
+                  precision={2}
                   value={netWorth}
                   className="text-2xl"
                 />
@@ -48,10 +55,11 @@ export const TopPanel: FC<TopPanelProps> = () => {
             <StatisticsCard
               label={t(pageTranslations.netApy)}
               value={
-                account ? (
+                account && netApy ? (
                   <AmountRenderer
                     suffix="%"
                     value={netApy}
+                    precision={2}
                     className="text-2xl"
                   />
                 ) : undefined
@@ -59,17 +67,17 @@ export const TopPanel: FC<TopPanelProps> = () => {
               help={t(pageTranslations.netApyInfo)}
             />
             <StatisticsCard
-              label={t(pageTranslations.collateralRatio)}
+              label={t(pageTranslations.healthFactor)}
               value={
-                account ? (
+                account && healthFactor ? (
                   <AmountRenderer
                     suffix="%"
-                    value={collateralRatio}
+                    precision={2}
+                    value={healthFactor}
                     className="text-2xl"
                   />
                 ) : undefined
               }
-              help={t(pageTranslations.collateralRatioInfo)}
             />
           </div>
         </div>

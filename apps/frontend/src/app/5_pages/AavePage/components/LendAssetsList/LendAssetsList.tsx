@@ -12,34 +12,28 @@ import { LendAssetDetails } from './components/LendAssetDetails/LendAssetDetails
 
 const pageTranslations = translations.aavePage;
 
-type LendAssetsListProps = {};
+type LendAssetsListProps = {
+  lendPools: LendPoolDetails[];
+};
 
-export const LendAssetsList: FC<LendAssetsListProps> = () => {
+export const LendAssetsList: FC<LendAssetsListProps> = ({ lendPools }) => {
   const [open, setOpen] = useState<boolean>(true);
   const [showZeroBalances, setShowZeroBalances] = useState<boolean>(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
 
   const mobileRenderer = useCallback(p => <LendAssetDetails pool={p} />, []);
   const rowTitleRenderer = useCallback(
-    r => <AaveRowTitle asset={r.asset} value={r.apy} suffix="%" label="APY" />,
+    (r: LendPoolDetails) => (
+      <AaveRowTitle
+        asset={r.asset}
+        value={r.apy}
+        suffix="%"
+        label="APY"
+        precision={2}
+      />
+    ),
     [],
   );
-
-  // TODO: mocked values and filter
-  const lendPools: LendPoolDetails[] = [
-    {
-      asset: 'BTC',
-      apy: 2.02,
-      walletBalance: 12.34,
-      canBeCollateral: true,
-    },
-    {
-      asset: 'ETH',
-      apy: 2.02,
-      walletBalance: 12.34,
-      canBeCollateral: false,
-    },
-  ];
 
   return (
     <Accordion

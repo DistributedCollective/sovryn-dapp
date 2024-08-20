@@ -9,6 +9,7 @@ import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRender
 import { translations } from '../../../../../locales/i18n';
 import { LendPoolDetails } from './LendAssetsList.types';
 import { LendAssetAction } from './components/LendAssetAction/LendAssetAction';
+import { AssetBalanceRenderer } from './components/AssetBalance/AssetBalance';
 
 const pageTranslations = translations.aavePage;
 
@@ -40,7 +41,7 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (pool: LendPoolDetails) => (
-      <AmountRenderer value={pool.walletBalance} suffix={pool.asset} />
+      <AssetBalanceRenderer asset={pool.asset} />
     ),
   },
   {
@@ -54,7 +55,7 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (pool: LendPoolDetails) => (
-      <AmountRenderer value={pool.apy} suffix={'%'} />
+      <AmountRenderer value={pool.apy} suffix={'%'} precision={2} />
     ),
   },
   {

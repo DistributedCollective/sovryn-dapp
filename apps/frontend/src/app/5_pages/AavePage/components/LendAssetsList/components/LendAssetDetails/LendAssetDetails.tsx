@@ -6,10 +6,10 @@ import { t } from 'i18next';
 import { HelperButton, Icon, IconNames, SimpleTableRow } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { AssetAmountPriceRenderer } from '../../../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { LendPoolDetails } from '../../LendAssetsList.types';
 import { LendAssetAction } from '../LendAssetAction/LendAssetAction';
+import { AssetBalanceRenderer } from '../AssetBalance/AssetBalance';
 
 type LendAssetDetailsProps = {
   pool: LendPoolDetails;
@@ -22,12 +22,7 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => {
         {/* Available */}
         <SimpleTableRow
           label={t(translations.aavePage.lendAssetsList.walletBalance)}
-          value={
-            <AssetAmountPriceRenderer
-              value={pool.walletBalance}
-              asset={pool.asset}
-            />
-          }
+          value={<AssetBalanceRenderer asset={pool.asset} />}
         />
 
         {/* APY */}

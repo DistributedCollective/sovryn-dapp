@@ -26,7 +26,8 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
           label={t(translations.aavePage.common.balance)}
           value={
             <AssetAmountPriceRenderer
-              value={position.balance}
+              value={position.supplied}
+              valueUSD={position.suppliedUSD}
               asset={position.asset}
             />
           }

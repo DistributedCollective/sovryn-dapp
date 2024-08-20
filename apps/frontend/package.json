@@ -4,6 +4,8 @@
   "homepage": ".",
   "private": true,
   "dependencies": {
+    "@aave/contract-helpers": "^1.29.1",
+    "@aave/math-utils": "^1.29.1",
     "@apollo/client": "3.7.1",
     "@apollo/react-hooks": "4.0.0",
     "@loadable/component": "5.15.2",
@@ -55,6 +57,7 @@
     "react-slider": "2.0.6",
     "react-timer-hook": "3.0.7",
     "reactjs-localstorage": "1.0.1",
+    "reflect-metadata": "^0.2.2",
     "remark-gfm": "3.0.1",
     "rxjs": "7.5.6",
     "sanitize-html": "2.11.0",

@@ -41,22 +41,22 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (pool: BorrowPosition) => (
-      <AmountRenderer value={pool.balance} suffix={pool.asset} />
+      <AmountRenderer value={pool.borrowed} suffix={pool.asset} />
     ),
   },
   {
-    id: 'apr',
+    id: 'apy',
     sortable: true,
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
     title: (
       <span className="flex items-center gap-1 text-gray-30">
-        {t(translations.aavePage.common.apr)}{' '}
-        <HelperButton content={t(pageTranslations.common.aprInfo)} />
+        {t(translations.aavePage.common.apy)}{' '}
+        <HelperButton content={t(pageTranslations.common.apyInfo)} />
       </span>
     ),
     cellRenderer: (position: BorrowPosition) => (
-      <AmountRenderer value={position.apr} suffix={'%'} />
+      <AmountRenderer value={position.apy} suffix={'%'} precision={2} />
     ),
   },
   {

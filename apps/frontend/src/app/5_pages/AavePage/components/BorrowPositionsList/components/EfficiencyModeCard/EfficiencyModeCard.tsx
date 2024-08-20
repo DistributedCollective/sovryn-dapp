@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
@@ -18,13 +18,13 @@ import { translations } from '../../../../../../../locales/i18n';
 
 type EfficiencyModeCardProps = {
   className?: string;
+  enabled: boolean;
 };
 
 export const EfficiencyModeCard: FC<EfficiencyModeCardProps> = ({
   className,
+  enabled,
 }) => {
-  const [enabled] = useState(false);
-
   return (
     <Tooltip
       className={classNames('flex flex-row gap-2 items-center', className)}

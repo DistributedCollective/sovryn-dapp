@@ -16,6 +16,7 @@ type SupplyActionProps = {
 
 export const SupplyAction: FC<SupplyActionProps> = ({ asset }) => {
   const availableToSupply = 0; // TODO: this is mocked.
+  const availableToSupplyUSD = 0; // TODO: this is mocked.
 
   const isSupplyDisabled = useMemo(() => {
     // TODO: add conditions
@@ -36,8 +37,8 @@ export const SupplyAction: FC<SupplyActionProps> = ({ asset }) => {
         </Paragraph>
         <AssetAmountPriceRenderer
           value={availableToSupply}
+          valueUSD={availableToSupplyUSD}
           asset={asset}
-          //   className="text-left flex flex-col"
           valueClassName="font-medium"
         />
       </div>

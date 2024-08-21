@@ -39,6 +39,8 @@ export function useDollarValue(
         return COMMON_SYMBOLS.XUSD;
       } else if (asset.toLocaleLowerCase() === 'weth') {
         return COMMON_SYMBOLS.ETH;
+      } else if (['wbtc', 'tbtc'].includes(asset.toLocaleLowerCase())) {
+        return COMMON_SYMBOLS.BTC;
       }
     }
     return asset.toUpperCase();

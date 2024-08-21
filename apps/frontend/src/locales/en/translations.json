@@ -1407,10 +1407,10 @@
         "poolStatistics": {
             "lpFeeRate": "LP fee rate",
             "lpFeeRateInfo": "The fee rate that is charged per swap and given to AMM LPs",
-            "bitocracyFeeRate": "Bitocracy fee rate",
+            "bitocracyFeeRate": "Stakers fee rate",
             "bitocracyFeeRateInfo": "The fee rate that is charged per swap and given to SOV stakers",
             "totalSwapFeeRate": "Total fee rate",
-            "totalSwapFeeRateInfo": "The sum of the LP fee rate and Bitocracy fee rate"
+            "totalSwapFeeRateInfo": "The sum of the LP fee rate and Stakers fee rate"
         },
         "adjustAndDepositModal": {
             "titles": {

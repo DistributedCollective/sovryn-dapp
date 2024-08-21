@@ -139,7 +139,11 @@ const ProposalPage: FC = () => {
                   </Paragraph>
 
                   <div className="flex flex-col items-end">
-                    <ProposalStatus proposal={proposal} isProposalDetail />
+                    <ProposalStatus
+                      proposal={proposal}
+                      isProposalDetail
+                      blockNumber={block}
+                    />
                     <ProposalAction proposal={proposal} className="mt-1" />
                   </div>
                 </div>
@@ -174,7 +178,11 @@ const ProposalPage: FC = () => {
                 {t(pageTranslations.status)}
               </Paragraph>
 
-              <ProposalStatus proposal={proposal} isProposalDetail />
+              <ProposalStatus
+                proposal={proposal}
+                isProposalDetail
+                blockNumber={block}
+              />
               <ProposalAction proposal={proposal} className="ml-4 pl-0.5" />
             </div>
 

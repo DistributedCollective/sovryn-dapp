@@ -16,12 +16,16 @@ import { ProposalTitle } from '../ProposalTitle/ProposalTitle';
 import { ProposalType } from '../ProposalType/ProposalType';
 import { ProposalViewButton } from '../ProposalViewButton/ProposalViewButton';
 
-export const columnsConfig = [
+export const columnsConfig = (blockNumber: number) => [
   {
     id: 'status',
     title: t(translations.bitocracyPage.table.status),
     cellRenderer: (proposal: Proposal) => (
-      <ProposalStatus proposal={proposal} />
+      <ProposalStatus
+        className="min-w-[13rem]"
+        proposal={proposal}
+        blockNumber={blockNumber}
+      />
     ),
   },
   {

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Icon, IconNames, Paragraph } from '@sovryn/ui';
 
+import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { translations } from '../../../../../locales/i18n';
 import { Proposal } from '../../../../../utils/graphql/rsk/generated';
 import { renderProposalEndDate } from '../../BitocracyPage.utils';
@@ -21,6 +22,7 @@ export const ProposalCardsMobile: FC<ProposalCardsMobileProps> = ({
   isLoading,
 }) => {
   const navigate = useNavigate();
+  const { value: blockNumber } = useBlockNumber();
 
   const handleCardClick = useCallback(
     (proposal: Proposal) => navigate(`/bitocracy/${proposal.id}`),
@@ -57,7 +59,7 @@ export const ProposalCardsMobile: FC<ProposalCardsMobileProps> = ({
           size={8}
           className="absolute right-5 top-5 rotate-90"
         />
-        <ProposalStatus proposal={proposal} />
+        <ProposalStatus proposal={proposal} blockNumber={blockNumber} />
         <Paragraph
           children={proposal.description}
           className="truncate m-0 font-medium text-base mt-4 mb-2"

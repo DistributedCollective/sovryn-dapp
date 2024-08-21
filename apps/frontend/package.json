@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "1.1.16",
+  "version": "1.1.18",
   "homepage": ".",
   "private": true,
   "dependencies": {
@@ -11,6 +11,9 @@
     "@sovryn-zero/lib-ethers": "0.2.5",
     "@sovryn/contracts": "*",
     "@sovryn/ethers-provider": "*",
+    "@sovryn/joe-core": "^2.0.3",
+    "@sovryn/joe-sdk": "^5.0.3",
+    "@sovryn/joe-sdk-v2": "^3.0.12",
     "@sovryn/onboard-bitget": "1.0.1",
     "@sovryn/onboard-common": "1.0.0",
     "@sovryn/onboard-core": "1.0.6",
@@ -59,6 +62,7 @@
     "sanitize-html": "2.11.0",
     "socket.io-client": "4.5.4",
     "utf8": "^3.0.0",
+    "viem": "^2.19.2",
     "zustand": "^4.5.1"
   },
   "devDependencies": {
@@ -87,7 +91,7 @@
     "stream-browserify": "^3.0.0",
     "ts-loader": "^9.3.1",
     "ts-prune": "0.10.3",
-    "typescript": "^4.7.4",
+    "typescript": "^5.5.4",
     "webpack": "^5.74.0"
   },
   "scripts": {

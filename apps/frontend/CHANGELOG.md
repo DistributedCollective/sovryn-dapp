@@ -1,5 +1,21 @@
 # frontend
 
+## 1.1.18
+
+### Patch Changes
+
+- 7625e9fc: chore: bring back WBTC/SAT pool
+- Updated dependencies [7625e9fc]
+  - @sovryn/sdk@1.0.10
+
+## 1.1.17
+
+### Patch Changes
+
+- 065c937d: SOV-4350: Disable SAT/WBTC pool and conversions via smart-router route
+- Updated dependencies [065c937d]
+  - @sovryn/sdk@1.0.9
+
 ## 1.1.16
 
 ### Patch Changes

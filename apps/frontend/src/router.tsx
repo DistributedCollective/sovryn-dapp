@@ -74,6 +74,10 @@ const ClaimLpPage = loadable(
   () => import('./app/5_pages/ClaimLpPage/ClaimLpPage'),
 );
 
+const LiquidityBookPage = loadable(
+  () => import('./app/5_pages/LiquidityBookPage/LiquidityBookPage'),
+);
+
 const routes = [
   {
     path: '/',
@@ -168,6 +172,10 @@ const routes = [
       {
         path: '/claim-lp',
         element: <ClaimLpPage />,
+      },
+      {
+        path: '/liquidity-book',
+        element: <LiquidityBookPage />,
       },
     ],
   },

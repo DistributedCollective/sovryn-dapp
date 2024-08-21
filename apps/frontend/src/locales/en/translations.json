@@ -2036,7 +2036,28 @@
         }
     },
     "unclaimedVestings": {
-      "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",
-      "cta": "Open Rewards page"
+        "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",
+        "cta": "Open Rewards page"
+    },
+    "liquidityBookPage": {
+        "meta": {
+            "title": "Liquidity book - Sovryn"
+        },
+        "title": "Liquidity book - Trader Joe",
+        "table": {
+            "pair": "Pair",
+            "liquidity": "Liquidity",
+            "balance": "Balance",
+            "addLiquidity": "Add liquidity",
+            "removeLiquidity": "Remove liquidity",
+            "approveForAll": "Approve for all"
+        },
+        "loading": "Loading...",
+        "walletBalance": "Wallet balance",
+        "connectWallet": "Connect wallet",
+        "actions": {
+            "deposit": "Deposit",
+            "withdraw": "Withdraw"
+        }
     }
 }

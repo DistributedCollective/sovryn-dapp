@@ -1,0 +1,4 @@
+export const PAIR_VERSION = 'v22';
+export const ALLOWED_SLIPPAGE_AMOUNT = 50;
+export const LB_ROUTER_CONTRACT = '0xbab96CC58a312a5f09E18630416794EC6C3D971D';
+export const BINS_RANGE = 200;

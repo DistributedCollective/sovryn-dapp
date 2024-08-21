@@ -19,6 +19,9 @@ import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
 import { isBobChain, isRskChain } from '../../../../../../../utils/chain';
 import { isMainnet } from '../../../../../../../utils/helpers';
 
+const actionButtonClassnames =
+  'w-[7.75rem] text-xs lg:text-sm lg:leading-4 px-2 lg:px-5';
+
 export const AssetSectionActions: FC = () => {
   const navigate = useNavigate();
   const chainId = useCurrentChain();
@@ -116,20 +119,20 @@ export const AssetSectionActions: FC = () => {
       </div>
       <div className="hidden md:flex items-center gap-4 mt-4 mb-6">
         <Button
-          className="w-[7.75rem]"
+          className={actionButtonClassnames}
           style={ButtonStyle.primary}
           onClick={handleFundWallet}
           text={t(translations.portfolioPage.assetSection.fundWallet)}
           disabled={!account}
         />
         <Button
-          className="w-[7.75rem]"
+          className={actionButtonClassnames}
           style={ButtonStyle.secondary}
           onClick={() => navigate('/convert?&to=sov')}
           text={t(translations.portfolioPage.assetSection.convert)}
         />
         <Button
-          className="w-[7.75rem]"
+          className={actionButtonClassnames}
           style={ButtonStyle.secondary}
           onClick={handleExchangeRune}
           text={t(translations.portfolioPage.assetSection.runeBridge)}
@@ -137,7 +140,7 @@ export const AssetSectionActions: FC = () => {
         />
         {isRbtcWithdrawalAllowed && (
           <Button
-            className="w-[7.75rem]"
+            className={actionButtonClassnames}
             style={ButtonStyle.secondary}
             onClick={handleWithdraw}
             text={t(translations.portfolioPage.assetSection.withdraw)}

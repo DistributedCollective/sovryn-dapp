@@ -809,6 +809,10 @@
             "fixed": "Fixed",
             "withdraw": "Withdraw"
         },
+        "tx": {
+            "supplyTitle": "Deposit {{symbol}} to the pool",
+            "supplySubtitle": "Transfers {{amount}} {{symbol}} to the stability pool"
+        },
         "topPanel": {
             "title": "Lend and borrow",
             "subtitle": "Borrow and earn interest by providing liquidity",

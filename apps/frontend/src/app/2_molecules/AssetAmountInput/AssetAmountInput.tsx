@@ -1,7 +1,9 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import { AmountInput, Paragraph, Select, SelectOption } from '@sovryn/ui';
 import { Decimal, Decimalish } from '@sovryn/utils';
+
+import { BOB_CHAIN_ID } from '../../../config/chains';
 
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
@@ -15,6 +17,7 @@ type AssetAmountInputProps = {
   amountValue?: string | number;
   onAmountChange?: (value: string) => unknown;
   assetValue: string;
+  assetUsdValue?: Decimalish;
   assetOptions: SelectOption<string>[];
   onAssetChange: (asset: string) => unknown;
 };
@@ -27,14 +30,18 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
   onAmountChange,
   invalid,
   assetValue,
+  assetUsdValue,
   assetOptions,
   onAssetChange,
 }) => {
-  const [assetUsdValue] = useState(0); // TODO: mock
-
   const assetOptionRenderer = useCallback(
     ({ value }) => (
-      <AssetRenderer dataAttribute="asset-amount" showAssetLogo asset={value} />
+      <AssetRenderer
+        chainId={BOB_CHAIN_ID}
+        dataAttribute="asset-amount"
+        showAssetLogo
+        asset={value}
+      />
     ),
     [],
   );
@@ -72,7 +79,8 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
             />
             <AmountRenderer
               className="text-gray-40 mr-4"
-              value={assetUsdValue}
+              value={assetUsdValue ?? 0}
+              precision={2}
               prefix="$"
             />
           </div>
@@ -84,7 +92,6 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
             labelRenderer={assetOptionRenderer}
             className="min-w-[6.7rem]"
             menuClassName="max-h-[10rem] sm:max-h-[20rem]"
-            dataAttribute="asset-select"
           />
         </div>
       </div>

@@ -3,12 +3,12 @@ import React, { FC } from 'react';
 import { t } from 'i18next';
 
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
+import { Decimalish } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
-import { Decimalish } from '@sovryn/utils';
 
 const pageTranslations = translations.aavePage.topPanel;
 

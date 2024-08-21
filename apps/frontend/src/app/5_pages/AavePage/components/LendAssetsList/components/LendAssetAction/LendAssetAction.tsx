@@ -13,7 +13,7 @@ type LendAssetActionProps = {
   pool: LendPoolDetails;
 };
 
-export const LendAssetAction: FC<LendAssetActionProps> = () => {
+export const LendAssetAction: FC<LendAssetActionProps> = ({ pool }) => {
   const navigate = useNavigate();
   const [isLendModalOpen, setIsLendModalOpen] = useState<boolean>(false);
 
@@ -41,6 +41,7 @@ export const LendAssetAction: FC<LendAssetActionProps> = () => {
       />
 
       <LendModalContainer
+        asset={pool.asset}
         handleCloseModal={handleLendClose}
         isOpen={isLendModalOpen}
       />

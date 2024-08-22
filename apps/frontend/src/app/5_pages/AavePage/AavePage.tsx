@@ -5,20 +5,20 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
 import { Tabs, TabSize, TabType } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
+import { useAaveReservesData } from '../../../hooks/aave/useAaveReservesData';
+import { useAaveUserReservesData } from '../../../hooks/aave/useAaveUserReservesData';
 import { translations } from '../../../locales/i18n';
 import { BorrowAssetsList } from './components/BorrowAssetsList/BorrowAssetsList';
-import { BorrowPositionsList } from './components/BorrowPositionsList/BorrowPositionsList';
-import { LendAssetsList } from './components/LendAssetsList/LendAssetsList';
-import { LendPositionsList } from './components/LendPositionsList/LendPositionsList';
-import { TopPanel } from './components/TopPanel/TopPanel';
-import { useAaveUserReservesData } from '../../../hooks/useAaveUserReservesData';
-import { LendPosition } from './components/LendPositionsList/LendPositionsList.types';
-import { BorrowPosition } from './components/BorrowPositionsList/BorrowPositionsList.types';
-import { useAaveReservesData } from '../../../hooks/useAaveReservesData';
-import { Decimal } from '@sovryn/utils';
 import { BorrowPoolDetails } from './components/BorrowAssetsList/BorrowAssetsList.types';
+import { BorrowPositionsList } from './components/BorrowPositionsList/BorrowPositionsList';
+import { BorrowPosition } from './components/BorrowPositionsList/BorrowPositionsList.types';
+import { LendAssetsList } from './components/LendAssetsList/LendAssetsList';
 import { LendPoolDetails } from './components/LendAssetsList/LendAssetsList.types';
+import { LendPositionsList } from './components/LendPositionsList/LendPositionsList';
+import { LendPosition } from './components/LendPositionsList/LendPositionsList.types';
+import { TopPanel } from './components/TopPanel/TopPanel';
 
 const pageTranslations = translations.aavePage;
 
@@ -28,8 +28,8 @@ enum ActiveTab {
 }
 
 const AavePage: FC = () => {
-  const { reserves } = useAaveReservesData();
-  const { userReservesSummary } = useAaveUserReservesData();
+  const reserves = useAaveReservesData();
+  const userReservesSummary = useAaveUserReservesData();
   const [activeTab, setActiveTab] = useState<ActiveTab>(ActiveTab.LEND);
 
   const lendPositions: LendPosition[] = useMemo(() => {

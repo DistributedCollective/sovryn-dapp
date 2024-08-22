@@ -17,8 +17,8 @@ import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { useAaveDeposit } from '../../../../../../../hooks/useAaveDeposit';
-import { useAaveReservesData } from '../../../../../../../hooks/useAaveReservesData';
+import { useAaveDeposit } from '../../../../../../../hooks/aave/useAaveDeposit';
+import { useAaveReservesData } from '../../../../../../../hooks/aave/useAaveReservesData';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
@@ -36,7 +36,7 @@ export const LendForm: FC<LendFormProps> = ({
   onSuccess,
 }) => {
   const { account } = useAccount();
-  const { reserves } = useAaveReservesData();
+  const reserves = useAaveReservesData();
   const [lendAsset, setLendAsset] = useState<string>(initialAsset);
   const [lendAmount, setLendAmount, lendSize] = useDecimalAmountInput('');
   const { balance: lendAssetBalance } = useAssetBalance(

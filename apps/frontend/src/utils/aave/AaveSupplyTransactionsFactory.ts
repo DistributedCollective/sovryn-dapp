@@ -97,6 +97,7 @@ export class AaveSupplyTransactionsFactory {
         }),
         subtitle: t(translations.aavePage.tx.supplySubtitle, {
           symbol: nativeAsset.symbol,
+          amount: ethers.utils.formatUnits(amount, nativeAsset.decimals),
         }),
         request: {
           type: TransactionType.signTransaction,

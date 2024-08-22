@@ -12,7 +12,9 @@ type LendPositionActionProps = {
   position: LendPosition;
 };
 
-export const LendPositionAction: FC<LendPositionActionProps> = () => {
+export const LendPositionAction: FC<LendPositionActionProps> = ({
+  position,
+}) => {
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] =
     useState<boolean>(false);
 
@@ -34,6 +36,7 @@ export const LendPositionAction: FC<LendPositionActionProps> = () => {
       />
 
       <WithdrawModalContainer
+        asset={position.asset}
         handleCloseModal={handleWithdrawClose}
         isOpen={isWithdrawModalOpen}
       />

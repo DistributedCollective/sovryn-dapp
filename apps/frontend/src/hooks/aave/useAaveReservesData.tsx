@@ -1,23 +1,24 @@
 import {
   ReserveDataHumanized,
-  ReservesDataHumanized,
   UiPoolDataProvider,
 } from '@aave/contract-helpers';
 import { formatReserves, FormatReserveUSDResponse } from '@aave/math-utils';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import dayjs from 'dayjs';
 
-import { config } from '../constants/aave';
+import { BOB_CHAIN_ID } from '../../config/chains';
+
+import { config } from '../../constants/aave';
+import { useCachedData } from '../useCachedData';
 
 export type Reserve = ReserveDataHumanized & FormatReserveUSDResponse;
 
-export const useAaveReservesData = () => {
+export type ReserveData = Reserve[];
+
+export const useAaveReservesData = (): ReserveData => {
   const provider = config.provider; // TODO: replace with useAccount
-  const [reserves, setReserves] = useState<Reserve[]>([]);
-  const [reservesData, setReservesData] =
-    useState<ReservesDataHumanized | null>(null);
 
   const uiPoolDataProvider = useMemo(
     () =>
@@ -31,8 +32,14 @@ export const useAaveReservesData = () => {
     [provider],
   );
 
-  const fetchReservesData = useCallback(
-    async (uiPoolDataProvider: UiPoolDataProvider) => {
+  const { value } = useCachedData<ReserveData>(
+    'AaveReservesData',
+    BOB_CHAIN_ID,
+    async () => {
+      if (!uiPoolDataProvider) {
+        return [];
+      }
+
       const currentTimestamp = dayjs().unix();
       const reservesData = await uiPoolDataProvider.getReservesHumanized({
         lendingPoolAddressProvider: config.PoolAddressesProviderAddress,
@@ -49,20 +56,12 @@ export const useAaveReservesData = () => {
           reservesData.baseCurrencyData.marketReferenceCurrencyPriceInUsd,
       });
 
-      setReserves(formattedReserves);
-      setReservesData({
-        baseCurrencyData: reservesData.baseCurrencyData,
-        reservesData: reserves,
-      });
+      return formattedReserves;
     },
+    [uiPoolDataProvider],
     [],
+    { ttl: 1000 * 60, fallbackToPreviousResult: true },
   );
 
-  useEffect(() => {
-    if (uiPoolDataProvider) {
-      fetchReservesData(uiPoolDataProvider);
-    }
-  }, [uiPoolDataProvider, fetchReservesData]);
-
-  return { reserves, reservesData };
+  return value;
 };

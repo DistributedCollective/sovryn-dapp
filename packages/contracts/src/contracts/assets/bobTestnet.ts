@@ -56,7 +56,7 @@ export const bobTestnet: Array<AssetDetails> = [
   },
   {
     symbol: 'USDC',
-    address: '0x143050408aCCb9A9a2f285e625537d48674f3e58',
+    address: '0x509AeFe02953BC2fB8abCa53Fd83C94D86c05922',
     name: 'USD Coin',
     decimals: 6,
     getIcon: async () => (await import('./icons/bob/usdc')).default,
@@ -81,5 +81,13 @@ export const bobTestnet: Array<AssetDetails> = [
     name: 'Wrapped Staked ETH',
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/wsteth')).default,
+  },
+  {
+    symbol: 'aWETH',
+    // TODO: properly adjust this variable
+    address: '0xAD51B64c2eeF5877CDF4AcdCC790DF6eaBC6ecbf',
+    name: 'Aave Wrapped ETH',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/eth')).default,
   },
 ];

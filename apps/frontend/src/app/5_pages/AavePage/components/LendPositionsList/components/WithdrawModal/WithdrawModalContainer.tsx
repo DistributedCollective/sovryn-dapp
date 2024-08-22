@@ -8,11 +8,13 @@ import { translations } from '../../../../../../../locales/i18n';
 import { WithdrawForm } from './WithdrawForm';
 
 type WithdrawModalContainerProps = {
+  asset: string;
   isOpen: boolean;
   handleCloseModal: () => unknown;
 };
 
 export const WithdrawModalContainer: FC<WithdrawModalContainerProps> = ({
+  asset,
   isOpen,
   handleCloseModal,
 }) => {
@@ -23,7 +25,7 @@ export const WithdrawModalContainer: FC<WithdrawModalContainerProps> = ({
         onClose={handleCloseModal}
       />
       <DialogBody className="flex flex-col gap-6">
-        <WithdrawForm onSuccess={handleCloseModal} />
+        <WithdrawForm asset={asset} onSuccess={handleCloseModal} />
       </DialogBody>
     </Dialog>
   );

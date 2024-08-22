@@ -811,7 +811,9 @@
         },
         "tx": {
             "supplyTitle": "Deposit {{symbol}} to the pool",
-            "supplySubtitle": "Transfers {{amount}} {{symbol}} to the stability pool"
+            "supplySubtitle": "Transfers {{amount}} {{symbol}} to the pool",
+            "withdrawTitle": "Withdraw {{asset}} from the pool",
+            "withdrawSubtitle": "Transfer {{amount}} {{symbol}} from the pool"
         },
         "topPanel": {
             "title": "Lend and borrow",

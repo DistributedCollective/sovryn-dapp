@@ -4,6 +4,8 @@ import { t } from 'i18next';
 
 import { Align, HelperButton } from '@sovryn/ui';
 
+import { BOB_CHAIN_ID } from '../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountPriceRenderer } from '../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -27,6 +29,7 @@ export const COLUMNS_CONFIG = [
         dataAttribute="borrow-asset"
         showAssetLogo
         asset={position.asset}
+        chainId={BOB_CHAIN_ID}
         className="lg:justify-start justify-end"
         logoClassName="[&>svg]:h-8 [&>svg]:w-8 [&>svg]:mr-[10px]"
       />

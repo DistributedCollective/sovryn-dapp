@@ -58,24 +58,24 @@ const BOB_CHAIN: ChainSpec = {
     liq: 128,
     dfltColdSwap: true,
   },
-  blockExplorer: 'https://xplorer.gobob.xyz',
+  blockExplorer: 'https://explorer.gobob.xyz',
   displayName: 'BOB',
   logoUrl: ETHEREUM_LOGO,
 };
 
 const BOB_TESTNET_CHAIN: ChainSpec = {
-  nodeUrl: 'https://testnet.rpc.gobob.xyz',
-  // wsUrl: 'wss://sepolia-dencun.rpc.gobob.xyz/wss',
+  nodeUrl: 'https://bob-sepolia.rpc.gobob.xyz/',
+  // wsUrl: 'wss://bob-sepolia.rpc.gobob.xyz',
   addrs: {
-    dex: '0xA86F239490bd35923eCBD578C2A8989803294bee',
-    query: '0x35a4dd53C1AEd1AFD48659175ab3981f3C39493F',
-    impact: '0xdB0Bb1e4b7aA5a747E17957FC66C772cea089ec5',
-    router: '0x3F1cE244F286e9e16B68cd117b07A7c4a8bf815e',
-    routerBypass: '0xAeb44C43Edd3a13921C626ACE5515deB243A5653',
+    dex: '0x6E47BC2BC7CF8383369BbA36F520323C5F16dC1C',
+    query: '0x28A6328B0e167035F33a4C58374F2524Ae9c8dC1',
+    impact: '0x56c1F530BF3C81f729EBA05b7BFbf5daA48C875b',
+    router: '0x9F6dD52C51D50e3C2Dce847d2a88067bDcB65500',
+    routerBypass: '0x806305A4222905CB0a083391d18795F52B8d462c',
   },
   poolIndex: 36000,
   isTestNet: true,
-  chainId: '0x6f', // 111
+  chainId: 'C576D', // 808813
   gridSize: 16,
   proxyPaths: {
     cold: 3,
@@ -83,7 +83,7 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
     liq: 128,
     dfltColdSwap: true,
   },
-  blockExplorer: 'https://testnet-explorer.gobob.xyz',
+  blockExplorer: 'https://bob-sepolia.explorer.gobob.xyz/',
   displayName: 'BOB Testnet',
   logoUrl: ETHEREUM_LOGO,
 };
@@ -138,7 +138,7 @@ const LOCAL_FORK_CHAIN: ChainSpec = Object.assign({}, SEPOLIA_CHAIN, {
 
 export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
   '0xed88': BOB_CHAIN,
-  '0x6f': BOB_TESTNET_CHAIN,
+  C576D: BOB_TESTNET_CHAIN,
   '0x7a69': LOCAL_FORK_CHAIN,
   '0xaa36a7': SEPOLIA_CHAIN,
   '0x1b669': TENDERLY_FORK,

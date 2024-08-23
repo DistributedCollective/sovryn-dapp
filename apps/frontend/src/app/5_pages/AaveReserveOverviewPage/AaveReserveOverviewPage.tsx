@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
-import { Tabs, TabSize, TabType } from '@sovryn/ui';
+import { Paragraph, Tabs, TabSize, TabType } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
 import { BorrowDetailsGraph } from './components/BorrowDetailsGraph/BorrowDetailsGraph';
@@ -34,6 +34,9 @@ const AaveReserveOverviewPage: FC = () => {
       </Helmet>
 
       <TopPanel asset={asset} className="lg:mb-[110px] lg:mt-[52px]" />
+      <Paragraph className="text-base mb-4">
+        {t(pageTranslations.reserveStatusTab.fullTitle)}
+      </Paragraph>
 
       <div className="pt-6 space-y-6 lg:pt-0 lg:space-y-0 w-full">
         <Tabs
@@ -57,11 +60,11 @@ const AaveReserveOverviewPage: FC = () => {
         />
 
         {/* reserve graphics columns */}
-        <div className="grid grid-cols-1 lg:gap-5 lg:grid-cols-[auto_465px]">
+        <div className="flex gap-5">
           <div
             className={classNames(
               { hidden: activeOverviewTab !== OverviewTab.RESERVE },
-              'lg:block space-y-4 w-full',
+              'lg:block space-y-4 flex-grow w-min',
             )}
           >
             <SupplyDetailsGraph />
@@ -74,7 +77,7 @@ const AaveReserveOverviewPage: FC = () => {
           <div
             className={classNames(
               { hidden: activeOverviewTab !== OverviewTab.WALLET },
-              'lg:block space-y-4',
+              'lg:block space-y-4 w-[450px] shrink-0',
             )}
           >
             <WalletOverview asset={asset} />

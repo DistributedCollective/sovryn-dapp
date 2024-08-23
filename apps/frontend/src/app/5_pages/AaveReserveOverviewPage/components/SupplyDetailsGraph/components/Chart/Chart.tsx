@@ -81,10 +81,8 @@ export const Chart: FC<ChartProps> = ({ mockData }) => {
             },
             grid: {
               color: GRID_COLOR,
-              lineWidth: 1,
-              drawOnChartArea: true,
               tickBorderDash: [5, 5],
-              tickBorderDashOffset: 0,
+              drawTicks: false,
             },
           },
         },
@@ -112,7 +110,7 @@ export const Chart: FC<ChartProps> = ({ mockData }) => {
       onClick={e => {
         e.stopPropagation();
       }}
-      className="lg:h-[37rem] h-64 rounded"
+      className="lg:p-6 lg:bg-gray-80"
     >
       <span id="legend-container-supply-chart" className="text-tiny"></span>
       <canvas ref={canvas}></canvas>

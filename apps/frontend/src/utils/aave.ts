@@ -44,6 +44,7 @@ export class AaveUserReservesSummary {
   public borrowWeightedApy: Decimal;
   public borrowPower: Decimal;
   public borrowPowerUsed: Decimal;
+  public currentLiquidationThreshold: Decimal;
   public suppliedAssets: SuppliedAsset[];
   public borrowedAssets: BorrowedAsset[];
   public eModeEnabled: boolean;
@@ -75,6 +76,9 @@ export class AaveUserReservesSummary {
     );
 
     // health and borrow status
+    this.currentLiquidationThreshold = Decimal.from(
+      this.userSummary.currentLiquidationThreshold,
+    );
     this.borrowPower = this.computeBorrowPower(
       Decimal.from(this.userSummary.availableBorrowsUSD),
       this.borrowBalance,
@@ -85,7 +89,7 @@ export class AaveUserReservesSummary {
     );
     this.healthFactor = this.computeHealthFactor(
       this.collateralBalance,
-      Decimal.from(this.userSummary.currentLiquidationThreshold),
+      this.currentLiquidationThreshold,
       this.borrowBalance,
     );
 

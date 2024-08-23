@@ -15,7 +15,7 @@ type BorrowAssetActionProps = {
   pool: BorrowPoolDetails;
 };
 
-export const BorrowAssetAction: FC<BorrowAssetActionProps> = () => {
+export const BorrowAssetAction: FC<BorrowAssetActionProps> = ({ pool }) => {
   const navigate = useNavigate();
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState<boolean>(false);
 
@@ -43,6 +43,7 @@ export const BorrowAssetAction: FC<BorrowAssetActionProps> = () => {
       />
 
       <BorrowModalContainer
+        asset={pool.asset}
         handleCloseModal={handleBorrowClose}
         isOpen={isBorrowModalOpen}
       />

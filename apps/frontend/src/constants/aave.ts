@@ -1,7 +1,10 @@
 import { ethers } from 'ethers';
 
+import { Decimal } from '@sovryn/utils';
+
 export const config = {
   chainId: 137,
+  MinHealthFactor: Decimal.from('1.05'),
   PoolAddress: '0x794a61358D6845594F94dc1DB02A252b5b4814aD',
   WETHGatewayAddress: '0xC1E320966c485ebF2A0A2A6d3c0Dc860A156eB1B',
   VariableDebtWETHAddress: '0x4a1c3aD6Ed28a636ee1751C69071f6be75DEb8B8',

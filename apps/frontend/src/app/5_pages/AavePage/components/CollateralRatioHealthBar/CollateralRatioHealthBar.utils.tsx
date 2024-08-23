@@ -1,7 +1,6 @@
 import { MINIMUM_COLLATERAL_RATIO_LENDING_POOLS } from '../../../../../constants/lending';
 
 export const getCollateralRatioThresholds = () => {
-  // TODO: recheck this and adjust based on aave
   const minimumCollateralRatio =
     MINIMUM_COLLATERAL_RATIO_LENDING_POOLS.mul(100);
 

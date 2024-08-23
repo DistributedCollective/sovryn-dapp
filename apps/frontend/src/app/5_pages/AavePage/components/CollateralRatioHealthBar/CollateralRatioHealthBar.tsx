@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
@@ -28,13 +28,27 @@ export const CollateralRatioHealthBar: FC<CollateralRatioHealthBarProps> = ({
     [thresholds],
   );
 
+  useEffect(() => {
+    console.log(
+      collateralRatioThresholds.START.toString(),
+      collateralRatioThresholds.MIDDLE_START.toString(),
+      collateralRatioThresholds.MIDDLE_END.toString(),
+      collateralRatioThresholds.END.toString(),
+      ratio.toString(),
+    );
+  }, [collateralRatioThresholds, ratio]);
+
   return (
     <div className="py-3">
       <div className="flex flex-row justify-between items-center mb-3">
         <div className="flex flex-row justify-start items-center gap-2">
           <span>{t(translations.aavePage.common.collateralRatio)}</span>
         </div>
-        <AmountRenderer value={ratio.toString()} suffix="%" />
+        <AmountRenderer
+          value={ratio.mul(100).toString()}
+          suffix="%"
+          precision={2}
+        />
       </div>
 
       <HealthBar
@@ -42,7 +56,7 @@ export const CollateralRatioHealthBar: FC<CollateralRatioHealthBarProps> = ({
         middleStart={collateralRatioThresholds.MIDDLE_START}
         middleEnd={collateralRatioThresholds.MIDDLE_END}
         end={collateralRatioThresholds.END}
-        value={ratio.toNumber()}
+        value={ratio.mul(100).toNumber()}
       />
     </div>
   );

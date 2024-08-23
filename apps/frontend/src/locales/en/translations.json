@@ -813,7 +813,11 @@
             "supplyTitle": "Deposit {{symbol}} to the pool",
             "supplySubtitle": "Transfers {{amount}} {{symbol}} to the pool",
             "withdrawTitle": "Withdraw {{asset}} from the pool",
-            "withdrawSubtitle": "Transfer {{amount}} {{symbol}} from the pool"
+            "withdrawSubtitle": "Transfer {{amount}} {{symbol}} from the pool",
+            "borrowTitle": "Borrow {{symbol}} from the pool",
+            "borrowSubtitle": "Borrows {{amount}} {{symbol}} from the pool",
+            "approveBorrowDelegationTitle": "Approve borrow delegation",
+            "approveBorrowDelegationSubtitle": "Approve borrow delegation of {{amount}} {{symbol}} to the WETH gateway"
         },
         "topPanel": {
             "title": "Lend and borrow",

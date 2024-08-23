@@ -62,6 +62,7 @@ export const LendForm: FC<LendFormProps> = ({
             showAssetLogo
             asset={r.symbol}
             assetClassName="font-medium"
+            chainId={BOB_CHAIN_ID}
           />
         ),
       })),

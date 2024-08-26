@@ -10,11 +10,7 @@ import {
   TransactionType,
 } from '../../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { translations } from '../../locales/i18n';
-
-export enum BorrowRateMode {
-  STABLE = 1,
-  VARIABLE = 2,
-}
+import { BorrowRateMode, TransactionFactoryOptions } from '../../types/aave';
 
 export class AaveBorrowTransactionsFactory {
   private readonly Pool: ethers.Contract;
@@ -54,15 +50,17 @@ export class AaveBorrowTransactionsFactory {
     token: AssetDetailsData,
     amount: BigNumber,
     rateMode: BorrowRateMode,
+    opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
-    if (token.isNative) return this.borrowNative(amount, rateMode);
-    else return this.borrowToken(token, amount, rateMode);
+    if (token.isNative) return this.borrowNative(amount, rateMode, opts);
+    else return this.borrowToken(token, amount, rateMode, opts);
   }
 
   private async borrowToken(
     asset: AssetDetailsData,
     amount: BigNumber,
     rateMode: BorrowRateMode,
+    opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
     return [
       {
@@ -85,6 +83,7 @@ export class AaveBorrowTransactionsFactory {
           contract: this.Pool,
           fnName: 'borrow',
         },
+        onComplete: opts?.onComplete,
       },
     ];
   }
@@ -92,6 +91,7 @@ export class AaveBorrowTransactionsFactory {
   private async borrowNative(
     amount: BigNumber,
     rateMode: BorrowRateMode,
+    opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
     const nativeAsset = await getAssetDataByAddress(
       constants.AddressZero,
@@ -128,6 +128,7 @@ export class AaveBorrowTransactionsFactory {
           contract: this.WETHGateway,
           fnName: 'borrowETH',
         },
+        onComplete: opts?.onComplete,
       },
     ];
   }

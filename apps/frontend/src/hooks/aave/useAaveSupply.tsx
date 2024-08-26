@@ -9,6 +9,7 @@ import { Decimal } from '@sovryn/utils';
 import { config } from '../../constants/aave';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { translations } from '../../locales/i18n';
+import { TransactionFactoryOptions } from '../../types/aave';
 import { AaveSupplyTransactionsFactory } from '../../utils/aave/AaveSupplyTransactionsFactory';
 import { useAccount } from '../useAccount';
 
@@ -26,7 +27,11 @@ export const useAaveSupply = () => {
   }, [signer]);
 
   const handleDeposit = useCallback(
-    async (amount: Decimal, asset: AssetDetailsData) => {
+    async (
+      amount: Decimal,
+      asset: AssetDetailsData,
+      opts?: TransactionFactoryOptions,
+    ) => {
       if (!aaveSupplyTransactionsFactory) {
         return;
       }
@@ -35,7 +40,7 @@ export const useAaveSupply = () => {
       );
 
       setTransactions(
-        await aaveSupplyTransactionsFactory.supply(asset, bnAmount),
+        await aaveSupplyTransactionsFactory.supply(asset, bnAmount, opts),
       );
       setTitle(t(translations.common.deposit));
       setIsOpen(true);
@@ -47,7 +52,7 @@ export const useAaveSupply = () => {
     async (
       asset: AssetDetailsData,
       useAsCollateral: boolean,
-      opts?: { onComplete?: () => void },
+      opts?: TransactionFactoryOptions,
     ) => {
       if (!aaveSupplyTransactionsFactory) {
         return;

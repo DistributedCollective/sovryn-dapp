@@ -37,7 +37,7 @@ export const RepayWithWalletBalanceForm: FC<
   RepayWithWalletBalanceFormProps
 > = ({ asset }) => {
   const { account } = useAccount();
-  const { handleRepay } = useAaveRepay({});
+  const { handleRepay } = useAaveRepay();
   const reserves = useAaveReservesData();
   const userReservesSummary = useAaveUserReservesData();
   const [repayAsset, setRepayAsset] = useState<string>(asset);

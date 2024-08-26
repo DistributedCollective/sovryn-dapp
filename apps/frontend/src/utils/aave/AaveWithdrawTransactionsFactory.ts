@@ -10,6 +10,7 @@ import {
   TransactionType,
 } from '../../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { translations } from '../../locales/i18n';
+import { TransactionFactoryOptions } from '../../types/aave';
 import { prepareApproveTransaction } from '../transactions';
 
 export class AaveWithdrawTransactionsFactory {
@@ -37,14 +38,16 @@ export class AaveWithdrawTransactionsFactory {
   async withdraw(
     token: AssetDetailsData,
     amount: BigNumber,
+    opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
-    if (token.isNative) return this.withdrawNative(amount);
-    else return this.withdrawToken(token, amount);
+    if (token.isNative) return this.withdrawNative(amount, opts);
+    else return this.withdrawToken(token, amount, opts);
   }
 
   private async withdrawToken(
     asset: AssetDetailsData,
     amount: BigNumber,
+    opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
     return [
       {
@@ -65,11 +68,15 @@ export class AaveWithdrawTransactionsFactory {
           contract: this.Pool,
           fnName: 'withdraw',
         },
+        onComplete: opts?.onComplete,
       },
     ];
   }
 
-  private async withdrawNative(amount: BigNumber): Promise<Transaction[]> {
+  private async withdrawNative(
+    amount: BigNumber,
+    opts?: TransactionFactoryOptions,
+  ): Promise<Transaction[]> {
     const aWETH = await getAssetData('aWETH', BOB_CHAIN_ID);
 
     const approval = await prepareApproveTransaction({
@@ -99,6 +106,7 @@ export class AaveWithdrawTransactionsFactory {
         contract: this.WETHGateway,
         fnName: 'withdrawETH',
       },
+      onComplete: opts?.onComplete,
     });
 
     return transactions;

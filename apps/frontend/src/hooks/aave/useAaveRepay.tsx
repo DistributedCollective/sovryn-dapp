@@ -9,14 +9,12 @@ import { Decimal } from '@sovryn/utils';
 import { config } from '../../constants/aave';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { translations } from '../../locales/i18n';
+import { TransactionFactoryOptions } from '../../types/aave';
 import { AaveRepayTransactionsFactory } from '../../utils/aave/AaveRepayTransactionsFactory';
 import { LoanType } from '../../utils/aave/AaveUserReservesSummary';
 import { useAccount } from '../useAccount';
 
-export const useAaveRepay = (props: {
-  onBegin?: () => void;
-  onComplete?: () => void;
-}) => {
+export const useAaveRepay = () => {
   const { signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
@@ -30,7 +28,12 @@ export const useAaveRepay = (props: {
   }, [signer]);
 
   const handleRepay = useCallback(
-    async (amount: Decimal, asset: AssetDetailsData, loanType: LoanType) => {
+    async (
+      amount: Decimal,
+      asset: AssetDetailsData,
+      loanType: LoanType,
+      opts?: TransactionFactoryOptions,
+    ) => {
       if (!aaveRepayTransactionsFactory) {
         return;
       }
@@ -39,7 +42,12 @@ export const useAaveRepay = (props: {
       );
 
       setTransactions(
-        await aaveRepayTransactionsFactory.repay(asset, bnAmount, loanType),
+        await aaveRepayTransactionsFactory.repay(
+          asset,
+          bnAmount,
+          loanType,
+          opts,
+        ),
       );
       setTitle(t(translations.common.buttons.repay));
       setIsOpen(true);

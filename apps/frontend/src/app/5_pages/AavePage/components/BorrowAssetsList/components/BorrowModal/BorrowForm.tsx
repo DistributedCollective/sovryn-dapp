@@ -25,7 +25,7 @@ import { useAaveReservesData } from '../../../../../../../hooks/aave/useAaveRese
 import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAaveUserReservesData';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
 import { translations } from '../../../../../../../locales/i18n';
-import { BorrowRateMode } from '../../../../../../../utils/aave/AaveBorrowTransactionsFactory';
+import { BorrowRateMode } from '../../../../../../../types/aave';
 import { CollateralRatioHealthBar } from '../../../CollateralRatioHealthBar/CollateralRatioHealthBar';
 
 const pageTranslations = translations.aavePage;
@@ -41,7 +41,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset }) => {
   const [borrowAsset, setBorrowAsset] = useState<string>(asset);
   const [borrowAmount, setBorrowAmount, borrowSize] = useDecimalAmountInput('');
   const [acknowledge, setAcknowledge] = useState<boolean>(false);
-  const { handleBorrow } = useAaveBorrow({});
+  const { handleBorrow } = useAaveBorrow();
 
   const reserve = useMemo(() => {
     return reserves.find(r => r.symbol === borrowAsset);

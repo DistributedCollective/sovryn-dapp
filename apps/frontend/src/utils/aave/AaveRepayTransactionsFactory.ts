@@ -10,6 +10,7 @@ import {
   TransactionType,
 } from '../../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { translations } from '../../locales/i18n';
+import { TransactionFactoryOptions } from '../../types/aave';
 import { LoanType } from './AaveUserReservesSummary';
 
 export class AaveRepayTransactionsFactory {
@@ -42,15 +43,17 @@ export class AaveRepayTransactionsFactory {
     token: AssetDetailsData,
     amount: BigNumber,
     loanType: LoanType,
+    opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
-    if (token.isNative) return this.repayNative(amount, loanType);
-    else return this.repayToken(token, amount, loanType);
+    if (token.isNative) return this.repayNative(amount, loanType, opts);
+    else return this.repayToken(token, amount, loanType, opts);
   }
 
   private async repayToken(
     asset: AssetDetailsData,
     amount: BigNumber,
     loanType: LoanType,
+    opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
     return [
       {
@@ -73,6 +76,7 @@ export class AaveRepayTransactionsFactory {
           fnName: 'repay',
           value: 0,
         },
+        onComplete: opts?.onComplete,
       },
     ];
   }
@@ -80,6 +84,7 @@ export class AaveRepayTransactionsFactory {
   private async repayNative(
     amount: BigNumber,
     loanType: LoanType,
+    opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
     const nativeAsset = await getAssetDataByAddress(
       constants.AddressZero,
@@ -107,6 +112,7 @@ export class AaveRepayTransactionsFactory {
           fnName: 'repayETH',
           value: amount.toString(),
         },
+        onComplete: opts?.onComplete,
       },
     ];
   }

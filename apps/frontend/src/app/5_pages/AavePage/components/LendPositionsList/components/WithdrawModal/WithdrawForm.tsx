@@ -33,7 +33,7 @@ type WithdrawFormProps = {
 };
 
 export const WithdrawForm: FC<WithdrawFormProps> = ({ asset }) => {
-  const { handleWithdraw } = useAaveWithdraw({});
+  const { handleWithdraw } = useAaveWithdraw();
   const reserves = useAaveReservesData();
   const userReservesSummary = useAaveUserReservesData();
   const [withdrawAsset, setWithdrawAsset] = useState<string>(asset);

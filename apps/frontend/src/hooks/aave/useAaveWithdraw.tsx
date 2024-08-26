@@ -12,10 +12,7 @@ import { translations } from '../../locales/i18n';
 import { AaveWithdrawTransactionsFactory } from '../../utils/aave/AaveWithdrawTransactionsFactory';
 import { useAccount } from '../useAccount';
 
-export const useAaveWithdraw = (props: {
-  onBegin?: () => void;
-  onComplete?: () => void;
-}) => {
+export const useAaveWithdraw = () => {
   const { signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 

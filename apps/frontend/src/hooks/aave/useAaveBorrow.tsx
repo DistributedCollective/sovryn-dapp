@@ -9,16 +9,11 @@ import { Decimal } from '@sovryn/utils';
 import { config } from '../../constants/aave';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { translations } from '../../locales/i18n';
-import {
-  AaveBorrowTransactionsFactory,
-  BorrowRateMode,
-} from '../../utils/aave/AaveBorrowTransactionsFactory';
+import { BorrowRateMode, TransactionFactoryOptions } from '../../types/aave';
+import { AaveBorrowTransactionsFactory } from '../../utils/aave/AaveBorrowTransactionsFactory';
 import { useAccount } from '../useAccount';
 
-export const useAaveBorrow = (props: {
-  onBegin?: () => void;
-  onComplete?: () => void;
-}) => {
+export const useAaveBorrow = () => {
   const { signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
@@ -37,6 +32,7 @@ export const useAaveBorrow = (props: {
       amount: Decimal,
       asset: AssetDetailsData,
       rateMode: BorrowRateMode,
+      opts?: TransactionFactoryOptions,
     ) => {
       if (!aaveBorrowTransactionsFactory) {
         return;
@@ -46,7 +42,12 @@ export const useAaveBorrow = (props: {
       );
 
       setTransactions(
-        await aaveBorrowTransactionsFactory.borrow(asset, bnAmount, rateMode),
+        await aaveBorrowTransactionsFactory.borrow(
+          asset,
+          bnAmount,
+          rateMode,
+          opts,
+        ),
       );
       setTitle(t(translations.aavePage.common.borrow));
       setIsOpen(true);

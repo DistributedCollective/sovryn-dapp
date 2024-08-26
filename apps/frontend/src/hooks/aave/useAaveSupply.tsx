@@ -12,7 +12,7 @@ import { translations } from '../../locales/i18n';
 import { AaveSupplyTransactionsFactory } from '../../utils/aave/AaveSupplyTransactionsFactory';
 import { useAccount } from '../useAccount';
 
-export const useAaveDeposit = (onBegin: () => void, onComplete: () => void) => {
+export const useAaveSupply = () => {
   const { signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
@@ -43,5 +43,28 @@ export const useAaveDeposit = (onBegin: () => void, onComplete: () => void) => {
     [setIsOpen, setTitle, setTransactions, aaveSupplyTransactionsFactory],
   );
 
-  return { handleDeposit };
+  const handleSwitchCollateral = useCallback(
+    async (
+      asset: AssetDetailsData,
+      useAsCollateral: boolean,
+      opts?: { onComplete?: () => void },
+    ) => {
+      if (!aaveSupplyTransactionsFactory) {
+        return;
+      }
+
+      setTransactions(
+        await aaveSupplyTransactionsFactory.collateralSwitch(
+          asset,
+          useAsCollateral,
+          opts,
+        ),
+      );
+      setTitle(t(translations.aavePage.tx.toggleAssetAsCollateral));
+      setIsOpen(true);
+    },
+    [setIsOpen, setTitle, setTransactions, aaveSupplyTransactionsFactory],
+  );
+
+  return { handleDeposit, handleSwitchCollateral };
 };

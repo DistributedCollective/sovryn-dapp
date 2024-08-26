@@ -10,6 +10,7 @@ import {
   TransactionType,
 } from '../../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { translations } from '../../locales/i18n';
+import { TransactionFactoryOptions } from '../../types/aave';
 import { prepareApproveTransaction } from '../transactions';
 
 export class AaveSupplyTransactionsFactory {
@@ -25,6 +26,7 @@ export class AaveSupplyTransactionsFactory {
       this.PoolAddress,
       [
         'function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode)',
+        'function setUserUseReserveAsCollateral(address asset, bool useAsCollateral)',
       ],
       this.signer,
     );
@@ -41,14 +43,48 @@ export class AaveSupplyTransactionsFactory {
   async supply(
     token: AssetDetailsData,
     amount: BigNumber,
+    opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
-    if (token.isNative) return this.supplyNative(amount);
-    else return this.supplyToken(token, amount);
+    if (token.isNative) return this.supplyNative(amount, opts);
+    else return this.supplyToken(token, amount, opts);
+  }
+
+  async collateralSwitch(
+    token: AssetDetailsData,
+    useAsCollateral: boolean,
+    opts?: TransactionFactoryOptions,
+  ): Promise<Transaction[]> {
+    return [
+      {
+        title: useAsCollateral
+          ? t(translations.aavePage.tx.enableAssetAsCollateral, {
+              symbol: token.symbol,
+            })
+          : t(translations.aavePage.tx.disableAssetAsCollateral, {
+              symbol: token.symbol,
+            }),
+        subtitle: useAsCollateral
+          ? t(translations.aavePage.tx.enableAssetAsCollateralSubtitle, {
+              symbol: token.symbol,
+            })
+          : t(translations.aavePage.tx.disableAssetAsCollateralSubtitle, {
+              symbol: token.symbol,
+            }),
+        request: {
+          type: TransactionType.signTransaction,
+          args: [token, useAsCollateral],
+          contract: this.Pool,
+          fnName: 'setUserUseReserveAsCollateral',
+        },
+        onComplete: opts?.onComplete,
+      },
+    ];
   }
 
   private async supplyToken(
     asset: AssetDetailsData,
     amount: BigNumber,
+    opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
     const approval = await prepareApproveTransaction({
       spender: this.PoolAddress,
@@ -79,12 +115,16 @@ export class AaveSupplyTransactionsFactory {
         fnName: 'supply',
         value: 0,
       },
+      onComplete: opts?.onComplete,
     });
 
     return transactions;
   }
 
-  private async supplyNative(amount: BigNumber): Promise<Transaction[]> {
+  private async supplyNative(
+    amount: BigNumber,
+    opts?: TransactionFactoryOptions,
+  ): Promise<Transaction[]> {
     const nativeAsset = await getAssetDataByAddress(
       constants.AddressZero,
       BOB_CHAIN_ID,
@@ -106,6 +146,7 @@ export class AaveSupplyTransactionsFactory {
           fnName: 'depositETH',
           value: amount.toString(),
         },
+        onComplete: opts?.onComplete,
       },
     ];
   }

@@ -821,7 +821,12 @@
             "borrowTitle": "Borrow {{symbol}} from the pool",
             "borrowSubtitle": "Borrows {{amount}} {{symbol}} from the pool",
             "approveBorrowDelegationTitle": "Approve borrow delegation",
-            "approveBorrowDelegationSubtitle": "Approve borrow delegation of {{amount}} {{symbol}} to the WETH gateway"
+            "approveBorrowDelegationSubtitle": "Approve borrow delegation of {{amount}} {{symbol}} to the WETH gateway",
+            "toggleAssetAsCollateral": "Switch asset use as collateral",
+            "enableAssetAsCollateral": "Enable {{symbol}} as collateral",
+            "enableAssetAsCollateralSubtitle": "Enabling {{symbol}} as collateral will increase your borrowing power",
+            "disableAssetAsCollateral": "Disable {{symbol}} as collateral",
+            "disableAssetAsCollateralSubtitle": "Disabling {{symbol}} as collateral will decrease your borrowing power and potentially risk you to liquidation"
         },
         "topPanel": {
             "title": "Lend and borrow",

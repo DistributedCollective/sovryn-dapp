@@ -50,7 +50,7 @@ const AavePage: FC = () => {
       apy: ba.apy,
       borrowed: ba.borrowed,
       borrowedUSD: ba.borrowedUSD,
-      apyType: ba.apyType,
+      type: ba.type,
     }));
   }, [userReservesSummary]);
 

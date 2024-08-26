@@ -12,7 +12,9 @@ type BorrowPositionActionProps = {
   position: BorrowPosition;
 };
 
-export const BorrowPositionAction: FC<BorrowPositionActionProps> = () => {
+export const BorrowPositionAction: FC<BorrowPositionActionProps> = ({
+  position,
+}) => {
   const [isRepayModalOpen, setIsRepayModalOpen] = useState<boolean>(false);
 
   const handleRepayClick = useCallback(() => {
@@ -33,6 +35,7 @@ export const BorrowPositionAction: FC<BorrowPositionActionProps> = () => {
       />
 
       <RepayModalContainer
+        asset={position.asset}
         handleCloseModal={handleRepayClose}
         isOpen={isRepayModalOpen}
       />

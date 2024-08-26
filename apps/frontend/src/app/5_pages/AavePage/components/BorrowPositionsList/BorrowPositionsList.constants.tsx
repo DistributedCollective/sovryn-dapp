@@ -4,9 +4,12 @@ import { t } from 'i18next';
 
 import { Align, HelperButton } from '@sovryn/ui';
 
+import { BOB_CHAIN_ID } from '../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
+import { LoanType } from '../../../../../utils/aave/AaveUserReservesSummary';
 import { BorrowPosition } from './BorrowPositionsList.types';
 import { BorrowPositionAction } from './components/BorrowPositionAction/BorrowPositionAction';
 
@@ -25,6 +28,7 @@ export const COLUMNS_CONFIG = [
         dataAttribute="borrow-asset"
         showAssetLogo
         asset={position.asset}
+        chainId={BOB_CHAIN_ID}
         className="lg:justify-start justify-end"
         logoClassName="[&>svg]:h-8 [&>svg]:w-8 [&>svg]:mr-[10px]"
       />
@@ -71,7 +75,13 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (position: BorrowPosition) => (
-      <span>{t(pageTranslations.common[position.apyType])}</span>
+      <span>
+        {t(
+          pageTranslations.common[
+            position.type === LoanType.STABLE ? 'stable' : 'variable'
+          ],
+        )}
+      </span>
     ),
   },
   {

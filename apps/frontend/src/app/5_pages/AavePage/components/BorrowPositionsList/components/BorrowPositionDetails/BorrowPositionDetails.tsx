@@ -7,6 +7,7 @@ import { HelperButton, SimpleTableRow } from '@sovryn/ui';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountPriceRenderer } from '../../../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 import { translations } from '../../../../../../../locales/i18n';
+import { LoanType } from '../../../../../../../utils/aave/AaveUserReservesSummary';
 import { BorrowPosition } from '../../BorrowPositionsList.types';
 import { BorrowPositionAction } from '../BorrowPositionAction/BorrowPositionAction';
 
@@ -48,7 +49,11 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
         {/* Apy type */}
         <SimpleTableRow
           label={t(translations.aavePage.common.apyType)}
-          value={t(translations.aavePage.common[position.apyType])}
+          value={t(
+            translations.aavePage.common[
+              position.type === LoanType.STABLE ? 'stable' : 'variable'
+            ],
+          )}
         />
       </div>
 

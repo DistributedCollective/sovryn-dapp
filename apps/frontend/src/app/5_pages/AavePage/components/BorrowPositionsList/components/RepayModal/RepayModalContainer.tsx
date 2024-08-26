@@ -17,6 +17,7 @@ import { RepayWithCollateralForm } from './RepayWithCollateralForm';
 import { RepayWithWalletBalanceForm } from './RepayWithWalletBalanceForm';
 
 type RepayModalContainerProps = {
+  asset: string;
   isOpen: boolean;
   handleCloseModal: () => unknown;
 };
@@ -27,6 +28,7 @@ enum RepayWith {
 }
 
 export const RepayModalContainer: FC<RepayModalContainerProps> = ({
+  asset,
   isOpen,
   handleCloseModal,
 }) => {
@@ -61,13 +63,17 @@ export const RepayModalContainer: FC<RepayModalContainerProps> = ({
               activeClassName: 'text-primary-20',
               dataAttribute: 'collateral',
               label: t(translations.aavePage.common.collateral),
+              disabled: true,
             },
           ]}
           type={TabType.secondary}
         />
 
         {activeTab === RepayWith.BALANCE ? (
-          <RepayWithWalletBalanceForm onSuccess={handleCloseModal} />
+          <RepayWithWalletBalanceForm
+            asset={asset}
+            onSuccess={handleCloseModal}
+          />
         ) : (
           <RepayWithCollateralForm onSuccess={handleCloseModal} />
         )}

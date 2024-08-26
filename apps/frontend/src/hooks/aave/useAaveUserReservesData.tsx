@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import { BOB_CHAIN_ID } from '../../config/chains';
 
 import { config } from '../../constants/aave';
-import { AaveUserReservesSummary } from '../../utils/aave';
+import { AaveUserReservesSummary } from '../../utils/aave/AaveUserReservesSummary';
 import { useCachedData } from '../useCachedData';
 
 type UserReservesData = AaveUserReservesSummary | null;

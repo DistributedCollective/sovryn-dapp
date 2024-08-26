@@ -2,6 +2,7 @@ import React, { FC, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
+import { getAssetData } from '@sovryn/contracts';
 import {
   Button,
   ErrorBadge,
@@ -11,9 +12,16 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
+
 import { AmountTransition } from '../../../../../../2_molecules/AmountTransition/AmountTransition';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { useAaveRepay } from '../../../../../../../hooks/aave/useAaveRepay';
+import { useAaveReservesData } from '../../../../../../../hooks/aave/useAaveReservesData';
+import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAaveUserReservesData';
+import { useAccount } from '../../../../../../../hooks/useAccount';
+import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
 import { translations } from '../../../../../../../locales/i18n';
 import { CollateralRatioHealthBar } from '../../../CollateralRatioHealthBar/CollateralRatioHealthBar';
@@ -21,52 +29,95 @@ import { CollateralRatioHealthBar } from '../../../CollateralRatioHealthBar/Coll
 const pageTranslations = translations.aavePage;
 
 type RepayWithWalletBalanceFormProps = {
+  asset: string;
   onSuccess: () => unknown;
 };
 
 export const RepayWithWalletBalanceForm: FC<
   RepayWithWalletBalanceFormProps
-> = () => {
-  const totalBorrowed = Decimal.from(10); // TODO: this is mocked data. Replace with proper hook
-  const collateralToLoanRate = Decimal.from(10); // TODO: this is mocked data. Replace with proper hook
-  const collateralSize = Decimal.from(10); // TODO: this is mockd data. Replace with proper hook
-  const assetsToRepay = useMemo(() => ['BTC', 'SOV'], []); // TODO: this is mocked data. Replace with proper hook
-  const [maximumRepayAmount] = useState(Decimal.from(10)); // TODO: this is mocked data. Replace with proper hook
-  const [repayAsset, setRepayAsset] = useState<string>(assetsToRepay[0]);
+> = ({ asset }) => {
+  const { account } = useAccount();
+  const { handleRepay } = useAaveRepay({});
+  const reserves = useAaveReservesData();
+  const userReservesSummary = useAaveUserReservesData();
+  const [repayAsset, setRepayAsset] = useState<string>(asset);
   const [repayAmount, setRepayAmount, repaySize] = useDecimalAmountInput('');
+  const { balance: repayAssetBalance } = useAssetBalance(
+    repayAsset,
+    BOB_CHAIN_ID,
+    account,
+  );
 
   const repayAssetsOptions = useMemo(
     () =>
-      assetsToRepay.map(token => ({
-        value: token,
-        label: (
-          <AssetRenderer
-            showAssetLogo
-            asset={token}
-            assetClassName="font-medium"
-          />
-        ),
-      })),
-    [assetsToRepay],
+      userReservesSummary
+        ? userReservesSummary.borrowedAssets.map(ba => ({
+            value: ba.asset,
+            label: (
+              <AssetRenderer
+                showAssetLogo
+                asset={ba.asset}
+                assetClassName="font-medium"
+                chainId={BOB_CHAIN_ID}
+              />
+            ),
+          }))
+        : [],
+    [userReservesSummary],
   );
+
+  const debt = useMemo(() => {
+    return userReservesSummary?.borrowedAssets.find(
+      a => a.asset === repayAsset,
+    );
+  }, [userReservesSummary, repayAsset]);
+
+  const maximumRepayAmount = useMemo(() => {
+    return debt
+      ? debt.borrowed.gt(repayAssetBalance)
+        ? repayAssetBalance
+        : debt.borrowed
+      : Decimal.from(0);
+  }, [debt, repayAssetBalance]);
+
+  const reserve = useMemo(() => {
+    return reserves.find(r => r.symbol === repayAsset);
+  }, [reserves, repayAsset]);
+
+  const repayUsdAmount = useMemo(() => {
+    return repaySize.mul(reserve?.priceInUSD ?? 0);
+  }, [repaySize, reserve]);
+
+  const newDebtAmount = useMemo(() => {
+    const nd = debt?.borrowed ? debt.borrowed.sub(repaySize) : Decimal.from(0);
+    return nd.gt(0) ? nd : Decimal.from(0);
+  }, [debt, repaySize]);
+
+  const newDebtAmountUSD = useMemo(() => {
+    return newDebtAmount.mul(reserve?.priceInUSD ?? 0);
+  }, [newDebtAmount, reserve]);
+
+  const collateralRatio = useMemo(() => {
+    if (!userReservesSummary) return Decimal.from(0);
+
+    return userReservesSummary.healthFactor.div(
+      userReservesSummary.currentLiquidationThreshold,
+    );
+  }, [userReservesSummary]);
+
+  const newCollateralRatio = useMemo(() => {
+    if (!userReservesSummary) return Decimal.from(0);
+    if (newDebtAmountUSD.eq(0)) return Decimal.from('100000000');
+
+    const newHealthFactor = userReservesSummary.healthFactor
+      .mul(userReservesSummary.borrowBalance)
+      .div(newDebtAmountUSD);
+    return newHealthFactor.div(userReservesSummary.currentLiquidationThreshold);
+  }, [userReservesSummary, newDebtAmountUSD]);
 
   const isValidRepayAmount = useMemo(
     () => (repaySize.gt(0) ? repaySize.lte(maximumRepayAmount) : true),
     [repaySize, maximumRepayAmount],
-  );
-
-  const collateralRatio = useMemo(() => {
-    if ([collateralSize, totalBorrowed, repaySize].some(v => v.isZero())) {
-      return Decimal.from(0);
-    }
-
-    return collateralSize.mul(collateralToLoanRate).div(totalBorrowed).mul(100);
-  }, [collateralSize, totalBorrowed, repaySize, collateralToLoanRate]);
-
-  // TODO: Add validations
-  const submitButtonDisabled = useMemo(
-    () => !isValidRepayAmount || repaySize.lte(0),
-    [isValidRepayAmount, repaySize],
   );
 
   return (
@@ -79,6 +130,7 @@ export const RepayWithWalletBalanceForm: FC<
           onAmountChange={setRepayAmount}
           invalid={!isValidRepayAmount}
           assetValue={repayAsset}
+          assetUsdValue={repayUsdAmount}
           onAssetChange={setRepayAsset}
           assetOptions={repayAssetsOptions}
         />
@@ -92,41 +144,70 @@ export const RepayWithWalletBalanceForm: FC<
         )}
       </div>
 
-      <CollateralRatioHealthBar ratio={collateralRatio} />
+      <CollateralRatioHealthBar ratio={newCollateralRatio} />
 
       <SimpleTable>
         <SimpleTableRow
           label={t(translations.aavePage.repayModal.remainingDebt)}
           value={
-            <AmountTransition
-              className="justify-end"
-              from={{ value: 0.002429, suffix: '%' }}
-              to={{ value: 0, suffix: '%', className: 'text-primary-10' }}
-            />
-          }
-        />
-        <SimpleTableRow
-          label={t(translations.aavePage.repayModal.newCollateralBalance)}
-          value={
             <div className="space-y-1">
               <AmountTransition
                 className="justify-end"
-                from={{ value: 10, suffix: 'USDT' }}
-                to={{ value: 10, suffix: 'USDT' }}
+                from={{
+                  precision: 2,
+                  value: debt?.borrowed ?? Decimal.from(0),
+                  suffix: repayAsset,
+                }}
+                to={{ value: newDebtAmount, suffix: repayAsset, precision: 2 }}
               />
               <AmountTransition
                 className="justify-end text-gray-40"
-                from={{ value: 10, prefix: '$' }}
-                to={{ value: 10, prefix: '$' }}
+                from={{
+                  precision: 2,
+                  value: debt?.borrowedUSD ?? Decimal.from(0),
+                  prefix: '$',
+                }}
+                to={{
+                  precision: 2,
+                  value: newDebtAmountUSD,
+                  prefix: '$',
+                }}
               />
             </div>
+          }
+        />
+        <SimpleTableRow
+          label={t(translations.aavePage.common.collateralRatio)}
+          value={
+            <AmountTransition
+              className="justify-end"
+              from={{
+                value: collateralRatio.mul(100),
+                suffix: '%',
+                precision: 2,
+              }}
+              to={{
+                precision: 2,
+                value: newCollateralRatio.mul(100),
+                suffix: '%',
+                className: 'text-primary-10',
+                infiniteFrom: Decimal.from('10000'),
+              }}
+            />
           }
         />
       </SimpleTable>
 
       <Button
-        disabled={submitButtonDisabled}
+        disabled={!isValidRepayAmount}
         text={t(translations.common.buttons.confirm)}
+        onClick={async () => {
+          handleRepay(
+            repaySize,
+            await getAssetData(repayAsset, BOB_CHAIN_ID),
+            debt!.type,
+          );
+        }}
       />
     </form>
   );

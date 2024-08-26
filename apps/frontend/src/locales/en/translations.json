@@ -24,7 +24,8 @@
             "skip": "Skip",
             "back": "Back",
             "enable": "Enable",
-            "disable": "Disable"
+            "disable": "Disable",
+            "repay": "Repay"
         },
         "na": "N/A",
         "tables": {
@@ -807,13 +808,16 @@
             "lend": "Lend",
             "variable": "Variable",
             "fixed": "Fixed",
-            "withdraw": "Withdraw"
+            "withdraw": "Withdraw",
+            "healthFactor": "Health factor"
         },
         "tx": {
             "supplyTitle": "Deposit {{symbol}} to the pool",
             "supplySubtitle": "Transfers {{amount}} {{symbol}} to the pool",
             "withdrawTitle": "Withdraw {{asset}} from the pool",
             "withdrawSubtitle": "Transfer {{amount}} {{symbol}} from the pool",
+            "repayTitle":"Repay loan",
+            "repaySubtitle": "Repay {{amount}} {{symbol}} to the pool",
             "borrowTitle": "Borrow {{symbol}} from the pool",
             "borrowSubtitle": "Borrows {{amount}} {{symbol}} from the pool",
             "approveBorrowDelegationTitle": "Approve borrow delegation",
@@ -823,7 +827,7 @@
             "title": "Lend and borrow",
             "subtitle": "Borrow and earn interest by providing liquidity",
             "netWorth": "Net worth",
-            "netApy": "Net API",
+            "netApy": "Net APY",
             "netApyInfo": "Net APY is the combined effect of all supply and borrow positions on net worth, including incentives. It is possible to have a negative net APY if debt APY is higher than supply APY.",
             "healthFactor": "Health factor",
             "viewTransactions": "View transactions"

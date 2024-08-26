@@ -10,9 +10,9 @@ type UserSummary = FormatUserSummaryResponse<
   ReserveDataHumanized & FormatReserveUSDResponse
 >;
 
-export enum ApyType {
-  VARIABLE = 'variable',
-  STABLE = 'stable',
+export enum LoanType {
+  STABLE = 1,
+  VARIABLE = 2,
 }
 
 export type SuppliedAsset = {
@@ -28,7 +28,7 @@ export type BorrowedAsset = {
   asset: string;
   assetAddress: string;
   apy: Decimal;
-  apyType: ApyType;
+  type: LoanType;
   borrowed: Decimal;
   borrowedUSD: Decimal;
 };
@@ -40,6 +40,7 @@ export class AaveUserReservesSummary {
   public supplyBalance: Decimal;
   public supplyWeightedApy: Decimal;
   public collateralBalance: Decimal;
+  public currentLiquidationThreshold: Decimal;
   public borrowBalance: Decimal;
   public borrowWeightedApy: Decimal;
   public borrowPower: Decimal;
@@ -75,6 +76,9 @@ export class AaveUserReservesSummary {
     );
 
     // health and borrow status
+    this.currentLiquidationThreshold = Decimal.from(
+      this.userSummary.currentLiquidationThreshold,
+    );
     this.borrowPower = this.computeBorrowPower(
       Decimal.from(this.userSummary.availableBorrowsUSD),
       this.borrowBalance,
@@ -85,7 +89,7 @@ export class AaveUserReservesSummary {
     );
     this.healthFactor = this.computeHealthFactor(
       this.collateralBalance,
-      Decimal.from(this.userSummary.currentLiquidationThreshold),
+      this.currentLiquidationThreshold,
       this.borrowBalance,
     );
 
@@ -229,8 +233,8 @@ export class AaveUserReservesSummary {
         borrowed: Decimal.from(r.totalBorrows),
         borrowedUSD: Decimal.from(r.totalBorrowsUSD),
         apy: Decimal.from(r.reserve.variableBorrowAPY).mul(100),
-        apyType:
-          Number(r.variableBorrows) > 0 ? ApyType.VARIABLE : ApyType.STABLE,
+        type:
+          Number(r.variableBorrows) > 0 ? LoanType.VARIABLE : LoanType.STABLE,
       }));
   }
 }

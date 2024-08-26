@@ -75,7 +75,7 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
   },
   poolIndex: 36000,
   isTestNet: true,
-  chainId: 'C576D', // 808813
+  chainId: '0xc576d', // 808813
   gridSize: 16,
   proxyPaths: {
     cold: 3,
@@ -138,7 +138,7 @@ const LOCAL_FORK_CHAIN: ChainSpec = Object.assign({}, SEPOLIA_CHAIN, {
 
 export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
   '0xed88': BOB_CHAIN,
-  C576D: BOB_TESTNET_CHAIN,
+  '0xc576d': BOB_TESTNET_CHAIN,
   '0x7a69': LOCAL_FORK_CHAIN,
   '0xaa36a7': SEPOLIA_CHAIN,
   '0x1b669': TENDERLY_FORK,

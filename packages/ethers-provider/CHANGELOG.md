@@ -1,5 +1,11 @@
 # @sovryn/ethers-provider
 
+## 1.0.3
+
+### Patch Changes
+
+- ee1cbe42: SOV-4370: Update BOB Testnet chain id
+
 ## 1.0.2
 
 ### Patch Changes

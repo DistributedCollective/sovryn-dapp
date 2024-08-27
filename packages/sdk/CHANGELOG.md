@@ -1,5 +1,14 @@
 # @sovryn/sdk
 
+## 2.0.0
+
+### Patch Changes
+
+- Updated dependencies [f8c2f1e4]
+- Updated dependencies [ee1cbe42]
+  - @sovryn/contracts@1.2.0
+  - @sovryn/ethers-provider@1.0.3
+
 ## 1.0.10
 
 ### Patch Changes

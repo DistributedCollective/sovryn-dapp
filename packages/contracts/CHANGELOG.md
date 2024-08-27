@@ -1,5 +1,16 @@
 # @sovryn/contracts
 
+## 1.2.0
+
+### Minor Changes
+
+- f8c2f1e4: Update BOB Testnet addresses
+
+### Patch Changes
+
+- Updated dependencies [ee1cbe42]
+  - @sovryn/ethers-provider@1.0.3
+
 ## 1.1.8
 
 ### Patch Changes

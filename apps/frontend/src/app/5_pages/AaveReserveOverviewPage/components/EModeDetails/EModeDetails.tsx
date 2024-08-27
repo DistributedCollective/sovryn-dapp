@@ -12,7 +12,6 @@ import { translations } from '../../../../../locales/i18n';
 
 const pageTranslations = translations.aaveReserveOverviewPage.eModeDetails;
 
-
 export const EModeDetails: FC = () => {
   const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();
@@ -41,10 +40,12 @@ export const EModeDetails: FC = () => {
           <Paragraph className="text-sm font-medium">
             {t(pageTranslations.category)}
           </Paragraph>
-          <Paragraph className="text-sm font-medium flex items-center">
+          <div className="flex items-center">
             <Icon size={16} className="mr-2 text-primary-30" icon={EModeIcon} />
-            {t(pageTranslations.ethCorrelatedCategory)}
-          </Paragraph>
+            <Paragraph className="text-sm font-medium">
+              {t(pageTranslations.ethCorrelatedCategory)}
+            </Paragraph>
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-5">

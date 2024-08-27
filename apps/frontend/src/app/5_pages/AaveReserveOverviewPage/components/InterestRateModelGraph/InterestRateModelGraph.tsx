@@ -15,8 +15,6 @@ import { MockData } from './components/Chart/Chart.types';
 
 const pageTranslations = translations.aaveReserveOverviewPage.interestRateModel;
 
-type InterestRateModelGraphProps = {};
-
 export const InterestRateModelGraph: FC = () => {
   const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();

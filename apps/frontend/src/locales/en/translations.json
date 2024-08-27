@@ -822,7 +822,8 @@
         "borrowPositionsList": {
             "title": "Your loans",
             "repay": "Repay",
-            "borrowPowerUsed": "Borrow power used"
+            "borrowPowerUsed": "Borrow power used",
+            "eMode": "E-Mode"
         },
         "borrowAssetsList": {
             "title": "Assets to borrow",
@@ -856,6 +857,7 @@
         },
         "borrowForm": {
             "borrowApr": "Borrow APR",
+            "learnMore":"Learn more",
             "collateralRatio": "Collateral ratio",
             "liquidationPrice": "Liquidation price",
             "acknowledge": "I understand that my collateral may be liquidated or used to pay rollover fees if applicable.",

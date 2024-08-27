@@ -44,6 +44,7 @@ export const SupplyDetailsGraph: FC = () => {
       onClick={setOpen}
       flatMode={!isMobile}
       dataAttribute="supply-details"
+      dataAttribute="supply-details"
     >
       <div className="space-y-8 pt-2">
         <div className="flex gap-8">

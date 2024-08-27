@@ -20,7 +20,7 @@ import { translations } from '../../../../../../../locales/i18n';
 const pageTranslations = translations.aavePage;
 
 type LendFormProps = {
-  onSuccess: () => unknown;
+  onSuccess: () => void;
 };
 
 export const LendForm: FC<LendFormProps> = () => {

@@ -15,7 +15,6 @@ import { MockData } from './components/Chart/Chart.types';
 
 const pageTranslations = translations.aaveReserveOverviewPage.supplyDetails;
 
-type SupplyDetailsGraphProps = {};
 
 export const SupplyDetailsGraph: FC = () => {
   const [open, setOpen] = useState<boolean>(true);

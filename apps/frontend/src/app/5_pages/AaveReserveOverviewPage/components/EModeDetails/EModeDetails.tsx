@@ -35,6 +35,7 @@ export const EModeDetails: FC<EModeDetailsProps> = () => {
       open={open || !isMobile}
       onClick={setOpen}
       flatMode={!isMobile}
+      dataAttribute="e-mode"
     >
       <div className="space-y-6">
         <div className="flex justify-between items-center max-w-[260px]">

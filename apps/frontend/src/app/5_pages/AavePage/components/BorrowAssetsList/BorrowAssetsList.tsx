@@ -12,14 +12,20 @@ import { BorrowAssetDetails } from './components/BorrowAssetDetails/BorrowAssetD
 
 const pageTranslations = translations.aavePage.borrowAssetsList;
 
-type BorrowAssetsListProps = {};
 
-export const BorrowAssetsList: FC<BorrowAssetsListProps> = () => {
-  const [open, setOpen] = useState<boolean>(true);
+export const BorrowAssetsList: FC = () => {
+  const [open, setOpen] = useState(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
 
   const rowTitleRenderer = useCallback(
-    r => <AaveRowTitle asset={r.asset} value={r.apr} suffix="%" label="APY" />,
+    row => (
+      <AaveRowTitle
+        asset={row.asset}
+        value={row.apr}
+        suffix="%"
+        label={t(translations.aavePage.common.apy)}
+      />
+    ),
     [],
   );
   const mobileRenderer = useCallback(p => <BorrowAssetDetails pool={p} />, []);

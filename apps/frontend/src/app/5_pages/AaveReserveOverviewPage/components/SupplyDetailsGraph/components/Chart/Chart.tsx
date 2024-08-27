@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useCallback, useEffect, useRef } from 'react';
 
 import ChartLibrary from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
@@ -105,13 +105,15 @@ export const Chart: FC<ChartProps> = ({ mockData }) => {
     };
   }, [mockData]);
 
+  const stopPropagation = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      e.stopPropagation();
+    },
+    [],
+  );
+
   return (
-    <div
-      onClick={e => {
-        e.stopPropagation();
-      }}
-      className="lg:p-6 lg:bg-gray-80"
-    >
+    <div onClick={stopPropagation} className="lg:p-6 lg:bg-gray-80">
       <span id="legend-container-supply-chart" className="text-tiny"></span>
       <canvas ref={canvas}></canvas>
     </div>

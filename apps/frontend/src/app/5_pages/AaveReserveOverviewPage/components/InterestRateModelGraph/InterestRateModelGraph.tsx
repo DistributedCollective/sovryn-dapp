@@ -15,7 +15,6 @@ import { MockData } from './components/Chart/Chart.types';
 
 const pageTranslations = translations.aaveReserveOverviewPage.interestRateModel;
 
-
 export const InterestRateModelGraph: FC = () => {
   const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();
@@ -47,7 +46,6 @@ export const InterestRateModelGraph: FC = () => {
       open={open || !isMobile}
       onClick={setOpen}
       flatMode={!isMobile}
-      dataAttribute="interest-rate-model"
       dataAttribute="interest-rate-model"
     >
       <div className="space-y-8 pt-2">

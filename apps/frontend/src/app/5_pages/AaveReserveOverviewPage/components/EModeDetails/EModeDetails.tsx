@@ -12,10 +12,9 @@ import { translations } from '../../../../../locales/i18n';
 
 const pageTranslations = translations.aaveReserveOverviewPage.eModeDetails;
 
-type EModeDetailsProps = {};
 
-export const EModeDetails: FC<EModeDetailsProps> = () => {
-  const [open, setOpen] = useState<boolean>(true);
+export const EModeDetails: FC = () => {
+  const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();
 
   // TODO: All this data is mocked

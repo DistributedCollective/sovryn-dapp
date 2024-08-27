@@ -18,7 +18,7 @@ import { RepayWithWalletBalanceForm } from './RepayWithWalletBalanceForm';
 
 type RepayModalContainerProps = {
   isOpen: boolean;
-  handleCloseModal: () => unknown;
+  handleCloseModal: () => void;
 };
 
 enum RepayWith {

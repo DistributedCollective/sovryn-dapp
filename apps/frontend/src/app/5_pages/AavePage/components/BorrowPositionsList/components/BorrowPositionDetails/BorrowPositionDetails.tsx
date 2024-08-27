@@ -16,40 +16,35 @@ type BorrowPositionDetailsProps = {
 
 export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
   position,
-}) => {
-  return (
-    <div className="space-y-3">
-      <div>
-        {/* Balance */}
-        <SimpleTableRow
-          label={t(translations.aavePage.common.balance)}
-          value={
-            <AssetAmountPriceRenderer
-              value={position.balance}
-              asset={position.asset}
-            />
-          }
-        />
+}) => (
+  <div className="space-y-3">
+    <div>
+      <SimpleTableRow
+        label={t(translations.aavePage.common.balance)}
+        value={
+          <AssetAmountPriceRenderer
+            value={position.balance}
+            asset={position.asset}
+          />
+        }
+      />
 
-        {/* APR */}
-        <SimpleTableRow
-          label={
-            <span className="text-xs font-medium text-gray-30 flex items-center gap-1">
-              {t(translations.aavePage.common.apr)}
-              <HelperButton content={t(translations.aavePage.common.aprInfo)} />
-            </span>
-          }
-          value={<AmountRenderer value={position.apr} suffix="%" />}
-        />
+      <SimpleTableRow
+        label={
+          <span className="text-xs font-medium text-gray-30 flex items-center gap-1">
+            {t(translations.aavePage.common.apr)}
+            <HelperButton content={t(translations.aavePage.common.aprInfo)} />
+          </span>
+        }
+        value={<AmountRenderer value={position.apr} suffix="%" />}
+      />
 
-        {/* Apy type */}
-        <SimpleTableRow
-          label={t(translations.aavePage.common.apyType)}
-          value={t(translations.aavePage.common[position.apyType])}
-        />
-      </div>
-
-      <BorrowPositionAction position={position} />
+      <SimpleTableRow
+        label={t(translations.aavePage.common.apyType)}
+        value={t(translations.aavePage.common[position.apyType])}
+      />
     </div>
-  );
-};
+
+    <BorrowPositionAction position={position} />
+  </div>
+);

@@ -5,15 +5,11 @@ import { t } from 'i18next';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { BorrowPosition } from '../../BorrowPositionsList.types';
 import { RepayModalContainer } from '../RepayModal/RepayModalContainer';
 
-type BorrowPositionActionProps = {
-  position: BorrowPosition;
-};
 
-export const BorrowPositionAction: FC<BorrowPositionActionProps> = () => {
-  const [isRepayModalOpen, setIsRepayModalOpen] = useState<boolean>(false);
+export const BorrowPositionAction: FC = () => {
+  const [isRepayModalOpen, setIsRepayModalOpen] = useState(false);
 
   const handleRepayClick = useCallback(() => {
     setIsRepayModalOpen(true);

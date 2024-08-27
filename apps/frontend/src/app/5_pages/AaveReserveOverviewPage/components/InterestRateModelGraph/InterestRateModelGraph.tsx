@@ -17,8 +17,8 @@ const pageTranslations = translations.aaveReserveOverviewPage.interestRateModel;
 
 type InterestRateModelGraphProps = {};
 
-export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = () => {
-  const [open, setOpen] = useState<boolean>(true);
+export const InterestRateModelGraph: FC = () => {
+  const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();
 
   // TODO: mocked amounts
@@ -48,6 +48,7 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = () => {
       open={open || !isMobile}
       onClick={setOpen}
       flatMode={!isMobile}
+      dataAttribute="interest-rate-model"
     >
       <div className="space-y-8 pt-2">
         <div className="flex justify-between items-end">

@@ -6,24 +6,20 @@ import { useNavigate } from 'react-router-dom';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { LendPoolDetails } from '../../LendAssetsList.types';
 import { LendModalContainer } from '../LendModal/LendModalContainer';
 
-type LendAssetActionProps = {
-  pool: LendPoolDetails;
-};
 
-export const LendAssetAction: FC<LendAssetActionProps> = () => {
+export const LendAssetAction: FC = () => {
   const navigate = useNavigate();
-  const [isLendModalOpen, setIsLendModalOpen] = useState<boolean>(false);
+  const [isLendModalOpen, setIsLendModalOpen] = useState(false);
 
-  const handleLendClick = () => {
+  const handleLendClick = useCallback(() => {
     setIsLendModalOpen(true);
-  };
+  }, []);
 
-  const handleLendClose = () => {
+  const handleLendClose = useCallback(() => {
     setIsLendModalOpen(false);
-  };
+  }, []);
 
   return (
     <div className="flex items-center justify-center lg:justify-end space-x-2">

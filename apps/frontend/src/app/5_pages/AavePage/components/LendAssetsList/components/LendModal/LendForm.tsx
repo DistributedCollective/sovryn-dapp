@@ -82,7 +82,7 @@ export const LendForm: FC<LendFormProps> = () => {
       <SimpleTable>
         <SimpleTableRow
           label={t(translations.aavePage.lendModal.lendApy)}
-          value={<AmountRenderer value={lendApy} suffix={'%'} />}
+          value={<AmountRenderer value={lendApy} suffix="%" />}
         />
         <SimpleTableRow
           label={t(translations.aavePage.lendModal.collateralization)}

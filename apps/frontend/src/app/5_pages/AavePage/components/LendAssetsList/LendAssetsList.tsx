@@ -12,16 +12,22 @@ import { LendAssetDetails } from './components/LendAssetDetails/LendAssetDetails
 
 const pageTranslations = translations.aavePage;
 
-type LendAssetsListProps = {};
 
-export const LendAssetsList: FC<LendAssetsListProps> = () => {
-  const [open, setOpen] = useState<boolean>(true);
-  const [showZeroBalances, setShowZeroBalances] = useState<boolean>(true);
+export const LendAssetsList: FC = () => {
+  const [open, setOpen] = useState(true);
+  const [showZeroBalances, setShowZeroBalances] = useState(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
 
   const mobileRenderer = useCallback(p => <LendAssetDetails pool={p} />, []);
   const rowTitleRenderer = useCallback(
-    r => <AaveRowTitle asset={r.asset} value={r.apy} suffix="%" label="APY" />,
+    row => (
+      <AaveRowTitle
+        asset={row.asset}
+        value={row.apy}
+        suffix="%"
+        label={t(translations.aavePage.common.apy)}
+      />
+    ),
     [],
   );
 

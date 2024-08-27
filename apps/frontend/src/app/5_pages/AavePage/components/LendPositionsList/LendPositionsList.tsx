@@ -24,7 +24,7 @@ type LendPositionsListProps = {};
 
 export const LendPositionsList: FC<LendPositionsListProps> = () => {
   const { account } = useAccount();
-  const [open, setOpen] = useState<boolean>(true);
+  const [open, setOpen] = useState(true);
   const [balance] = useState(100); // TODO: mocked data
   const [apy] = useState(2.3); // TODO: mocked data
   const [collateral] = useState(3); // TODO: mocked data

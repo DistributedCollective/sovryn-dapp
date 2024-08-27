@@ -15,16 +15,14 @@ type WithdrawModalContainerProps = {
 export const WithdrawModalContainer: FC<WithdrawModalContainerProps> = ({
   isOpen,
   handleCloseModal,
-}) => {
-  return (
-    <Dialog disableFocusTrap isOpen={isOpen}>
-      <DialogHeader
-        title={t(translations.aavePage.common.withdraw)}
-        onClose={handleCloseModal}
-      />
-      <DialogBody className="flex flex-col gap-6">
-        <WithdrawForm onSuccess={handleCloseModal} />
-      </DialogBody>
-    </Dialog>
-  );
-};
+}) => (
+  <Dialog disableFocusTrap isOpen={isOpen}>
+    <DialogHeader
+      title={t(translations.aavePage.common.withdraw)}
+      onClose={handleCloseModal}
+    />
+    <DialogBody className="flex flex-col gap-6">
+      <WithdrawForm onSuccess={handleCloseModal} />
+    </DialogBody>
+  </Dialog>
+);

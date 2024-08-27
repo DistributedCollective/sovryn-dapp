@@ -9,22 +9,20 @@ import { BorrowForm } from './BorrowForm';
 
 type BorrowModalContainerProps = {
   isOpen: boolean;
-  handleCloseModal: () => unknown;
+  handleCloseModal: () => void;
 };
 
 export const BorrowModalContainer: FC<BorrowModalContainerProps> = ({
   isOpen,
   handleCloseModal,
-}) => {
-  return (
-    <Dialog disableFocusTrap isOpen={isOpen}>
-      <DialogHeader
-        title={t(translations.aavePage.common.borrow)}
-        onClose={handleCloseModal}
-      />
-      <DialogBody className="flex flex-col gap-6">
-        <BorrowForm onSuccess={handleCloseModal} />
-      </DialogBody>
-    </Dialog>
-  );
-};
+}) => (
+  <Dialog disableFocusTrap isOpen={isOpen}>
+    <DialogHeader
+      title={t(translations.aavePage.common.borrow)}
+      onClose={handleCloseModal}
+    />
+    <DialogBody className="flex flex-col gap-6">
+      <BorrowForm onSuccess={handleCloseModal} />
+    </DialogBody>
+  </Dialog>
+);

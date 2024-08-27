@@ -17,7 +17,7 @@ const pageTranslations = translations.aaveReserveOverviewPage.supplyDetails;
 
 
 export const SupplyDetailsGraph: FC = () => {
-  const [open, setOpen] = useState<boolean>(true);
+  const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();
   // TODO: mocked amounts
   const mockData: MockData<{ x: string; y: number }> = useMemo(() => {
@@ -43,6 +43,7 @@ export const SupplyDetailsGraph: FC = () => {
       open={open || !isMobile}
       onClick={setOpen}
       flatMode={!isMobile}
+      dataAttribute="supply-details"
     >
       <div className="space-y-8 pt-2">
         <div className="flex gap-8">

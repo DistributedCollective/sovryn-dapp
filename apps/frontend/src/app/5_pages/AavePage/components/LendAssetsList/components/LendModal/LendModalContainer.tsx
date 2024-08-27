@@ -9,22 +9,20 @@ import { LendForm } from './LendForm';
 
 type LendModalContainerProps = {
   isOpen: boolean;
-  handleCloseModal: () => unknown;
+  handleCloseModal: () => void;
 };
 
 export const LendModalContainer: FC<LendModalContainerProps> = ({
   isOpen,
   handleCloseModal,
-}) => {
-  return (
-    <Dialog disableFocusTrap isOpen={isOpen}>
-      <DialogHeader
-        title={t(translations.aavePage.lendModal.title)}
-        onClose={handleCloseModal}
-      />
-      <DialogBody className="flex flex-col gap-6">
-        <LendForm onSuccess={handleCloseModal} />
-      </DialogBody>
-    </Dialog>
-  );
-};
+}) => (
+  <Dialog disableFocusTrap isOpen={isOpen}>
+    <DialogHeader
+      title={t(translations.aavePage.lendModal.title)}
+      onClose={handleCloseModal}
+    />
+    <DialogBody className="flex flex-col gap-6">
+      <LendForm onSuccess={handleCloseModal} />
+    </DialogBody>
+  </Dialog>
+);

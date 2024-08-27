@@ -10,12 +10,10 @@ type ToggleCollateralActionProps = {
 
 export const ToggleCollateralAction: FC<ToggleCollateralActionProps> = ({
   position,
-}) => {
-  return (
-    <Toggle
-      className="[&_*]:ml-0"
-      checked={position.collateral}
-      onChange={() => 'TODO: implement'}
-    />
-  );
-};
+}) => (
+  <Toggle
+    className="[&_*]:ml-0"
+    checked={position.collateral}
+    onChange={() => 'TODO: implement'}
+  />
+);

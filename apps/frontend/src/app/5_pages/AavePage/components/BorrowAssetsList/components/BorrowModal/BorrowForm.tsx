@@ -24,7 +24,7 @@ import { getCollateralRatioThresholds } from './BorrowForm.utils';
 const pageTranslations = translations.aavePage;
 
 type BorrowFormProps = {
-  onSuccess: () => unknown;
+  onSuccess: () => void;
 };
 
 export const BorrowForm: FC<BorrowFormProps> = () => {
@@ -139,7 +139,7 @@ export const BorrowForm: FC<BorrowFormProps> = () => {
           label={t(translations.aavePage.borrowForm.tokenPrice, {
             token: borrowAsset,
           })}
-          value={<AmountRenderer value={assetPrice} prefix={'$'} />}
+          value={<AmountRenderer value={assetPrice} prefix="$" />}
         />
       </SimpleTable>
 

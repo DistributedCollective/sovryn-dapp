@@ -16,34 +16,29 @@ type BorrowAssetDetailsProps = {
   pool: BorrowPoolDetails;
 };
 
-export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => {
-  return (
-    <div className="space-y-3">
-      <div>
-        {/* APR */}
-        <SimpleTableRow
-          label={
-            <span className="text-xs font-medium text-gray-30 items-center flex gap-1">
-              {t(pageTranslations.common.apr)}{' '}
-              <HelperButton content={t(pageTranslations.common.aprInfo)} />
-            </span>
-          }
-          value={<AmountRenderer value={pool.apr} suffix={'%'} />}
-        />
+export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => (
+  <div className="space-y-3">
+    <div>
+      {/* APR */}
+      <SimpleTableRow
+        label={
+          <span className="text-xs font-medium text-gray-30 items-center flex gap-1">
+            {t(pageTranslations.common.apr)}{' '}
+            <HelperButton content={t(pageTranslations.common.aprInfo)} />
+          </span>
+        }
+        value={<AmountRenderer value={pool.apr} suffix="%" />}
+      />
 
-        {/* Available */}
-        <SimpleTableRow
-          label={t(pageTranslations.borrowAssetsList.available)}
-          value={
-            <AssetAmountPriceRenderer
-              value={pool.available}
-              asset={pool.asset}
-            />
-          }
-        />
-      </div>
-
-      <BorrowAssetAction pool={pool} />
+      {/* Available */}
+      <SimpleTableRow
+        label={t(pageTranslations.borrowAssetsList.available)}
+        value={
+          <AssetAmountPriceRenderer value={pool.available} asset={pool.asset} />
+        }
+      />
     </div>
-  );
-};
+
+    <BorrowAssetAction />
+  </div>
+);

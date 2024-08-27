@@ -15,9 +15,7 @@ import { EfficiencyModeCard } from './components/EfficiencyModeCard/EfficiencyMo
 
 const pageTranslations = translations.aavePage;
 
-type BorrowPositionsListProps = {};
-
-export const BorrowPositionsList: FC<BorrowPositionsListProps> = () => {
+export const BorrowPositionsList: FC = () => {
   const { account } = useAccount();
   const [open, setOpen] = useState<boolean>(true);
   const [balance] = useState(123.45); // TODO: mock

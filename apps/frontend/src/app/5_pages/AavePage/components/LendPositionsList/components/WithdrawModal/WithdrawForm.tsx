@@ -22,7 +22,7 @@ import { translations } from '../../../../../../../locales/i18n';
 const pageTranslations = translations.aavePage;
 
 type WithdrawFormProps = {
-  onSuccess: () => unknown;
+  onSuccess: () => void;
 };
 
 export const WithdrawForm: FC<WithdrawFormProps> = () => {

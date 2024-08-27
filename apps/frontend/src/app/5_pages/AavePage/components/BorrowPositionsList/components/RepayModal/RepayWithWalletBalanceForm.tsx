@@ -21,7 +21,7 @@ import { CollateralRatioHealthBar } from '../../../CollateralRatioHealthBar/Coll
 const pageTranslations = translations.aavePage;
 
 type RepayWithWalletBalanceFormProps = {
-  onSuccess: () => unknown;
+  onSuccess: () => void;
 };
 
 export const RepayWithWalletBalanceForm: FC<

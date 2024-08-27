@@ -17,7 +17,7 @@ const pageTranslations = translations.aaveReserveOverviewPage.supplyDetails;
 
 type SupplyDetailsGraphProps = {};
 
-export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = () => {
+export const SupplyDetailsGraph: FC = () => {
   const [open, setOpen] = useState<boolean>(true);
   const { isMobile } = useIsMobile();
   // TODO: mocked amounts

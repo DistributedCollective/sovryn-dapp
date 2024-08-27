@@ -29,7 +29,7 @@ export const AssetAmountPriceRenderer: FC<AssetAmountPriceRendererProps> = ({
       <AmountRenderer value={value} suffix={asset} className={valueClassName} />
       <AmountRenderer
         value={usdPrice}
-        prefix={'$'}
+        prefix="$"
         className={classNames(
           'text-gray-40 text-xs font-medium',
           priceClassName,

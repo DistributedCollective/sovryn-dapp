@@ -58,7 +58,9 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
         <div className="text-base font-medium text-left lg:flex lg:items-center lg:gap-8">
           <span>{t(pageTranslations.borrowPositionsList.title)}</span>
           <div className="hidden lg:flex gap-3">
-            <span className="text-gray-30 font-medium text-sm">E-Mode</span>
+            <span className="text-gray-30 font-medium text-sm">
+              {pageTranslations.borrowPositionsList.eMode}
+            </span>
             <EfficiencyModeCard enabled={eModeEnabled} />
           </div>
         </div>

@@ -12,10 +12,8 @@ import { translations } from '../../../../../locales/i18n';
 
 const pageTranslations = translations.aaveReserveOverviewPage.eModeDetails;
 
-type EModeDetailsProps = {};
-
-export const EModeDetails: FC<EModeDetailsProps> = () => {
-  const [open, setOpen] = useState<boolean>(true);
+export const EModeDetails: FC = () => {
+  const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();
 
   // TODO: All this data is mocked
@@ -35,16 +33,19 @@ export const EModeDetails: FC<EModeDetailsProps> = () => {
       open={open || !isMobile}
       onClick={setOpen}
       flatMode={!isMobile}
+      dataAttribute="e-mode"
     >
       <div className="space-y-6">
         <div className="flex justify-between items-center max-w-[260px]">
           <Paragraph className="text-sm font-medium">
             {t(pageTranslations.category)}
           </Paragraph>
-          <Paragraph className="text-sm font-medium flex items-center">
+          <div className="flex items-center">
             <Icon size={16} className="mr-2 text-primary-30" icon={EModeIcon} />
-            {t(pageTranslations.ethCorrelatedCategory)}
-          </Paragraph>
+            <Paragraph className="text-sm font-medium">
+              {t(pageTranslations.ethCorrelatedCategory)}
+            </Paragraph>
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-5">

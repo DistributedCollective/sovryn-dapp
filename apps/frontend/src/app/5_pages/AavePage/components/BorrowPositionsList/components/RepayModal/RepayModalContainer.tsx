@@ -19,7 +19,7 @@ import { RepayWithWalletBalanceForm } from './RepayWithWalletBalanceForm';
 type RepayModalContainerProps = {
   asset: string;
   isOpen: boolean;
-  handleCloseModal: () => unknown;
+  handleCloseModal: () => void;
 };
 
 enum RepayWith {

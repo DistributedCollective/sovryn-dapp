@@ -835,12 +835,15 @@
             "netApy": "Net APY",
             "netApyInfo": "Net APY is the combined effect of all supply and borrow positions on net worth, including incentives. It is possible to have a negative net APY if debt APY is higher than supply APY.",
             "healthFactor": "Health factor",
+            "collateralRatio": "Collateral ratio",
+            "collateralRatioInfo": "The collateral ratio defines the maximum amount of assets that can be borrowed with a specific collateral",
             "viewTransactions": "View transactions"
         },
         "borrowPositionsList": {
             "title": "Your loans",
             "repay": "Repay",
-            "borrowPowerUsed": "Borrow power used"
+            "borrowPowerUsed": "Borrow power used",
+            "eMode": "E-Mode"
         },
         "borrowAssetsList": {
             "title": "Assets to borrow",
@@ -874,6 +877,7 @@
         },
         "borrowForm": {
             "borrowApr": "Borrow APR",
+            "learnMore":"Learn more",
             "collateralRatio": "Collateral ratio",
             "liquidationPrice": "Liquidation price",
             "acknowledge": "I understand that my collateral may be liquidated or used to pay rollover fees if applicable.",

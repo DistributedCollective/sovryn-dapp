@@ -26,19 +26,19 @@ export const SupplyAction: FC<SupplyActionProps> = ({ asset }) => {
   return (
     <div className="flex justify-between items-center">
       <div>
-        <Paragraph
-          size={ParagraphSize.small}
-          className="text-gray-30 flex items-center gap-1"
-        >
-          {t(pageTranslations.yourWalletTab.availableToSupply)}{' '}
+        <div className="flex items-center gap-1">
+          <Paragraph size={ParagraphSize.small} className="text-gray-30">
+            {t(pageTranslations.yourWalletTab.availableToSupply)}{' '}
+          </Paragraph>
           <HelperButton
             content={t(pageTranslations.yourWalletTab.availableToSupplyInfo)}
           />
-        </Paragraph>
+        </div>
         <AssetAmountPriceRenderer
           value={availableToSupply}
           valueUSD={availableToSupplyUSD}
           asset={asset}
+          className="text-left flex flex-col"
           valueClassName="font-medium"
         />
       </div>

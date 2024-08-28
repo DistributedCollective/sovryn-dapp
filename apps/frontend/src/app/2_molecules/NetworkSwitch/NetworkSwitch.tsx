@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from 'react';
+import React, { FC, ReactElement, useMemo } from 'react';
 
 import { ChainId } from '@sovryn/ethers-provider';
 
@@ -12,13 +12,13 @@ type NetworkSwitchProps = {
 export const NetworkSwitch: FC<NetworkSwitchProps> = ({ components }) => {
   const { currentChainId } = useChainStore();
 
-  const componentToRender = React.useMemo(() => {
-    return (
+  const componentToRender = useMemo(
+    () =>
       components[currentChainId] || (
         <NetworkBanner requiredChainId={Object.keys(components)[0]} />
-      )
-    );
-  }, [currentChainId, components]);
+      ),
+    [currentChainId, components],
+  );
 
   return componentToRender;
 };

@@ -32,7 +32,7 @@ const pageTranslations = translations.aavePage;
 
 type BorrowFormProps = {
   asset: string;
-  onSuccess: () => unknown;
+  onSuccess: () => void;
 };
 
 export const BorrowForm: FC<BorrowFormProps> = ({ asset }) => {
@@ -169,7 +169,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset }) => {
             <AmountRenderer
               value={reserve?.priceInUSD ?? 0}
               precision={2}
-              prefix={'$'}
+              prefix="$"
             />
           }
         />
@@ -181,7 +181,10 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset }) => {
         label={
           <span>
             {t(translations.aavePage.borrowForm.acknowledge)}{' '}
-            <Link text="Learn more" href="#learn-more" />
+            <Link
+              text={translations.aavePage.borrowForm.learnMore}
+              href="#learn-more"
+            />
             {/* TODO: Add proper learn more href */}
           </span>
         }

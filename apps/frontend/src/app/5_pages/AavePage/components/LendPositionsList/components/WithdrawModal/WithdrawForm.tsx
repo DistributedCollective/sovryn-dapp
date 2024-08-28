@@ -29,7 +29,7 @@ const pageTranslations = translations.aavePage;
 
 type WithdrawFormProps = {
   asset: string;
-  onSuccess: () => unknown;
+  onSuccess: () => void;
 };
 
 export const WithdrawForm: FC<WithdrawFormProps> = ({ asset }) => {

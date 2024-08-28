@@ -109,7 +109,7 @@ const AavePage: FC = () => {
               label: t(pageTranslations.common.borrow),
             },
           ]}
-          onChange={e => setActiveTab(e)}
+          onChange={setActiveTab}
           size={TabSize.normal}
           type={TabType.secondary}
         />

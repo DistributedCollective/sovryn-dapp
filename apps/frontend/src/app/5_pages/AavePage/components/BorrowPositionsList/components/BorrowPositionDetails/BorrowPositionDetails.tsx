@@ -17,47 +17,43 @@ type BorrowPositionDetailsProps = {
 
 export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
   position,
-}) => {
-  return (
-    <div className="space-y-3">
-      <div>
-        {/* Balance */}
-        <SimpleTableRow
-          label={t(translations.aavePage.common.balance)}
-          value={
-            <AssetAmountPriceRenderer
-              asset={position.asset}
-              value={position.borrowed}
-              valueUSD={position.borrowedUSD}
-            />
-          }
-        />
+}) => (
+  <div className="space-y-3">
+    <div>
+      {/* Balance */}
+      <SimpleTableRow
+        label={t(translations.aavePage.common.balance)}
+        value={
+          <AssetAmountPriceRenderer
+            asset={position.asset}
+            value={position.borrowed}
+            valueUSD={position.borrowedUSD}
+          />
+        }
+      />
 
-        {/* APR */}
-        <SimpleTableRow
-          label={
-            <span className="text-xs font-medium text-gray-30 flex items-center gap-1">
-              {t(translations.aavePage.common.apr)}
-              <HelperButton content={t(translations.aavePage.common.aprInfo)} />
-            </span>
-          }
-          value={
-            <AmountRenderer value={position.apy} suffix="%" precision={2} />
-          }
-        />
+      {/* APR */}
+      <SimpleTableRow
+        label={
+          <span className="text-xs font-medium text-gray-30 flex items-center gap-1">
+            {t(translations.aavePage.common.apr)}
+            <HelperButton content={t(translations.aavePage.common.aprInfo)} />
+          </span>
+        }
+        value={<AmountRenderer value={position.apy} suffix="%" precision={2} />}
+      />
 
-        {/* Apy type */}
-        <SimpleTableRow
-          label={t(translations.aavePage.common.apyType)}
-          value={t(
-            translations.aavePage.common[
-              position.type === LoanType.STABLE ? 'stable' : 'variable'
-            ],
-          )}
-        />
-      </div>
-
-      <BorrowPositionAction position={position} />
+      {/* Apy type */}
+      <SimpleTableRow
+        label={t(translations.aavePage.common.apyType)}
+        value={t(
+          translations.aavePage.common[
+            position.type === LoanType.STABLE ? 'stable' : 'variable'
+          ],
+        )}
+      />
     </div>
-  );
-};
+
+    <BorrowPositionAction position={position} />
+  </div>
+);

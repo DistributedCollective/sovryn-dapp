@@ -15,10 +15,8 @@ import { MockData } from './components/Chart/Chart.types';
 
 const pageTranslations = translations.aaveReserveOverviewPage.borrowDetails;
 
-type BorrowDetailsGraphProps = {};
-
-export const BorrowDetailsGraph: FC<BorrowDetailsGraphProps> = () => {
-  const [open, setOpen] = useState<boolean>(true);
+export const BorrowDetailsGraph: FC = () => {
+  const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();
 
   // TODO: mocked amounts

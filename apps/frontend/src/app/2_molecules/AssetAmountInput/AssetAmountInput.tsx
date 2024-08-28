@@ -15,11 +15,11 @@ type AssetAmountInputProps = {
   invalid?: boolean;
   amountLabel?: string;
   amountValue?: string | number;
-  onAmountChange?: (value: string) => unknown;
+  onAmountChange?: (value: string) => void;
   assetValue: string;
   assetUsdValue?: Decimalish;
   assetOptions: SelectOption<string>[];
-  onAssetChange: (asset: string) => unknown;
+  onAssetChange: (asset: string) => void;
 };
 
 export const AssetAmountInput: FC<AssetAmountInputProps> = ({

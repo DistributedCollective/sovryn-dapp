@@ -28,7 +28,7 @@ const pageTranslations = translations.aavePage;
 
 type LendFormProps = {
   asset: string;
-  onSuccess: () => unknown;
+  onSuccess: () => void;
 };
 
 export const LendForm: FC<LendFormProps> = ({
@@ -111,7 +111,7 @@ export const LendForm: FC<LendFormProps> = ({
           value={
             <AmountRenderer
               value={Decimal.from(reserve?.supplyAPY ?? 0).mul(100)}
-              suffix={'%'}
+              suffix="%"
               precision={2}
             />
           }

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
@@ -17,15 +17,15 @@ type BorrowAssetActionProps = {
 
 export const BorrowAssetAction: FC<BorrowAssetActionProps> = ({ pool }) => {
   const navigate = useNavigate();
-  const [isBorrowModalOpen, setIsBorrowModalOpen] = useState<boolean>(false);
+  const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false);
 
-  const handleBorrowClick = () => {
+  const handleBorrowClick = useCallback(() => {
     setIsBorrowModalOpen(true);
-  };
+  }, []);
 
-  const handleBorrowClose = () => {
+  const handleBorrowClose = useCallback(() => {
     setIsBorrowModalOpen(false);
-  };
+  }, []);
 
   return (
     <div className="flex items-center justify-center lg:justify-end space-x-2">

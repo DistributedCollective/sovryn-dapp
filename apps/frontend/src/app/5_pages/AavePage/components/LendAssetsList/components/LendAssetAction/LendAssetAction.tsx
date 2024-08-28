@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
@@ -15,15 +15,15 @@ type LendAssetActionProps = {
 
 export const LendAssetAction: FC<LendAssetActionProps> = ({ pool }) => {
   const navigate = useNavigate();
-  const [isLendModalOpen, setIsLendModalOpen] = useState<boolean>(false);
+  const [isLendModalOpen, setIsLendModalOpen] = useState(false);
 
-  const handleLendClick = () => {
+  const handleLendClick = useCallback(() => {
     setIsLendModalOpen(true);
-  };
+  }, []);
 
-  const handleLendClose = () => {
+  const handleLendClose = useCallback(() => {
     setIsLendModalOpen(false);
-  };
+  }, []);
 
   return (
     <div className="flex items-center justify-center lg:justify-end space-x-2">

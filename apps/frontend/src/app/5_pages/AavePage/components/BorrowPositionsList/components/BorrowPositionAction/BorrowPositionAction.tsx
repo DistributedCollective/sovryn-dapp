@@ -15,7 +15,7 @@ type BorrowPositionActionProps = {
 export const BorrowPositionAction: FC<BorrowPositionActionProps> = ({
   position,
 }) => {
-  const [isRepayModalOpen, setIsRepayModalOpen] = useState<boolean>(false);
+  const [isRepayModalOpen, setIsRepayModalOpen] = useState(false);
 
   const handleRepayClick = useCallback(() => {
     setIsRepayModalOpen(true);

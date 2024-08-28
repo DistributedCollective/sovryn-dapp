@@ -16,39 +16,37 @@ type BorrowAssetDetailsProps = {
   pool: BorrowPoolDetails;
 };
 
-export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => {
-  return (
-    <div className="space-y-3">
-      <div>
-        {/* APY */}
-        <SimpleTableRow
-          label={
-            <span className="text-xs font-medium text-gray-30 items-center flex gap-1">
-              {t(pageTranslations.common.apy)}{' '}
-              <HelperButton content={t(pageTranslations.common.apyInfo)} />
-            </span>
-          }
-          value={<AmountRenderer value={pool.apy} suffix={'%'} />}
-        />
+export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => (
+  <div className="space-y-3">
+    <div>
+      {/* APY */}
+      <SimpleTableRow
+        label={
+          <span className="text-xs font-medium text-gray-30 items-center flex gap-1">
+            {t(pageTranslations.common.apy)}{' '}
+            <HelperButton content={t(pageTranslations.common.apyInfo)} />
+          </span>
+        }
+        value={<AmountRenderer value={pool.apy} suffix={'%'} />}
+      />
 
-        {/* Available */}
-        <SimpleTableRow
-          label={t(pageTranslations.borrowAssetsList.available)}
-          value={
-            pool.available && pool.availableUSD ? (
-              <AssetAmountPriceRenderer
-                value={pool.available}
-                valueUSD={pool.availableUSD}
-                asset={pool.asset}
-              />
-            ) : (
-              <span>-</span>
-            )
-          }
-        />
-      </div>
-
-      <BorrowAssetAction pool={pool} />
+      {/* Available */}
+      <SimpleTableRow
+        label={t(pageTranslations.borrowAssetsList.available)}
+        value={
+          pool.available && pool.availableUSD ? (
+            <AssetAmountPriceRenderer
+              value={pool.available}
+              valueUSD={pool.availableUSD}
+              asset={pool.asset}
+            />
+          ) : (
+            <span>-</span>
+          )
+        }
+      />
     </div>
-  );
-};
+
+    <BorrowAssetAction pool={pool} />
+  </div>
+);

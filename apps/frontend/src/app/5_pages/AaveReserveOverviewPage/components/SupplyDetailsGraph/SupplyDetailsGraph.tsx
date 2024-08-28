@@ -15,10 +15,8 @@ import { MockData } from './components/Chart/Chart.types';
 
 const pageTranslations = translations.aaveReserveOverviewPage.supplyDetails;
 
-type SupplyDetailsGraphProps = {};
-
-export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = () => {
-  const [open, setOpen] = useState<boolean>(true);
+export const SupplyDetailsGraph: FC = () => {
+  const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();
   // TODO: mocked amounts
   const mockData: MockData<{ x: string; y: number }> = useMemo(() => {
@@ -44,6 +42,7 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = () => {
       open={open || !isMobile}
       onClick={setOpen}
       flatMode={!isMobile}
+      dataAttribute="supply-details"
     >
       <div className="space-y-8 pt-2">
         <div className="flex gap-8">

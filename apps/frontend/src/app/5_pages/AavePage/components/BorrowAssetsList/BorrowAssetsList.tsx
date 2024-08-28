@@ -19,16 +19,16 @@ type BorrowAssetsListProps = {
 export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
   borrowPools,
 }) => {
-  const [open, setOpen] = useState<boolean>(true);
+  const [open, setOpen] = useState(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
 
   const rowTitleRenderer = useCallback(
-    (r: BorrowPoolDetails) => (
+    row => (
       <AaveRowTitle
-        asset={r.asset}
-        value={r.apy}
+        asset={row.asset}
+        value={row.apr}
         suffix="%"
-        label="APY"
+        label={t(translations.aavePage.common.apy)}
         precision={2}
       />
     ),

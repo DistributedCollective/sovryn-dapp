@@ -71,7 +71,7 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (pool: BorrowPoolDetails) => (
-      <AmountRenderer value={pool.apy} suffix={'%'} precision={2} />
+      <AmountRenderer value={pool.apy} suffix="%" precision={2} />
     ),
   },
   {

@@ -3,9 +3,9 @@ import React, { FC } from 'react';
 import classNames from 'classnames';
 import { t } from 'i18next';
 
-import { Heading, Icon, Paragraph, ParagraphSize } from '@sovryn/ui';
+import { Heading, Icon, IconNames, Paragraph, ParagraphSize } from '@sovryn/ui';
 
-import { LinkIcon, WalletIcon } from '../../../../1_atoms/Icons/Icons';
+import { WalletIcon } from '../../../../1_atoms/Icons/Icons';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
@@ -55,7 +55,11 @@ export const TopPanel: FC<TopPanelProps> = ({ asset, className }) => {
 
           <div className="flex items-center gap-2 h-8">
             <a href="#block-explorer">
-              <Icon icon={LinkIcon} className="text-gray-30" size={16} />
+              <Icon
+                icon={IconNames.NEW_TAB}
+                className="text-gray-30"
+                size={16}
+              />
             </a>
             <a href="#block-explorer">
               <Icon icon={WalletIcon} className="text-gray-30" size={16} />

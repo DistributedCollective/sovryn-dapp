@@ -3,9 +3,7 @@ import React, { FC } from 'react';
 import classNames from 'classnames';
 import { ReactElement } from 'react-markdown/lib/react-markdown';
 
-import { HelperButton, Icon } from '@sovryn/ui';
-
-import { LinkIcon } from '../../1_atoms/Icons/Icons';
+import { HelperButton, Icon, IconNames } from '@sovryn/ui';
 
 type StatisticsCardProps = {
   label: string;
@@ -36,7 +34,10 @@ export const StatisticsCard: FC<StatisticsCardProps> = ({
             {value}
             {link && (
               <a href={link} className="ml-3" target="_blank" rel="noreferrer">
-                <Icon icon={LinkIcon} className="h-4 w-4 text-gray-30" />
+                <Icon
+                  icon={IconNames.NEW_TAB}
+                  className="h-4 w-4 text-gray-30"
+                />
               </a>
             )}
           </>

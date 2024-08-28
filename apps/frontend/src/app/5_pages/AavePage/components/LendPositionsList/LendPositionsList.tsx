@@ -35,7 +35,7 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
   lendPositions,
 }) => {
   const { account } = useAccount();
-  const [open, setOpen] = useState<boolean>(true);
+  const [open, setOpen] = useState(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'balance',
     orderDirection: OrderDirection.Asc,

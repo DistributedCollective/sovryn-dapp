@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -15,16 +15,15 @@ type LendPositionActionProps = {
 export const LendPositionAction: FC<LendPositionActionProps> = ({
   position,
 }) => {
-  const [isWithdrawModalOpen, setIsWithdrawModalOpen] =
-    useState<boolean>(false);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
-  const handleWithdrawClick = () => {
+  const handleWithdrawClick = useCallback(() => {
     setIsWithdrawModalOpen(true);
-  };
+  }, []);
 
-  const handleWithdrawClose = () => {
+  const handleWithdrawClose = useCallback(() => {
     setIsWithdrawModalOpen(false);
-  };
+  }, []);
 
   return (
     <div className="flex items-center justify-center lg:justify-end space-x-2">

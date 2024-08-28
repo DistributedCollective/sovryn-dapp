@@ -17,44 +17,39 @@ type LendPositionDetailsProps = {
 
 export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
   position,
-}) => {
-  return (
-    <div className="space-y-3">
-      <div>
-        {/* Balance */}
-        <SimpleTableRow
-          label={t(translations.aavePage.common.balance)}
-          value={
-            <AssetAmountPriceRenderer
-              value={position.supplied}
-              valueUSD={position.suppliedUSD}
-              asset={position.asset}
+}) => (
+  <div className="space-y-3">
+    <div>
+      <SimpleTableRow
+        label={t(translations.aavePage.common.balance)}
+        value={
+          <AssetAmountPriceRenderer
+            value={position.supplied}
+            valueUSD={position.suppliedUSD}
+            asset={position.asset}
+          />
+        }
+      />
+
+      <SimpleTableRow
+        label={
+          <span className="text-xs font-medium text-gray-30 flex gap-1 items-center">
+            {t(translations.aavePage.common.apy)}
+            <HelperButton
+              content={t(translations.aavePage.common.apyInfo)}
+              className="text-gray-30"
             />
-          }
-        />
+          </span>
+        }
+        value={<AmountRenderer value={position.apy} suffix={'%'} />}
+      />
 
-        {/* APY */}
-        <SimpleTableRow
-          label={
-            <span className="text-xs font-medium text-gray-30 flex gap-1 items-center">
-              {t(translations.aavePage.common.apy)}
-              <HelperButton
-                content={t(translations.aavePage.common.apyInfo)}
-                className="text-gray-30"
-              />
-            </span>
-          }
-          value={<AmountRenderer value={position.apy} suffix={'%'} />}
-        />
-
-        {/* Can be collateral */}
-        <SimpleTableRow
-          label={t(translations.aavePage.lendPositionsList.usedAsCollateral)}
-          value={<ToggleCollateralAction position={position} />}
-        />
-      </div>
-
-      <LendPositionAction position={position} />
+      <SimpleTableRow
+        label={t(translations.aavePage.lendPositionsList.usedAsCollateral)}
+        value={<ToggleCollateralAction position={position} />}
+      />
     </div>
-  );
-};
+
+    <LendPositionAction position={position} />
+  </div>
+);

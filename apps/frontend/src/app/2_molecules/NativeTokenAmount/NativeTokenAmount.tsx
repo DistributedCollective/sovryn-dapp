@@ -6,7 +6,7 @@ import { decimalic } from '../../../utils/math';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 
 type NativeTokenAmountProps = {
-  usdValue: string | number;
+  usdValue: string | number | undefined;
   dataAttribute?: string;
   precision?: number;
 };
@@ -21,7 +21,9 @@ export const NativeTokenAmount: FC<NativeTokenAmountProps> = ({
   const value = useMemo(
     () =>
       !!Number(nativeTokenPrice)
-        ? decimalic(usdValue).div(nativeTokenPrice).toString()
+        ? decimalic(usdValue || 0)
+            .div(nativeTokenPrice)
+            .toString()
         : '0',
     [nativeTokenPrice, usdValue],
   );

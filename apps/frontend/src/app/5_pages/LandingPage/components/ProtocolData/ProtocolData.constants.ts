@@ -3,39 +3,30 @@ import { LockedDataResult, VolumeDataResult } from './ProtocolData.types';
 
 export const DEFAULT_LOCKED_DATA: LockedDataResult = {
   tvlLending: {
-    totalBtc: '0',
     totalUsd: '0',
   },
   tvlAmm: {
-    totalBtc: '0',
     totalUsd: '0',
   },
   tvlProtocol: {
-    totalBtc: '0',
     totalUsd: '0',
   },
   tvlStaking: {
-    totalBtc: '0',
     totalUsd: '0',
   },
   tvlSubprotocols: {
-    totalBtc: '0',
     totalUsd: '0',
   },
   tvlZero: {
-    totalBtc: '0',
     totalUsd: '0',
   },
   tvlMynt: {
-    totalBtc: '0',
     totalUsd: '0',
   },
   tvlSdex: {
-    totalBtc: '0',
     totalUsd: '0',
   },
   total_usd: '0',
-  total_btc: '0',
 };
 
 export const DEFAULT_VOLUME_DATA: VolumeDataResult = {

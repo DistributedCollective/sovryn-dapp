@@ -83,8 +83,6 @@ export const COLUMNS_CONFIG = [
     id: 'actions',
     align: Align.center,
     title: ' ',
-    cellRenderer: (position: LendPosition) => (
-      <LendPositionAction position={position} />
-    ),
+    cellRenderer: () => <LendPositionAction />,
   },
 ];

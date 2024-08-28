@@ -42,6 +42,7 @@ export const COLUMNS_CONFIG = [
     ),
     cellRenderer: (position: LendPosition) => (
       <AssetAmountPriceRenderer
+        className="flex flex-col justify-center"
         value={position.balance}
         asset={position.asset}
       />
@@ -59,7 +60,11 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (position: LendPosition) => (
-      <AmountRenderer value={position.balance} suffix={position.asset} />
+      <AmountRenderer
+        className="text-center"
+        value={position.balance}
+        suffix={'%'}
+      />
     ),
   },
   {
@@ -79,8 +84,6 @@ export const COLUMNS_CONFIG = [
     id: 'actions',
     align: Align.center,
     title: ' ',
-    cellRenderer: (position: LendPosition) => (
-      <LendPositionAction position={position} />
-    ),
+    cellRenderer: () => <LendPositionAction />,
   },
 ];

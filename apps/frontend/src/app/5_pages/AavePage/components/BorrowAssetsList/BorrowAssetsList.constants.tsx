@@ -46,6 +46,7 @@ export const COLUMNS_CONFIG = [
     ),
     cellRenderer: (position: BorrowPoolDetails) => (
       <AssetAmountPriceRenderer
+        className="flex flex-col justify-center"
         value={position.available}
         asset={position.asset}
       />
@@ -70,8 +71,6 @@ export const COLUMNS_CONFIG = [
     id: 'actions',
     align: Align.center,
     title: ' ',
-    cellRenderer: (pool: BorrowPoolDetails) => (
-      <BorrowAssetAction pool={pool} />
-    ),
+    cellRenderer: () => <BorrowAssetAction />,
   },
 ];

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,6 @@ import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
 import { LendModalContainer } from '../LendModal/LendModalContainer';
-
 
 export const LendAssetAction: FC = () => {
   const navigate = useNavigate();

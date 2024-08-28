@@ -15,7 +15,6 @@ import { MockData } from './components/Chart/Chart.types';
 
 const pageTranslations = translations.aaveReserveOverviewPage.supplyDetails;
 
-
 export const SupplyDetailsGraph: FC = () => {
   const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();
@@ -43,7 +42,6 @@ export const SupplyDetailsGraph: FC = () => {
       open={open || !isMobile}
       onClick={setOpen}
       flatMode={!isMobile}
-      dataAttribute="supply-details"
       dataAttribute="supply-details"
     >
       <div className="space-y-8 pt-2">

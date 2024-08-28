@@ -56,7 +56,7 @@ export const BorrowPositionsList: FC = () => {
           <span>{t(pageTranslations.borrowPositionsList.title)}</span>
           <div className="hidden lg:flex gap-3">
             <span className="text-gray-30 font-medium text-sm">
-              {pageTranslations.borrowPositionsList.eMode}
+              {t(pageTranslations.borrowPositionsList.eMode)}
             </span>
             <EfficiencyModeCard />
           </div>

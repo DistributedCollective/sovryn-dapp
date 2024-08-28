@@ -45,6 +45,6 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
       />
     </div>
 
-    <BorrowPositionAction position={position} />
+    <BorrowPositionAction />
   </div>
 );

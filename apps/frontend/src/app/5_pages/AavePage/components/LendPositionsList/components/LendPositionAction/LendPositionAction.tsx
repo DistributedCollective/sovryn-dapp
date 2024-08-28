@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -6,7 +6,6 @@ import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
 import { WithdrawModalContainer } from '../WithdrawModal/WithdrawModalContainer';
-
 
 export const LendPositionAction: FC = () => {
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);

@@ -53,6 +53,6 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => (
       />
     </div>
 
-    <LendAssetAction pool={pool} />
+    <LendAssetAction />
   </div>
 );

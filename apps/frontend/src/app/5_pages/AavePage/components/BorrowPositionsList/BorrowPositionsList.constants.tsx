@@ -78,8 +78,6 @@ export const COLUMNS_CONFIG = [
     id: 'actions',
     align: Align.center,
     title: ' ',
-    cellRenderer: (position: BorrowPosition) => (
-      <BorrowPositionAction position={position} />
-    ),
+    cellRenderer: () => <BorrowPositionAction />,
   },
 ];

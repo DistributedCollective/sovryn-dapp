@@ -78,6 +78,8 @@ export const COLUMNS_CONFIG = [
     id: 'actions',
     align: Align.center,
     title: ' ',
-    cellRenderer: () => <BorrowAssetAction />,
+    cellRenderer: (pool: BorrowPoolDetails) => (
+      <BorrowAssetAction pool={pool} />
+    ),
   },
 ];

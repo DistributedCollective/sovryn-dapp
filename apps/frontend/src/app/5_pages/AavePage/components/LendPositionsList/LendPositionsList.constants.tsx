@@ -63,7 +63,7 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (position: LendPosition) => (
-      <AmountRenderer value={position.apy} suffix={'%'} precision={2} />
+      <AmountRenderer value={position.apy} suffix="%" precision={2} />
     ),
   },
   {
@@ -83,6 +83,8 @@ export const COLUMNS_CONFIG = [
     id: 'actions',
     align: Align.center,
     title: ' ',
-    cellRenderer: () => <LendPositionAction />,
+    cellRenderer: (position: LendPosition) => (
+      <LendPositionAction position={position} />
+    ),
   },
 ];

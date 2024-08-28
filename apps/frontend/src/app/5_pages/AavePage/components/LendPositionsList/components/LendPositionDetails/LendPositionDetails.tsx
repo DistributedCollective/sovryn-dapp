@@ -50,6 +50,6 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
       />
     </div>
 
-    <LendPositionAction />
+    <LendPositionAction position={position} />
   </div>
 );

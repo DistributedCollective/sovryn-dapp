@@ -24,7 +24,7 @@ export const AssetAmountPriceRenderer: FC<AssetAmountPriceRendererProps> = ({
   priceClassName,
 }) => {
   return (
-    <div className={className ?? 'flex flex-col text-right space-y-1'}>
+    <div className={classNames('flex flex-col gap-1', className)}>
       <AmountRenderer
         value={value}
         suffix={asset}

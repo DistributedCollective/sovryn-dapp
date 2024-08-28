@@ -88,6 +88,6 @@ export const COLUMNS_CONFIG = [
     id: 'actions',
     align: Align.center,
     title: ' ',
-    cellRenderer: () => <LendAssetAction />,
+    cellRenderer: (pool: LendPoolDetails) => <LendAssetAction pool={pool} />,
   },
 ];

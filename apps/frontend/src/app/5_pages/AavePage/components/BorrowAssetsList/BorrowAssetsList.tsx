@@ -23,10 +23,10 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
 
   const rowTitleRenderer = useCallback(
-    row => (
+    (row: BorrowPoolDetails) => (
       <AaveRowTitle
         asset={row.asset}
-        value={row.apr}
+        value={row.apy}
         suffix="%"
         label={t(translations.aavePage.common.apy)}
         precision={2}

@@ -18,7 +18,7 @@ export type Reserve = ReserveDataHumanized & FormatReserveUSDResponse;
 export type ReserveData = Reserve[];
 
 export const useAaveReservesData = (): ReserveData => {
-  const provider = config.provider; // TODO: replace with useAccount
+  const provider = config.provider; // TODO: replace with useAccount. Circular dependency error...
 
   const uiPoolDataProvider = useMemo(
     () =>

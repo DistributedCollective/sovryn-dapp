@@ -13,9 +13,9 @@ import { translations } from '../../../../../locales/i18n';
 const pageTranslations = translations.aavePage.topPanel;
 
 type TopPanelProps = {
-  netWorth?: Decimalish;
-  netApy?: Decimalish;
-  healthFactor?: Decimalish;
+  netWorth: Decimalish;
+  netApy: Decimalish;
+  healthFactor: Decimalish;
 };
 
 export const TopPanel: FC<TopPanelProps> = ({
@@ -41,7 +41,7 @@ export const TopPanel: FC<TopPanelProps> = ({
           <StatisticsCard
             label={t(pageTranslations.netWorth)}
             value={
-              account && netWorth ? (
+              account ? (
                 <AmountRenderer
                   prefix="$"
                   precision={2}
@@ -55,7 +55,7 @@ export const TopPanel: FC<TopPanelProps> = ({
             <StatisticsCard
               label={t(pageTranslations.netApy)}
               value={
-                account && netApy ? (
+                account ? (
                   <AmountRenderer
                     suffix="%"
                     value={netApy}
@@ -69,7 +69,7 @@ export const TopPanel: FC<TopPanelProps> = ({
             <StatisticsCard
               label={t(pageTranslations.healthFactor)}
               value={
-                account && healthFactor ? (
+                account ? (
                   <AmountRenderer
                     suffix="%"
                     precision={2}

@@ -1,8 +1,7 @@
-import { MINIMUM_COLLATERAL_RATIO_LENDING_POOLS } from '../../../../../constants/lending';
+import { Decimal } from '@sovryn/utils';
 
-export const getCollateralRatioThresholds = () => {
-  const minimumCollateralRatio =
-    MINIMUM_COLLATERAL_RATIO_LENDING_POOLS.mul(100);
+export const getCollateralRatioThresholds = (minimum: Decimal) => {
+  const minimumCollateralRatio = minimum.mul(100);
 
   return {
     START: minimumCollateralRatio.mul(0.9).toNumber(),

@@ -9,13 +9,13 @@ import { BOB_CHAIN_ID } from '../../../../../config/chains';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
-import { LoanType } from '../../../../../utils/aave/AaveUserReservesSummary';
+import { BorrowRateMode } from '../../../../../types/aave';
 import { BorrowPosition } from './BorrowPositionsList.types';
 import { BorrowPositionAction } from './components/BorrowPositionAction/BorrowPositionAction';
 
 const pageTranslations = translations.aavePage;
 
-export const COLUMNS_CONFIG = [
+export const COLUMNS_CONFIG = (onRepayClick: (asset: string) => unknown) => [
   {
     id: 'asset',
     sortable: true,
@@ -78,7 +78,7 @@ export const COLUMNS_CONFIG = [
       <span>
         {t(
           pageTranslations.common[
-            position.type === LoanType.STABLE ? 'stable' : 'variable'
+            position.type === BorrowRateMode.STABLE ? 'stable' : 'variable'
           ],
         )}
       </span>
@@ -89,7 +89,7 @@ export const COLUMNS_CONFIG = [
     align: Align.center,
     title: ' ',
     cellRenderer: (position: BorrowPosition) => (
-      <BorrowPositionAction position={position} />
+      <BorrowPositionAction onRepayClick={() => onRepayClick(position.asset)} />
     ),
   },
 ];

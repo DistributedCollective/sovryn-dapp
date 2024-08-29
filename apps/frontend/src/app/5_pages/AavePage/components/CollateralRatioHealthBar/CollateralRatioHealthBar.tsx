@@ -11,21 +11,16 @@ import { getCollateralRatioThresholds } from './CollateralRatioHealthBar.utils';
 
 type CollateralRatioHealthBarProps = {
   ratio: Decimal;
-  thresholds?: {
-    START: number;
-    MIDDLE_START: number;
-    MIDDLE_END: number;
-    END: number;
-  };
+  minimum: Decimal;
 };
 
 export const CollateralRatioHealthBar: FC<CollateralRatioHealthBarProps> = ({
   ratio,
-  thresholds,
+  minimum,
 }) => {
   const collateralRatioThresholds = useMemo(
-    () => thresholds ?? getCollateralRatioThresholds(),
-    [thresholds],
+    () => getCollateralRatioThresholds(minimum),
+    [minimum],
   );
 
   return (

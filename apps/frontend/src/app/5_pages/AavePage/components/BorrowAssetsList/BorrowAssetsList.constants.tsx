@@ -15,7 +15,7 @@ import { BorrowAssetAction } from './components/BorrowAssetAction/BorrowAssetAct
 
 const pageTranslations = translations.aavePage;
 
-export const COLUMNS_CONFIG = [
+export const COLUMNS_CONFIG = (onBorrowClick: (asset: string) => void) => [
   {
     id: 'asset',
     sortable: true,
@@ -79,7 +79,7 @@ export const COLUMNS_CONFIG = [
     align: Align.center,
     title: ' ',
     cellRenderer: (pool: BorrowPoolDetails) => (
-      <BorrowAssetAction pool={pool} />
+      <BorrowAssetAction onBorrowClick={() => onBorrowClick(pool.asset)} />
     ),
   },
 ];

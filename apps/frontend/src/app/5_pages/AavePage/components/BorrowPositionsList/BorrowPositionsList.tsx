@@ -2,7 +2,15 @@ import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { Accordion, OrderOptions, Paragraph, Table } from '@sovryn/ui';
+import {
+  Accordion,
+  Dialog,
+  DialogBody,
+  DialogHeader,
+  OrderOptions,
+  Paragraph,
+  Table,
+} from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
@@ -13,14 +21,15 @@ import { COLUMNS_CONFIG } from './BorrowPositionsList.constants';
 import { BorrowPosition } from './BorrowPositionsList.types';
 import { BorrowPositionDetails } from './components/BorrowPositionDetails/BorrowPositionDetails';
 import { EfficiencyModeCard } from './components/EfficiencyModeCard/EfficiencyModeCard';
+import { RepayForm } from './components/RepayForm/RepayForm';
 
 const pageTranslations = translations.aavePage;
 
 type BorrowPositionsListProps = {
   borrowPositions: BorrowPosition[];
-  borrowBalance?: Decimal;
-  borrowWeightedApy?: Decimal;
-  borrowPowerUsed?: Decimal;
+  borrowBalance: Decimal;
+  borrowWeightedApy: Decimal;
+  borrowPowerUsed: Decimal;
   eModeEnabled: boolean;
 };
 
@@ -34,6 +43,17 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
   const { account } = useAccount();
   const [open, setOpen] = useState<boolean>(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
+  const [repayAssetDialog, setRepayAssetDialog] = useState<
+    string | undefined
+  >();
+
+  const onRepayClick = useCallback((asset: string) => {
+    setRepayAssetDialog(asset);
+  }, []);
+
+  const onRepayClose = useCallback(() => {
+    setRepayAssetDialog(undefined);
+  }, []);
 
   const rowTitleRenderer = useCallback(
     (r: BorrowPosition) => (
@@ -48,8 +68,13 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
   );
 
   const mobileRenderer = useCallback(
-    p => <BorrowPositionDetails position={p} />,
-    [],
+    p => (
+      <BorrowPositionDetails
+        position={p}
+        onRepayClick={() => onRepayClick(p.asset)}
+      />
+    ),
+    [onRepayClick],
   );
 
   return (
@@ -79,25 +104,26 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
           <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:gap-6 lg:mb-6">
             <PoolPositionStat
               label={t(pageTranslations.common.balance)}
-              value={borrowBalance ?? 0}
+              value={borrowBalance}
               prefix="$"
               precision={2}
             />
             <PoolPositionStat
               label={t(pageTranslations.common.apy)}
-              value={borrowWeightedApy ?? 0}
+              value={borrowWeightedApy}
               suffix="%"
               precision={2}
             />
             <PoolPositionStat
               label={t(pageTranslations.borrowPositionsList.borrowPowerUsed)}
-              value={borrowPowerUsed ?? 0}
+              value={borrowPowerUsed}
               suffix="%"
               precision={2}
             />
           </div>
+
           <Table
-            columns={COLUMNS_CONFIG}
+            columns={COLUMNS_CONFIG(onRepayClick)}
             rowClassName="bg-gray-80"
             accordionClassName="bg-gray-60 border border-gray-70"
             rowTitle={rowTitleRenderer}
@@ -106,6 +132,16 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
             orderOptions={orderOptions}
             setOrderOptions={setOrderOptions}
           />
+
+          <Dialog disableFocusTrap isOpen={!!repayAssetDialog}>
+            <DialogHeader
+              title={t(translations.aavePage.repayModal.title)}
+              onClose={onRepayClose}
+            />
+            <DialogBody className="space-y-3">
+              <RepayForm asset={repayAssetDialog!} onSuccess={onRepayClose} />
+            </DialogBody>
+          </Dialog>
         </>
       ) : (
         <div className="flex items-center justify-center lg:h-12">

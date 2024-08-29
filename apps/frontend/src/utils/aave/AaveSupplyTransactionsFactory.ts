@@ -72,7 +72,7 @@ export class AaveSupplyTransactionsFactory {
             }),
         request: {
           type: TransactionType.signTransaction,
-          args: [token, useAsCollateral],
+          args: [token.address, useAsCollateral],
           contract: this.Pool,
           fnName: 'setUserUseReserveAsCollateral',
         },

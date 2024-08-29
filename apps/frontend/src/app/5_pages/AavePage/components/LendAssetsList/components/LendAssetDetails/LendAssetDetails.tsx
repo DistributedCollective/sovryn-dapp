@@ -13,9 +13,13 @@ import { LendAssetAction } from '../LendAssetAction/LendAssetAction';
 
 type LendAssetDetailsProps = {
   pool: LendPoolDetails;
+  onLendClick: () => unknown;
 };
 
-export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => (
+export const LendAssetDetails: FC<LendAssetDetailsProps> = ({
+  pool,
+  onLendClick,
+}) => (
   <div className="space-y-3">
     <div>
       {/* Available */}
@@ -34,6 +38,7 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => (
         value={<AmountRenderer value={pool.apy} suffix="%" />}
       />
 
+      {/* Can be collateral */}
       <SimpleTableRow
         label={t(translations.aavePage.lendAssetsList.canBeCollateral)}
         valueClassName="flex justify-end"
@@ -49,6 +54,6 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({ pool }) => (
       />
     </div>
 
-    <LendAssetAction pool={pool} />
+    <LendAssetAction onLendClick={onLendClick} />
   </div>
 );

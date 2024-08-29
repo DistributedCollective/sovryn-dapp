@@ -19,7 +19,6 @@ import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { useAaveReservesData } from '../../../../../../../hooks/aave/useAaveReservesData';
 import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAaveUserReservesData';
 import { useAaveWithdraw } from '../../../../../../../hooks/aave/useAaveWithdraw';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
@@ -34,7 +33,6 @@ type WithdrawFormProps = {
 
 export const WithdrawForm: FC<WithdrawFormProps> = ({ asset }) => {
   const { handleWithdraw } = useAaveWithdraw();
-  const reserves = useAaveReservesData();
   const userReservesSummary = useAaveUserReservesData();
   const [withdrawAsset, setWithdrawAsset] = useState<string>(asset);
   const [withdrawAmount, setWithdrawAmount, withdrawSize] =
@@ -42,36 +40,37 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset }) => {
 
   const withdrawableAssetsOptions = useMemo(
     () =>
-      !userReservesSummary
-        ? []
-        : userReservesSummary.suppliedAssets.map(sa => ({
-            value: sa.asset,
-            label: (
-              <AssetRenderer
-                showAssetLogo
-                asset={sa.asset}
-                assetClassName="font-medium"
-                chainId={BOB_CHAIN_ID}
-              />
-            ),
-          })),
+      userReservesSummary.reserves
+        .filter(r => r.supplied.gt(0))
+        .map(sa => ({
+          value: sa.asset,
+          label: (
+            <AssetRenderer
+              showAssetLogo
+              asset={sa.asset}
+              assetClassName="font-medium"
+              chainId={BOB_CHAIN_ID}
+            />
+          ),
+        })),
     [userReservesSummary],
   );
 
-  const maximumWithdrawAmount: Decimal = useMemo(() => {
-    if (!userReservesSummary) return Decimal.from(0);
-    const sa = userReservesSummary.suppliedAssets.find(
-      sa => sa.asset === withdrawAsset,
+  const withdrawReserve = useMemo(() => {
+    return userReservesSummary.reserves.find(
+      r => r.reserve.symbol === withdrawAsset,
     );
-    return sa ? sa.supplied : Decimal.from(0);
-  }, [userReservesSummary, withdrawAsset]);
+  }, [withdrawAsset, userReservesSummary]);
+
+  const maximumWithdrawAmount: Decimal = useMemo(() => {
+    return withdrawReserve ? withdrawReserve.supplied : Decimal.from(0);
+  }, [withdrawReserve]);
 
   const withdrawAmountUsd: Decimal = useMemo(() => {
-    if (!reserves) return Decimal.from(0);
-    const reserve = reserves.find(r => r.symbol === withdrawAsset);
-
-    return reserve ? withdrawSize.mul(reserve.priceInUSD) : Decimal.from(0);
-  }, [withdrawSize, reserves, withdrawAsset]);
+    return withdrawReserve
+      ? withdrawSize.mul(withdrawReserve.reserve.priceInUSD)
+      : Decimal.from(0);
+  }, [withdrawSize, withdrawReserve]);
 
   const remainingSupply = useMemo(
     () => maximumWithdrawAmount.sub(withdrawSize),
@@ -88,21 +87,22 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset }) => {
     [isValidWithdrawAmount, withdrawSize],
   );
 
+  const tabItems = useMemo(
+    () => [
+      // For now just withdraw is supported
+      {
+        activeClassName: 'text-primary-20',
+        dataAttribute: 'withdraw',
+        label: t(translations.common.withdraw),
+      },
+    ],
+    [],
+  );
+
   return (
     <form className="flex flex-col gap-6">
       <div className="space-y-2">
-        <Tabs
-          type={TabType.secondary}
-          index={0}
-          items={[
-            // For now just withdraw is supported
-            {
-              activeClassName: 'text-primary-20',
-              dataAttribute: 'withdraw',
-              label: t(translations.common.withdraw),
-            },
-          ]}
-        />
+        <Tabs type={TabType.secondary} index={0} items={tabItems} />
 
         <div className="space-y-3">
           <AssetAmountInput

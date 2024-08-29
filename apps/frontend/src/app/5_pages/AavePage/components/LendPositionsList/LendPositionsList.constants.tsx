@@ -16,7 +16,7 @@ import { ToggleCollateralAction } from './components/ToggleCollateralAction/Togg
 
 const pageTranslations = translations.aavePage;
 
-export const COLUMNS_CONFIG = [
+export const COLUMNS_CONFIG = (onWithdrawClick: (asset: string) => void) => [
   {
     id: 'asset',
     sortable: true,
@@ -84,7 +84,9 @@ export const COLUMNS_CONFIG = [
     align: Align.center,
     title: ' ',
     cellRenderer: (position: LendPosition) => (
-      <LendPositionAction position={position} />
+      <LendPositionAction
+        onWithdrawClick={() => onWithdrawClick(position.asset)}
+      />
     ),
   },
 ];

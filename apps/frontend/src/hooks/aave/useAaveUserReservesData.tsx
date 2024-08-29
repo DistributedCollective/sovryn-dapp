@@ -1,22 +1,25 @@
 import { UiPoolDataProvider } from '@aave/contract-helpers';
 import { formatReserves, formatUserSummary } from '@aave/math-utils';
 
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 
-import { BOB_CHAIN_ID } from '../../config/chains';
-
 import { config } from '../../constants/aave';
-import { AaveUserReservesSummary } from '../../utils/aave/AaveUserReservesSummary';
-import { useCachedData } from '../useCachedData';
+import {
+  AaveUserReservesSummary,
+  AaveUserReservesSummaryFactory,
+} from '../../utils/aave/AaveUserReservesSummary';
+import { useAccount } from '../useAccount';
+import { useBlockNumber } from '../useBlockNumber';
 
-type UserReservesData = AaveUserReservesSummary | null;
-
-export const useAaveUserReservesData = (): UserReservesData => {
-  const provider = config.provider;
-  const account = '0xF754D0f4de0e815b391D997Eeec5cD07E59858F0';
-  // const { account, provider } = useAccount(); TODO: activate this instead of 2 above once calculations in bob are possible
+export const useAaveUserReservesData = (): AaveUserReservesSummary => {
+  const { account, provider } = useAccount();
+  const [value, setValue] = useState<AaveUserReservesSummary>(
+    AaveUserReservesSummaryFactory.buildZeroSummary([]),
+  );
+  const { value: blockNumber } = useBlockNumber();
+  const [processedBlock, setProcessedBlock] = useState<number | undefined>();
 
   const uiPoolDataProvider = useMemo(
     () =>
@@ -30,49 +33,54 @@ export const useAaveUserReservesData = (): UserReservesData => {
     [provider],
   );
 
-  const { value } = useCachedData<UserReservesData>(
-    `AaveUserReservesData/${account}`,
-    BOB_CHAIN_ID,
-    async () => {
-      if (!account || !uiPoolDataProvider) {
-        return null;
-      }
+  const loadUserReservesData = useCallback(async () => {
+    if (!account || !provider || !uiPoolDataProvider || !blockNumber) {
+      return null;
+    }
 
-      const [reservesData, userReservesData] = await Promise.all([
-        uiPoolDataProvider.getReservesHumanized({
-          lendingPoolAddressProvider: config.PoolAddressesProviderAddress,
-        }),
-        uiPoolDataProvider.getUserReservesHumanized({
-          lendingPoolAddressProvider: config.PoolAddressesProviderAddress,
-          user: account,
-        }),
-      ]);
-      const {
+    const [reservesData, userReservesData] = await Promise.all([
+      uiPoolDataProvider.getReservesHumanized({
+        lendingPoolAddressProvider: config.PoolAddressesProviderAddress,
+      }),
+      uiPoolDataProvider.getUserReservesHumanized({
+        lendingPoolAddressProvider: config.PoolAddressesProviderAddress,
+        user: account,
+      }),
+    ]);
+    const {
+      marketReferenceCurrencyDecimals,
+      marketReferenceCurrencyPriceInUsd: marketReferencePriceInUsd,
+    } = reservesData.baseCurrencyData;
+    const currentTimestamp = dayjs().unix();
+    const userSummary = formatUserSummary({
+      currentTimestamp,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
+      userReserves: userReservesData.userReserves,
+      userEmodeCategoryId: userReservesData.userEmodeCategoryId,
+      formattedReserves: formatReserves({
+        currentTimestamp,
+        marketReferencePriceInUsd,
         marketReferenceCurrencyDecimals,
-        marketReferenceCurrencyPriceInUsd: marketReferencePriceInUsd,
-      } = reservesData.baseCurrencyData;
-      const currentTimestamp = dayjs().unix();
+        reserves: reservesData.reservesData,
+      }),
+    });
 
-      return AaveUserReservesSummary.from(
-        formatUserSummary({
-          currentTimestamp,
-          marketReferencePriceInUsd,
-          marketReferenceCurrencyDecimals,
-          userReserves: userReservesData.userReserves,
-          userEmodeCategoryId: userReservesData.userEmodeCategoryId,
-          formattedReserves: formatReserves({
-            currentTimestamp,
-            marketReferencePriceInUsd,
-            marketReferenceCurrencyDecimals,
-            reserves: reservesData.reservesData,
-          }),
-        }),
-      );
-    },
-    [uiPoolDataProvider, account],
-    null,
-    { ttl: 1000 * 60, fallbackToPreviousResult: true },
-  );
+    setValue(
+      await AaveUserReservesSummaryFactory.buildSummary(
+        provider,
+        account,
+        userSummary,
+      ),
+    );
+    setProcessedBlock(blockNumber);
+  }, [account, uiPoolDataProvider, blockNumber, provider]);
+
+  useEffect(() => {
+    if (blockNumber !== processedBlock) {
+      loadUserReservesData();
+    }
+  }, [loadUserReservesData, processedBlock, blockNumber]);
 
   return value;
 };

@@ -14,9 +14,13 @@ const pageTranslations = translations.aavePage;
 
 type BorrowAssetDetailsProps = {
   pool: BorrowPoolDetails;
+  onBorrowClick: () => void;
 };
 
-export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => (
+export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({
+  pool,
+  onBorrowClick,
+}) => (
   <div className="space-y-3">
     <div>
       {/* APY */}
@@ -27,7 +31,7 @@ export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => (
             <HelperButton content={t(pageTranslations.common.apyInfo)} />
           </span>
         }
-        value={<AmountRenderer value={pool.apy} suffix={'%'} />}
+        value={<AmountRenderer value={pool.apy} suffix="%" />}
       />
 
       {/* Available */}
@@ -47,6 +51,6 @@ export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => (
       />
     </div>
 
-    <BorrowAssetAction pool={pool} />
+    <BorrowAssetAction onBorrowClick={onBorrowClick} />
   </div>
 );

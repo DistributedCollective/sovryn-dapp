@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
@@ -6,31 +6,20 @@ import { useNavigate } from 'react-router-dom';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { LendPoolDetails } from '../../LendAssetsList.types';
-import { LendModalContainer } from '../LendModal/LendModalContainer';
 
 type LendAssetActionProps = {
-  pool: LendPoolDetails;
+  onLendClick: () => void;
 };
 
-export const LendAssetAction: FC<LendAssetActionProps> = ({ pool }) => {
+export const LendAssetAction: FC<LendAssetActionProps> = ({ onLendClick }) => {
   const navigate = useNavigate();
-  const [isLendModalOpen, setIsLendModalOpen] = useState(false);
-
-  const handleLendClick = useCallback(() => {
-    setIsLendModalOpen(true);
-  }, []);
-
-  const handleLendClose = useCallback(() => {
-    setIsLendModalOpen(false);
-  }, []);
 
   return (
     <div className="flex items-center justify-center lg:justify-end space-x-2">
       <Button
         className="flex-grow"
         text={t(translations.aavePage.common.lend)}
-        onClick={handleLendClick}
+        onClick={onLendClick}
       />
 
       <Button
@@ -38,12 +27,6 @@ export const LendAssetAction: FC<LendAssetActionProps> = ({ pool }) => {
         text={t(translations.aavePage.common.details)}
         style={ButtonStyle.secondary}
         onClick={() => navigate('/aave/reserve-overview')}
-      />
-
-      <LendModalContainer
-        asset={pool.asset}
-        handleCloseModal={handleLendClose}
-        isOpen={isLendModalOpen}
       />
     </div>
   );

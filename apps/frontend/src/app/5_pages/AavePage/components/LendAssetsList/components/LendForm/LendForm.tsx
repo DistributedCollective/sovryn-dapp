@@ -46,10 +46,6 @@ export const LendForm: FC<LendFormProps> = ({
   );
   const { handleDeposit } = useAaveSupply();
 
-  const reserve = useMemo(() => {
-    return reserves.find(r => r.symbol === lendAsset) ?? reserves[0];
-  }, [reserves, lendAsset]);
-
   const lendAssetsOptions = useMemo(
     () =>
       reserves.map(r => ({
@@ -66,19 +62,18 @@ export const LendForm: FC<LendFormProps> = ({
     [reserves],
   );
 
-  const isValidLendAmount = useMemo(
-    () => (lendSize.gt(0) ? lendSize.lte(lendAssetBalance) : true),
-    [lendSize, lendAssetBalance],
-  );
-
-  const submitButtonDisabled = useMemo(
-    () => !isValidLendAmount || lendSize.lte(0),
-    [isValidLendAmount, lendSize],
-  );
+  const reserve = useMemo(() => {
+    return reserves.find(r => r.symbol === lendAsset) ?? reserves[0];
+  }, [reserves, lendAsset]);
 
   const assetUsdValue: Decimal = useMemo(() => {
     return Decimal.from(reserve?.priceInUSD ?? 0).mul(lendSize);
   }, [reserve, lendSize]);
+
+  const isValidLendAmount = useMemo(
+    () => (lendSize.gt(0) ? lendSize.lte(lendAssetBalance) : true),
+    [lendSize, lendAssetBalance],
+  );
 
   return (
     <form className="flex flex-col gap-6">
@@ -127,11 +122,12 @@ export const LendForm: FC<LendFormProps> = ({
       </SimpleTable>
 
       <Button
-        disabled={submitButtonDisabled}
+        disabled={!isValidLendAmount || lendSize.lte(0)}
         onClick={async () =>
           handleDeposit(
             lendSize,
             await getAssetData(reserve.symbol, BOB_CHAIN_ID),
+            { onComplete: onSuccess },
           )
         }
         text={t(translations.aavePage.lendModal.deposit)}

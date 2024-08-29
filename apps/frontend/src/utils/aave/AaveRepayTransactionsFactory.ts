@@ -1,4 +1,4 @@
-import { BigNumber, constants, ethers } from 'ethers';
+import { BigNumber, constants, Contract, ethers } from 'ethers';
 import { t } from 'i18next';
 
 import { AssetDetailsData, getAssetDataByAddress } from '@sovryn/contracts';
@@ -10,8 +10,8 @@ import {
   TransactionType,
 } from '../../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { translations } from '../../locales/i18n';
-import { TransactionFactoryOptions } from '../../types/aave';
-import { LoanType } from './AaveUserReservesSummary';
+import { BorrowRateMode, TransactionFactoryOptions } from '../../types/aave';
+import { prepareApproveTransaction } from '../transactions';
 
 export class AaveRepayTransactionsFactory {
   private readonly Pool: ethers.Contract;
@@ -42,48 +42,57 @@ export class AaveRepayTransactionsFactory {
   async repay(
     token: AssetDetailsData,
     amount: BigNumber,
-    loanType: LoanType,
+    borrowRateMode: BorrowRateMode,
     opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
-    if (token.isNative) return this.repayNative(amount, loanType, opts);
-    else return this.repayToken(token, amount, loanType, opts);
+    if (token.isNative) return this.repayNative(amount, borrowRateMode, opts);
+    else return this.repayToken(token, amount, borrowRateMode, opts);
   }
 
   private async repayToken(
     asset: AssetDetailsData,
     amount: BigNumber,
-    loanType: LoanType,
+    borrowRateMode: BorrowRateMode,
     opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
-    return [
-      {
-        title: t(translations.aavePage.tx.repayTitle, {
-          symbol: asset.symbol,
-        }),
-        subtitle: t(translations.aavePage.tx.repaySubtitle, {
-          symbol: asset.symbol,
-          amount: ethers.utils.formatUnits(amount, asset.decimals),
-        }),
-        request: {
-          type: TransactionType.signTransaction,
-          args: [
-            asset.address,
-            amount.toString(),
-            loanType,
-            await this.signer.getAddress(),
-          ],
-          contract: this.Pool,
-          fnName: 'repay',
-          value: 0,
-        },
-        onComplete: opts?.onComplete,
+    const approval = await prepareApproveTransaction({
+      spender: this.PoolAddress,
+      token: asset.symbol,
+      contract: new Contract(asset.address, asset.abi, this.signer),
+      amount: amount,
+      chain: BOB_CHAIN_ID,
+    });
+    const transactions: Transaction[] = approval ? [approval] : [];
+
+    transactions.push({
+      title: t(translations.aavePage.tx.repayTitle, {
+        symbol: asset.symbol,
+      }),
+      subtitle: t(translations.aavePage.tx.repaySubtitle, {
+        symbol: asset.symbol,
+        amount: ethers.utils.formatUnits(amount, asset.decimals),
+      }),
+      request: {
+        type: TransactionType.signTransaction,
+        args: [
+          asset.address,
+          amount.toString(),
+          borrowRateMode,
+          await this.signer.getAddress(),
+        ],
+        contract: this.Pool,
+        fnName: 'repay',
+        value: 0,
       },
-    ];
+      onComplete: opts?.onComplete,
+    });
+
+    return transactions;
   }
 
   private async repayNative(
     amount: BigNumber,
-    loanType: LoanType,
+    borrowRateMode: BorrowRateMode,
     opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
     const nativeAsset = await getAssetDataByAddress(
@@ -105,7 +114,7 @@ export class AaveRepayTransactionsFactory {
           args: [
             this.PoolAddress,
             amount.toString(),
-            loanType,
+            borrowRateMode,
             await this.signer.getAddress(),
           ],
           contract: this.WETHGateway,

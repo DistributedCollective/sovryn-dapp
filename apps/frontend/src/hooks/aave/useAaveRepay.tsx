@@ -9,9 +9,8 @@ import { Decimal } from '@sovryn/utils';
 import { config } from '../../constants/aave';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { translations } from '../../locales/i18n';
-import { TransactionFactoryOptions } from '../../types/aave';
+import { BorrowRateMode, TransactionFactoryOptions } from '../../types/aave';
 import { AaveRepayTransactionsFactory } from '../../utils/aave/AaveRepayTransactionsFactory';
-import { LoanType } from '../../utils/aave/AaveUserReservesSummary';
 import { useAccount } from '../useAccount';
 
 export const useAaveRepay = () => {
@@ -31,7 +30,7 @@ export const useAaveRepay = () => {
     async (
       amount: Decimal,
       asset: AssetDetailsData,
-      loanType: LoanType,
+      borrowRateMode: BorrowRateMode,
       opts?: TransactionFactoryOptions,
     ) => {
       if (!aaveRepayTransactionsFactory) {
@@ -45,7 +44,7 @@ export const useAaveRepay = () => {
         await aaveRepayTransactionsFactory.repay(
           asset,
           bnAmount,
-          loanType,
+          borrowRateMode,
           opts,
         ),
       );

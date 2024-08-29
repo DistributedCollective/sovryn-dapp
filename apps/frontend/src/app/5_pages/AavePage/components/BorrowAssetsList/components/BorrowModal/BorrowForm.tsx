@@ -21,11 +21,11 @@ import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { config } from '../../../../../../../constants/aave';
 import { useAaveBorrow } from '../../../../../../../hooks/aave/useAaveBorrow';
-import { useAaveReservesData } from '../../../../../../../hooks/aave/useAaveReservesData';
 import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAaveUserReservesData';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
 import { translations } from '../../../../../../../locales/i18n';
 import { BorrowRateMode } from '../../../../../../../types/aave';
+import { AaveCalculations } from '../../../../../../../utils/aave/AaveCalculations';
 import { CollateralRatioHealthBar } from '../../../CollateralRatioHealthBar/CollateralRatioHealthBar';
 
 const pageTranslations = translations.aavePage;
@@ -35,79 +35,71 @@ type BorrowFormProps = {
   onSuccess: () => void;
 };
 
-export const BorrowForm: FC<BorrowFormProps> = ({ asset }) => {
-  const reserves = useAaveReservesData();
+export const BorrowForm: FC<BorrowFormProps> = ({ asset, onSuccess }) => {
   const userReservesSummary = useAaveUserReservesData();
   const [borrowAsset, setBorrowAsset] = useState<string>(asset);
   const [borrowAmount, setBorrowAmount, borrowSize] = useDecimalAmountInput('');
   const [acknowledge, setAcknowledge] = useState<boolean>(false);
   const { handleBorrow } = useAaveBorrow();
 
-  const reserve = useMemo(() => {
-    return reserves.find(r => r.symbol === borrowAsset);
-  }, [reserves, borrowAsset]);
-
-  const variableBorrowAPR = useMemo(() => {
-    if (!reserve) return Decimal.from(0);
-    return Decimal.from(reserve.variableBorrowAPR).mul(100);
-  }, [reserve]);
-
-  const maximumBorrowAmount = useMemo(() => {
-    if (!reserve || !userReservesSummary) return Decimal.from(0);
-
-    // deducted from hf=kte/borrowed => newhf=kte/borrowed+new_borrow => MinHealthFactor = newhf
-    return userReservesSummary.borrowBalance.mul(
-      userReservesSummary.healthFactor.div(config.MinHealthFactor).sub(1),
-    );
-  }, [userReservesSummary, reserve]);
-
-  const borrowUsdAmount = useMemo(() => {
-    return borrowSize.mul(reserve?.priceInUSD ?? 0);
-  }, [borrowSize, reserve]);
-
   const borrowableAssetsOptions = useMemo(
     () =>
-      reserves.map(r => ({
-        value: r.symbol,
-        label: (
-          <AssetRenderer
-            showAssetLogo
-            asset={r.symbol}
-            chainId={BOB_CHAIN_ID}
-            assetClassName="font-medium"
-          />
-        ),
-      })),
-    [reserves],
+      userReservesSummary.reserves
+        .filter(r => r.reserve.borrowingEnabled)
+        .map(r => ({
+          value: r.reserve.symbol,
+          label: (
+            <AssetRenderer
+              showAssetLogo
+              asset={r.reserve.symbol}
+              chainId={BOB_CHAIN_ID}
+              assetClassName="font-medium"
+            />
+          ),
+        })),
+    [userReservesSummary.reserves],
   );
+
+  const borrowReserve = useMemo(() => {
+    return userReservesSummary.reserves.find(
+      r => r.reserve.symbol === borrowAsset,
+    );
+  }, [userReservesSummary.reserves, borrowAsset]);
+
+  const borrowUsdAmount = useMemo(() => {
+    return borrowSize.mul(borrowReserve?.reserve.priceInUSD ?? 0);
+  }, [borrowSize, borrowReserve?.reserve.priceInUSD]);
+
+  const maximumBorrowAmount = useMemo(() => {
+    return borrowReserve?.availableToBorrow ?? Decimal.from(0);
+  }, [borrowReserve?.availableToBorrow]);
+
+  const newCollateralRatio = useMemo(() => {
+    return AaveCalculations.computeCollateralRatio(
+      userReservesSummary.collateralBalance,
+      userReservesSummary.borrowBalance.add(borrowUsdAmount),
+    );
+  }, [
+    userReservesSummary.collateralBalance,
+    userReservesSummary.borrowBalance,
+    borrowUsdAmount,
+  ]);
+
+  const liquidationPrice = useMemo(() => {
+    return AaveCalculations.computeLiquidationPrice(
+      borrowSize,
+      userReservesSummary.currentLiquidationThreshold,
+      userReservesSummary.collateralBalance,
+    );
+  }, [
+    borrowSize,
+    userReservesSummary.currentLiquidationThreshold,
+    userReservesSummary.collateralBalance,
+  ]);
 
   const isValidBorrowAmount = useMemo(
     () => (borrowSize.gt(0) ? borrowSize.lte(maximumBorrowAmount) : true),
     [borrowSize, maximumBorrowAmount],
-  );
-
-  const collateralRatio = useMemo(() => {
-    if (!userReservesSummary) return Decimal.from(0);
-    const newHealthFactor = userReservesSummary.healthFactor
-      .mul(userReservesSummary.borrowBalance)
-      .div(userReservesSummary.borrowBalance.add(borrowUsdAmount));
-
-    return newHealthFactor.div(userReservesSummary.currentLiquidationThreshold);
-  }, [userReservesSummary, borrowUsdAmount]);
-
-  const liquidationPrice = useMemo(() => {
-    if (!borrowSize || !reserve || !userReservesSummary) {
-      return Decimal.from(0);
-    }
-
-    return borrowSize
-      .mul(userReservesSummary.currentLiquidationThreshold)
-      .div(userReservesSummary.collateralBalance);
-  }, [borrowSize, reserve, userReservesSummary]);
-
-  const submitButtonDisabled = useMemo(
-    () => !isValidBorrowAmount || borrowSize.lte(0) || !acknowledge || !reserve,
-    [isValidBorrowAmount, borrowSize, acknowledge, reserve],
   );
 
   return (
@@ -140,25 +132,24 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset }) => {
           label={t(translations.aavePage.borrowForm.borrowApr)}
           value={
             <AmountRenderer
-              value={variableBorrowAPR}
-              suffix={'%'}
+              value={borrowReserve?.reserve.variableBorrowAPR ?? 0}
+              suffix="%"
               precision={2}
             />
           }
         />
       </SimpleTable>
 
-      <CollateralRatioHealthBar ratio={collateralRatio} />
+      <CollateralRatioHealthBar
+        ratio={Decimal.from(newCollateralRatio)}
+        minimum={config.MinCollateralRatio}
+      />
 
       <SimpleTable>
         <SimpleTableRow
           label={t(translations.aavePage.borrowForm.liquidationPrice)}
           value={
-            <AmountRenderer
-              value={liquidationPrice}
-              precision={2}
-              prefix={'$'}
-            />
+            <AmountRenderer value={liquidationPrice} precision={2} prefix="$" />
           }
         />
         <SimpleTableRow
@@ -167,7 +158,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset }) => {
           })}
           value={
             <AmountRenderer
-              value={reserve?.priceInUSD ?? 0}
+              value={borrowReserve?.reserve.priceInUSD ?? 0}
               precision={2}
               prefix="$"
             />
@@ -194,11 +185,17 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset }) => {
         onClick={async () => {
           handleBorrow(
             borrowSize,
-            await getAssetData(reserve!.symbol, BOB_CHAIN_ID),
+            await getAssetData(borrowReserve!.reserve.symbol, BOB_CHAIN_ID),
             BorrowRateMode.VARIABLE,
+            { onComplete: onSuccess },
           );
         }}
-        disabled={submitButtonDisabled}
+        disabled={
+          !isValidBorrowAmount ||
+          borrowSize.lte(0) ||
+          !acknowledge ||
+          !borrowReserve
+        }
         text={t(translations.common.buttons.confirm)}
       />
     </form>

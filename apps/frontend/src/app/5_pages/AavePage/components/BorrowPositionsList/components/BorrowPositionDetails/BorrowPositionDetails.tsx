@@ -7,16 +7,18 @@ import { HelperButton, SimpleTableRow } from '@sovryn/ui';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountPriceRenderer } from '../../../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 import { translations } from '../../../../../../../locales/i18n';
-import { LoanType } from '../../../../../../../utils/aave/AaveUserReservesSummary';
+import { BorrowRateMode } from '../../../../../../../types/aave';
 import { BorrowPosition } from '../../BorrowPositionsList.types';
 import { BorrowPositionAction } from '../BorrowPositionAction/BorrowPositionAction';
 
 type BorrowPositionDetailsProps = {
   position: BorrowPosition;
+  onRepayClick: () => unknown;
 };
 
 export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
   position,
+  onRepayClick,
 }) => (
   <div className="space-y-3">
     <div>
@@ -48,12 +50,12 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
         label={t(translations.aavePage.common.apyType)}
         value={t(
           translations.aavePage.common[
-            position.type === LoanType.STABLE ? 'stable' : 'variable'
+            position.type === BorrowRateMode.STABLE ? 'stable' : 'variable'
           ],
         )}
       />
     </div>
 
-    <BorrowPositionAction position={position} />
+    <BorrowPositionAction onRepayClick={onRepayClick} />
   </div>
 );

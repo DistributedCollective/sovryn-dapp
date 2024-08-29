@@ -4,237 +4,199 @@ import {
   FormatUserSummaryResponse,
 } from '@aave/math-utils';
 
+import { BigNumber, ethers } from 'ethers';
+
+import { AssetDetailsData, getAssetData } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
-type UserSummary = FormatUserSummaryResponse<
+import { BOB_CHAIN_ID } from '../../config/chains';
+
+import { Reserve } from '../../hooks/aave/useAaveReservesData';
+import { BorrowRateMode } from '../../types/aave';
+import { decimalic, fromWei } from '../math';
+import { AaveCalculations } from './AaveCalculations';
+
+export type UserSummary = FormatUserSummaryResponse<
   ReserveDataHumanized & FormatReserveUSDResponse
 >;
 
-export enum LoanType {
-  STABLE = 1,
-  VARIABLE = 2,
-}
-
-export type SuppliedAsset = {
+export type ReserveSummary = {
+  reserve: Reserve;
   asset: string;
-  assetAddress: string;
-  apy: Decimal;
-  isCollateral: boolean;
+
+  walletBalance: Decimal;
+  walletBalanceUsd: Decimal;
+  collateral: boolean;
   supplied: Decimal;
   suppliedUSD: Decimal;
-};
-
-export type BorrowedAsset = {
-  asset: string;
-  assetAddress: string;
-  apy: Decimal;
-  type: LoanType;
   borrowed: Decimal;
   borrowedUSD: Decimal;
+  borrowRateMode: BorrowRateMode;
+  availableToBorrow: Decimal;
 };
 
-export class AaveUserReservesSummary {
-  public netWorth: Decimal;
-  public netApy: Decimal;
-  public healthFactor: Decimal;
-  public supplyBalance: Decimal;
-  public supplyWeightedApy: Decimal;
-  public collateralBalance: Decimal;
-  public currentLiquidationThreshold: Decimal;
-  public borrowBalance: Decimal;
-  public borrowWeightedApy: Decimal;
-  public borrowPower: Decimal;
-  public borrowPowerUsed: Decimal;
-  public suppliedAssets: SuppliedAsset[];
-  public borrowedAssets: BorrowedAsset[];
-  public eModeEnabled: boolean;
+export type AaveUserReservesSummary = {
+  netApy: Decimal;
+  netWorth: Decimal;
+  healthFactor: Decimal;
+  collateralRatio: Decimal;
 
-  constructor(private readonly userSummary: UserSummary) {
-    // balances
-    this.netWorth = Decimal.from(this.userSummary.netWorthUSD);
-    this.borrowBalance = Decimal.from(this.userSummary.totalBorrowsUSD);
-    this.supplyBalance = this.computeSuppliedBalance(
-      this.userSummary.userReservesData,
-    );
-    this.collateralBalance = this.computeCollateral(
-      this.userSummary.userReservesData,
-    );
+  supplyBalance: Decimal;
+  supplyWeightedApy: Decimal;
+  collateralBalance: Decimal;
+  currentLiquidationThreshold: Decimal;
 
-    // apy
-    this.supplyWeightedApy = this.computeWeightedSupplyApy(
-      this.userSummary.userReservesData,
+  borrowBalance: Decimal;
+  borrowWeightedApy: Decimal;
+  borrowPower: Decimal;
+  borrowPowerUsed: Decimal;
+  eModeEnabled: boolean;
+  eModeCategoryId: number;
+
+  reserves: ReserveSummary[];
+};
+
+export class AaveUserReservesSummaryFactory {
+  static buildZeroSummary(reserves: Reserve[]): AaveUserReservesSummary {
+    return {
+      netApy: Decimal.ZERO,
+      netWorth: Decimal.ZERO,
+      healthFactor: Decimal.ZERO,
+      collateralRatio: Decimal.ZERO,
+
+      supplyBalance: Decimal.ZERO,
+      supplyWeightedApy: Decimal.ZERO,
+      collateralBalance: Decimal.ZERO,
+      currentLiquidationThreshold: Decimal.ZERO,
+
+      borrowBalance: Decimal.ZERO,
+      borrowWeightedApy: Decimal.ZERO,
+      borrowPower: Decimal.ZERO,
+      borrowPowerUsed: Decimal.ZERO,
+      eModeEnabled: false,
+      eModeCategoryId: 0,
+
+      reserves: reserves.map(r => ({
+        reserve: r,
+        asset: r.symbol,
+
+        walletBalance: Decimal.ZERO,
+        walletBalanceUsd: Decimal.ZERO,
+        collateral: false,
+        supplied: Decimal.ZERO,
+        suppliedUSD: Decimal.ZERO,
+        availableToSupply: Decimal.ZERO,
+        borrowed: Decimal.ZERO,
+        borrowedUSD: Decimal.ZERO,
+        borrowRateMode: BorrowRateMode.VARIABLE,
+        availableToBorrow: Decimal.ZERO,
+      })),
+    };
+  }
+
+  static async buildSummary(
+    provider: ethers.providers.Provider,
+    account: string,
+    userSummary: UserSummary,
+  ): Promise<AaveUserReservesSummary> {
+    const netWorth = Decimal.from(userSummary.netWorthUSD);
+    const borrowBalance = Decimal.from(userSummary.totalBorrowsUSD);
+    const supplyBalance = AaveCalculations.computeSuppliedBalance(
+      userSummary.userReservesData,
     );
-    this.borrowWeightedApy = this.computeWeightedBorrowApy(
-      this.userSummary.userReservesData,
+    const collateralBalance = AaveCalculations.computeCollateral(
+      userSummary.userReservesData,
     );
-    this.netApy = this.computeNetApy(
-      this.supplyWeightedApy,
-      this.supplyBalance,
-      this.borrowWeightedApy,
-      this.borrowBalance,
-      this.netWorth,
+    const supplyWeightedApy = AaveCalculations.computeWeightedSupplyApy(
+      userSummary.userReservesData,
+    );
+    const borrowWeightedApy = AaveCalculations.computeWeightedBorrowApy(
+      userSummary.userReservesData,
+    );
+    const netApy = AaveCalculations.computeNetApy(
+      supplyWeightedApy,
+      supplyBalance,
+      borrowWeightedApy,
+      borrowBalance,
+      netWorth,
     );
 
     // health and borrow status
-    this.currentLiquidationThreshold = Decimal.from(
-      this.userSummary.currentLiquidationThreshold,
+    const currentLiquidationThreshold = Decimal.from(
+      userSummary.currentLiquidationThreshold,
     );
-    this.borrowPower = this.computeBorrowPower(
-      Decimal.from(this.userSummary.availableBorrowsUSD),
-      this.borrowBalance,
+    const borrowPower = AaveCalculations.computeBorrowPower(
+      Decimal.from(userSummary.availableBorrowsUSD),
+      borrowBalance,
     );
-    this.borrowPowerUsed = this.computeBorrowPowerUsed(
-      this.borrowBalance,
-      this.borrowPower,
+    const borrowPowerUsed = AaveCalculations.computeBorrowPowerUsed(
+      borrowBalance,
+      borrowPower,
     );
-    this.healthFactor = this.computeHealthFactor(
-      this.collateralBalance,
-      this.currentLiquidationThreshold,
-      this.borrowBalance,
+    const healthFactor = AaveCalculations.computeHealthFactor(
+      collateralBalance,
+      currentLiquidationThreshold,
+      borrowBalance,
     );
-
-    // supplied and borrowed assets
-    this.suppliedAssets = this.computeSuppliedAssets(
-      this.userSummary.userReservesData,
-    );
-    this.borrowedAssets = this.computeBorrowedAssets(
-      this.userSummary.userReservesData,
+    const collateralRatio = AaveCalculations.computeCollateralRatio(
+      collateralBalance,
+      borrowBalance,
     );
 
-    // emode
-    this.eModeEnabled = this.userSummary.userEmodeCategoryId !== 0;
+    return {
+      netApy,
+      netWorth,
+      healthFactor,
+      collateralRatio,
+
+      supplyBalance,
+      supplyWeightedApy,
+      collateralBalance,
+      currentLiquidationThreshold,
+
+      borrowBalance,
+      borrowWeightedApy,
+      borrowPower,
+      borrowPowerUsed,
+      eModeEnabled: userSummary.userEmodeCategoryId !== 0,
+      eModeCategoryId: userSummary.userEmodeCategoryId,
+
+      reserves: await Promise.all(
+        userSummary.userReservesData.map(async r => {
+          const asset = await getAssetData(r.reserve.symbol, BOB_CHAIN_ID);
+          const balance = await getBalance(asset, account, provider);
+          const decimalBalance = decimalic(fromWei(balance, asset.decimals));
+
+          const availableToBorrow = borrowPower.div(r.reserve.priceInUSD);
+
+          return {
+            asset: r.reserve.symbol,
+            reserve: r.reserve,
+
+            walletBalance: decimalBalance,
+            walletBalanceUsd: decimalBalance.mul(r.reserve.priceInUSD),
+            collateral: r.usageAsCollateralEnabledOnUser,
+            supplied: Decimal.from(r.underlyingBalance),
+            suppliedUSD: Decimal.from(r.underlyingBalanceUSD),
+            borrowed: Decimal.from(r.totalBorrows),
+            borrowedUSD: Decimal.from(r.totalBorrowsUSD),
+            borrowRateMode: Decimal.from(r.variableBorrows).gt(0)
+              ? BorrowRateMode.VARIABLE
+              : BorrowRateMode.STABLE,
+            availableToBorrow,
+          };
+        }),
+      ),
+    };
   }
+}
 
-  static from(
-    userSummary: FormatUserSummaryResponse<
-      ReserveDataHumanized & FormatReserveUSDResponse
-    >,
-  ) {
-    return new AaveUserReservesSummary(userSummary);
-  }
-
-  private computeNetApy(
-    weightedSupplyApy: Decimal,
-    suppliedBalance: Decimal,
-    weightedBorrowApy: Decimal,
-    borrowedBalance: Decimal,
-    netWorthUsd: Decimal,
-  ): Decimal {
-    return weightedSupplyApy
-      .mul(suppliedBalance)
-      .div(netWorthUsd)
-      .sub(weightedBorrowApy.mul(borrowedBalance).div(netWorthUsd));
-  }
-
-  private computeSuppliedBalance(
-    reserves: UserSummary['userReservesData'],
-  ): Decimal {
-    return reserves.reduce(
-      (suppliedBalance, r) => suppliedBalance.add(r.underlyingBalanceUSD),
-      Decimal.from(0),
-    );
-  }
-
-  private computeBorrowPower(
-    availableBorrowsUSD: Decimal,
-    borrowedBalance: Decimal,
-  ) {
-    return Decimal.from(availableBorrowsUSD).add(borrowedBalance);
-  }
-
-  private computeBorrowPowerUsed(
-    borrowedBalance: Decimal,
-    borrowPower: Decimal,
-  ) {
-    return Decimal.from(borrowedBalance).div(borrowPower).mul(100);
-  }
-
-  private computeCollateral(
-    reserves: UserSummary['userReservesData'],
-  ): Decimal {
-    return reserves.reduce(
-      (collateral, r) =>
-        collateral.add(
-          r.usageAsCollateralEnabledOnUser ? r.underlyingBalanceUSD : 0,
-        ),
-      Decimal.from(0),
-    );
-  }
-
-  private computeHealthFactor(
-    collateral: Decimal,
-    currentLiquidationThreshold: Decimal,
-    borrowedBalance: Decimal,
-  ): Decimal {
-    return collateral.mul(currentLiquidationThreshold).div(borrowedBalance);
-  }
-
-  private computeWeightedBorrowApy(
-    reserves: UserSummary['userReservesData'],
-  ): Decimal {
-    let totalBorrowedUSD = Decimal.from(0);
-    let weightedBorrowAPYSum = Decimal.from(0);
-
-    reserves.forEach(reserve => {
-      const borrowedAmountUSD = Decimal.from(reserve.totalBorrowsUSD);
-      const borrowAPY = Decimal.from(reserve.reserve.variableBorrowAPY);
-
-      weightedBorrowAPYSum = weightedBorrowAPYSum.add(
-        borrowAPY.mul(borrowedAmountUSD),
-      );
-      totalBorrowedUSD = totalBorrowedUSD.add(borrowedAmountUSD);
-    });
-
-    return weightedBorrowAPYSum.div(totalBorrowedUSD).mul(100);
-  }
-
-  private computeWeightedSupplyApy(
-    reserves: UserSummary['userReservesData'],
-  ): Decimal {
-    let totalBorrowedUSD = Decimal.from(0);
-    let weightedBorrowAPYSum = Decimal.from(0);
-
-    reserves.forEach(reserve => {
-      const borrowedAmountUSD = Decimal.from(reserve.totalBorrowsUSD);
-      const borrowAPY = Decimal.from(reserve.reserve.supplyAPY);
-
-      weightedBorrowAPYSum = weightedBorrowAPYSum.add(
-        borrowAPY.mul(borrowedAmountUSD),
-      );
-      totalBorrowedUSD = totalBorrowedUSD.add(borrowedAmountUSD);
-    });
-
-    return weightedBorrowAPYSum.div(totalBorrowedUSD).mul(100);
-  }
-
-  private computeSuppliedAssets(
-    reserves: UserSummary['userReservesData'],
-  ): SuppliedAsset[] {
-    return reserves
-      .filter(r => Decimal.from(r.underlyingBalanceUSD).gt(0))
-      .map(r => ({
-        asset: r.reserve.symbol,
-        assetAddress: r.underlyingAsset,
-        apy: Decimal.from(r.reserve.supplyAPY).mul(100),
-        isCollateral: r.usageAsCollateralEnabledOnUser,
-        supplied: Decimal.from(r.underlyingBalance),
-        suppliedUSD: Decimal.from(r.underlyingBalanceUSD),
-      }));
-  }
-
-  private computeBorrowedAssets(
-    reserves: UserSummary['userReservesData'],
-  ): BorrowedAsset[] {
-    return reserves
-      .filter(r => Decimal.from(r.totalBorrowsUSD).gt(0))
-      .map(r => ({
-        asset: r.reserve.symbol,
-        assetAddress: r.underlyingAsset,
-        borrowed: Decimal.from(r.totalBorrows),
-        borrowedUSD: Decimal.from(r.totalBorrowsUSD),
-        apy: Decimal.from(r.reserve.variableBorrowAPY).mul(100),
-        type:
-          Number(r.variableBorrows) > 0 ? LoanType.VARIABLE : LoanType.STABLE,
-      }));
-  }
+function getBalance(
+  asset: AssetDetailsData,
+  account: string,
+  provider: ethers.providers.Provider,
+): Promise<BigNumber> {
+  return asset.isNative
+    ? provider.getBalance(account)
+    : asset.contract(provider).balanceOf(account);
 }

@@ -59,7 +59,8 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
           <span className="absolute right-0 -top-3 -translate-y-1/2">
             <MaxButton
               token={assetValue}
-              value={maxAmount ?? 0}
+              value={maxAmount}
+              precision={2}
               onClick={() =>
                 onAmountChange &&
                 onAmountChange(Decimal.from(maxAmount).toString())

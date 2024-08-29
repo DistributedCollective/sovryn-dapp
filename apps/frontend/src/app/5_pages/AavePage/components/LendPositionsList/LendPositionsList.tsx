@@ -4,6 +4,9 @@ import { t } from 'i18next';
 
 import {
   Accordion,
+  Dialog,
+  DialogBody,
+  DialogHeader,
   OrderDirection,
   OrderOptions,
   Paragraph,
@@ -18,13 +21,14 @@ import { PoolPositionStat } from '../PoolPositionStat/PoolPositionStat';
 import { COLUMNS_CONFIG } from './LendPositionsList.constants';
 import { LendPosition } from './LendPositionsList.types';
 import { LendPositionDetails } from './components/LendPositionDetails/LendPositionDetails';
+import { WithdrawForm } from './components/WithdrawForm/WithdrawForm';
 
 const pageTranslations = translations.aavePage;
 
 type LendPositionsListProps = {
-  supplyBalance?: Decimal;
-  supplyWeightedApy?: Decimal;
-  collateralBalance?: Decimal;
+  supplyBalance: Decimal;
+  supplyWeightedApy: Decimal;
+  collateralBalance: Decimal;
   lendPositions: LendPosition[];
 };
 
@@ -35,11 +39,27 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
   lendPositions,
 }) => {
   const { account } = useAccount();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState<boolean>(true);
+  const [withdrawAssetDialog, setWithdrawAssetDialog] = useState<
+    string | undefined
+  >();
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
     orderBy: 'balance',
     orderDirection: OrderDirection.Asc,
   });
+
+  const onWithdrawClick = useCallback((asset: string) => {
+    setWithdrawAssetDialog(asset);
+  }, []);
+
+  const onWithdrawClose = useCallback(() => {
+    setWithdrawAssetDialog(undefined);
+  }, []);
+
+  const mobileRenderer = useCallback(
+    p => <LendPositionDetails position={p} onWithdrawClick={onWithdrawClick} />,
+    [onWithdrawClick],
+  );
 
   const rowTitleRenderer = useCallback(
     (r: LendPosition) => (
@@ -50,10 +70,6 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
         precision={2}
       />
     ),
-    [],
-  );
-  const mobileRenderer = useCallback(
-    p => <LendPositionDetails position={p} />,
     [],
   );
 
@@ -74,26 +90,27 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
           <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:gap-6 lg:mb-6">
             <PoolPositionStat
               label={t(pageTranslations.common.balance)}
-              value={supplyBalance ?? 0}
+              value={supplyBalance}
               prefix="$"
               precision={2}
             />
             <PoolPositionStat
               label={t(pageTranslations.common.apy)}
               labelInfo={t(pageTranslations.common.apyInfo)}
-              value={supplyWeightedApy ?? 0}
+              value={supplyWeightedApy}
               suffix="%"
               precision={2}
             />
             <PoolPositionStat
               label={t(pageTranslations.common.collateral)}
-              value={collateralBalance ?? 0}
+              value={collateralBalance}
               prefix="$"
               precision={2}
             />
           </div>
+
           <Table
-            columns={COLUMNS_CONFIG}
+            columns={COLUMNS_CONFIG(onWithdrawClick)}
             rowClassName="bg-gray-80"
             accordionClassName="bg-gray-60 border border-gray-70"
             rowTitle={rowTitleRenderer}
@@ -102,6 +119,19 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
             orderOptions={orderOptions}
             setOrderOptions={setOrderOptions}
           />
+
+          <Dialog disableFocusTrap isOpen={!!withdrawAssetDialog}>
+            <DialogHeader
+              title={t(translations.aavePage.common.withdraw)}
+              onClose={onWithdrawClose}
+            />
+            <DialogBody className="flex flex-col gap-6">
+              <WithdrawForm
+                asset={withdrawAssetDialog!}
+                onSuccess={onWithdrawClose}
+              />
+            </DialogBody>
+          </Dialog>
         </>
       ) : (
         <div className="flex items-center justify-center lg:h-12">

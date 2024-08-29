@@ -2,13 +2,21 @@ import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { Accordion, OrderOptions, Table } from '@sovryn/ui';
+import {
+  Accordion,
+  Dialog,
+  DialogBody,
+  DialogHeader,
+  OrderOptions,
+  Table,
+} from '@sovryn/ui';
 
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { translations } from '../../../../../locales/i18n';
 import { COLUMNS_CONFIG } from './BorrowAssetsList.constants';
 import { BorrowPoolDetails } from './BorrowAssetsList.types';
 import { BorrowAssetDetails } from './components/BorrowAssetDetails/BorrowAssetDetails';
+import { BorrowForm } from './components/BorrowModal/BorrowForm';
 
 const pageTranslations = translations.aavePage.borrowAssetsList;
 
@@ -21,6 +29,17 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
 }) => {
   const [open, setOpen] = useState(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
+  const [borrowAssetDialog, setBorrowAssetDialog] = useState<
+    string | undefined
+  >();
+
+  const onBorrowClick = useCallback((asset: string) => {
+    setBorrowAssetDialog(asset);
+  }, []);
+
+  const onBorrowClose = useCallback(() => {
+    setBorrowAssetDialog(undefined);
+  }, []);
 
   const rowTitleRenderer = useCallback(
     (row: BorrowPoolDetails) => (
@@ -34,7 +53,16 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
     ),
     [],
   );
-  const mobileRenderer = useCallback(p => <BorrowAssetDetails pool={p} />, []);
+
+  const mobileRenderer = useCallback(
+    p => (
+      <BorrowAssetDetails
+        onBorrowClick={() => onBorrowClick(p.asset)}
+        pool={p}
+      />
+    ),
+    [onBorrowClick],
+  );
 
   return (
     <Accordion
@@ -50,7 +78,7 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
     >
       <Table
         className="mt-3"
-        columns={COLUMNS_CONFIG}
+        columns={COLUMNS_CONFIG(onBorrowClick)}
         rowClassName="bg-gray-80"
         accordionClassName="bg-gray-60 border border-gray-70"
         rowTitle={rowTitleRenderer}
@@ -59,6 +87,16 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
         orderOptions={orderOptions}
         setOrderOptions={setOrderOptions}
       />
+
+      <Dialog disableFocusTrap isOpen={!!borrowAssetDialog}>
+        <DialogHeader
+          title={t(translations.aavePage.common.borrow)}
+          onClose={onBorrowClose}
+        />
+        <DialogBody className="flex flex-col gap-6">
+          <BorrowForm asset={borrowAssetDialog!} onSuccess={onBorrowClose} />
+        </DialogBody>
+      </Dialog>
     </Accordion>
   );
 };

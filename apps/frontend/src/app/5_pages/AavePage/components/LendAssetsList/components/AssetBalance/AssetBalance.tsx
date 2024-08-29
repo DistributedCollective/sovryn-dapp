@@ -1,7 +1,10 @@
 import React, { FC } from 'react';
+
+import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 import { useAccount } from '../../../../../../../hooks/useAccount';
+import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 
 export type AssetBalanceRendererProps = {
   asset: string;
@@ -10,8 +13,8 @@ export type AssetBalanceRendererProps = {
 export const AssetBalanceRenderer: FC<AssetBalanceRendererProps> = ({
   asset,
 }) => {
-  const balance = useAssetBalance(asset);
   const { account } = useAccount();
+  const balance = useAssetBalance(asset, BOB_CHAIN_ID);
 
   return account ? (
     <AmountRenderer

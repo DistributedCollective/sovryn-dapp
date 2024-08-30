@@ -1,5 +1,5 @@
 .tooltip {
-  @apply bg-gray-10 text-xs rounded p-3 text-gray-90 absolute top-0 inline-block min-w-5 max-w-64 sm:max-w-96 leading-5 opacity-0;
+  @apply text-xs rounded p-3 absolute top-0 inline-block min-w-5 max-w-64 sm:max-w-96 leading-5 opacity-0;
   z-index: 999999;
   word-break: break-word;
 
@@ -21,11 +21,27 @@
     }
   }
 
+  &.primary {
+    @apply bg-gray-10 text-gray-90;
+
+    &:after {
+      @apply border-gray-10;
+    }
+  }
+
+  &.secondary {
+    @apply bg-gray-80 text-gray-10;
+
+    &:after {
+      @apply border-gray-80;
+    }
+  }
+
   &.top,
   &.top-start,
   &.top-end {
     &:after {
-      @apply border-t-[0.625rem] border-b-0 border-t-gray-10 border-b-transparent -bottom-[0.625rem] border-x-[0.516rem] border-x-transparent;
+      @apply border-t-[0.625rem] border-b-0  border-b-transparent -bottom-[0.625rem] border-x-[0.516rem] border-x-transparent;
     }
   }
 
@@ -33,7 +49,7 @@
   &.right-start,
   &.right-end {
     &:after {
-      @apply border-r-[0.625rem] border-l-0 border-r-gray-10 border-l-transparent -left-[0.625rem] border-y-[0.516rem] border-y-transparent;
+      @apply border-r-[0.625rem] border-l-0 border-l-transparent -left-[0.625rem] border-y-[0.516rem] border-y-transparent;
     }
   }
 
@@ -41,7 +57,7 @@
   &.left-start,
   &.left-end {
     &:after {
-      @apply border-l-[0.625rem] border-r-0 border-l-gray-10 border-r-transparent -right-[0.625rem] border-y-[0.516rem] border-y-transparent;
+      @apply border-l-[0.625rem] border-r-0 border-r-transparent -right-[0.625rem] border-y-[0.516rem] border-y-transparent;
     }
   }
 
@@ -49,7 +65,7 @@
   &.bottom-start,
   &.bottom-end {
     &:after {
-      @apply border-b-[0.625rem] border-t-0 border-b-gray-10 border-t-transparent -top-[0.625rem] border-x-[0.516rem] border-x-transparent;
+      @apply border-b-[0.625rem] border-t-0 border-t-transparent -top-[0.625rem] border-x-[0.516rem] border-x-transparent;
     }
   }
 

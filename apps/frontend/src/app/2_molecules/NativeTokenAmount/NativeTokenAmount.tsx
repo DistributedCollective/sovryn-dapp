@@ -6,7 +6,7 @@ import { decimalic } from '../../../utils/math';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 
 type NativeTokenAmountProps = {
-  usdValue: string | number | undefined;
+  usdValue?: string | number;
   dataAttribute?: string;
   precision?: number;
 };

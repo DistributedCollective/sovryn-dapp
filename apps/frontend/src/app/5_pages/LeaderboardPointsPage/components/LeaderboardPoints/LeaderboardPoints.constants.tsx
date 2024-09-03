@@ -8,22 +8,21 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { translations } from '../../../../../locales/i18n';
 
 export const DATA_ENDPOINT_URL =
-  'https://season2-spice-points-bucket.s3.us-east-2.amazonaws.com/latest_Season2_Spice_distributed.json';
+  'https://season2-spice-points-bucket.s3.us-east-2.amazonaws.com/Total_S1&S2_Spice_Leaderboard.json';
 
 export const PAGE_SIZE = 50;
 
 export const COLUMNS_CONFIG = (isSingleUser: boolean = false) => [
   {
-    id: isSingleUser ? 'position' : '',
-    title: isSingleUser
-      ? t(translations.leaderboardPointsPage.table.yourPosition)
-      : '',
+    id: '',
+    title: '',
     cellRenderer: user => user.id,
+    className: 'w-24',
   },
   {
-    id: isSingleUser ? '' : 'wallet',
+    id: 'address',
     title: isSingleUser
-      ? ''
+      ? t(translations.leaderboardPointsPage.table.yourPosition)
       : t(translations.leaderboardPointsPage.table.participant),
     cellRenderer: user => (
       <div className="text-right lg:text-left w-full">

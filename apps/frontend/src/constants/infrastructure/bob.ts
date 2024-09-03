@@ -17,10 +17,6 @@ export const BOB = {
     [Environments.Testnet]:
       'https://bob-ambient-graphcache.test.sovryn.app/gcgo',
   },
-  sdex: {
-    [Environments.Mainnet]: 'https://indexer.sovryn.app',
-    [Environments.Testnet]: 'https://indexer.test.sovryn.app',
-  },
   bridge: {
     [Environments.Mainnet]: 'https://app.gobob.xyz/bridge',
     [Environments.Testnet]: 'https://bob-sepolia.gobob.xyz/',

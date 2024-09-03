@@ -1,6 +1,11 @@
-import { ReserveDataHumanized } from '@aave/contract-helpers';
 import {
+  ReserveDataHumanized,
+  ReservesDataHumanized,
+} from '@aave/contract-helpers';
+import {
+  formatReserves,
   FormatReserveUSDResponse,
+  formatUserSummary,
   FormatUserSummaryResponse,
 } from '@aave/math-utils';
 
@@ -12,7 +17,7 @@ import { Decimal } from '@sovryn/utils';
 import { BOB_CHAIN_ID } from '../../config/chains';
 
 import { Reserve } from '../../hooks/aave/useAaveReservesData';
-import { BorrowRateMode } from '../../types/aave';
+import { BorrowRateMode, UserReservesData } from '../../types/aave';
 import { decimalic, fromWei } from '../math';
 import { AaveCalculations } from './AaveCalculations';
 
@@ -45,6 +50,7 @@ export type AaveUserReservesSummary = {
   supplyWeightedApy: Decimal;
   collateralBalance: Decimal;
   currentLiquidationThreshold: Decimal;
+  currentLoanToValue: Decimal;
 
   borrowBalance: Decimal;
   borrowWeightedApy: Decimal;
@@ -68,6 +74,7 @@ export class AaveUserReservesSummaryFactory {
       supplyWeightedApy: Decimal.ZERO,
       collateralBalance: Decimal.ZERO,
       currentLiquidationThreshold: Decimal.ZERO,
+      currentLoanToValue: Decimal.ZERO,
 
       borrowBalance: Decimal.ZERO,
       borrowWeightedApy: Decimal.ZERO,
@@ -94,11 +101,37 @@ export class AaveUserReservesSummaryFactory {
     };
   }
 
-  static async buildSummary(
-    provider: ethers.providers.Provider,
-    account: string,
-    userSummary: UserSummary,
-  ): Promise<AaveUserReservesSummary> {
+  static async buildSummary({
+    provider,
+    account,
+    reservesData,
+    userReservesData,
+    currentTimestamp,
+  }: {
+    provider: ethers.providers.Provider;
+    account: string;
+    reservesData: ReservesDataHumanized;
+    userReservesData: UserReservesData;
+    currentTimestamp: number;
+  }): Promise<AaveUserReservesSummary> {
+    const {
+      marketReferenceCurrencyDecimals,
+      marketReferenceCurrencyPriceInUsd: marketReferencePriceInUsd,
+    } = reservesData.baseCurrencyData;
+    const userSummary = formatUserSummary({
+      currentTimestamp,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
+      userReserves: userReservesData.userReserves,
+      userEmodeCategoryId: userReservesData.userEmodeCategoryId,
+      formattedReserves: formatReserves({
+        currentTimestamp,
+        marketReferencePriceInUsd,
+        marketReferenceCurrencyDecimals,
+        reserves: reservesData.reservesData,
+      }),
+    });
+
     const netWorth = Decimal.from(userSummary.netWorthUSD);
     const borrowBalance = Decimal.from(userSummary.totalBorrowsUSD);
     const supplyBalance = AaveCalculations.computeSuppliedBalance(
@@ -153,6 +186,7 @@ export class AaveUserReservesSummaryFactory {
       supplyWeightedApy,
       collateralBalance,
       currentLiquidationThreshold,
+      currentLoanToValue: Decimal.from(userSummary.currentLoanToValue),
 
       borrowBalance,
       borrowWeightedApy,

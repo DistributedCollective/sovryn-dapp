@@ -44,11 +44,8 @@ export const useAaveReservesData = (): ReserveData => {
       const reservesData = await uiPoolDataProvider.getReservesHumanized({
         lendingPoolAddressProvider: config.PoolAddressesProviderAddress,
       });
-      const reserves = reservesData.reservesData.filter(r =>
-        config.assetsWhitelist.includes(r.symbol),
-      );
       const formattedReserves = formatReserves({
-        reserves,
+        reserves: reservesData.reservesData,
         currentTimestamp,
         marketReferenceCurrencyDecimals:
           reservesData.baseCurrencyData.marketReferenceCurrencyDecimals,

@@ -30,7 +30,7 @@ type BorrowPositionsListProps = {
   borrowBalance: Decimal;
   borrowWeightedApy: Decimal;
   borrowPowerUsed: Decimal;
-  eModeEnabled: boolean;
+  eModeCategoryId: Number;
 };
 
 export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
@@ -38,10 +38,10 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
   borrowBalance,
   borrowPowerUsed,
   borrowWeightedApy,
-  eModeEnabled,
+  eModeCategoryId,
 }) => {
   const { account } = useAccount();
-  const [open, setOpen] = useState<boolean>(true);
+  const [open, setOpen] = useState(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
   const [repayAssetDialog, setRepayAssetDialog] = useState<
     string | undefined
@@ -86,7 +86,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
             <span className="text-gray-30 font-medium text-sm">
               {t(pageTranslations.borrowPositionsList.eMode)}
             </span>
-            <EfficiencyModeCard enabled={eModeEnabled} />
+            <EfficiencyModeCard eModeCategoryId={eModeCategoryId} />
           </div>
         </div>
       }
@@ -98,7 +98,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
       {account ? (
         <>
           <EfficiencyModeCard
-            enabled={eModeEnabled}
+            eModeCategoryId={eModeCategoryId}
             className="lg:hidden mb-3"
           />
           <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:gap-6 lg:mb-6">

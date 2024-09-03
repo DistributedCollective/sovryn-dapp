@@ -826,7 +826,27 @@
             "enableAssetAsCollateral": "Enable {{symbol}} as collateral",
             "enableAssetAsCollateralSubtitle": "Enabling {{symbol}} as collateral will increase your borrowing power",
             "disableAssetAsCollateral": "Disable {{symbol}} as collateral",
-            "disableAssetAsCollateralSubtitle": "Disabling {{symbol}} as collateral will decrease your borrowing power and potentially risk you to liquidation"
+            "disableAssetAsCollateralSubtitle": "Disabling {{symbol}} as collateral will decrease your borrowing power and potentially risk you to liquidation",
+            "setUserEModeTitle": "Set E-Mode to {{category}}",
+            "setUserEModeSubtitle": "Set E-Mode to {{category}} category",
+            "disableEModeTitle": "Disable E-Mode",
+            "disableEModeSubtitle": "Disable E-Mode"
+        },
+        "eMode": {
+            "availableAssets": "Available assets",
+            "selectCategory": "Select category",
+            "maxLoanToValue": "Max loan to value",
+            "positionsMustBeClosed": "To enable E-mode for the {{category}} category, all borrow positions outside of this category must be closed.",
+            "limitationsWarning": "Enabling E-Mode only allows you to borrow assets belonging to the selected category.",
+            "enableEMode": "Enable E-mode",
+            "disableEMode": "Disable E-mode",
+            "liquidationRiskWarning": "Liquidation risk. This action will reduce your health factor. Please be mindful of the increased risk of collateral liquidation.",
+            "eModeCategory": "E-mode category",
+            "switchCategory": "Switch E-mode",
+            "assetCategory": "Asset category",
+            "eModeActivatedWarning": "In E-Mode some assets are not borrowable. Exit E-Mode to get access to all assets.",
+            "allAssets": "All assets",
+            "none": "None"
         },
         "topPanel": {
             "title": "Lend and borrow",

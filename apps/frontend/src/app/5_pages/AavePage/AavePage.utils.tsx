@@ -52,6 +52,11 @@ export function normalizeBorrowPoolDetails(
   } else {
     return reserves
       .filter(r => r.borrowingEnabled)
+      .filter(
+        r =>
+          userReservesSummary.eModeCategoryId === r.eModeCategoryId ||
+          userReservesSummary.eModeCategoryId === 0,
+      )
       .map(r => ({
         asset: r.symbol,
         apy: Decimal.from(r.variableBorrowAPY).mul(100),

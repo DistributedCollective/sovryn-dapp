@@ -36,7 +36,7 @@ type BorrowFormProps = {
 };
 
 export const BorrowForm: FC<BorrowFormProps> = ({ asset, onSuccess }) => {
-  const userReservesSummary = useAaveUserReservesData();
+  const { summary } = useAaveUserReservesData();
   const [borrowAsset, setBorrowAsset] = useState<string>(asset);
   const [borrowAmount, setBorrowAmount, borrowSize] = useDecimalAmountInput('');
   const [acknowledge, setAcknowledge] = useState<boolean>(false);
@@ -44,7 +44,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onSuccess }) => {
 
   const borrowableAssetsOptions = useMemo(
     () =>
-      userReservesSummary.reserves
+      summary.reserves
         .filter(r => r.reserve.borrowingEnabled)
         .map(r => ({
           value: r.reserve.symbol,
@@ -57,14 +57,12 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onSuccess }) => {
             />
           ),
         })),
-    [userReservesSummary.reserves],
+    [summary.reserves],
   );
 
   const borrowReserve = useMemo(() => {
-    return userReservesSummary.reserves.find(
-      r => r.reserve.symbol === borrowAsset,
-    );
-  }, [userReservesSummary.reserves, borrowAsset]);
+    return summary.reserves.find(r => r.reserve.symbol === borrowAsset);
+  }, [summary.reserves, borrowAsset]);
 
   const borrowUsdAmount = useMemo(() => {
     return borrowSize.mul(borrowReserve?.reserve.priceInUSD ?? 0);
@@ -76,25 +74,21 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onSuccess }) => {
 
   const newCollateralRatio = useMemo(() => {
     return AaveCalculations.computeCollateralRatio(
-      userReservesSummary.collateralBalance,
-      userReservesSummary.borrowBalance.add(borrowUsdAmount),
+      summary.collateralBalance,
+      summary.borrowBalance.add(borrowUsdAmount),
     );
-  }, [
-    userReservesSummary.collateralBalance,
-    userReservesSummary.borrowBalance,
-    borrowUsdAmount,
-  ]);
+  }, [summary.collateralBalance, summary.borrowBalance, borrowUsdAmount]);
 
   const liquidationPrice = useMemo(() => {
     return AaveCalculations.computeLiquidationPrice(
       borrowSize,
-      userReservesSummary.currentLiquidationThreshold,
-      userReservesSummary.collateralBalance,
+      summary.currentLiquidationThreshold,
+      summary.collateralBalance,
     );
   }, [
     borrowSize,
-    userReservesSummary.currentLiquidationThreshold,
-    userReservesSummary.collateralBalance,
+    summary.currentLiquidationThreshold,
+    summary.collateralBalance,
   ]);
 
   const isValidBorrowAmount = useMemo(
@@ -173,7 +167,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onSuccess }) => {
           <span>
             {t(translations.aavePage.borrowForm.acknowledge)}{' '}
             <Link
-              text={translations.aavePage.borrowForm.learnMore}
+              text={t(translations.aavePage.borrowForm.learnMore)}
               href="#learn-more"
             />
             {/* TODO: Add proper learn more href */}

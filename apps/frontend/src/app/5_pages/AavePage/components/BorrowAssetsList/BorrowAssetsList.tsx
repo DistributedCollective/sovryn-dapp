@@ -7,6 +7,8 @@ import {
   Dialog,
   DialogBody,
   DialogHeader,
+  ErrorBadge,
+  ErrorLevel,
   OrderOptions,
   Table,
 } from '@sovryn/ui';
@@ -22,10 +24,12 @@ const pageTranslations = translations.aavePage.borrowAssetsList;
 
 type BorrowAssetsListProps = {
   borrowPools: BorrowPoolDetails[];
+  eModeEnabled: boolean;
 };
 
 export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
   borrowPools,
+  eModeEnabled,
 }) => {
   const [open, setOpen] = useState(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
@@ -76,8 +80,16 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
       open={open}
       onClick={setOpen}
     >
+      {eModeEnabled && (
+        <ErrorBadge
+          className="flex justify-start"
+          level={ErrorLevel.Warning}
+          message={t(translations.aavePage.eMode.eModeActivatedWarning)}
+        />
+      )}
+
       <Table
-        className="mt-3"
+        className="mt-4"
         columns={COLUMNS_CONFIG(onBorrowClick)}
         rowClassName="bg-gray-80"
         accordionClassName="bg-gray-60 border border-gray-70"

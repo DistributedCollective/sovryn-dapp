@@ -33,14 +33,14 @@ type WithdrawFormProps = {
 
 export const WithdrawForm: FC<WithdrawFormProps> = ({ asset }) => {
   const { handleWithdraw } = useAaveWithdraw();
-  const userReservesSummary = useAaveUserReservesData();
+  const { summary } = useAaveUserReservesData();
   const [withdrawAsset, setWithdrawAsset] = useState<string>(asset);
   const [withdrawAmount, setWithdrawAmount, withdrawSize] =
     useDecimalAmountInput('');
 
   const withdrawableAssetsOptions = useMemo(
     () =>
-      userReservesSummary.reserves
+      summary.reserves
         .filter(r => r.supplied.gt(0))
         .map(sa => ({
           value: sa.asset,
@@ -53,14 +53,12 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset }) => {
             />
           ),
         })),
-    [userReservesSummary],
+    [summary],
   );
 
   const withdrawReserve = useMemo(() => {
-    return userReservesSummary.reserves.find(
-      r => r.reserve.symbol === withdrawAsset,
-    );
-  }, [withdrawAsset, userReservesSummary]);
+    return summary.reserves.find(r => r.reserve.symbol === withdrawAsset);
+  }, [withdrawAsset, summary]);
 
   const maximumWithdrawAmount: Decimal = useMemo(() => {
     return withdrawReserve ? withdrawReserve.supplied : Decimal.from(0);

@@ -10,7 +10,7 @@ export const BOB = {
   publicRpc: rpc,
   explorer: {
     [Environments.Mainnet]: 'https://explorer.gobob.xyz',
-    [Environments.Testnet]: 'https://bob-sepolia.explorer.gobob.xyz/',
+    [Environments.Testnet]: 'https://bob-sepolia.explorer.gobob.xyz',
   },
   indexer: {
     [Environments.Mainnet]: 'https://bob-ambient-graphcache.sovryn.app/gcgo',

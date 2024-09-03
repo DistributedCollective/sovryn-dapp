@@ -4749,10 +4749,10 @@
   resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-0.2.5.tgz#a689b6b86686f7e54a6bbfac965a40f49a2fa4ea"
   integrity sha512-EflaS8gsnlnslo1ZgxFm4c6xBAGPW1dJJ/8ItSgKhYBTYy50zulGRZwln3c4QVt4Sq6dkasix5NsqGXkTQutOA==
 
-"@sovryn/joe-core@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@sovryn/joe-core/-/joe-core-2.0.3.tgz#30ae5737ec340ffc0a816db116aca131dbae4484"
-  integrity sha512-prRU9cLjjt0KMUcSzpE06XyB2GfG2HHVrNXOptlR5Sx3qwAzeQBmSDyI0FxImaZnLCLOYt9JFN5W1Sxd/BoVPg==
+"@sovryn/joe-core@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@sovryn/joe-core/-/joe-core-2.0.4.tgz#30cd977efd4e4bf673a66a8b4cdc79917f90eb5a"
+  integrity sha512-ZXzQY2lE1Soclp7ou2xkkg+ibRAHShkW0M5uL5NyOxqDIS8TwohvcQK+h44FYRZLMl+Gi6sIJPpGBpS8HY7OSg==
   dependencies:
     big.js "^6.2.1"
     decimal.js-light "^2.5.0"
@@ -4761,12 +4761,12 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@sovryn/joe-sdk-v2@^3.0.12":
-  version "3.0.12"
-  resolved "https://registry.yarnpkg.com/@sovryn/joe-sdk-v2/-/joe-sdk-v2-3.0.12.tgz#e5236971fd9187762b9f9f8270947bf407dfd4da"
-  integrity sha512-93CA8oM/PdNeKqToDFcnuBz8Howj+CcZ7vLUOiV73Bkto2Cmy4lvP0BLiPv7mmf2vVjJ9B54GPNSStEW3d/reg==
+"@sovryn/joe-sdk-v2@^3.0.13":
+  version "3.0.13"
+  resolved "https://registry.yarnpkg.com/@sovryn/joe-sdk-v2/-/joe-sdk-v2-3.0.13.tgz#a693b3a7db7b716b46041e2626ed3cab3c7bd61c"
+  integrity sha512-vt4UnUO5p0RQblPJwASjyPefTTx8qvrBZ9nwYMQrSO2ozGBpxWjAItB8Uq2+Of8ywybDlFEE//R6VcLiqhLJIA==
   dependencies:
-    "@sovryn/joe-core" "^2.0.3"
+    "@sovryn/joe-core" "^2.0.4"
     big.js "^6.2.1"
     jsbi "^4.3.0"
     lodash.flatmap "^4.5.0"
@@ -4774,12 +4774,12 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@sovryn/joe-sdk@^5.0.3":
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/@sovryn/joe-sdk/-/joe-sdk-5.0.3.tgz#d184ba36c0b7be9d1e52d0756f576556da8b0946"
-  integrity sha512-vQpPcmS4/L8aXkdcwVHQb8FES//H9n8K6cqoqJU5dNv220MKsDvlV0g7KNYwby2tmkIixXR73q7zGoMm1OsbKw==
+"@sovryn/joe-sdk@^5.0.4":
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/@sovryn/joe-sdk/-/joe-sdk-5.0.4.tgz#89f664992c6c3f9cd18b443f94162f379de3e947"
+  integrity sha512-aHAdJHKGToQ1b5xa+cEEEERle+Do0iDLdVwDr87m1C7d9YJnD7zhg3nPgeK+XhX8+m6u56HnuoeB9SHTHm351w==
   dependencies:
-    "@sovryn/joe-core" "^2.0.3"
+    "@sovryn/joe-core" "^2.0.4"
     big.js "^6.2.1"
     decimal.js-light "^2.5.0"
     jsbi "^4.3.0"

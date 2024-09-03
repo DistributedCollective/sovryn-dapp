@@ -1,6 +1,6 @@
 import { BigNumber, Contract, constants, providers } from 'ethers';
 import { formatUnits } from 'ethers/lib/utils';
-import { createPublicClient, http, parseUnits } from 'viem';
+import { createPublicClient, defineChain, http, parseUnits } from 'viem';
 
 import { getAssetData, getProtocolContract } from '@sovryn/contracts';
 import {
@@ -20,7 +20,28 @@ import {
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
 
-const TESTNET_RPC = 'https://testnet.rpc.gobob.xyz';
+const bobTestnet = defineChain({
+  id: 808813, // 808813 new chain id
+  name: 'Bob Testnet',
+  nativeCurrency: {
+    name: 'Bob Testnet',
+    symbol: 'tETH',
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://bob-rpc.test.sovryn.app'],
+    },
+  },
+  blockExplorerUrls: ['https://testnet-explorer.gobob.xyz'],
+  contracts: {
+    multicall3: {
+      address: '0xcA11bde05977b3631167028862bE2a173976CA11',
+    },
+  },
+});
+
+const TESTNET_RPC = 'https://bob-rpc.test.sovryn.app';
 
 export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
   let pairCache: SwapPairs;
@@ -35,9 +56,10 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
     // todo: use the correct rpc url
     // todo: cache the client
 
-    console.log('chainId', chainId);
+    console.log('get public client?', chainId);
 
     return createPublicClient({
+      chain: bobTestnet,
       transport: http(TESTNET_RPC),
     });
   };

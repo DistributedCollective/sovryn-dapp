@@ -1,8 +1,19 @@
-import { BigNumber, Contract, constants, providers } from 'ethers';
+import {
+  BigNumber,
+  BigNumberish,
+  Contract,
+  constants,
+  providers,
+  utils,
+} from 'ethers';
 import { formatUnits } from 'ethers/lib/utils';
 import { createPublicClient, defineChain, http, parseUnits } from 'viem';
 
-import { getAssetData, getProtocolContract } from '@sovryn/contracts';
+import {
+  getAssetData,
+  getAssetDataByAddress,
+  getProtocolContract,
+} from '@sovryn/contracts';
 import {
   ChainId,
   ChainIds,
@@ -136,15 +147,11 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
 
       const amountIn = new TokenAmount(inputToken, typedValueInParsed);
 
-      console.log('bases', joeBases);
-
       const allTokenPairs = PairV2.createAllTokenPairs(
         inputToken,
         outputToken,
         joeBases,
       );
-
-      console.log('allTokenPairs', allTokenPairs);
 
       const allPairs = PairV2.initPairs(allTokenPairs);
       const allRoutes = RouteV2.createAllRoutes(
@@ -166,32 +173,25 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
         chainIdToNumber(chainId),
       )) as TradeV2[];
 
-      console.log('getBestRoute', {
-        inputToken,
-        outputToken,
-        amountIn,
-        allTokenPairs,
-        allPairs,
-        allRoutes,
-        trades,
-      });
-
       return TradeV2.chooseBestTrade(trades, isExactIn);
     },
     async quote(entry, destination, amount) {
+      amount = await parseAmount(await getChainId(), entry, amount);
+
       const bestTrade: TradeV2 = await (this as any).getBestTrade(
         entry,
         destination,
         amount,
       );
 
-      console.log('bestTrade', bestTrade?.toLog());
-
       if (!bestTrade) {
         return BigNumber.from('0');
       }
 
-      return BigNumber.from(bestTrade.outputAmount.raw.toString());
+      // return BigNumber.from(bestTrade.outputAmount.raw.toString());
+      return BigNumber.from(bestTrade.outputAmount.raw.toString()).mul(
+        Math.pow(10, 18 - bestTrade.outputAmount.currency.decimals),
+      );
     },
     approve: async (entry, destination, amount, from, overrides) => {
       // native token is always approved
@@ -199,6 +199,7 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
         return undefined;
       }
 
+      amount = await parseAmount(await getChainId(), entry, amount);
       const converter = await getRouterContract();
 
       if (
@@ -224,11 +225,14 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
     },
     permit: async () => Promise.resolve(undefined),
     async swap(entry, destination, amount, from, options, overrides) {
+      amount = await parseAmount(await getChainId(), entry, amount);
+
       const bestTrade: TradeV2 = await (this as any).getBestTrade(
         entry,
         destination,
         amount,
       );
+
       if (!bestTrade) {
         throw makeError(
           `Cannot swap ${entry} to ${destination}`,
@@ -279,3 +283,12 @@ async function loadTokens(chain: ChainId, tokens: string[]) {
       ),
   );
 }
+
+const parseAmount = async (
+  chain: ChainId,
+  token: string,
+  amount: BigNumberish,
+): Promise<BigNumber> => {
+  const data = await getAssetDataByAddress(token, chain);
+  return utils.parseUnits(utils.formatEther(amount), data.decimals);
+};

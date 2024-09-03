@@ -4761,10 +4761,10 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@sovryn/joe-sdk-v2@^3.0.14":
-  version "3.0.14"
-  resolved "https://registry.yarnpkg.com/@sovryn/joe-sdk-v2/-/joe-sdk-v2-3.0.14.tgz#06638dc8e50b0ff320608d2230db6a515f0a3448"
-  integrity sha512-j/lF9my2d0ZFu1kWcb2xOitZod/dB5JLf6ncVteC1pfGiHKA+T8cTWQH+HApfWNXkLwN5myjBHMJiIf+eFxmuA==
+"@sovryn/joe-sdk-v2@^3.0.15":
+  version "3.0.15"
+  resolved "https://registry.yarnpkg.com/@sovryn/joe-sdk-v2/-/joe-sdk-v2-3.0.15.tgz#19440d7f2dbd5d7ece4f20a0ee77aae30c3b0587"
+  integrity sha512-3cKYFGmS3wZNS+/ktmrOsNpRnOLb/Um7khTRzr8IFmMTu2yTwaiMReweRrm/aRMlw8UgK6M1z0ILz6cZY9zklw==
   dependencies:
     "@sovryn/joe-core" "^2.0.4"
     big.js "^6.2.1"
@@ -4774,10 +4774,10 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@sovryn/joe-sdk@^5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@sovryn/joe-sdk/-/joe-sdk-5.0.4.tgz#89f664992c6c3f9cd18b443f94162f379de3e947"
-  integrity sha512-aHAdJHKGToQ1b5xa+cEEEERle+Do0iDLdVwDr87m1C7d9YJnD7zhg3nPgeK+XhX8+m6u56HnuoeB9SHTHm351w==
+"@sovryn/joe-sdk@^5.0.5":
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/@sovryn/joe-sdk/-/joe-sdk-5.0.5.tgz#7caecf18e0b8a4ff28522add97e3885b615bfe14"
+  integrity sha512-KzSuZwyka59DEoYZbAgt2pbcmSCcX7fHghj94tWxn3rvBw54BW4fu4C7SYLhGuTVeVvImRIEUps/FyEE8/yvMg==
   dependencies:
     "@sovryn/joe-core" "^2.0.4"
     big.js "^6.2.1"

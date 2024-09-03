@@ -7,7 +7,7 @@ import { ProposalState } from '../BitocracyPage.types';
 import { shouldProposalBeDefeated } from '../BitocracyPage.utils';
 import { GRACE_PERIOD_IN_SECONDS } from '../components/Proposals/Proposals.constants';
 
-export const useProposalStatus = (proposal?: Proposal) => {
+export const useProposalStatus = (proposal?: Proposal, block?: number) => {
   const { value: blockNumber } = useBlockNumber();
   const currentTimeStamp = useMemo(() => Math.ceil(Date.now() / MS), []);
 
@@ -20,9 +20,9 @@ export const useProposalStatus = (proposal?: Proposal) => {
 
     if (proposal.canceled) {
       status = ProposalState.Canceled;
-    } else if (blockNumber <= proposal.endBlock) {
+    } else if ((block || blockNumber) <= proposal.endBlock) {
       status = ProposalState.Active;
-    } else if (blockNumber <= proposal.startBlock) {
+    } else if ((block || blockNumber) <= proposal.startBlock) {
       status = ProposalState.Pending;
     } else if (shouldProposalBeDefeated(proposal)) {
       status = ProposalState.Defeated;
@@ -40,5 +40,5 @@ export const useProposalStatus = (proposal?: Proposal) => {
     }
 
     return status;
-  }, [blockNumber, currentTimeStamp, proposal]);
+  }, [blockNumber, block, currentTimeStamp, proposal]);
 };

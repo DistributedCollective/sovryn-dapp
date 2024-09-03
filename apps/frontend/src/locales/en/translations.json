@@ -524,7 +524,7 @@
             },
             "earnYield_BOB": {
                 "title": "Passive Yield",
-                "description": "Earn Spice, Rune points & trading fees in the Sovryn AMM.",
+                "description": "Earn Spice points & Trading fees in the Sovryn AMM.",
                 "action": "Deposit in AMM"
             },
             "soon_BOB": {
@@ -1407,10 +1407,10 @@
         "poolStatistics": {
             "lpFeeRate": "LP fee rate",
             "lpFeeRateInfo": "The fee rate that is charged per swap and given to AMM LPs",
-            "bitocracyFeeRate": "Bitocracy fee rate",
+            "bitocracyFeeRate": "Stakers fee rate",
             "bitocracyFeeRateInfo": "The fee rate that is charged per swap and given to SOV stakers",
             "totalSwapFeeRate": "Total fee rate",
-            "totalSwapFeeRateInfo": "The sum of the LP fee rate and Bitocracy fee rate"
+            "totalSwapFeeRateInfo": "The sum of the LP fee rate and Stakers fee rate"
         },
         "adjustAndDepositModal": {
             "titles": {
@@ -1963,7 +1963,7 @@
             "title": "Market Making - Sovryn"
         },
         "title": "Market making",
-        "subtitle": "Earn Spice & Rune points and fees from AMM swaps on BoB chain",
+        "subtitle": "Earn Spice points and fees from AMM swaps on BoB chain",
         "poolsTable": {
             "pair": "Pair",
             "liquidity": "Liquidity",

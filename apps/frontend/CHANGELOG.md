@@ -1,5 +1,16 @@
 # frontend
 
+## 1.1.19
+
+### Patch Changes
+
+- 19c5e754: SOV-4357: Fix Portfolio responsive issues
+- ba632524: SOV-4358: Market-Making page: wrong fee rates for V2 pools
+- ea23f1f6: SOV-4331: Remove Rune points copy on promo card
+- 79b88d16: SOV-4328: BOB LP value display only showing one asset
+- c93bae35: SOV-3346: paginate bitocracy proposal overview table
+
+
 ## 1.1.18
 
 ### Patch Changes

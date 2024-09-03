@@ -1,5 +1,6 @@
 import { ambientRoute } from './routes/ambient';
 import { ammSwapRoute } from './routes/amm-swap-route';
+import { joeRoute } from './routes/joe';
 import { mocIntegrationSwapRoute } from './routes/moc-integration-swap-route';
 import { myntBassetRoute } from './routes/mynt-basset-route';
 import { myntFixedRateRoute } from './routes/mynt-fixed-rate-route';
@@ -17,6 +18,7 @@ export const smartRoutes = {
   zeroRedemptionSwapRoute,
   mocIntegrationSwapRoute,
   ambientRoute,
+  joeRoute,
 };
 
 export { prepareERC2612Permit } from './utils/permit';

@@ -39,6 +39,10 @@
     "@ethersproject/providers": "*",
     "@sovryn-zero/lib-base": "*",
     "@sovryn/contracts": "*",
-    "ethers": "*"
+    "ethers": "*",
+    "viem": "^2.19.2",
+    "@sovryn/joe-core": "^2.0.3",
+    "@sovryn/joe-sdk": "^5.0.3",
+    "@sovryn/joe-sdk-v2": "^3.0.12"
   }
 }

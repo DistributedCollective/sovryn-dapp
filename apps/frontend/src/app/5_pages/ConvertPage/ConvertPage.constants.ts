@@ -16,6 +16,7 @@ export const SWAP_ROUTES = [
   smartRoutes.myntFixedRateRoute,
   smartRoutes.mocIntegrationSwapRoute,
   smartRoutes.ambientRoute,
+  smartRoutes.joeRoute,
   // smartRoutes.zeroRedemptionSwapRoute,
 ];
 

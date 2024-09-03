@@ -44,19 +44,22 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onSuccess }) => {
 
   const borrowableAssetsOptions = useMemo(
     () =>
-      summary.reserves
-        .filter(r => r.reserve.borrowingEnabled)
-        .map(r => ({
-          value: r.reserve.symbol,
-          label: (
-            <AssetRenderer
-              showAssetLogo
-              asset={r.reserve.symbol}
-              chainId={BOB_CHAIN_ID}
-              assetClassName="font-medium"
-            />
-          ),
-        })),
+      summary.reserves.reduce((acc, r) => {
+        if (r.reserve.borrowingEnabled) {
+          acc.push({
+            value: r.reserve.symbol,
+            label: (
+              <AssetRenderer
+                showAssetLogo
+                asset={r.reserve.symbol}
+                chainId={BOB_CHAIN_ID}
+                assetClassName="font-medium"
+              />
+            ),
+          });
+        }
+        return acc;
+      }, [] as { value: string; label: JSX.Element }[]),
     [summary.reserves],
   );
 

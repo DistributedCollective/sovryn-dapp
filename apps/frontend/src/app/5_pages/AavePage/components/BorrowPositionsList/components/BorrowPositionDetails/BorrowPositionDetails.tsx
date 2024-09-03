@@ -7,9 +7,9 @@ import { HelperButton, SimpleTableRow } from '@sovryn/ui';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountPriceRenderer } from '../../../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 import { translations } from '../../../../../../../locales/i18n';
-import { BorrowRateMode } from '../../../../../../../types/aave';
 import { BorrowPosition } from '../../BorrowPositionsList.types';
 import { BorrowPositionAction } from '../BorrowPositionAction/BorrowPositionAction';
+import { BorrowRateModeSelect } from '../BorrowRateModeSelect/BorrowRateModeSelect';
 
 type BorrowPositionDetailsProps = {
   position: BorrowPosition;
@@ -48,11 +48,8 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
       {/* Apy type */}
       <SimpleTableRow
         label={t(translations.aavePage.common.apyType)}
-        value={t(
-          translations.aavePage.common[
-            position.type === BorrowRateMode.STABLE ? 'stable' : 'variable'
-          ],
-        )}
+        valueClassName="flex justify-end"
+        value={<BorrowRateModeSelect position={position} />}
       />
     </div>
 

@@ -55,5 +55,28 @@ export const useAaveBorrow = () => {
     [setIsOpen, setTitle, setTransactions, aaveBorrowTransactionsFactory],
   );
 
-  return { handleBorrow };
+  const handleSwapBorrowRateMode = useCallback(
+    async (
+      asset: AssetDetailsData,
+      currentRateMode: BorrowRateMode,
+      opts?: TransactionFactoryOptions,
+    ) => {
+      if (!aaveBorrowTransactionsFactory) {
+        return;
+      }
+
+      setTransactions(
+        await aaveBorrowTransactionsFactory.swapBorrowRateMode(
+          asset,
+          currentRateMode,
+          opts,
+        ),
+      );
+      setTitle(t(translations.aavePage.tx.swapBorrowRateModeTitle));
+      setIsOpen(true);
+    },
+    [setIsOpen, setTitle, setTransactions, aaveBorrowTransactionsFactory],
+  );
+
+  return { handleBorrow, handleSwapBorrowRateMode };
 };

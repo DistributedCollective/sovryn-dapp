@@ -9,9 +9,9 @@ import { BOB_CHAIN_ID } from '../../../../../config/chains';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
-import { BorrowRateMode } from '../../../../../types/aave';
 import { BorrowPosition } from './BorrowPositionsList.types';
 import { BorrowPositionAction } from './components/BorrowPositionAction/BorrowPositionAction';
+import { BorrowRateModeSelect } from './components/BorrowRateModeSelect/BorrowRateModeSelect';
 
 const pageTranslations = translations.aavePage;
 
@@ -75,13 +75,9 @@ export const COLUMNS_CONFIG = (onRepayClick: (asset: string) => unknown) => [
       </span>
     ),
     cellRenderer: (position: BorrowPosition) => (
-      <span>
-        {t(
-          pageTranslations.common[
-            position.type === BorrowRateMode.STABLE ? 'stable' : 'variable'
-          ],
-        )}
-      </span>
+      <div className="flex items-center justify-center">
+        <BorrowRateModeSelect position={position} />
+      </div>
     ),
   },
   {

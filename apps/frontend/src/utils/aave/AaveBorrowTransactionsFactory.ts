@@ -27,6 +27,7 @@ export class AaveBorrowTransactionsFactory {
       this.PoolAddress,
       [
         'function borrow(address asset, uint256 amount, uint256 interestRateMode, uint16 referralCode, address onBehalfOf)',
+        'function swapBorrowRateMode(address asset, uint256 rateMode)',
       ],
       this.signer,
     );
@@ -47,13 +48,37 @@ export class AaveBorrowTransactionsFactory {
   }
 
   async borrow(
-    token: AssetDetailsData,
+    asset: AssetDetailsData,
     amount: BigNumber,
     rateMode: BorrowRateMode,
     opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
-    if (token.isNative) return this.borrowNative(amount, rateMode, opts);
-    else return this.borrowToken(token, amount, rateMode, opts);
+    if (asset.isNative) return this.borrowNative(amount, rateMode, opts);
+    else return this.borrowToken(asset, amount, rateMode, opts);
+  }
+
+  async swapBorrowRateMode(
+    asset: AssetDetailsData,
+    currentRateMode: BorrowRateMode,
+    opts?: TransactionFactoryOptions,
+  ): Promise<Transaction[]> {
+    return [
+      {
+        title: t(translations.aavePage.tx.swapBorrowRateModeTitle),
+        subtitle: t(translations.aavePage.tx.swapBorrowRateModeSubtitle, {
+          symbol: asset.symbol,
+          mode:
+            currentRateMode === BorrowRateMode.VARIABLE ? 'stable' : 'variable',
+        }),
+        request: {
+          type: TransactionType.signTransaction,
+          args: [asset.address, currentRateMode],
+          contract: this.Pool,
+          fnName: 'swapBorrowRateMode',
+        },
+        onComplete: opts?.onComplete,
+      },
+    ];
   }
 
   private async borrowToken(

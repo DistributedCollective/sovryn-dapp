@@ -4761,10 +4761,10 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@sovryn/joe-sdk-v2@^3.0.13":
-  version "3.0.13"
-  resolved "https://registry.yarnpkg.com/@sovryn/joe-sdk-v2/-/joe-sdk-v2-3.0.13.tgz#a693b3a7db7b716b46041e2626ed3cab3c7bd61c"
-  integrity sha512-vt4UnUO5p0RQblPJwASjyPefTTx8qvrBZ9nwYMQrSO2ozGBpxWjAItB8Uq2+Of8ywybDlFEE//R6VcLiqhLJIA==
+"@sovryn/joe-sdk-v2@^3.0.14":
+  version "3.0.14"
+  resolved "https://registry.yarnpkg.com/@sovryn/joe-sdk-v2/-/joe-sdk-v2-3.0.14.tgz#06638dc8e50b0ff320608d2230db6a515f0a3448"
+  integrity sha512-j/lF9my2d0ZFu1kWcb2xOitZod/dB5JLf6ncVteC1pfGiHKA+T8cTWQH+HApfWNXkLwN5myjBHMJiIf+eFxmuA==
   dependencies:
     "@sovryn/joe-core" "^2.0.4"
     big.js "^6.2.1"

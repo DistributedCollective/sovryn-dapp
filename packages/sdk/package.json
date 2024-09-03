@@ -43,6 +43,6 @@
     "viem": "^2.19.2",
     "@sovryn/joe-core": "^2.0.4",
     "@sovryn/joe-sdk": "^5.0.4",
-    "@sovryn/joe-sdk-v2": "^3.0.13"
+    "@sovryn/joe-sdk-v2": "^3.0.14"
   }
 }

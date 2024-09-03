@@ -21,7 +21,7 @@ import {
 import { SwapPairs, SwapRouteFunction } from '../types';
 
 const bobTestnet = defineChain({
-  id: 808813, // 808813 new chain id
+  id: 808813,
   name: 'Bob Testnet',
   nativeCurrency: {
     name: 'Bob Testnet',
@@ -30,18 +30,18 @@ const bobTestnet = defineChain({
   },
   rpcUrls: {
     default: {
-      http: ['https://bob-rpc.test.sovryn.app'],
+      http: ['https://bob-sepolia.rpc.gobob.xyz'],
     },
   },
   blockExplorerUrls: ['https://testnet-explorer.gobob.xyz'],
   contracts: {
     multicall3: {
-      address: '0xcA11bde05977b3631167028862bE2a173976CA11',
+      address: '0x43aCeB7846d580877D2B98A6c3b0ea51a39a62A4',
     },
   },
 });
 
-const TESTNET_RPC = 'https://bob-rpc.test.sovryn.app';
+const TESTNET_RPC = 'https://bob-sepolia.rpc.gobob.xyz';
 
 export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
   let pairCache: SwapPairs;
@@ -55,9 +55,6 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
   const getPublicClient = (chainId: ChainId) => {
     // todo: use the correct rpc url
     // todo: cache the client
-
-    console.log('get public client?', chainId);
-
     return createPublicClient({
       chain: bobTestnet,
       transport: http(TESTNET_RPC),
@@ -139,11 +136,16 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
 
       const amountIn = new TokenAmount(inputToken, typedValueInParsed);
 
+      console.log('bases', joeBases);
+
       const allTokenPairs = PairV2.createAllTokenPairs(
         inputToken,
         outputToken,
         joeBases,
       );
+
+      console.log('allTokenPairs', allTokenPairs);
+
       const allPairs = PairV2.initPairs(allTokenPairs);
       const allRoutes = RouteV2.createAllRoutes(
         allPairs,

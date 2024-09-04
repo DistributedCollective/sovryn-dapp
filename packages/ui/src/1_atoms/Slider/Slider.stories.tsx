@@ -125,7 +125,7 @@ Basic.argTypes = {
   },
   isSimple: {
     control: 'boolean',
-    description: 'If false the slider will be a double slider',
+    description: 'If false applies the rangeSlider class to the Slider',
   },
 };
 

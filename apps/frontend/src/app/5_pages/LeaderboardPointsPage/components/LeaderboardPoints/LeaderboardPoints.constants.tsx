@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { ethers } from 'ethers';
 import { t } from 'i18next';
 
 import { prettyTx } from '@sovryn/ui';
@@ -20,19 +21,23 @@ export const COLUMNS_CONFIG = (isSingleUser: boolean = false) => [
     className: 'w-24',
   },
   {
-    id: 'address',
+    id: '',
     title: isSingleUser
       ? t(translations.leaderboardPointsPage.table.yourPosition)
-      : t(translations.leaderboardPointsPage.table.participant),
+      : '',
     cellRenderer: user => (
       <div className="text-right lg:text-left w-full">
         {prettyTx(user.wallet, 4)}
       </div>
     ),
+    sampleData: prettyTx(ethers.constants.AddressZero, 4),
   },
   {
-    id: 'points',
-    title: t(translations.leaderboardPointsPage.table.points),
+    id: '',
+    title: isSingleUser
+      ? t(translations.leaderboardPointsPage.table.spice)
+      : '',
     cellRenderer: user => <AmountRenderer value={user.points} />,
+    sampleData: '111,111,111.1111',
   },
 ];

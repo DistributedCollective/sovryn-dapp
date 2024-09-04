@@ -113,14 +113,14 @@ export const EcosystemStatistics: FC = () => {
           value:
             selectedCurrency === USD ? (
               <AmountRenderer
-                value={lockedData.total_usd.toString() || '0'}
+                value={totalValue}
                 suffix={selectedCurrency}
                 precision={getCurrencyPrecision(selectedCurrency)}
                 dataAttribute="ecosystem-statistics-total-value"
               />
             ) : (
               <NativeTokenAmount
-                usdValue={lockedData.tvlStaking?.totalUsd}
+                usdValue={totalValue}
                 precision={getCurrencyPrecision(selectedCurrency)}
                 dataAttribute="ecosystem-statistics-total-value"
               />
@@ -282,7 +282,6 @@ export const EcosystemStatistics: FC = () => {
     ];
   }, [
     chainId,
-    lockedData.total_usd,
     lockedData.tvlAmm,
     lockedData.tvlLending,
     lockedData.tvlMynt,

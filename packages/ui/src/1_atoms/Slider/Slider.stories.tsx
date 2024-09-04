@@ -1,6 +1,6 @@
 import { Story, Meta } from '@storybook/react';
 
-import React, { ComponentProps, useState } from 'react';
+import React, { ComponentProps, useCallback, useEffect, useState } from 'react';
 
 import { Slider } from './Slider';
 
@@ -9,9 +9,25 @@ export default {
   component: Slider,
 } as Meta;
 
-const Template: Story<ComponentProps<typeof Slider>> = args => (
-  <Slider {...args} />
-);
+const Template: Story<ComponentProps<typeof Slider>> = args => {
+  const [value, setValue] = useState(args.value || 0);
+
+  useEffect(() => {
+    setValue(args.value || 0);
+  }, [args.value]);
+
+  const handleChange = useCallback(
+    (newValue: number | number[], thumbIndex: number) => {
+      setValue(newValue);
+      if (args.onChange) {
+        args.onChange(newValue, thumbIndex);
+      }
+    },
+    [args],
+  );
+
+  return <Slider {...args} value={value} onChange={handleChange} />;
+};
 
 const DoubleSliderTemplate: Story<ComponentProps<typeof Slider>> = ({
   value: initialValue,
@@ -107,9 +123,9 @@ Basic.argTypes = {
     control: 'text',
     description: 'The data attribute to apply to the Slider',
   },
-  isDouble: {
+  isSimple: {
     control: 'boolean',
-    description: 'If true the slider will be a double slider',
+    description: 'If false the slider will be a double slider',
   },
 };
 
@@ -119,8 +135,8 @@ DoubleSlider.args = {
   step: 5,
   thumbClassName: 'bg-primary',
   trackClassName: 'bg-primary',
-  dataAttribute: 'slider-advanced',
-  isDouble: true,
+  dataAttribute: 'slider-double',
+  isSimple: false,
 };
 
 DoubleSlider.argTypes = {
@@ -136,7 +152,7 @@ StyledSlider.args = {
   thumbActiveClassName: 'outline-2 outline-sov-white',
   trackClassName: 'bg-success',
   dataAttribute: 'slider-styled',
-  isDouble: true,
+  isSimple: false,
 };
 
 StyledSlider.argTypes = {

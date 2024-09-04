@@ -11,7 +11,7 @@ type SliderProps = {
   min?: number;
   step?: number;
   value?: number | number[];
-  isDouble?: boolean;
+  isSimple?: boolean;
   onChange?: (value: number | number[], thumbIndex: number) => void;
   disabled?: boolean;
   className?: string;
@@ -28,7 +28,7 @@ export const Slider: FC<SliderProps> = ({
   step = 1,
   value,
   onChange,
-  isDouble = false,
+  isSimple = true,
   disabled = false,
   className,
   dataAttribute,
@@ -44,7 +44,7 @@ export const Slider: FC<SliderProps> = ({
     value={value}
     disabled={disabled}
     onChange={onChange}
-    className={classNames(isDouble && styles.isDouble, className)}
+    className={classNames(!isSimple && styles.rangeSlider, className)}
     onAfterChange={onAfterChange}
     thumbClassName={classNames(styles.thumb, thumbClassName)}
     trackClassName={classNames(styles.track, trackClassName)}

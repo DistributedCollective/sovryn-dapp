@@ -20,10 +20,10 @@ describe('Slider', () => {
     expect(slider).toBeInTheDocument();
   });
 
-  it('applies the isDouble class when isDouble is true', () => {
-    const { container } = render(<Slider isDouble />);
+  it('applies the rangeSlider class when isSimple is false', () => {
+    const { container } = render(<Slider isSimple={false} />);
     const slider = container.firstChild;
-    expect(slider).toHaveClass('isDouble');
+    expect(slider).toHaveClass('rangeSlider');
   });
 
   it('applies custom class names to thumbs and tracks', () => {
@@ -38,17 +38,17 @@ describe('Slider', () => {
     expect(track).toHaveClass('custom-track');
   });
 
-  it('renders correctly with isDouble and custom class names', () => {
+  it('renders correctly range slider and custom class names', () => {
     const { container } = render(
       <Slider
-        isDouble
+        isSimple={false}
         thumbClassName="custom-thumb"
         trackClassName="custom-track"
       />,
     );
 
     const slider = container.firstChild;
-    expect(slider).toHaveClass('isDouble');
+    expect(slider).toHaveClass('rangeSlider');
 
     const thumb = container.querySelector('.thumb');
     const track = container.querySelector('.track');

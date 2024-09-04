@@ -2,7 +2,7 @@
   @apply h-1 bg-gray-50 rounded;
 }
 
-.isDouble {
+.rangeSlider {
   & .track {
     &:nth-child(1), &:nth-child(3) {
       @apply bg-gray-50 !important;

@@ -1,89 +1,153 @@
-import { useState, useEffect, useCallback } from 'react';
+import { ApolloClient, gql, InMemoryCache, useQuery } from '@apollo/client';
 
-import { ChainId } from '@sovryn/joe-core';
+import { useState, useEffect, useRef } from 'react';
+
+import { Hex } from 'viem';
+
+import { numberToChainId } from '@sovryn/ethers-provider';
+import { ChainId, Token } from '@sovryn/joe-core';
 import { PairV2 } from '@sovryn/joe-sdk-v2';
 
-import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
+import { BOB } from '../../../../../../constants/infrastructure/bob';
+import { Environments } from '../../../../../../types/global';
+import { findAssetByAddress } from '../../../../../../utils/asset';
 import { PAIR_VERSION } from '../../../LiquidityBookPage.constants';
 import { LiquidityBookPool } from '../../../LiquidityBookPage.types';
 import { useBlockchainClients } from '../../../utils/client';
-import { lbPairUSDT_SOV, lbPairWBTC_USDT } from '../../../utils/pairs';
-import { SOV, USDT, WBTC } from '../../../utils/tokens';
 
 export const useGetPools = () => {
-  const { value: block } = useBlockNumber();
+  const { publicClient } = useBlockchainClients();
   const [pools, setPools] = useState<LiquidityBookPool[]>([]);
   const [loading, setLoading] = useState(true);
-  const { publicClient } = useBlockchainClients();
 
-  const fetchPoolsData = useCallback(async () => {
-    try {
-      const [wbtc_usdt, usdt_sov] = await Promise.all([
-        lbPairWBTC_USDT.fetchAvailableLBPairs(
-          PAIR_VERSION,
-          publicClient,
-          ChainId.BOB_TESTNET,
-        ),
-        lbPairUSDT_SOV.fetchAvailableLBPairs(
-          PAIR_VERSION,
-          publicClient,
-          ChainId.BOB_TESTNET,
-        ),
-      ]);
+  const client$ = useRef(
+    new ApolloClient({
+      uri: BOB.joeSubgraph[Environments.Testnet],
+      cache: new InMemoryCache(),
+    }),
+  );
 
-      const [pair_wbtc_usdt, pair_usdt_sov] = await Promise.all([
-        PairV2.getLBPairReservesAndId(
-          wbtc_usdt[0].LBPair,
-          PAIR_VERSION,
-          publicClient,
-        ),
-        PairV2.getLBPairReservesAndId(
-          usdt_sov[0].LBPair,
-          PAIR_VERSION,
-          publicClient,
-        ),
-      ]);
+  // ideally, we will use indexer instead of subgraph
+  const { loading: queryLoading, data } = useQuery<{
+    lbpairs: {
+      id: string;
+      name: string;
+      activeId: string;
+      binStep: string;
+      reserveX: string;
+      reserveY: string;
+      tokenX: { id: string; symbol: string; decimals: number };
+      tokenY: { id: string; symbol: string; decimals: number };
+    }[];
+  }>(
+    gql`
+      query {
+        lbpairs {
+          id
+          name
+          activeId
+          binStep
+          reserveX
+          reserveY
+          tokenX {
+            id
+            symbol
+            decimals
+          }
+          tokenY {
+            id
+            symbol
+            decimals
+          }
+        }
+      }
+    `,
+    {
+      client: client$.current,
+    },
+  );
 
-      const pools: LiquidityBookPool[] = [
-        {
-          pair: [WBTC, USDT],
-          liquidity: [
-            pair_wbtc_usdt.reserveX.toString(),
-            pair_wbtc_usdt.reserveY.toString(),
-          ],
-          contractAddress: wbtc_usdt[0].LBPair,
-          activeBinId: pair_wbtc_usdt.activeId,
-          binStep: wbtc_usdt[0].binStep,
-        },
-        {
-          pair: [USDT, SOV],
-          liquidity: [
-            pair_usdt_sov.reserveX.toString(),
-            pair_usdt_sov.reserveY.toString(),
-          ],
-          contractAddress: usdt_sov[0].LBPair,
-          activeBinId: pair_usdt_sov.activeId,
-          binStep: usdt_sov[0].binStep,
-        },
-      ];
-
-      setPools(prevPools => {
-        const newPoolsJson = JSON.stringify(pools);
-        const prevPoolsJson = JSON.stringify(prevPools);
-        return newPoolsJson === prevPoolsJson ? prevPools : pools;
-      });
-    } catch (err) {
-      console.error('Error fetching pool data:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [publicClient]);
+  // reverseX and reverseY returns strange values, fallback to retrieving it from on-chain
+  // const pools = useMemo(
+  //   () =>
+  //     (data?.lbpairs || []).map(item => ({
+  //       pair: [
+  //         new Token(
+  //           ChainId.BOB_TESTNET,
+  //           item.tokenX.id,
+  //           item.tokenX.decimals,
+  //           item.tokenX.symbol,
+  //         ),
+  //         new Token(
+  //           ChainId.BOB_TESTNET,
+  //           item.tokenY.id,
+  //           item.tokenY.decimals,
+  //           item.tokenY.symbol,
+  //         ),
+  //       ],
+  //       liquidity: [item.reserveX, item.reserveY],
+  //       contractAddress: item.id,
+  //       activeBinId: parseInt(item.activeId),
+  //       binStep: parseInt(item.binStep),
+  //     })),
+  //   [data],
+  // );
 
   useEffect(() => {
-    if (publicClient) {
-      fetchPoolsData();
-    }
-  }, [fetchPoolsData, publicClient, block]);
+    (async () => {
+      const pairs = data?.lbpairs || [];
+      if (pairs.length) {
+        setLoading(true);
+        const reserves = await Promise.allSettled(
+          pairs.map(pair =>
+            PairV2.getLBPairReservesAndId(
+              pair.id as Hex,
+              PAIR_VERSION,
+              publicClient,
+            ),
+          ),
+        );
 
-  return { pools, loading };
+        setPools(
+          pairs.map((pair, index) => ({
+            pair: [
+              new Token(
+                ChainId.BOB_TESTNET,
+                pair.tokenX.id,
+                pair.tokenX.decimals,
+                findAssetByAddress(
+                  pair.tokenX.id,
+                  numberToChainId(ChainId.BOB_TESTNET),
+                )?.symbol || pair.tokenX.symbol,
+              ),
+              new Token(
+                ChainId.BOB_TESTNET,
+                pair.tokenY.id,
+                pair.tokenY.decimals,
+                findAssetByAddress(
+                  pair.tokenY.id,
+                  numberToChainId(ChainId.BOB_TESTNET),
+                )?.symbol || pair.tokenY.symbol,
+              ),
+            ],
+            liquidity: [
+              reserves[index].status === 'fulfilled'
+                ? reserves[index].value.reserveX.toString()
+                : pair.reserveX,
+              reserves[index].status === 'fulfilled'
+                ? reserves[index].value.reserveY.toString()
+                : pair.reserveY,
+            ],
+            contractAddress: pair.id,
+            activeBinId: parseInt(pair.activeId),
+            binStep: parseInt(pair.binStep),
+          })),
+        );
+        setLoading(false);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  return { pools, loading: loading || queryLoading };
 };

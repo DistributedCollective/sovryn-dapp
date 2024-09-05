@@ -9,11 +9,7 @@ import {
 import { formatUnits } from 'ethers/lib/utils';
 import { createPublicClient, defineChain, http, parseUnits } from 'viem';
 
-import {
-  getAssetData,
-  getAssetDataByAddress,
-  getProtocolContract,
-} from '@sovryn/contracts';
+import { getAssetDataByAddress, getProtocolContract } from '@sovryn/contracts';
 import {
   ChainId,
   ChainIds,
@@ -28,6 +24,7 @@ import {
   makeApproveRequest,
   hasEnoughAllowance,
   areAddressesEqual,
+  unique,
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
 
@@ -88,6 +85,15 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
     return swapConverter;
   };
 
+  const getBases = async () => {
+    if (!joeBases) {
+      const chainId = await getChainId();
+      joeBases = await loadTokens(chainId);
+    }
+
+    return joeBases;
+  };
+
   const isNativeToken = async (token: string) =>
     token === constants.AddressZero;
 
@@ -96,13 +102,9 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
     chains: [ChainIds.BOB_TESTNET],
     pairs: async () => {
       if (!pairCache) {
-        const chainId = await getChainId();
+        const bases = await getBases();
 
-        const swapTokens = ['WBTC', 'USDT', 'SOV'];
-
-        joeBases = await loadTokens(chainId, swapTokens);
-
-        const contracts = joeBases.map(contract => ({
+        const contracts = bases.map(contract => ({
           address: contract.address.toLowerCase(),
           token: contract.symbol,
         }));
@@ -125,11 +127,12 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
     },
     async getBestTrade(entry: string, destination: string, amount: BigNumber) {
       await this.pairs();
+      const bases = await getBases();
 
-      const inputToken = joeBases.find(token =>
+      const inputToken = bases.find(token =>
         areAddressesEqual(token.address, entry),
       );
-      const outputToken = joeBases.find(token =>
+      const outputToken = bases.find(token =>
         areAddressesEqual(token.address, destination),
       );
 
@@ -150,7 +153,7 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
       const allTokenPairs = PairV2.createAllTokenPairs(
         inputToken,
         outputToken,
-        joeBases,
+        bases,
       );
 
       const allPairs = PairV2.initPairs(allTokenPairs);
@@ -267,19 +270,52 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
   };
 };
 
-async function loadTokens(chain: ChainId, tokens: string[]) {
-  const details = await Promise.all(
-    tokens.map(token => getAssetData(token, chain)),
+async function loadTokens(chain: ChainId) {
+  const url = 'https://bob-joe-subgraph.sovryn.app/subgraphs/name/joe-v2';
+  const query = `
+    {
+      lbpairs {
+        id
+        tokenX {
+          id
+          decimals
+        }
+        tokenY {
+          id
+          decimals
+        }
+      }
+    }
+  `;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ query }),
+  });
+
+  const { data } = await response.json();
+
+  const addresses: string[] = unique(
+    (data?.lbpairs || []).map(pair => [pair.tokenX.id, pair.tokenY.id]).flat(),
   );
 
-  return details.map(
-    detail =>
-      new Token(
-        chainIdToNumber(chain),
-        detail.address,
-        detail.decimals,
-        detail.symbol,
-        detail.name,
+  return await Promise.all(
+    addresses.map(address => getAssetDataByAddress(address, chain)),
+  ).then(items =>
+    items
+      .filter(item => !!item)
+      .map(
+        item =>
+          new Token(
+            chainIdToNumber(chain),
+            item.address,
+            item.decimals,
+            item.symbol,
+            item.name,
+          ),
       ),
   );
 }

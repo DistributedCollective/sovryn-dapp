@@ -12,7 +12,6 @@ import { BorrowAssetDetails } from './components/BorrowAssetDetails/BorrowAssetD
 
 const pageTranslations = translations.aavePage.borrowAssetsList;
 
-
 export const BorrowAssetsList: FC = () => {
   const [open, setOpen] = useState(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();

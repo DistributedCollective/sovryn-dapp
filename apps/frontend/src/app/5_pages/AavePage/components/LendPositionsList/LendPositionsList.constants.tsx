@@ -63,7 +63,7 @@ export const COLUMNS_CONFIG = [
       <AmountRenderer
         className="text-center"
         value={position.balance}
-        suffix={'%'}
+        suffix="%"
       />
     ),
   },

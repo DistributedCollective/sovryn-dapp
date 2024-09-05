@@ -12,7 +12,6 @@ import { LendAssetDetails } from './components/LendAssetDetails/LendAssetDetails
 
 const pageTranslations = translations.aavePage;
 
-
 export const LendAssetsList: FC = () => {
   const [open, setOpen] = useState(true);
   const [showZeroBalances, setShowZeroBalances] = useState(true);

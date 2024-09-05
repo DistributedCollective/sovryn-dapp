@@ -9,7 +9,7 @@ import { WithdrawForm } from './WithdrawForm';
 
 type WithdrawModalContainerProps = {
   isOpen: boolean;
-  handleCloseModal: () => unknown;
+  handleCloseModal: () => void;
 };
 
 export const WithdrawModalContainer: FC<WithdrawModalContainerProps> = ({

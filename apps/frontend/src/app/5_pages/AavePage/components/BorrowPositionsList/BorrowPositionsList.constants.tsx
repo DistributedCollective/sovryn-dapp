@@ -56,7 +56,7 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (position: BorrowPosition) => (
-      <AmountRenderer value={position.apr} suffix={'%'} />
+      <AmountRenderer value={position.apr} suffix="%" />
     ),
   },
   {

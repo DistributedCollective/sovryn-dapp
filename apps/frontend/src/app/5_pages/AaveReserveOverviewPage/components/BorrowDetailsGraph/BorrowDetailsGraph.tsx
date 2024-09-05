@@ -15,7 +15,6 @@ import { MockData } from './components/Chart/Chart.types';
 
 const pageTranslations = translations.aaveReserveOverviewPage.borrowDetails;
 
-
 export const BorrowDetailsGraph: FC = () => {
   const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();

@@ -57,7 +57,7 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (pool: LendPoolDetails) => (
-      <AmountRenderer value={pool.apy} suffix={'%'} />
+      <AmountRenderer value={pool.apy} suffix="%" />
     ),
   },
   {

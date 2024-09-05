@@ -11,9 +11,7 @@ import { translations } from '../../../../../locales/i18n';
 
 const pageTranslations = translations.aavePage.topPanel;
 
-type TopPanelProps = {};
-
-export const TopPanel: FC<TopPanelProps> = () => {
+export const TopPanel: FC = () => {
   const { account } = useAccount();
   const [netWorth] = useState(1234567.58); // TODO: mock
   const [netApy] = useState(2.69); // TODO: mock

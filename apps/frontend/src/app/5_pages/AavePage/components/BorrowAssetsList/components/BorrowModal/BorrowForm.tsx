@@ -109,7 +109,7 @@ export const BorrowForm: FC<BorrowFormProps> = () => {
       <SimpleTable>
         <SimpleTableRow
           label={t(translations.aavePage.borrowForm.borrowApr)}
-          value={<AmountRenderer value={borrowApr} suffix={'%'} />}
+          value={<AmountRenderer value={borrowApr} suffix="%" />}
         />
       </SimpleTable>
 

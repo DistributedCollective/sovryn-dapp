@@ -7,7 +7,6 @@ import { Button, ButtonStyle } from '@sovryn/ui';
 import { translations } from '../../../../../../../locales/i18n';
 import { RepayModalContainer } from '../RepayModal/RepayModalContainer';
 
-
 export const BorrowPositionAction: FC = () => {
   const [isRepayModalOpen, setIsRepayModalOpen] = useState(false);
 

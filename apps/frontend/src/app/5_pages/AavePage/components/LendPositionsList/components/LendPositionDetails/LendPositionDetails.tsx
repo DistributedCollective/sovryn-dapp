@@ -40,7 +40,7 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
             />
           </span>
         }
-        value={<AmountRenderer value={position.apy} suffix={'%'} />}
+        value={<AmountRenderer value={position.apy} suffix="%" />}
       />
 
       <SimpleTableRow

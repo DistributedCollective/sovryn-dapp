@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { BorrowPoolDetails } from '../../BorrowAssetsList.types';
 import { BorrowModalContainer } from '../BorrowModal/BorrowModalContainer';
 
 const pageTranslations = translations.aavePage;

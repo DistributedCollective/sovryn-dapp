@@ -25,15 +25,14 @@ export const BorrowAction: FC<BorrowActionProps> = ({ asset }) => {
   return (
     <div className="flex justify-between items-center">
       <div>
-        <Paragraph
-          size={ParagraphSize.small}
-          className="text-gray-30 flex items-center gap-1"
-        >
-          {t(pageTranslations.yourWalletTab.availableToBorrow)}{' '}
+        <div className="flex items-center gap-1">
+          <Paragraph size={ParagraphSize.small} className="text-gray-30">
+            {t(pageTranslations.yourWalletTab.availableToBorrow)}
+          </Paragraph>
           <HelperButton
             content={t(pageTranslations.yourWalletTab.availableToBorrowInfo)}
           />
-        </Paragraph>
+        </div>
         <AssetAmountPriceRenderer
           value={availableToBorrow}
           asset={asset}

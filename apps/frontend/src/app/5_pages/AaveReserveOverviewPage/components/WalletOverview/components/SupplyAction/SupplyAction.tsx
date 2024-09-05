@@ -27,7 +27,7 @@ export const SupplyAction: FC<SupplyActionProps> = ({ asset }) => {
       <div>
         <div className="flex items-center gap-1">
           <Paragraph size={ParagraphSize.small} className="text-gray-30">
-            {t(pageTranslations.yourWalletTab.availableToSupply)}{' '}
+            {t(pageTranslations.yourWalletTab.availableToSupply)}
           </Paragraph>
           <HelperButton
             content={t(pageTranslations.yourWalletTab.availableToSupplyInfo)}

@@ -20,9 +20,7 @@ import { LendPositionDetails } from './components/LendPositionDetails/LendPositi
 
 const pageTranslations = translations.aavePage;
 
-type LendPositionsListProps = {};
-
-export const LendPositionsList: FC<LendPositionsListProps> = () => {
+export const LendPositionsList: FC = () => {
   const { account } = useAccount();
   const [open, setOpen] = useState(true);
   const [balance] = useState(100); // TODO: mocked data

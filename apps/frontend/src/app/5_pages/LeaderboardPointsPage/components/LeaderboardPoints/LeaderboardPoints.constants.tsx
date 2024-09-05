@@ -18,13 +18,13 @@ export const COLUMNS_CONFIG = (isSingleUser: boolean = false) => [
     id: '',
     title: '',
     cellRenderer: user => user.id,
-    className: 'w-24',
+    className: 'w-24 invisible lg:visible h-0 lg:h-auto',
   },
   {
     id: '',
     title: isSingleUser
       ? t(translations.leaderboardPointsPage.table.yourPosition)
-      : '',
+      : t(translations.leaderboardPointsPage.table.participant),
     cellRenderer: user => (
       <div className="text-right lg:text-left w-full">
         {prettyTx(user.wallet, 4)}
@@ -36,7 +36,7 @@ export const COLUMNS_CONFIG = (isSingleUser: boolean = false) => [
     id: '',
     title: isSingleUser
       ? t(translations.leaderboardPointsPage.table.spice)
-      : '',
+      : t(translations.leaderboardPointsPage.table.points),
     cellRenderer: user => <AmountRenderer value={user.points} />,
     sampleData: '111,111,111.1111',
   },

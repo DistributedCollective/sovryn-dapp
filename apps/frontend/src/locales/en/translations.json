@@ -111,7 +111,7 @@
             "stake": "Stake",
             "bitocracy": "Bitocracy",
             "bob": "Go BoB",
-            "claimLp": "Claim LP",
+            "spicePoints": "Spice Points",
             "bridges": {
                 "title": "Transfer Assets",
                 "subMenu": {

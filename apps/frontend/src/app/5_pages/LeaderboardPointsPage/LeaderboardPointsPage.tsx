@@ -33,7 +33,7 @@ const LeaderboardPointsPage: FC = () => {
         <Paragraph className="font-medium text-center my-6 text-xs leading-5 max-w-xl">
           {t(translations.leaderboardPointsPage.description1)}
         </Paragraph>
-        <Paragraph className="font-medium text-center mb-10 text-xs leading-5 max-w-xl">
+        <Paragraph className="font-medium text-center lg:mb-10 mb-2 text-xs leading-5 max-w-xl">
           <Trans
             i18nKey={t(translations.leaderboardPointsPage.description2)}
             components={[

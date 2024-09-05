@@ -29,7 +29,7 @@ const Template: Story<ComponentProps<typeof Slider>> = args => {
   return <Slider {...args} value={value} onChange={handleChange} />;
 };
 
-const DoubleSliderTemplate: Story<ComponentProps<typeof Slider>> = ({
+const RangeSliderTemplate: Story<ComponentProps<typeof Slider>> = ({
   value: initialValue,
   ...args
 }) => {
@@ -129,8 +129,8 @@ Basic.argTypes = {
   },
 };
 
-export const DoubleSlider = DoubleSliderTemplate.bind({});
-DoubleSlider.args = {
+export const RangeSlider = RangeSliderTemplate.bind({});
+RangeSlider.args = {
   value: [20, 80],
   step: 5,
   thumbClassName: 'bg-primary',
@@ -139,12 +139,12 @@ DoubleSlider.args = {
   isSimple: false,
 };
 
-DoubleSlider.argTypes = {
+RangeSlider.argTypes = {
   ...Basic.argTypes,
 };
 
-export const StyledSlider = DoubleSliderTemplate.bind({});
-StyledSlider.args = {
+export const DRangeSlider = RangeSliderTemplate.bind({});
+DRangeSlider.args = {
   value: [20, 80],
   step: 10,
   className: 'w-96 m-auto',
@@ -155,6 +155,6 @@ StyledSlider.args = {
   isSimple: false,
 };
 
-StyledSlider.argTypes = {
+DRangeSlider.argTypes = {
   ...Basic.argTypes,
 };

@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -8,22 +8,11 @@ import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 import { BOB_CHAIN_ID, RSK_CHAIN_ID } from '../../../config/chains';
 
 import { NetworkSwitch } from '../../2_molecules/NetworkSwitch/NetworkSwitch';
-import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import AavePage from '../AavePage/AavePage';
-import { BorrowAssetsTable } from './components/BorrowAssetsTable/BorrowAssetsTable';
-import { OpenLoansTable } from './components/OpenLoansTable/OpenLoansTable';
-import { useGetOpenLoans } from './components/OpenLoansTable/hooks/useGetOpenLoans';
+import { BorrowFrame } from './components/BorrowFrame/BorrrowFrame';
 
 const BorrowPage: FC = () => {
-  const { account } = useAccount();
-  const { data: loans, loading } = useGetOpenLoans();
-
-  const hasOpenLoans = useMemo(
-    () => loans?.length > 0 && account,
-    [loans, account],
-  );
-
   return (
     <>
       <Helmet>
@@ -47,10 +36,7 @@ const BorrowPage: FC = () => {
                 </Paragraph>
 
                 <div className="w-full">
-                  {hasOpenLoans && (
-                    <OpenLoansTable loans={loans} loading={loading} />
-                  )}
-                  <BorrowAssetsTable />
+                  <BorrowFrame />
                 </div>
               </>
             ),

@@ -8,28 +8,27 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 
+import { getProvider } from '@sovryn/ethers-provider';
+
+import { BOB_CHAIN_ID } from '../../config/chains';
+
 import { config } from '../../constants/aave';
-import { useAccount } from '../useAccount';
 
 export type Reserve = ReserveDataHumanized & FormatReserveUSDResponse;
-
 export type ReserveData = { reserves: Reserve[]; loading: boolean };
 
 export const useAaveReservesData = (): ReserveData => {
-  const { provider } = useAccount();
   const [reserves, setReserves] = useState<Reserve[]>([]);
   const [loading, setLoading] = useState(false);
 
   const uiPoolDataProvider = useMemo(
     () =>
-      provider
-        ? new UiPoolDataProvider({
-            provider,
-            uiPoolDataProviderAddress: config.UiPoolDataProviderV3Address,
-            chainId: config.chainId,
-          })
-        : null,
-    [provider],
+      new UiPoolDataProvider({
+        provider: getProvider(BOB_CHAIN_ID),
+        uiPoolDataProviderAddress: config.UiPoolDataProviderV3Address,
+        chainId: Number(BOB_CHAIN_ID),
+      }),
+    [],
   );
 
   const fetchReservesData = useCallback(
@@ -58,10 +57,8 @@ export const useAaveReservesData = (): ReserveData => {
   );
 
   useEffect(() => {
-    if (uiPoolDataProvider) {
-      setLoading(true);
-      fetchReservesData(uiPoolDataProvider).finally(() => setLoading(false));
-    }
+    setLoading(true);
+    fetchReservesData(uiPoolDataProvider).finally(() => setLoading(false));
   }, [uiPoolDataProvider, fetchReservesData]);
 
   return { reserves, loading };

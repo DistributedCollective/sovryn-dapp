@@ -54,6 +54,9 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({
       />
     </div>
 
-    <LendAssetAction onLendClick={onLendClick} />
+    <LendAssetAction
+      disabled={pool.walletBalance.eq(0)}
+      onLendClick={onLendClick}
+    />
   </div>
 );

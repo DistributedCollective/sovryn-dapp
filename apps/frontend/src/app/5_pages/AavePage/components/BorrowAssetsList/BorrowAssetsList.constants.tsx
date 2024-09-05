@@ -79,7 +79,10 @@ export const COLUMNS_CONFIG = (onBorrowClick: (asset: string) => void) => [
     align: Align.center,
     title: ' ',
     cellRenderer: (pool: BorrowPoolDetails) => (
-      <BorrowAssetAction onBorrowClick={() => onBorrowClick(pool.asset)} />
+      <BorrowAssetAction
+        disabled={!pool.available || pool.available.eq(0)}
+        onBorrowClick={() => onBorrowClick(pool.asset)}
+      />
     ),
   },
 ];

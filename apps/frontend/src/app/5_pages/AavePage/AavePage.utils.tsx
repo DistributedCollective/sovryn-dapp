@@ -74,7 +74,10 @@ export function normalizeBorrowPoolDetails(
         acc.push({
           asset: r.symbol,
           apy: Decimal.from(r.variableBorrowAPY).mul(100),
-          available: userReservesSummary.borrowPower.div(r.priceInUSD),
+          available:
+            userReservesSummary.reserves.find(
+              userReserve => r.symbol === userReserve.asset,
+            )?.availableToBorrow || Decimal.from(0),
           availableUSD: userReservesSummary.borrowPower,
         });
       }

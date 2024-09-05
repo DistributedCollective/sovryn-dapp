@@ -52,6 +52,7 @@
         "btc": "BTC",
         "eth": "ETH",
         "usd": "USD",
+        "enabled": "Enabled",
         "tx": {
             "signPermitTitle": "Permit {{symbol}}",
             "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
@@ -796,10 +797,11 @@
             "connectWallet": "Connect wallet to see the available data",
             "asset": "Asset",
             "collateral": "Collateral",
+            "collateralInfo": "The total amount of your assets denominated in USD that can be used as collateral for borrowing assets.",
             "collateralRatio": "Collateral ratio",
             "balance": "Balance",
             "apy": "APY",
-            "apyInfo": "Compounding interest accrued by deposit or borrow on the lending pool",
+            "apyInfo": "Compounding interest accrued by deposit or borrowing on the lending pool",
             "apyType": "APY type",
             "apyTypeInfo": "Variable interest rate will fluctuate based on the market conditions. Recommended for short-term positions.",
             "apr": "APR",
@@ -868,9 +870,11 @@
             "title": "Your loans",
             "repay": "Repay",
             "borrowPowerUsed": "Borrow power used",
+            "borrowPowerUsedInfo": "The % of your total borrowing power used. This is based on the amount of your collateral supplied and the total amount that you can borrow.",
             "eMode": "E-Mode",
             "selectVariableApy": "APY, variable {{apy}}",
-            "selectStableApy": "APY, stable {{apy}}"
+            "selectStableApy": "APY, stable {{apy}}",
+            "apyInfo": "The weighted average of APY for all borrowed assets, including incentives."
         },
         "borrowAssetsList": {
             "title": "Assets to borrow",

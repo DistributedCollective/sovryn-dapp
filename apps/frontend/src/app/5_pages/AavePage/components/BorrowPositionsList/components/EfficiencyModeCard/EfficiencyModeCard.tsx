@@ -84,7 +84,9 @@ export const EfficiencyModeCard: FC<EfficiencyModeCardProps> = ({
                         className="text-success"
                         size={20}
                       />
-                      <span className="font-medium text-xs">Enabled</span>
+                      <Paragraph className="font-medium text-xs">
+                        {t(translations.common.enabled)}
+                      </Paragraph>
                     </div>
                   </div>
                 </div>

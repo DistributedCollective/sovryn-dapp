@@ -105,6 +105,7 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
             />
             <PoolPositionStat
               label={t(pageTranslations.common.collateral)}
+              labelInfo={t(pageTranslations.common.collateralInfo)}
               value={collateralBalance}
               prefix="$"
               precision={2}

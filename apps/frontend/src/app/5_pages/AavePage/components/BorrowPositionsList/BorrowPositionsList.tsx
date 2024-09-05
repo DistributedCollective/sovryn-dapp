@@ -112,12 +112,16 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
             />
             <PoolPositionStat
               label={t(pageTranslations.common.apy)}
+              labelInfo={t(pageTranslations.borrowPositionsList.apyInfo)}
               value={borrowWeightedApy}
               suffix="%"
               precision={2}
             />
             <PoolPositionStat
               label={t(pageTranslations.borrowPositionsList.borrowPowerUsed)}
+              labelInfo={t(
+                pageTranslations.borrowPositionsList.borrowPowerUsedInfo,
+              )}
               value={borrowPowerUsed}
               suffix="%"
               precision={2}

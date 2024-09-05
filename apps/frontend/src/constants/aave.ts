@@ -1,7 +1,6 @@
 import { decimalic } from '../utils/math';
 
 export const config = {
-  chainId: 808813,
   MinCollateralRatio: decimalic(1.5),
   PoolAddress: '0xFbdc7303cc2046Ff6c340F94F71aB01517b42476',
   WETHGatewayAddress: '0x50ff0B7a3e7af6F896CA81aF2E563814Eee7A3c0',

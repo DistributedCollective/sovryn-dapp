@@ -7,6 +7,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 
+import { getProvider } from '@sovryn/ethers-provider';
+
+import { BOB_CHAIN_ID } from '../../config/chains';
+
 import { config } from '../../constants/aave';
 import { UserReservesData } from '../../types/aave';
 import {
@@ -23,7 +27,7 @@ export const useAaveUserReservesData = (): {
   timestamp: number;
   loading: boolean;
 } => {
-  const { account, provider } = useAccount();
+  const { account } = useAccount();
   const { value: blockNumber } = useBlockNumber();
   const [processedBlock, setProcessedBlock] = useState<number | undefined>();
   const [timestamp, setTimeStamp] = useState<number>(0);
@@ -36,18 +40,16 @@ export const useAaveUserReservesData = (): {
 
   const uiPoolDataProvider = useMemo(
     () =>
-      provider
-        ? new UiPoolDataProvider({
-            provider,
-            uiPoolDataProviderAddress: config.UiPoolDataProviderV3Address,
-            chainId: config.chainId,
-          })
-        : null,
-    [provider],
+      new UiPoolDataProvider({
+        provider: getProvider(BOB_CHAIN_ID),
+        uiPoolDataProviderAddress: config.UiPoolDataProviderV3Address,
+        chainId: Number(BOB_CHAIN_ID),
+      }),
+    [],
   );
 
   const loadUserReservesData = useCallback(async () => {
-    if (!account || !provider || !uiPoolDataProvider || !blockNumber) {
+    if (!account || !blockNumber) {
       return null;
     }
 
@@ -69,7 +71,7 @@ export const useAaveUserReservesData = (): {
 
       setSummary(
         await AaveUserReservesSummaryFactory.buildSummary({
-          provider,
+          provider: getProvider(BOB_CHAIN_ID),
           account,
           reservesData,
           userReservesData,
@@ -80,7 +82,7 @@ export const useAaveUserReservesData = (): {
     } catch (e) {
       console.error(e);
     }
-  }, [account, uiPoolDataProvider, blockNumber, provider]);
+  }, [account, uiPoolDataProvider, blockNumber]);
 
   useEffect(() => {
     if (blockNumber !== processedBlock) {
@@ -91,7 +93,7 @@ export const useAaveUserReservesData = (): {
 
   useEffect(() => {
     setLoading(true);
-    setProcessedBlock(undefined);
+    setProcessedBlock(-1);
   }, [account]);
 
   return { summary, reservesData, userReservesData, timestamp, loading };

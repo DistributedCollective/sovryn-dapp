@@ -31,6 +31,7 @@ type BorrowPositionsListProps = {
   borrowWeightedApy: Decimal;
   borrowPowerUsed: Decimal;
   eModeCategoryId: Number;
+  loading: boolean;
 };
 
 export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
@@ -39,6 +40,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
   borrowPowerUsed,
   borrowWeightedApy,
   eModeCategoryId,
+  loading,
 }) => {
   const { account } = useAccount();
   const [open, setOpen] = useState(true);
@@ -123,6 +125,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
           </div>
 
           <Table
+            isLoading={loading}
             columns={COLUMNS_CONFIG(onRepayClick)}
             rowClassName="bg-gray-80"
             accordionClassName="bg-gray-60 border border-gray-70"
@@ -139,7 +142,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
               onClose={onRepayClose}
             />
             <DialogBody className="space-y-3">
-              <RepayForm asset={repayAssetDialog!} onSuccess={onRepayClose} />
+              <RepayForm asset={repayAssetDialog!} onComplete={onRepayClose} />
             </DialogBody>
           </Dialog>
         </>

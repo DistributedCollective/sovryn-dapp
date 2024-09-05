@@ -98,6 +98,7 @@ export const EfficiencyModeCard: FC<EfficiencyModeCardProps> = ({
             {eModeCategoryId !== 0 ? (
               <div className="space-y-1">
                 <Button
+                  disabled={eModeCategories.length <= 1}
                   onClick={() => setSwitchEModeOpen(true)}
                   text={t(translations.aavePage.eMode.switchCategory)}
                   className="w-full"
@@ -136,7 +137,10 @@ export const EfficiencyModeCard: FC<EfficiencyModeCardProps> = ({
           onClose={onEnableEModeClose}
         />
         <DialogBody>
-          <EnableEModeForm categories={eModeCategories} />
+          <EnableEModeForm
+            categories={eModeCategories}
+            onComplete={onEnableEModeClose}
+          />
         </DialogBody>
       </Dialog>
 
@@ -149,6 +153,7 @@ export const EfficiencyModeCard: FC<EfficiencyModeCardProps> = ({
           <SwitchEModeForm
             categories={eModeCategories}
             current={currentCategory as EModeCategory}
+            onComplete={onSwitchEModeClose}
           />
         </DialogBody>
       </Dialog>
@@ -159,7 +164,10 @@ export const EfficiencyModeCard: FC<EfficiencyModeCardProps> = ({
           onClose={onDisableEModeClose}
         />
         <DialogBody>
-          <DisableEModeForm current={currentCategory as EModeCategory} />
+          <DisableEModeForm
+            current={currentCategory as EModeCategory}
+            onComplete={onDisableEModeClose}
+          />
         </DialogBody>
       </Dialog>
     </>

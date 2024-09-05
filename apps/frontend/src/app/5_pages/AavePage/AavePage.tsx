@@ -33,8 +33,8 @@ enum ActiveTab {
 }
 
 const AavePage: FC = () => {
-  const reserves = useAaveReservesData();
-  const { summary } = useAaveUserReservesData();
+  const { reserves, loading: reservesLoading } = useAaveReservesData();
+  const { summary, loading: summaryLoading } = useAaveUserReservesData();
   const [activeTab, setActiveTab] = useState<ActiveTab>(ActiveTab.LEND);
 
   const lendPositions: LendPosition[] = useMemo(
@@ -106,8 +106,12 @@ const AavePage: FC = () => {
               supplyBalance={summary.supplyBalance}
               collateralBalance={summary.collateralBalance}
               supplyWeightedApy={summary.supplyWeightedApy}
+              loading={summaryLoading}
             />
-            <LendAssetsList lendPools={lendPools} />
+            <LendAssetsList
+              lendPools={lendPools}
+              loading={reservesLoading || summaryLoading}
+            />
           </div>
 
           {/* Borrowing column */}
@@ -123,10 +127,12 @@ const AavePage: FC = () => {
               borrowBalance={summary.borrowBalance}
               borrowPowerUsed={summary.borrowPowerUsed}
               borrowWeightedApy={summary.borrowWeightedApy}
+              loading={summaryLoading}
             />
             <BorrowAssetsList
               borrowPools={borrowPools}
               eModeEnabled={summary.eModeEnabled}
+              loading={reservesLoading || summaryLoading}
             />
           </div>
         </div>

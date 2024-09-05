@@ -24,7 +24,7 @@ import { CollateralRatioHealthBar } from '../../../CollateralRatioHealthBar/Coll
 const pageTranslations = translations.aavePage;
 
 type RepayWithCollateralFormProps = {
-  onSuccess: () => void;
+  onComplete: () => void;
 };
 
 export const RepayWithCollateralForm: FC<RepayWithCollateralFormProps> = () => {

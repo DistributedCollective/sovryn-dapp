@@ -1,9 +1,6 @@
 import React, { FC, useState } from 'react';
 
-import { getAssetData } from '@sovryn/contracts';
 import { Toggle } from '@sovryn/ui';
-
-import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 
 import { useAaveSupply } from '../../../../../../../hooks/aave/useAaveSupply';
 import { LendPosition } from '../../LendPositionsList.types';
@@ -19,11 +16,9 @@ export const ToggleCollateralAction: FC<ToggleCollateralActionProps> = ({
   const [isCollateral, setIsCollateral] = useState(position.collateral);
 
   const toggleCollateral = async () => {
-    await handleSwitchCollateral(
-      await getAssetData(position.asset, BOB_CHAIN_ID),
-      !isCollateral,
-      { onComplete: () => setIsCollateral(!isCollateral) },
-    );
+    await handleSwitchCollateral(position.asset, !isCollateral, {
+      onComplete: () => setIsCollateral(!isCollateral),
+    });
   };
 
   return (

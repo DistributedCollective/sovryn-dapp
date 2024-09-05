@@ -1,8 +1,7 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { getAssetData } from '@sovryn/contracts';
 import {
   Button,
   ErrorBadge,
@@ -31,12 +30,12 @@ const pageTranslations = translations.aavePage;
 
 type RepayWithWalletBalanceFormProps = {
   asset: string;
-  onSuccess: () => void;
+  onComplete: () => void;
 };
 
 export const RepayWithWalletBalanceForm: FC<
   RepayWithWalletBalanceFormProps
-> = ({ asset, onSuccess }) => {
+> = ({ asset, onComplete }) => {
   const { account } = useAccount();
   const { handleRepay } = useAaveRepay();
   const { summary } = useAaveUserReservesData();
@@ -106,6 +105,23 @@ export const RepayWithWalletBalanceForm: FC<
     () => (repaySize.gt(0) ? repaySize.lte(maximumRepayAmount) : true),
     [repaySize, maximumRepayAmount],
   );
+
+  const onConfirm = useCallback(() => {
+    handleRepay(
+      repayAsset,
+      repaySize,
+      repaySize.eq(maximumRepayAmount),
+      repayReserve!.borrowRateMode,
+      { onComplete },
+    );
+  }, [
+    handleRepay,
+    repayAsset,
+    repaySize,
+    onComplete,
+    repayReserve,
+    maximumRepayAmount,
+  ]);
 
   return (
     <form className="flex flex-col gap-6 relative">
@@ -191,14 +207,7 @@ export const RepayWithWalletBalanceForm: FC<
       <Button
         disabled={!isValidRepayAmount}
         text={t(translations.common.buttons.confirm)}
-        onClick={async () => {
-          handleRepay(
-            repaySize,
-            await getAssetData(repayAsset, BOB_CHAIN_ID),
-            repayReserve!.borrowRateMode,
-            { onComplete: onSuccess },
-          );
-        }}
+        onClick={onConfirm}
       />
     </form>
   );

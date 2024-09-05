@@ -26,16 +26,20 @@ import { CollateralRatioHealthBar } from '../../../../../CollateralRatioHealthBa
 
 type DisableEModeFormProps = {
   current: EModeCategory;
+  onComplete: () => void;
 };
 
-export const DisableEModeForm: FC<DisableEModeFormProps> = ({ current }) => {
+export const DisableEModeForm: FC<DisableEModeFormProps> = ({
+  current,
+  onComplete,
+}) => {
   const { handleDisableUserEMode } = useAaveSetUserEMode();
   const { userReservesData, reservesData, timestamp } =
     useAaveUserReservesData();
 
   const onConfirm = useCallback(() => {
-    handleDisableUserEMode();
-  }, [handleDisableUserEMode]);
+    handleDisableUserEMode({ onComplete });
+  }, [handleDisableUserEMode, onComplete]);
 
   const newSummary = useMemo(() => {
     if (!userReservesData || !reservesData) {

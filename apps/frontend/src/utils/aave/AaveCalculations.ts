@@ -39,10 +39,10 @@ export class AaveCalculations {
   }
 
   static computeBorrowPower(
-    availableBorrowsUSD: Decimal,
-    borrowedBalance: Decimal,
+    minCollateralRatio: Decimal,
+    collateralBalance: Decimal,
   ) {
-    return Decimal.from(availableBorrowsUSD).add(borrowedBalance);
+    return Decimal.from(collateralBalance).div(minCollateralRatio);
   }
 
   static computeBorrowPowerUsed(

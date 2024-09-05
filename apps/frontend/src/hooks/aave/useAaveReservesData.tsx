@@ -4,21 +4,21 @@ import {
 } from '@aave/contract-helpers';
 import { formatReserves, FormatReserveUSDResponse } from '@aave/math-utils';
 
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 
-import { BOB_CHAIN_ID } from '../../config/chains';
-
 import { config } from '../../constants/aave';
-import { useCachedData } from '../useCachedData';
+import { useAccount } from '../useAccount';
 
 export type Reserve = ReserveDataHumanized & FormatReserveUSDResponse;
 
-export type ReserveData = Reserve[];
+export type ReserveData = { reserves: Reserve[]; loading: boolean };
 
 export const useAaveReservesData = (): ReserveData => {
-  const provider = config.provider; // TODO: replace with useAccount. Circular dependency error...
+  const { provider } = useAccount();
+  const [reserves, setReserves] = useState<Reserve[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const uiPoolDataProvider = useMemo(
     () =>
@@ -32,14 +32,8 @@ export const useAaveReservesData = (): ReserveData => {
     [provider],
   );
 
-  const { value } = useCachedData<ReserveData>(
-    'AaveReservesData',
-    BOB_CHAIN_ID,
-    async () => {
-      if (!uiPoolDataProvider) {
-        return [];
-      }
-
+  const fetchReservesData = useCallback(
+    async (uiPoolDataProvider: UiPoolDataProvider) => {
       const currentTimestamp = dayjs().unix();
       const reservesData = await uiPoolDataProvider.getReservesHumanized({
         lendingPoolAddressProvider: config.PoolAddressesProviderAddress,
@@ -53,12 +47,22 @@ export const useAaveReservesData = (): ReserveData => {
           reservesData.baseCurrencyData.marketReferenceCurrencyPriceInUsd,
       });
 
-      return formattedReserves;
+      setReserves(
+        // rename weth to eth. We don't expose WETH through ui.
+        formattedReserves.map(r =>
+          r.symbol === 'WETH' ? { ...r, symbol: 'ETH' } : r,
+        ),
+      );
     },
-    [uiPoolDataProvider],
-    [],
-    { ttl: 1000 * 60, fallbackToPreviousResult: true },
+    [setReserves],
   );
 
-  return value;
+  useEffect(() => {
+    if (uiPoolDataProvider) {
+      setLoading(true);
+      fetchReservesData(uiPoolDataProvider).finally(() => setLoading(false));
+    }
+  }, [uiPoolDataProvider, fetchReservesData]);
+
+  return { reserves, loading };
 };

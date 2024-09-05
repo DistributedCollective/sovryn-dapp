@@ -1,6 +1,6 @@
 import { Decimal } from '@sovryn/utils';
 
-import { ReserveData } from '../../../hooks/aave/useAaveReservesData';
+import { Reserve } from '../../../hooks/aave/useAaveReservesData';
 import { BorrowRateMode } from '../../../types/aave';
 import { AaveUserReservesSummary } from '../../../utils/aave/AaveUserReservesSummary';
 import { BorrowPoolDetails } from './components/BorrowAssetsList/BorrowAssetsList.types';
@@ -51,7 +51,7 @@ export function normalizeBorrowPositions(
 }
 
 export function normalizeBorrowPoolDetails(
-  reserves: ReserveData,
+  reserves: Reserve[],
   userReservesSummary: AaveUserReservesSummary,
 ): BorrowPoolDetails[] {
   if (userReservesSummary.reserves.length === 0) {
@@ -84,7 +84,7 @@ export function normalizeBorrowPoolDetails(
 }
 
 export function normalizeLendPoolDetails(
-  reserves: ReserveData,
+  reserves: Reserve[],
   userReservesSummary: AaveUserReservesSummary,
 ): LendPoolDetails[] {
   if (userReservesSummary.reserves.length === 0) {

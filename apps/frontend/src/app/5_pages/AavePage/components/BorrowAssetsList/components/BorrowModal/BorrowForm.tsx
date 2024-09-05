@@ -1,8 +1,7 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { getAssetData } from '@sovryn/contracts';
 import {
   Button,
   Checkbox,
@@ -32,10 +31,10 @@ const pageTranslations = translations.aavePage;
 
 type BorrowFormProps = {
   asset: string;
-  onSuccess: () => void;
+  onComplete: () => void;
 };
 
-export const BorrowForm: FC<BorrowFormProps> = ({ asset, onSuccess }) => {
+export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
   const { summary } = useAaveUserReservesData();
   const [borrowAsset, setBorrowAsset] = useState<string>(asset);
   const [borrowAmount, setBorrowAmount, borrowSize] = useDecimalAmountInput('');
@@ -98,6 +97,15 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onSuccess }) => {
     () => (borrowSize.gt(0) ? borrowSize.lte(maximumBorrowAmount) : true),
     [borrowSize, maximumBorrowAmount],
   );
+
+  const onConfirm = useCallback(() => {
+    handleBorrow(
+      borrowSize,
+      borrowReserve!.reserve.symbol,
+      BorrowRateMode.VARIABLE,
+      { onComplete },
+    );
+  }, [onComplete, borrowSize, borrowReserve, handleBorrow]);
 
   return (
     <form className="flex flex-col gap-6">
@@ -179,14 +187,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onSuccess }) => {
       />
 
       <Button
-        onClick={async () => {
-          handleBorrow(
-            borrowSize,
-            await getAssetData(borrowReserve!.reserve.symbol, BOB_CHAIN_ID),
-            BorrowRateMode.VARIABLE,
-            { onComplete: onSuccess },
-          );
-        }}
+        onClick={onConfirm}
         disabled={
           !isValidBorrowAmount ||
           borrowSize.lte(0) ||

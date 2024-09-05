@@ -73,7 +73,8 @@
             "withdrawal": "Withdrawal"
         },
         "learnMore": "Learn more",
-        "invalidAmountError": "Exceeds maximum amount"
+        "invalidAmountError": "Exceeds maximum amount",
+        "somethingWentWrong": "Something went wrong, please try again"
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -833,7 +834,8 @@
             "disableEModeTitle": "Disable E-Mode",
             "disableEModeSubtitle": "Disable E-Mode",
             "swapBorrowRateModeTitle": "Swap borrow rate mode",
-            "swapBorrowRateModeSubtitle": "Swap borrow rate mode for {{symbol}} to {{mode}}"
+            "swapBorrowRateModeSubtitle": "Swap borrow rate mode for {{symbol}} to {{mode}}",
+            "somethingWentWrong": "Something went wrong, please try again"
         },
         "eMode": {
             "availableAssets": "Available assets",
@@ -919,7 +921,8 @@
             "collateralization": "Collateralization",
             "lendApy": "Lend APY",
             "deposit": "Deposit",
-            "enabled": "Enabled"
+            "enabled": "Enabled",
+            "disabled": "Disabled"
         },
         "eModeCard": {
             "title": "Efficiency mode (E-Mode)",

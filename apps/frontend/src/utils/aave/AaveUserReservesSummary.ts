@@ -16,6 +16,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { BOB_CHAIN_ID } from '../../config/chains';
 
+import { config } from '../../constants/aave';
 import { Reserve } from '../../hooks/aave/useAaveReservesData';
 import { BorrowRateMode, UserReservesData } from '../../types/aave';
 import { decimalic, fromWei } from '../math';
@@ -159,8 +160,8 @@ export class AaveUserReservesSummaryFactory {
       userSummary.currentLiquidationThreshold,
     );
     const borrowPower = AaveCalculations.computeBorrowPower(
-      Decimal.from(userSummary.availableBorrowsUSD),
-      borrowBalance,
+      config.MinCollateralRatio,
+      collateralBalance,
     );
     const borrowPowerUsed = AaveCalculations.computeBorrowPowerUsed(
       borrowBalance,
@@ -197,27 +198,28 @@ export class AaveUserReservesSummaryFactory {
 
       reserves: await Promise.all(
         userSummary.userReservesData.map(async r => {
-          const asset = await getAssetData(r.reserve.symbol, BOB_CHAIN_ID);
+          const symbol = r.reserve.symbol === 'WETH' ? 'ETH' : r.reserve.symbol;
+          const asset = await getAssetData(symbol, BOB_CHAIN_ID);
           const balance = await getBalance(asset, account, provider);
           const decimalBalance = decimalic(fromWei(balance, asset.decimals));
 
-          const availableToBorrow = borrowPower.div(r.reserve.priceInUSD);
-
           return {
-            asset: r.reserve.symbol,
-            reserve: r.reserve,
+            asset: symbol,
+            reserve: { ...r.reserve, symbol },
 
             walletBalance: decimalBalance,
             walletBalanceUsd: decimalBalance.mul(r.reserve.priceInUSD),
             collateral: r.usageAsCollateralEnabledOnUser,
+
             supplied: Decimal.from(r.underlyingBalance),
             suppliedUSD: Decimal.from(r.underlyingBalanceUSD),
             borrowed: Decimal.from(r.totalBorrows),
             borrowedUSD: Decimal.from(r.totalBorrowsUSD),
+            availableToBorrow: borrowPower.div(r.reserve.priceInUSD),
+
             borrowRateMode: Decimal.from(r.variableBorrows).gt(0)
               ? BorrowRateMode.VARIABLE
               : BorrowRateMode.STABLE,
-            availableToBorrow,
           };
         }),
       ),

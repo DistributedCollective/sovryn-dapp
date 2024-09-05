@@ -30,6 +30,7 @@ type LendPositionsListProps = {
   supplyWeightedApy: Decimal;
   collateralBalance: Decimal;
   lendPositions: LendPosition[];
+  loading: boolean;
 };
 
 export const LendPositionsList: FC<LendPositionsListProps> = ({
@@ -37,6 +38,7 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
   supplyWeightedApy,
   collateralBalance,
   lendPositions,
+  loading,
 }) => {
   const { account } = useAccount();
   const [open, setOpen] = useState<boolean>(true);
@@ -110,6 +112,7 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
           </div>
 
           <Table
+            isLoading={loading}
             columns={COLUMNS_CONFIG(onWithdrawClick)}
             rowClassName="bg-gray-80"
             accordionClassName="bg-gray-60 border border-gray-70"
@@ -128,7 +131,7 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
             <DialogBody className="flex flex-col gap-6">
               <WithdrawForm
                 asset={withdrawAssetDialog!}
-                onSuccess={onWithdrawClose}
+                onComplete={onWithdrawClose}
               />
             </DialogBody>
           </Dialog>

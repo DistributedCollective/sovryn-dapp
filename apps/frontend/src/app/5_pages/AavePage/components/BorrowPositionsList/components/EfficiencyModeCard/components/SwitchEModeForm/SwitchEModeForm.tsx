@@ -29,11 +29,13 @@ import { CollateralRatioHealthBar } from '../../../../../CollateralRatioHealthBa
 type SwitchEModeFormProps = {
   current: EModeCategory;
   categories: EModeCategory[];
+  onComplete: () => void;
 };
 
 export const SwitchEModeForm: FC<SwitchEModeFormProps> = ({
   current,
   categories,
+  onComplete,
 }) => {
   const { handleSetUserEMode } = useAaveSetUserEMode();
   const [category, setCategory] = useState<string>('');
@@ -104,8 +106,8 @@ export const SwitchEModeForm: FC<SwitchEModeFormProps> = ({
 
   const onConfirm = useCallback(() => {
     if (!selectedCategory) return;
-    handleSetUserEMode(selectedCategory);
-  }, [handleSetUserEMode, selectedCategory]);
+    handleSetUserEMode(selectedCategory, { onComplete });
+  }, [handleSetUserEMode, selectedCategory, onComplete]);
 
   return (
     <div className="space-y-6">

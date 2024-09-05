@@ -22,10 +22,14 @@ import { LendForm } from './components/LendForm/LendForm';
 const pageTranslations = translations.aavePage;
 
 type LendAssetsListProps = {
+  loading: boolean;
   lendPools: LendPoolDetails[];
 };
 
-export const LendAssetsList: FC<LendAssetsListProps> = ({ lendPools }) => {
+export const LendAssetsList: FC<LendAssetsListProps> = ({
+  lendPools,
+  loading,
+}) => {
   const [open, setOpen] = useState(true);
   const [showZeroBalances, setShowZeroBalances] = useState(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
@@ -84,6 +88,7 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({ lendPools }) => {
       />
 
       <Table
+        isLoading={loading}
         columns={COLUMNS_CONFIG(onLendClick)}
         rowClassName="bg-gray-80"
         accordionClassName="bg-gray-60 border border-gray-70"
@@ -100,7 +105,7 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({ lendPools }) => {
           onClose={onLendClose}
         />
         <DialogBody className="flex flex-col gap-6">
-          <LendForm onSuccess={onLendClose} asset={lendAssetDialog!} />
+          <LendForm onComplete={onLendClose} asset={lendAssetDialog!} />
         </DialogBody>
       </Dialog>
     </Accordion>

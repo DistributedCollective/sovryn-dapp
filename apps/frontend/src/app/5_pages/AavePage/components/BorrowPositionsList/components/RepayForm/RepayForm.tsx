@@ -10,7 +10,7 @@ import { RepayWithWalletBalanceForm } from './RepayWithWalletBalanceForm';
 
 type RepayFormProps = {
   asset: string;
-  onSuccess: () => unknown;
+  onComplete: () => unknown;
 };
 
 enum RepayWith {
@@ -18,7 +18,7 @@ enum RepayWith {
   COLLATERAL,
 }
 
-export const RepayForm: FC<RepayFormProps> = ({ asset, onSuccess }) => {
+export const RepayForm: FC<RepayFormProps> = ({ asset, onComplete }) => {
   const [activeTab, setActiveTab] = useState<RepayWith>(RepayWith.BALANCE);
 
   const tabItems = useMemo(() => {
@@ -56,9 +56,9 @@ export const RepayForm: FC<RepayFormProps> = ({ asset, onSuccess }) => {
       />
 
       {activeTab === RepayWith.BALANCE ? (
-        <RepayWithWalletBalanceForm asset={asset} onSuccess={onSuccess} />
+        <RepayWithWalletBalanceForm asset={asset} onComplete={onComplete} />
       ) : (
-        <RepayWithCollateralForm onSuccess={onSuccess} />
+        <RepayWithCollateralForm onComplete={onComplete} />
       )}
     </div>
   );

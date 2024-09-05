@@ -25,11 +25,13 @@ const pageTranslations = translations.aavePage.borrowAssetsList;
 type BorrowAssetsListProps = {
   borrowPools: BorrowPoolDetails[];
   eModeEnabled: boolean;
+  loading: boolean;
 };
 
 export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
   borrowPools,
   eModeEnabled,
+  loading,
 }) => {
   const [open, setOpen] = useState(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
@@ -89,6 +91,7 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
       )}
 
       <Table
+        isLoading={loading}
         className="mt-4"
         columns={COLUMNS_CONFIG(onBorrowClick)}
         rowClassName="bg-gray-80"
@@ -106,7 +109,7 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
           onClose={onBorrowClose}
         />
         <DialogBody className="flex flex-col gap-6">
-          <BorrowForm asset={borrowAssetDialog!} onSuccess={onBorrowClose} />
+          <BorrowForm asset={borrowAssetDialog!} onComplete={onBorrowClose} />
         </DialogBody>
       </Dialog>
     </Accordion>

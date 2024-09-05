@@ -9,6 +9,7 @@ import {
   Transaction,
   TransactionType,
 } from '../../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { config } from '../../constants/aave';
 import { translations } from '../../locales/i18n';
 import { BorrowRateMode, TransactionFactoryOptions } from '../../types/aave';
 import { prepareApproveTransaction } from '../transactions';
@@ -42,16 +43,23 @@ export class AaveRepayTransactionsFactory {
   async repay(
     token: AssetDetailsData,
     amount: BigNumber,
+    isEntireDebt: boolean,
     borrowRateMode: BorrowRateMode,
     opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
-    if (token.isNative) return this.repayNative(amount, borrowRateMode, opts);
-    else return this.repayToken(token, amount, borrowRateMode, opts);
+    if (
+      token.isNative ||
+      token.address.toLowerCase() === config.WETHAddress.toLowerCase()
+    ) {
+      return this.repayNative(amount, isEntireDebt, borrowRateMode, opts);
+    } else
+      return this.repayToken(token, amount, isEntireDebt, borrowRateMode, opts);
   }
 
   private async repayToken(
     asset: AssetDetailsData,
     amount: BigNumber,
+    isEntireDebt: boolean,
     borrowRateMode: BorrowRateMode,
     opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
@@ -59,7 +67,7 @@ export class AaveRepayTransactionsFactory {
       spender: this.PoolAddress,
       token: asset.symbol,
       contract: new Contract(asset.address, asset.abi, this.signer),
-      amount: amount,
+      amount: constants.MaxUint256,
       chain: BOB_CHAIN_ID,
     });
     const transactions: Transaction[] = approval ? [approval] : [];
@@ -76,7 +84,7 @@ export class AaveRepayTransactionsFactory {
         type: TransactionType.signTransaction,
         args: [
           asset.address,
-          amount.toString(),
+          isEntireDebt ? constants.MaxUint256.toString() : amount.toString(),
           borrowRateMode,
           await this.signer.getAddress(),
         ],
@@ -92,6 +100,7 @@ export class AaveRepayTransactionsFactory {
 
   private async repayNative(
     amount: BigNumber,
+    isEntireDebt: boolean,
     borrowRateMode: BorrowRateMode,
     opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
@@ -99,6 +108,7 @@ export class AaveRepayTransactionsFactory {
       constants.AddressZero,
       BOB_CHAIN_ID,
     );
+    amount = isEntireDebt ? amount.add('1000000') : amount;
 
     return [
       {

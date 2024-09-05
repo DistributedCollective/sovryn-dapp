@@ -1,8 +1,7 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { getAssetData } from '@sovryn/contracts';
 import {
   Button,
   ErrorBadge,
@@ -28,10 +27,10 @@ const pageTranslations = translations.aavePage;
 
 type WithdrawFormProps = {
   asset: string;
-  onSuccess: () => void;
+  onComplete: () => void;
 };
 
-export const WithdrawForm: FC<WithdrawFormProps> = ({ asset }) => {
+export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
   const { handleWithdraw } = useAaveWithdraw();
   const { summary } = useAaveUserReservesData();
   const [withdrawAsset, setWithdrawAsset] = useState<string>(asset);
@@ -97,6 +96,21 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset }) => {
     [],
   );
 
+  const onConfirm = useCallback(() => {
+    handleWithdraw(
+      withdrawSize,
+      withdrawAsset,
+      withdrawSize.eq(maximumWithdrawAmount),
+      { onComplete },
+    );
+  }, [
+    handleWithdraw,
+    withdrawSize,
+    withdrawAsset,
+    onComplete,
+    maximumWithdrawAmount,
+  ]);
+
   return (
     <form className="flex flex-col gap-6">
       <div className="space-y-2">
@@ -138,12 +152,7 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset }) => {
 
       <Button
         disabled={submitButtonDisabled}
-        onClick={async () => {
-          handleWithdraw(
-            withdrawSize,
-            await getAssetData(withdrawAsset, BOB_CHAIN_ID),
-          );
-        }}
+        onClick={onConfirm}
         text={t(translations.common.buttons.confirm)}
       />
     </form>

@@ -1,8 +1,7 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { getAssetData } from '@sovryn/contracts';
 import {
   Button,
   ErrorBadge,
@@ -28,15 +27,15 @@ const pageTranslations = translations.aavePage;
 
 type LendFormProps = {
   asset: string;
-  onSuccess: () => void;
+  onComplete: () => void;
 };
 
 export const LendForm: FC<LendFormProps> = ({
   asset: initialAsset,
-  onSuccess,
+  onComplete,
 }) => {
   const { account } = useAccount();
-  const reserves = useAaveReservesData();
+  const { reserves } = useAaveReservesData();
   const [lendAsset, setLendAsset] = useState<string>(initialAsset);
   const [lendAmount, setLendAmount, lendSize] = useDecimalAmountInput('');
   const { balance: lendAssetBalance } = useAssetBalance(
@@ -66,7 +65,7 @@ export const LendForm: FC<LendFormProps> = ({
     return reserves.find(r => r.symbol === lendAsset) ?? reserves[0];
   }, [reserves, lendAsset]);
 
-  const assetUsdValue: Decimal = useMemo(() => {
+  const assetUsdValue = useMemo(() => {
     return Decimal.from(reserve?.priceInUSD ?? 0).mul(lendSize);
   }, [reserve, lendSize]);
 
@@ -74,6 +73,10 @@ export const LendForm: FC<LendFormProps> = ({
     () => (lendSize.gt(0) ? lendSize.lte(lendAssetBalance) : true),
     [lendSize, lendAssetBalance],
   );
+
+  const onConfirm = useCallback(async () => {
+    handleDeposit(lendSize, reserve.symbol, { onComplete });
+  }, [handleDeposit, lendSize, reserve, onComplete]);
 
   return (
     <form className="flex flex-col gap-6">
@@ -114,22 +117,16 @@ export const LendForm: FC<LendFormProps> = ({
         <SimpleTableRow
           label={t(translations.aavePage.lendModal.collateralization)}
           value={t(
-            translations.aavePage.lendModal[
-              reserve?.usageAsCollateralEnabled ? 'enabled' : 'disabled'
-            ],
+            reserve?.usageAsCollateralEnabled
+              ? translations.aavePage.lendModal.enabled
+              : translations.aavePage.lendModal.disabled,
           )}
         />
       </SimpleTable>
 
       <Button
         disabled={!isValidLendAmount || lendSize.lte(0)}
-        onClick={async () =>
-          handleDeposit(
-            lendSize,
-            await getAssetData(reserve.symbol, BOB_CHAIN_ID),
-            { onComplete: onSuccess },
-          )
-        }
+        onClick={onConfirm}
         text={t(translations.aavePage.lendModal.deposit)}
       />
     </form>

@@ -20,9 +20,13 @@ import { EModeCategory } from '../../../../../../../../../types/aave';
 
 type EnableEModeFormProps = {
   categories: EModeCategory[];
+  onComplete: () => void;
 };
 
-export const EnableEModeForm: FC<EnableEModeFormProps> = ({ categories }) => {
+export const EnableEModeForm: FC<EnableEModeFormProps> = ({
+  categories,
+  onComplete,
+}) => {
   const [category, setCategory] = useState(String(categories[0]?.id));
   const { summary } = useAaveUserReservesData();
   const { handleSetUserEMode } = useAaveSetUserEMode();
@@ -46,8 +50,8 @@ export const EnableEModeForm: FC<EnableEModeFormProps> = ({ categories }) => {
 
   const onConfirmClick = useCallback(() => {
     if (!selectedCategory) return;
-    handleSetUserEMode(selectedCategory);
-  }, [handleSetUserEMode, selectedCategory]);
+    handleSetUserEMode(selectedCategory, { onComplete });
+  }, [handleSetUserEMode, selectedCategory, onComplete]);
 
   return (
     <div className="space-y-6">

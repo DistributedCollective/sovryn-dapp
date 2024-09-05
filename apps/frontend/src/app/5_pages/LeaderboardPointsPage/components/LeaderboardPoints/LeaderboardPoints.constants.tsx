@@ -34,9 +34,7 @@ export const COLUMNS_CONFIG = (isSingleUser: boolean = false) => [
   },
   {
     id: '',
-    title: isSingleUser
-      ? t(translations.leaderboardPointsPage.table.spice)
-      : t(translations.leaderboardPointsPage.table.points),
+    title: t(translations.leaderboardPointsPage.table.spice),
     cellRenderer: user => <AmountRenderer value={user.points} />,
     sampleData: '111,111,111.1111',
   },

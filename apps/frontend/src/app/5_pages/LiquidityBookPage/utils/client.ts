@@ -6,8 +6,13 @@ import {
   http,
 } from 'viem';
 
+import { ChainIds, chainIdToNumber } from '@sovryn/ethers-provider';
+
+import { BOB } from '../../../../constants/infrastructure/bob';
+import { Environments } from '../../../../types/global';
+
 const bobTestnet = defineChain({
-  id: 808813,
+  id: chainIdToNumber(ChainIds.BOB_TESTNET),
   name: 'Bob Testnet',
   nativeCurrency: {
     name: 'Bob Testnet',
@@ -16,10 +21,10 @@ const bobTestnet = defineChain({
   },
   rpcUrls: {
     default: {
-      http: ['https://bob-sepolia.rpc.gobob.xyz'],
+      http: [BOB.rpc[Environments.Testnet]],
     },
   },
-  blockExplorerUrls: ['https://testnet-explorer.gobob.xyz'],
+  blockExplorerUrls: [BOB.explorer[Environments.Testnet]],
   contracts: {
     multicall3: {
       address: '0x43aCeB7846d580877D2B98A6c3b0ea51a39a62A4',
@@ -30,7 +35,7 @@ const bobTestnet = defineChain({
 export const useBlockchainClients = () => {
   const publicClient = createPublicClient({
     chain: bobTestnet,
-    transport: http('https://bob-sepolia.rpc.gobob.xyz'),
+    transport: http(BOB.rpc[Environments.Testnet]),
   }) as any;
 
   /** @deprecated use our own wallet provider to send tx... */

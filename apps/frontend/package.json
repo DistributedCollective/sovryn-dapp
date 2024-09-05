@@ -28,6 +28,7 @@
     "@uniswap/permit2-sdk": "1.2.0",
     "bitcoin-address-validation": "2.2.1",
     "chart.js": "4.1.1",
+    "chartjs-adapter-date-fns": "3.0.0",
     "classnames": "2.3.2",
     "date-fns": "2.30.0",
     "dayjs": "1.11.7",

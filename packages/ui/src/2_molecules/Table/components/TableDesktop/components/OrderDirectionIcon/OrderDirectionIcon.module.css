@@ -1,5 +1,5 @@
 .icon {
-  @apply ml-2 opacity-0 hover:opacity-100 transition-opacity;
+  @apply ml-2 opacity-30 hover:opacity-100 transition-opacity;
 
   &.active {
     @apply opacity-100;

@@ -29,7 +29,7 @@ import {
 
 const { decimal, thousand } = getLocaleSeparators();
 
-type AmountRendererProps = {
+export type AmountRendererProps = {
   value: Decimalish;
   precision?: number;
   className?: string;
@@ -142,33 +142,29 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
           </span>
         </span>
       }
-      className={classNames({
-        'cursor-pointer': shouldShowTooltip,
-      })}
+      className={classNames({ 'cursor-pointer': shouldShowTooltip }, className)}
       disabled={!shouldShowTooltip}
       trigger={trigger}
       dataAttribute={dataAttribute}
     >
-      <span className={className}>
-        {isAnimated ? (
-          <CountUp
-            start={0}
-            end={countUpValues.end}
-            decimals={calculatedPrecision}
-            duration={1} //do not set lower than 1 overwise it can cause a bug
-            separator={thousand}
-            decimal={decimal}
-            prefix={shouldShowRoundingPrefix ? `~ ${prefix}` : `${prefix}`}
-            suffix={` ${suffix}`}
-          />
-        ) : (
-          <>
-            {shouldShowRoundingPrefix ? '~ ' : ''}
-            {prefix}
-            {localeFormattedValue} {suffix}
-          </>
-        )}
-      </span>
+      {isAnimated ? (
+        <CountUp
+          start={0}
+          end={countUpValues.end}
+          decimals={calculatedPrecision}
+          duration={1} //do not set lower than 1 overwise it can cause a bug
+          separator={thousand}
+          decimal={decimal}
+          prefix={shouldShowRoundingPrefix ? `~ ${prefix}` : `${prefix}`}
+          suffix={` ${suffix}`}
+        />
+      ) : (
+        <span>
+          {shouldShowRoundingPrefix ? '~ ' : ''}
+          {prefix}
+          {localeFormattedValue} {suffix}
+        </span>
+      )}
     </Tooltip>
   );
 };

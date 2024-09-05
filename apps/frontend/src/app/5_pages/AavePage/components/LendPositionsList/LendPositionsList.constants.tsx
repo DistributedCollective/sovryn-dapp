@@ -1,0 +1,89 @@
+import React from 'react';
+
+import { t } from 'i18next';
+
+import { Align, HelperButton } from '@sovryn/ui';
+
+import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { AssetAmountPriceRenderer } from '../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
+import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { translations } from '../../../../../locales/i18n';
+import { LendPosition } from './LendPositionsList.types';
+import { LendPositionAction } from './components/LendPositionAction/LendPositionAction';
+import { ToggleCollateralAction } from './components/ToggleCollateralAction/ToggleCollateralAction';
+
+const pageTranslations = translations.aavePage;
+
+export const COLUMNS_CONFIG = [
+  {
+    id: 'asset',
+    sortable: true,
+    align: Align.center,
+    title: (
+      <span className="text-gray-30">{t(pageTranslations.common.asset)}</span>
+    ),
+    cellRenderer: (position: LendPosition) => (
+      <AssetRenderer
+        dataAttribute="borrow-asset"
+        showAssetLogo
+        asset={position.asset}
+        className="lg:justify-start justify-end"
+        logoClassName="[&>svg]:h-8 [&>svg]:w-8 [&>svg]:mr-[10px]"
+      />
+    ),
+  },
+  {
+    id: 'balance',
+    sortable: true,
+    align: Align.center,
+    className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
+    title: (
+      <span className="text-gray-30">{t(pageTranslations.common.balance)}</span>
+    ),
+    cellRenderer: (position: LendPosition) => (
+      <AssetAmountPriceRenderer
+        className="flex flex-col justify-center"
+        value={position.balance}
+        asset={position.asset}
+      />
+    ),
+  },
+  {
+    id: 'apy',
+    sortable: true,
+    align: Align.center,
+    className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
+    title: (
+      <span className="flex items-center gap-1 text-gray-30">
+        {t(translations.aavePage.common.apy)}
+        <HelperButton content={t(pageTranslations.common.apyInfo)} />
+      </span>
+    ),
+    cellRenderer: (position: LendPosition) => (
+      <AmountRenderer
+        className="text-center"
+        value={position.balance}
+        suffix={'%'}
+      />
+    ),
+  },
+  {
+    id: 'collateral',
+    align: Align.center,
+    className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
+    title: (
+      <span className="flex items-center text-gray-30">
+        {t(pageTranslations.common.collateral)}
+      </span>
+    ),
+    cellRenderer: (position: LendPosition) => (
+      <ToggleCollateralAction position={position} />
+    ),
+  },
+  {
+    id: 'actions',
+    align: Align.center,
+    title: ' ',
+    cellRenderer: () => <LendPositionAction />,
+  },
+];

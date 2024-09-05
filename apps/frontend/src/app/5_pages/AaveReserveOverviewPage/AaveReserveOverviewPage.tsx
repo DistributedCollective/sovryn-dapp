@@ -121,7 +121,10 @@ const AaveReserveOverviewPage: FC = () => {
             <BorrowDetailsGraph />
             <EModeDetails />
             {interestRatesData && (
-              <InterestRateModelGraph rates={interestRatesData} />
+              <InterestRateModelGraph
+                rates={interestRatesData}
+                reserveFactor={reserve?.reserveFactor}
+              />
             )}
           </div>
 
@@ -132,7 +135,7 @@ const AaveReserveOverviewPage: FC = () => {
               'lg:block space-y-4 w-[450px] shrink-0',
             )}
           >
-            <WalletOverview asset={{ symbol: 'btc', name: 'bitcoin' }} />
+            <WalletOverview symbol={symbol} />
           </div>
         </div>
       </div>

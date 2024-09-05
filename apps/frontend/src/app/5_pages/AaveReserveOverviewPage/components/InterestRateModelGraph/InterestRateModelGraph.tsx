@@ -16,10 +16,12 @@ const pageTranslations = translations.aaveReserveOverviewPage.interestRateModel;
 
 type InterestRateModelGraphProps = {
   rates: IRatesDataResult;
+  reserveFactor: string | undefined;
 };
 
 export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
   rates,
+  reserveFactor,
 }) => {
   const [open, setOpen] = useState<boolean>(true);
   const { isMobile } = useIsMobile();
@@ -64,7 +66,7 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
             <StatisticsCard
               label={t(pageTranslations.reserveFactor)}
               help={t(pageTranslations.reserveFactorInfo)}
-              value={<AmountRenderer value={85.94} suffix="%" />}
+              value={<AmountRenderer value={reserveFactor ?? 0} suffix="%" />}
             />
             <StatisticsCard
               label={t(pageTranslations.collectorContract)}

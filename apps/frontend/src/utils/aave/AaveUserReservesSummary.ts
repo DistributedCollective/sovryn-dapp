@@ -40,6 +40,7 @@ export type ReserveSummary = {
   borrowedUSD: Decimal;
   borrowRateMode: BorrowRateMode;
   availableToBorrow: Decimal;
+  availableToBorrowUSD: Decimal;
 };
 
 export type AaveUserReservesSummary = {
@@ -99,6 +100,7 @@ export class AaveUserReservesSummaryFactory {
         borrowedUSD: Decimal.ZERO,
         borrowRateMode: BorrowRateMode.VARIABLE,
         availableToBorrow: Decimal.ZERO,
+        availableToBorrowUSD: Decimal.ZERO,
       })),
     };
   }

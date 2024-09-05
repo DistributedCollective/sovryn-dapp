@@ -82,6 +82,7 @@ export const COLUMNS_CONFIG = (onBorrowClick: (asset: string) => void) => [
       <BorrowAssetAction
         disabled={!pool.available || pool.available.eq(0)}
         onBorrowClick={() => onBorrowClick(pool.asset)}
+        asset={pool.asset}
       />
     ),
   },

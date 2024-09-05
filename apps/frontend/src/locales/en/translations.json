@@ -945,7 +945,13 @@
             "reserveSize": "Reserve size",
             "availableLiquidity": "Available liquidity",
             "utilizationRate": "Utilization rate",
-            "oraclePrice": "Oracle price"
+            "oraclePrice": "Oracle price",
+            "underlyingToken": "Underlying token",
+            "aToken": "aToken",
+            "variableDebtToken": "Variable debt token",
+            "variableDebtTokenName": "Variable debt {{symbol}}",
+            "stableDebtToken": "Stable debt token",
+            "stableDebtTokenName": "Stable debt {{symbol}}"
         },
         "reserveStatusTab": {
             "title": "Reserve status",

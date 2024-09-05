@@ -10,9 +10,11 @@ import { translations } from '../../../../../../../locales/i18n';
 type LendAssetActionProps = {
   disabled: boolean;
   onLendClick: () => void;
+  asset: string;
 };
 
 export const LendAssetAction: FC<LendAssetActionProps> = ({
+  asset,
   disabled,
   onLendClick,
 }) => {
@@ -31,7 +33,7 @@ export const LendAssetAction: FC<LendAssetActionProps> = ({
         className="flex-grow lg:flex-grow-0 lg:w-min"
         text={t(translations.aavePage.common.details)}
         style={ButtonStyle.secondary}
-        onClick={() => navigate('/aave/reserve-overview')}
+        onClick={() => navigate(`/aave/reserve-overview?asset=${asset}`)}
       />
     </div>
   );

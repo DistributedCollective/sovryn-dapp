@@ -1,0 +1,1 @@
+export const BIG_NUMBER_PRECISION_TWENTY_SEVEN = 27;

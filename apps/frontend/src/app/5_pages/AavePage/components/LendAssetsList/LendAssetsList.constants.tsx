@@ -91,6 +91,7 @@ export const COLUMNS_CONFIG = (onLendClick: (asset: string) => unknown) => [
       <LendAssetAction
         disabled={pool.walletBalance.eq(0)}
         onLendClick={() => onLendClick(pool.asset)}
+        asset={pool.asset}
       />
     ),
   },

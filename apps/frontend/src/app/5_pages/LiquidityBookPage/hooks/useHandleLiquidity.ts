@@ -4,12 +4,15 @@ import { Contract } from 'ethers';
 import { t } from 'i18next';
 import { getContract, parseUnits } from 'viem';
 
-import { TokenAmount } from '@sovryn/joe-core';
+import { ChainId, Percent, TokenAmount } from '@sovryn/joe-core';
 import {
+  getLiquidityConfig,
   getUniformDistributionFromBinRange,
   JSBI,
   LBPairV21ABI,
   LBRouterV22ABI,
+  LiquidityDistribution,
+  PairV2,
 } from '@sovryn/joe-sdk-v2';
 
 import { BOB_CHAIN_ID } from '../../../../config/chains';
@@ -30,6 +33,7 @@ import {
 import { LiquidityBookPool } from '../LiquidityBookPage.types';
 import { useBlockchainClients } from '../utils/client';
 import { useGetUserOwnedBins } from './useGetUserOwnedBins';
+import { getIdFromPrice } from '../utils/bins';
 
 export const useHandleLiquidity = (pool: LiquidityBookPool) => {
   const { account, signer } = useAccount();
@@ -53,6 +57,9 @@ export const useHandleLiquidity = (pool: LiquidityBookPool) => {
       if (!account || !signer) {
         return;
       }
+
+      const pair = new PairV2(pool.pair[0], pool.pair[1]);
+      console.log('pair', pair);
 
       const tokenXAmountParsed = parseUnits(
         tokenXAmount,
@@ -83,12 +90,36 @@ export const useHandleLiquidity = (pool: LiquidityBookPool) => {
         JSBI.BigInt(10000),
       );
 
-      const binRange = [
-        pool.activeBinId - pool.binStep,
-        pool.activeBinId + pool.binStep,
-      ];
+      console.log({
+        tokenXAmountParsed: tokenXAmountParsed.toString(),
+        tokenYAmountParsed: tokenYAmountParsed.toString(),
+        minTokenAmountX: minTokenAmountX.toString(),
+        minTokenAmountY: minTokenAmountY.toString(),
+      });
+
+      // const binRange = [
+      //   pool.activeBinId - pool.binStep,
+      //   pool.activeBinId + pool.binStep,
+      // ];
+      const binRange = [pool.activeBinId - 120, pool.activeBinId];
+      // const binRange = [
+      //   getIdFromPrice(0.9, pool.binStep) - pool.binStep, //min 0.5
+      //   getIdFromPrice(1, pool.binStep) + pool.binStep, //max 1
+      // ];
+
+      // console.log('binRange', binRange);
+
       const { deltaIds, distributionX, distributionY } =
         getUniformDistributionFromBinRange(pool.activeBinId, binRange);
+
+      console.log(
+        'deltaIds',
+        deltaIds,
+        'distributionX',
+        distributionX,
+        'distributionY',
+        distributionY,
+      );
 
       const args = [
         {
@@ -109,6 +140,28 @@ export const useHandleLiquidity = (pool: LiquidityBookPool) => {
           deadline: deadline,
         },
       ];
+
+      // const params = pair.addLiquidityParameters(
+      //   pool.binStep,
+      //   tokenAmountX,
+      //   tokenAmountY,
+      //   new Percent('50', '10000'),
+      //   new Percent('50', '10000'),
+      //   LiquidityDistribution.SPOT,
+      // );
+
+      // const args = [
+      //   {
+      //     ...params,
+      //     binStep: pool.binStep,
+      //     activeIdDesired: pool.activeBinId,
+      //     tokenX: params.tokenX.address,
+      //     tokenY: params.tokenY.address,
+      //     to: account,
+      //     refundTo: account,
+      //     deadline,
+      //   },
+      // ];
 
       console.log('args', args);
 
@@ -140,6 +193,7 @@ export const useHandleLiquidity = (pool: LiquidityBookPool) => {
         request: {
           type: TransactionType.signTransaction,
           contract: new Contract(LB_ROUTER_CONTRACT, LBRouterV22ABI, signer),
+          // todo: if params.tokenX is native, use addLiquidityNATIVE
           fnName: 'addLiquidity',
           args: args,
           gasLimit: GAS_LIMIT.TRADING_LIQUIDITY,

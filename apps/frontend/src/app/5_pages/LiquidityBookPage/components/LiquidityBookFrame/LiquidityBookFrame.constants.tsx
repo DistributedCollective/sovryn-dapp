@@ -12,6 +12,7 @@ import { fromWei } from '../../../../../utils/math';
 import { LiquidityBookPool } from '../../LiquidityBookPage.types';
 import { LiquidityBookFrameAction } from './components/LiquidityBookFrameAction/LiquidityBookFrameAction';
 import { LiquidityBookBalance } from './components/LiquidityBookFrameBalance/LiquidityBookFrameBalance';
+import { getPriceFromId } from '../../utils/bins';
 
 export const COLUMNS_CONFIG = [
   {
@@ -49,6 +50,16 @@ export const COLUMNS_CONFIG = [
     title: t(translations.liquidityBookPage.table.balance),
     cellRenderer: (pool: LiquidityBookPool) => (
       <LiquidityBookBalance pool={pool} />
+    ),
+  },
+  {
+    id: 'etc',
+    title: t(translations.liquidityBookPage.table.balance),
+    cellRenderer: (pool: LiquidityBookPool) => (
+      <>
+        {pool.activeBinId} | {pool.binStep} |{' '}
+        {getPriceFromId(pool.activeBinId, pool.binStep)}
+      </>
     ),
   },
   {

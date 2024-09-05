@@ -7,8 +7,12 @@ import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { PAIR_VERSION } from '../../../LiquidityBookPage.constants';
 import { LiquidityBookPool } from '../../../LiquidityBookPage.types';
 import { useBlockchainClients } from '../../../utils/client';
-import { lbPairUSDT_SOV, lbPairWBTC_USDT } from '../../../utils/pairs';
-import { SOV, USDT, WBTC } from '../../../utils/tokens';
+import {
+  lbPairSOV_DAI,
+  lbPairUSDT_SOV,
+  lbPairWBTC_USDT,
+} from '../../../utils/pairs';
+import { DAI, SOV, USDT, WBTC } from '../../../utils/tokens';
 
 export const useGetPools = () => {
   const { value: block } = useBlockNumber();
@@ -18,7 +22,7 @@ export const useGetPools = () => {
 
   const fetchPoolsData = useCallback(async () => {
     try {
-      const [wbtc_usdt, usdt_sov] = await Promise.all([
+      const [wbtc_usdt, usdt_sov, sov_dai] = await Promise.all([
         lbPairWBTC_USDT.fetchAvailableLBPairs(
           PAIR_VERSION,
           publicClient,
@@ -29,9 +33,14 @@ export const useGetPools = () => {
           publicClient,
           ChainId.BOB_TESTNET,
         ),
+        lbPairSOV_DAI.fetchAvailableLBPairs(
+          PAIR_VERSION,
+          publicClient,
+          ChainId.BOB_TESTNET,
+        ),
       ]);
 
-      const [pair_wbtc_usdt, pair_usdt_sov] = await Promise.all([
+      const [pair_wbtc_usdt, pair_usdt_sov, pair_sov_dai] = await Promise.all([
         PairV2.getLBPairReservesAndId(
           wbtc_usdt[0].LBPair,
           PAIR_VERSION,
@@ -39,6 +48,11 @@ export const useGetPools = () => {
         ),
         PairV2.getLBPairReservesAndId(
           usdt_sov[0].LBPair,
+          PAIR_VERSION,
+          publicClient,
+        ),
+        PairV2.getLBPairReservesAndId(
+          sov_dai[0].LBPair,
           PAIR_VERSION,
           publicClient,
         ),
@@ -63,6 +77,16 @@ export const useGetPools = () => {
           ],
           contractAddress: usdt_sov[0].LBPair,
           activeBinId: pair_usdt_sov.activeId,
+          binStep: usdt_sov[0].binStep,
+        },
+        {
+          pair: [SOV, DAI],
+          liquidity: [
+            pair_sov_dai.reserveX.toString(),
+            pair_sov_dai.reserveY.toString(),
+          ],
+          contractAddress: sov_dai[0].LBPair,
+          activeBinId: pair_sov_dai.activeId,
           binStep: usdt_sov[0].binStep,
         },
       ];

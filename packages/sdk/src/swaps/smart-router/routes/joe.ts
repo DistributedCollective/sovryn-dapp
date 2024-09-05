@@ -98,7 +98,7 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
       if (!pairCache) {
         const chainId = await getChainId();
 
-        const swapTokens = ['WBTC', 'USDT', 'SOV'];
+        const swapTokens = ['WBTC', 'USDT', 'SOV', 'DAI'];
 
         joeBases = await loadTokens(chainId, swapTokens);
 
@@ -188,7 +188,6 @@ export const joeRoute: SwapRouteFunction = (provider: providers.Provider) => {
         return BigNumber.from('0');
       }
 
-      // return BigNumber.from(bestTrade.outputAmount.raw.toString());
       return BigNumber.from(bestTrade.outputAmount.raw.toString()).mul(
         Math.pow(10, 18 - bestTrade.outputAmount.currency.decimals),
       );

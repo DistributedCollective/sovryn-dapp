@@ -23,3 +23,11 @@ export const SOV = new Token(
   'SOV',
   'Sovryn',
 );
+
+export const DAI = new Token(
+  ChainId.BOB_TESTNET,
+  '0x3E610F32806e09C2Ba65b8c88A6E4f777c8Cb559'.toLowerCase(),
+  18,
+  'DAI',
+  'DAI',
+);

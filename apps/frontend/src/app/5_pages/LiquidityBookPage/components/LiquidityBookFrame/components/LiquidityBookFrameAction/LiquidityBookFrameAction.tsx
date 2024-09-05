@@ -27,7 +27,7 @@ export const LiquidityBookFrameAction: FC<LiquidityBookProps> = ({ pool }) => {
   }, [account, userOwnedBins, nonZeroAmounts, loading]);
 
   const deposit = useCallback(
-    () => handleDeposit('1', '50', onComplete),
+    () => handleDeposit('1000000', '500000', onComplete),
     [handleDeposit, onComplete],
   );
 

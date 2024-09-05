@@ -11,11 +11,13 @@ export const FIXED_RATE_ROUTES = ['MyntBasset', 'MyntFixedRate'];
 export const FIXED_MYNT_RATE = '0.004723550439442834'; // We need it here as well because ConvertPage slightly rounds maximum price
 
 export const SWAP_ROUTES = [
-  smartRoutes.ammSwapRoute,
-  smartRoutes.myntBassetRoute,
-  smartRoutes.myntFixedRateRoute,
-  smartRoutes.mocIntegrationSwapRoute,
-  smartRoutes.ambientRoute,
+  // todo: uncomment after testing...
+  // smartRoutes.ammSwapRoute,
+  // smartRoutes.myntBassetRoute,
+  // smartRoutes.myntFixedRateRoute,
+  // smartRoutes.mocIntegrationSwapRoute,
+  // smartRoutes.ambientRoute,
+  smartRoutes.joeRoute,
   // smartRoutes.zeroRedemptionSwapRoute,
 ];
 
@@ -45,6 +47,7 @@ export const DEFAULT_SWAP_ENTRIES: Partial<Record<ChainIds, string>> = {
   [ChainIds.RSK_MAINNET]: COMMON_SYMBOLS.DLLR,
   [ChainIds.RSK_TESTNET]: COMMON_SYMBOLS.DLLR,
   [ChainIds.BOB_MAINNET]: COMMON_SYMBOLS.ETH,
-  [ChainIds.BOB_TESTNET]: COMMON_SYMBOLS.ETH,
+  // [ChainIds.BOB_TESTNET]: COMMON_SYMBOLS.ETH,
+  [ChainIds.BOB_TESTNET]: COMMON_SYMBOLS.SOV, // todo: switch back to ETH after testing joe route
   [ChainIds.SEPOLIA]: COMMON_SYMBOLS.ETH,
 };

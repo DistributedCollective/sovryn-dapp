@@ -2,7 +2,7 @@ import { ChainId, Token } from '@sovryn/joe-core';
 
 export const WBTC = new Token(
   ChainId.BOB_TESTNET,
-  '0x6DBed1fd7C490bb860D02F027C9257D9338Ed190',
+  '0xb5E3dbAF69A46B71Fe9c055e6Fa36992ae6b2c1A'.toLowerCase(),
   8,
   'WBTC',
   'Wrapped Bitcoin',
@@ -10,7 +10,7 @@ export const WBTC = new Token(
 
 export const USDT = new Token(
   ChainId.BOB_TESTNET,
-  '0x9Fddb3a3D9a014A2A1F85DB3ebF6Ba5E26F4e5Ad',
+  '0x2267Ae86066097EF49884Aac96c63f70fE818eb3'.toLowerCase(),
   6,
   'USDT',
   'Tether USD',
@@ -18,7 +18,7 @@ export const USDT = new Token(
 
 export const SOV = new Token(
   ChainId.BOB_TESTNET,
-  '0x05da4128d52750421D1bA07E932Cb68B28c69021',
+  '0x67bF6DE7f8d4d13FBa410CBe05219cB26242A7C9'.toLowerCase(),
   18,
   'SOV',
   'Sovryn',

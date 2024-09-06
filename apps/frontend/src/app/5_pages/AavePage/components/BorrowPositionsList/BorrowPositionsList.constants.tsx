@@ -15,7 +15,7 @@ import { BorrowRateModeSelect } from './components/BorrowRateModeSelect/BorrowRa
 
 const pageTranslations = translations.aavePage;
 
-export const COLUMNS_CONFIG = (onRepayClick: (asset: string) => unknown) => [
+export const COLUMNS_CONFIG = (onRepayClick: (asset: string) => void) => [
   {
     id: 'asset',
     sortable: true,

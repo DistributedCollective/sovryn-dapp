@@ -30,3 +30,8 @@ export const AMM_SERVICE = {
 };
 
 export const ESTIMATOR_URI = process.env.REACT_APP_ESTIMATOR_URI;
+
+export const SOVRYN_INDEXER = {
+  [Environments.Mainnet]: 'https://indexer.sovryn.app',
+  [Environments.Testnet]: 'https://indexer.test.sovryn.app',
+};

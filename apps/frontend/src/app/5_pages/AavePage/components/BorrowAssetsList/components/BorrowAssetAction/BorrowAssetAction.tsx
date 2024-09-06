@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +22,11 @@ export const BorrowAssetAction: FC<BorrowAssetActionProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  const onDetailsClick = useCallback(
+    () => navigate(`/aave/reserve-overview?asset=${asset}`),
+    [navigate, asset],
+  );
+
   return (
     <div className="flex items-center justify-center lg:justify-end space-x-2">
       <Button
@@ -35,7 +40,7 @@ export const BorrowAssetAction: FC<BorrowAssetActionProps> = ({
         className="flex-grow lg:flex-grow-0 lg:w-min"
         text={t(pageTranslations.common.details)}
         style={ButtonStyle.secondary}
-        onClick={() => navigate(`/aave/reserve-overview?asset=${asset}`)}
+        onClick={onDetailsClick}
       />
     </div>
   );

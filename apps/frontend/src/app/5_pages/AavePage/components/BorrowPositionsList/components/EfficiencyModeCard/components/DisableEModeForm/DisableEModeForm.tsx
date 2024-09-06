@@ -14,7 +14,10 @@ import {
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { config } from '../../../../../../../../../constants/aave';
+import {
+  config,
+  EMODE_DISABLED_ID,
+} from '../../../../../../../../../constants/aave';
 import { useAaveSetUserEMode } from '../../../../../../../../../hooks/aave/useAaveSetUserEMode';
 import { useAaveUserReservesData } from '../../../../../../../../../hooks/aave/useAaveUserReservesData';
 import { translations } from '../../../../../../../../../locales/i18n';
@@ -41,7 +44,7 @@ export const DisableEModeForm: FC<DisableEModeFormProps> = ({
 
   const summaryAfterDisabled = useMemo(() => {
     return normalizeEModeSummary(
-      0, // disabled
+      EMODE_DISABLED_ID,
       reservesData,
       userReservesData,
       timestamp,

@@ -12,3 +12,5 @@ export const config = {
   InterestRateStrategyAddress: '0x847A3364Cc5fE389283bD821cfC8A477288D9e82',
   RepayAllETHSurplus: '1000000',
 };
+
+export const EMODE_DISABLED_ID = 0;

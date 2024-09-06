@@ -974,7 +974,6 @@
         "eModeDetails": {
             "title": "E-Mode details",
             "category": "E-Mode category",
-            "ethCorrelatedCategory": "ETH correlated",
             "maxLtv": "Max LTV",
             "maxLtvInfo": "The Maximum LTV ratio represents the maximum borrowing power of a specific collateral. For example, if a collateral has an LTV of 75%, the user can borrow up to 0.75 worth of ETH in the principal currency for every 1 ETH worth of collateral.",
             "liquidationThreshold": "Liquidation threshold",
@@ -994,6 +993,7 @@
             "liquidationPenaltyInfo": "When a liquidation occurs, liquidators repay up to 50% of the outstanding borrowed amount on behalf of the borrower. In return, they can buy the collateral at a discount and keep the difference (liquidation penalty) as a bonus.",
             "collateralUsage": "Collateral usage",
             "canBeCollateral": "Can be collateral",
+            "cannotBeCollateral": "Can't be collateral",
             "totalSupplied": "Total supplied",
             "totalSuppliedInfo": "Asset supply is limited to a certain amount to reduce protocol exposure to the asset and to help manage risks involved.",
             "of": "of",

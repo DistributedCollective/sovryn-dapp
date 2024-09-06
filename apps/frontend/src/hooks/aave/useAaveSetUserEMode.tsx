@@ -53,18 +53,20 @@ export const useAaveSetUserEMode = () => {
 
   const handleDisableUserEMode = useCallback(
     async (opts?: TransactionFactoryOptions) => {
-      if (!aaveEModeTransactionsFactory) {
-        return;
-      }
+      try {
+        if (!aaveEModeTransactionsFactory) {
+          throw new Error('Transactions factory not available');
+        }
 
-      aaveEModeTransactionsFactory
-        .disableEMode(opts)
-        .then(txs => {
-          setTransactions(txs);
-          setTitle(t(translations.aavePage.tx.disableEModeTitle));
-          setIsOpen(true);
-        })
-        .catch(notifyError);
+        const transactions = await aaveEModeTransactionsFactory.disableEMode(
+          opts,
+        );
+        setTransactions(transactions);
+        setTitle(t(translations.aavePage.tx.disableEModeTitle));
+        setIsOpen(true);
+      } catch (e) {
+        notifyError(e);
+      }
     },
     [
       aaveEModeTransactionsFactory,

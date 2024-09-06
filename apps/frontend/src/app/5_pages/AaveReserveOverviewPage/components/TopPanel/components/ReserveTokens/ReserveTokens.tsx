@@ -16,13 +16,13 @@ type ReserveTokensProps = {
   aTokenAddress: string;
   variableDebtTokenAddress: string;
   stableDebtTokenAddress: string;
-  onClick: (tokenAddress: string) => void;
+  onTokenClick: (tokenAddress: string) => void;
   className?: string;
 };
 
 export const ReserveTokens: FC<ReserveTokensProps> = ({
   symbol,
-  onClick,
+  onTokenClick,
   underlyingTokenAddress,
   aTokenAddress,
   variableDebtTokenAddress,
@@ -48,14 +48,14 @@ export const ReserveTokens: FC<ReserveTokensProps> = ({
         title={t(translations.aaveReserveOverviewPage.topPanel.underlyingToken)}
         label={symbol}
         logo={TokenLogo}
-        onClick={() => onClick(underlyingTokenAddress)}
+        onClick={() => onTokenClick(underlyingTokenAddress)}
       />
 
       <TokenButton
         title={t(translations.aaveReserveOverviewPage.topPanel.aToken)}
         label={`a${symbol}`}
         logo={TokenLogo}
-        onClick={() => onClick(aTokenAddress)}
+        onClick={() => onTokenClick(aTokenAddress)}
       />
 
       <TokenButton
@@ -67,7 +67,7 @@ export const ReserveTokens: FC<ReserveTokensProps> = ({
           { symbol },
         )}
         logo={TokenLogo}
-        onClick={() => onClick(variableDebtTokenAddress)}
+        onClick={() => onTokenClick(variableDebtTokenAddress)}
       />
 
       <TokenButton
@@ -77,7 +77,7 @@ export const ReserveTokens: FC<ReserveTokensProps> = ({
           { symbol },
         )}
         logo={TokenLogo}
-        onClick={() => onClick(stableDebtTokenAddress)}
+        onClick={() => onTokenClick(stableDebtTokenAddress)}
       />
     </div>
   );

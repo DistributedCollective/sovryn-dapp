@@ -32,6 +32,7 @@ export const BorrowRateModeSelect: FC<BorrowRateModeSelectProps> = ({
     ];
 
     if (
+      // cannot be collateral for stable borrows
       (position.stableBorrowEnabled && !position.isCollateral) ||
       position.borrowRateMode === BorrowRateMode.STABLE
     ) {

@@ -3,7 +3,7 @@ import {
   UiPoolDataProvider,
 } from '@aave/contract-helpers';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import dayjs from 'dayjs';
 
@@ -19,6 +19,12 @@ import {
 } from '../../utils/aave/AaveUserReservesSummary';
 import { useAccount } from '../useAccount';
 import { useBlockNumber } from '../useBlockNumber';
+
+const uiPoolDataProvider = new UiPoolDataProvider({
+  provider: getProvider(BOB_CHAIN_ID),
+  uiPoolDataProviderAddress: config.UiPoolDataProviderV3Address,
+  chainId: Number(BOB_CHAIN_ID),
+});
 
 export const useAaveUserReservesData = (): {
   summary: AaveUserReservesSummary;
@@ -37,16 +43,6 @@ export const useAaveUserReservesData = (): {
     AaveUserReservesSummaryFactory.buildZeroSummary([]),
   );
   const [loading, setLoading] = useState(false);
-
-  const uiPoolDataProvider = useMemo(
-    () =>
-      new UiPoolDataProvider({
-        provider: getProvider(BOB_CHAIN_ID),
-        uiPoolDataProviderAddress: config.UiPoolDataProviderV3Address,
-        chainId: Number(BOB_CHAIN_ID),
-      }),
-    [],
-  );
 
   const loadUserReservesData = useCallback(async () => {
     if (!account || !blockNumber) {
@@ -82,7 +78,7 @@ export const useAaveUserReservesData = (): {
     } catch (e) {
       console.error(e);
     }
-  }, [account, uiPoolDataProvider, blockNumber]);
+  }, [account, blockNumber]);
 
   useEffect(() => {
     if (blockNumber !== processedBlock) {

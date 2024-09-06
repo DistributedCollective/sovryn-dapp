@@ -93,6 +93,10 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
     summary.collateralBalance,
   ]);
 
+  const borrowApr = useMemo(() => {
+    return Decimal.from(borrowReserve?.reserve.variableBorrowAPR ?? 0).mul(100);
+  }, [borrowReserve?.reserve.variableBorrowAPR]);
+
   const isValidBorrowAmount = useMemo(
     () => (borrowSize.gt(0) ? borrowSize.lte(maximumBorrowAmount) : true),
     [borrowSize, maximumBorrowAmount],
@@ -112,6 +116,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
       <div className="space-y-3">
         <AssetAmountInput
           label={t(translations.aavePage.common.borrow)}
+          chainId={BOB_CHAIN_ID}
           amountLabel={t(translations.common.amount)}
           amountValue={borrowAmount}
           assetUsdValue={borrowUsdAmount}
@@ -135,13 +140,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
       <SimpleTable>
         <SimpleTableRow
           label={t(translations.aavePage.borrowForm.borrowApr)}
-          value={
-            <AmountRenderer
-              value={borrowReserve?.reserve.variableBorrowAPR ?? 0}
-              suffix="%"
-              precision={2}
-            />
-          }
+          value={<AmountRenderer value={borrowApr} suffix="%" precision={2} />}
         />
       </SimpleTable>
 

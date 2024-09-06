@@ -25,6 +25,7 @@ export const TokenButton: FC<TokenButtonProps> = ({
       </Paragraph>
     </div>
     <button
+      type="button"
       onClick={onClick}
       className="flex items-center gap-3 px-4 py-3 w-full hover:bg-gray-20"
     >

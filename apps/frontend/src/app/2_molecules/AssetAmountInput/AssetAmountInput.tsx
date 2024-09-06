@@ -3,14 +3,13 @@ import React, { FC, useCallback } from 'react';
 import { AmountInput, Paragraph, Select, SelectOption } from '@sovryn/ui';
 import { Decimal, Decimalish } from '@sovryn/utils';
 
-import { BOB_CHAIN_ID } from '../../../config/chains';
-
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
 import { MaxButton } from '../MaxButton/MaxButton';
 
 type AssetAmountInputProps = {
   label?: string;
+  chainId?: string | undefined;
   maxAmount?: Decimalish;
   invalid?: boolean;
   amountLabel?: string;
@@ -24,6 +23,7 @@ type AssetAmountInputProps = {
 
 export const AssetAmountInput: FC<AssetAmountInputProps> = ({
   label,
+  chainId,
   maxAmount,
   amountLabel,
   amountValue,
@@ -37,13 +37,13 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
   const assetOptionRenderer = useCallback(
     ({ value }) => (
       <AssetRenderer
-        chainId={BOB_CHAIN_ID}
+        chainId={chainId}
         dataAttribute="asset-amount"
         showAssetLogo
         asset={value}
       />
     ),
-    [],
+    [chainId],
   );
 
   return (

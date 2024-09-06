@@ -14,6 +14,7 @@ import {
   normalizeBorrowPositions,
   normalizeLendPoolDetails,
   normalizeLendPositions,
+  tabsItems,
 } from './AavePage.utils';
 import { BorrowAssetsList } from './components/BorrowAssetsList/BorrowAssetsList';
 import { BorrowPoolDetails } from './components/BorrowAssetsList/BorrowAssetsList.types';
@@ -54,22 +55,6 @@ const AavePage: FC = () => {
     [reserves, summary],
   );
 
-  const tabsItems = useMemo(
-    () => [
-      {
-        activeClassName: 'text-primary-20',
-        dataAttribute: 'lending',
-        label: t(pageTranslations.common.lend),
-      },
-      {
-        activeClassName: 'text-primary-20',
-        dataAttribute: 'borrowing',
-        label: t(pageTranslations.common.borrow),
-      },
-    ],
-    [],
-  );
-
   return (
     <div className="w-full pb-6 2xl:px-12">
       <Helmet>
@@ -77,9 +62,9 @@ const AavePage: FC = () => {
       </Helmet>
 
       <TopPanel
-        healthFactor={summary?.healthFactor}
-        netApy={summary?.netApy}
-        netWorth={summary?.netWorth}
+        healthFactor={summary.healthFactor}
+        netApy={summary.netApy}
+        netWorth={summary.netWorth}
       />
 
       <div className="pt-6 mt-6 space-y-6 2xl:pt-0 2xl:mt-0 2xl:space-y-0">
@@ -140,5 +125,4 @@ const AavePage: FC = () => {
     </div>
   );
 };
-
 export default AavePage;

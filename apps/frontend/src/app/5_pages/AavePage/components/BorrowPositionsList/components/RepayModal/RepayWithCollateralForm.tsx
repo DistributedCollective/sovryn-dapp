@@ -26,7 +26,7 @@ import { CollateralRatioHealthBar } from '../../../CollateralRatioHealthBar/Coll
 const pageTranslations = translations.aavePage;
 
 type RepayWithCollateralFormProps = {
-  onComplete: () => void;
+  onSuccess: () => void;
 };
 
 export const RepayWithCollateralForm: FC<RepayWithCollateralFormProps> = () => {
@@ -98,9 +98,9 @@ export const RepayWithCollateralForm: FC<RepayWithCollateralFormProps> = () => {
     <form className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">
         <AssetAmountInput
+          chainId={BOB_CHAIN_ID}
           label={t(translations.aavePage.repayModal.expectedAmountToRepay)}
           maxAmount={maximumRepayAmount}
-          chainId={BOB_CHAIN_ID}
           amountLabel={t(translations.common.amount)}
           amountValue={repayAmount}
           onAmountChange={setRepayAmount}
@@ -122,8 +122,8 @@ export const RepayWithCollateralForm: FC<RepayWithCollateralFormProps> = () => {
       <div className="flex flex-col gap-3">
         <AssetAmountInput
           label={t(translations.aavePage.repayModal.collateralToRepayWith)}
-          maxAmount={maximumRepayWithAmount}
           chainId={BOB_CHAIN_ID}
+          maxAmount={maximumRepayWithAmount}
           amountLabel={t(translations.common.amount)}
           amountValue={repayWithAmount}
           onAmountChange={setRepayWithAmount}

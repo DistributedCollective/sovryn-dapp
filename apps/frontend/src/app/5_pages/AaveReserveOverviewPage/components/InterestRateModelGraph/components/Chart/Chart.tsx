@@ -132,7 +132,6 @@ export const Chart: FC<ChartProps> = ({ meta, rates }) => {
               callback: function (value) {
                 return value + '%';
               },
-              //maxTicksLimit: 5,
             },
           },
           y: {

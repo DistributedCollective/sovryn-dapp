@@ -5,13 +5,23 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 import { Decimal, Decimalish } from '@sovryn/utils';
 
+export const RAY_DECIMALS = 27;
 const DEFAULT_UNIT = 18;
 const DEFAULT_DECIMALS = 6;
+
+const THOUSAND = 1e3;
+const MILLION = 1e6;
+const BILLION = 1e9;
 
 const DEFAULT_DECIMALS_SEPARATOR = '.';
 const DEFAULT_THOUSANDS_SEPARATOR = ',';
 
 const unitNames = ['wei', 'kwei', 'mwei', 'gwei', 'szabo', 'finney', 'ether'];
+
+export interface FormattedAmount {
+  value: string;
+  suffix: string;
+}
 
 // helper function to convert any type of ethers value to wei.
 export const toWei = (
@@ -160,3 +170,16 @@ export const bigNumberic = (
 
 export const isScientificNumber = (value: number) =>
   String(value).search(/e[-+]?/) > 0;
+
+export const formatAmountWithSuffix = (_value: Decimalish): FormattedAmount => {
+  const value = Decimal.from(_value);
+  if (value.gte(BILLION)) {
+    return { value: value.div(BILLION).toString(1), suffix: 'B' };
+  } else if (value.gte(MILLION)) {
+    return { value: value.div(MILLION).toString(1), suffix: 'M' };
+  } else if (value.gte(THOUSAND)) {
+    return { value: value.div(THOUSAND).toString(1), suffix: 'K' };
+  } else {
+    return { value: value.toString(), suffix: '' };
+  }
+};

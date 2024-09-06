@@ -95,9 +95,9 @@ export class AaveEModeCategories {
 
     return {
       id: categoryId,
-      ltv: Decimal.from(ltv),
-      liquidationThreshold: Decimal.from(liquidationThreshold),
-      liquidationBonus: Decimal.from(liquidationBonus),
+      ltv: Decimal.from(ltv).mul(100),
+      liquidationThreshold: Decimal.from(liquidationThreshold).mul(100),
+      liquidationBonus: Decimal.from(liquidationBonus).mul(100),
       label,
       assets,
     };

@@ -91,7 +91,7 @@ export class AaveWithdrawTransactionsFactory {
       spender: this.WETHGatewayAddress,
       token: aWETH.symbol,
       contract: new Contract(aWETH.address, aWETH.abi, this.signer),
-      amount: constants.MaxUint256,
+      amount: isMaxAmount ? constants.MaxUint256 : amount,
       chain: BOB_CHAIN_ID,
     });
     const transactions: Transaction[] = approval ? [approval] : [];

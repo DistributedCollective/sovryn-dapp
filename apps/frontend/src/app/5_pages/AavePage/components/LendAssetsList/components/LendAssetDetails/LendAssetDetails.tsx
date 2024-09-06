@@ -8,7 +8,6 @@ import { HelperButton, Icon, IconNames, SimpleTableRow } from '@sovryn/ui';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { LendPoolDetails } from '../../LendAssetsList.types';
-import { AssetBalanceRenderer } from '../AssetBalance/AssetBalance';
 import { LendAssetAction } from '../LendAssetAction/LendAssetAction';
 
 type LendAssetDetailsProps = {
@@ -25,7 +24,7 @@ export const LendAssetDetails: FC<LendAssetDetailsProps> = ({
       {/* Available */}
       <SimpleTableRow
         label={t(translations.aavePage.lendAssetsList.walletBalance)}
-        value={<AssetBalanceRenderer asset={pool.asset} />}
+        value={<AmountRenderer value={pool.walletBalance} precision={2} />}
       />
 
       <SimpleTableRow

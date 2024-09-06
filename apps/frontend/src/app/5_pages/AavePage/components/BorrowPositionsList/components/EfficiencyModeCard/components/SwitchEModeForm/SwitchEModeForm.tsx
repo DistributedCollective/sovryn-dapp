@@ -153,17 +153,13 @@ export const SwitchEModeForm: FC<SwitchEModeFormProps> = ({
           label={t(translations.aavePage.eMode.maxLoanToValue)}
           value={
             <div className={'flex items-center justify-end gap-1'}>
-              <AmountRenderer
-                value={current?.ltv.div(100)}
-                precision={2}
-                suffix="%"
-              />
+              <AmountRenderer value={current?.ltv} precision={2} suffix="%" />
               <Icon
                 icon={IconNames.ARROW_RIGHT}
                 className="h-2 flex-shrink-0"
               />
               <AmountRenderer
-                value={Decimal.from(selectedCategory?.ltv ?? 0).div(100)}
+                value={Decimal.from(selectedCategory?.ltv ?? 0)}
                 precision={2}
                 suffix="%"
               />

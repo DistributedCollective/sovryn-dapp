@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import { Toggle } from '@sovryn/ui';
 
@@ -15,11 +15,11 @@ export const ToggleCollateralAction: FC<ToggleCollateralActionProps> = ({
   const { handleSwitchCollateral } = useAaveSupply();
   const [isCollateral, setIsCollateral] = useState(position.collateral);
 
-  const toggleCollateral = async () => {
-    await handleSwitchCollateral(position.asset, !isCollateral, {
+  const toggleCollateral = useCallback(() => {
+    handleSwitchCollateral(position.asset, !isCollateral, {
       onComplete: () => setIsCollateral(!isCollateral),
     });
-  };
+  }, [handleSwitchCollateral, setIsCollateral, isCollateral, position.asset]);
 
   return (
     <Toggle

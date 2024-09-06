@@ -1,6 +1,9 @@
+import { t } from 'i18next';
+
 import { Decimal } from '@sovryn/utils';
 
 import { Reserve } from '../../../hooks/aave/useAaveReservesData';
+import { translations } from '../../../locales/i18n';
 import { BorrowRateMode } from '../../../types/aave';
 import { AaveUserReservesSummary } from '../../../utils/aave/AaveUserReservesSummary';
 import { BorrowPoolDetails } from './components/BorrowAssetsList/BorrowAssetsList.types';
@@ -8,9 +11,22 @@ import { BorrowPosition } from './components/BorrowPositionsList/BorrowPositions
 import { LendPoolDetails } from './components/LendAssetsList/LendAssetsList.types';
 import { LendPosition } from './components/LendPositionsList/LendPositionsList.types';
 
-export function normalizeLendPositions(
+export const tabsItems = [
+  {
+    activeClassName: 'text-primary-20',
+    dataAttribute: 'lending',
+    label: t(translations.aavePage.common.lend),
+  },
+  {
+    activeClassName: 'text-primary-20',
+    dataAttribute: 'borrowing',
+    label: t(translations.aavePage.common.borrow),
+  },
+];
+
+export const normalizeLendPositions = (
   userReservesSummary: AaveUserReservesSummary,
-): LendPosition[] {
+): LendPosition[] => {
   return userReservesSummary.reserves.reduce((acc, r) => {
     if (r.supplied.gt(0)) {
       acc.push({
@@ -23,11 +39,11 @@ export function normalizeLendPositions(
     }
     return acc;
   }, [] as LendPosition[]);
-}
+};
 
-export function normalizeBorrowPositions(
+export const normalizeBorrowPositions = (
   userReservesSummary: AaveUserReservesSummary,
-): BorrowPosition[] {
+): BorrowPosition[] => {
   return userReservesSummary.reserves.reduce((acc, r) => {
     if (r.borrowed.gt(0)) {
       acc.push({
@@ -48,12 +64,12 @@ export function normalizeBorrowPositions(
     }
     return acc;
   }, [] as BorrowPosition[]);
-}
+};
 
-export function normalizeBorrowPoolDetails(
+export const normalizeBorrowPoolDetails = (
   reserves: Reserve[],
   userReservesSummary: AaveUserReservesSummary,
-): BorrowPoolDetails[] {
+): BorrowPoolDetails[] => {
   if (userReservesSummary.reserves.length === 0) {
     return reserves.reduce((acc, r) => {
       if (r.borrowingEnabled) {
@@ -84,12 +100,12 @@ export function normalizeBorrowPoolDetails(
       return acc;
     }, [] as BorrowPoolDetails[]);
   }
-}
+};
 
-export function normalizeLendPoolDetails(
+export const normalizeLendPoolDetails = (
   reserves: Reserve[],
   userReservesSummary: AaveUserReservesSummary,
-): LendPoolDetails[] {
+): LendPoolDetails[] => {
   if (userReservesSummary.reserves.length === 0) {
     return reserves.map(r => ({
       asset: r.symbol,
@@ -105,4 +121,4 @@ export function normalizeLendPoolDetails(
       walletBalance: r.walletBalance,
     }));
   }
-}
+};

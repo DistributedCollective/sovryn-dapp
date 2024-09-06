@@ -67,7 +67,7 @@ export class AaveRepayTransactionsFactory {
       spender: this.PoolAddress,
       token: asset.symbol,
       contract: new Contract(asset.address, asset.abi, this.signer),
-      amount: constants.MaxUint256,
+      amount: isEntireDebt ? constants.MaxUint256 : amount,
       chain: BOB_CHAIN_ID,
     });
     const transactions: Transaction[] = approval ? [approval] : [];
@@ -108,7 +108,7 @@ export class AaveRepayTransactionsFactory {
       constants.AddressZero,
       BOB_CHAIN_ID,
     );
-    amount = isEntireDebt ? amount.add('1000000') : amount;
+    amount = isEntireDebt ? amount.add(config.RepayAllETHSurplus) : amount;
 
     return [
       {

@@ -45,9 +45,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
   const { account } = useAccount();
   const [open, setOpen] = useState(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
-  const [repayAssetDialog, setRepayAssetDialog] = useState<
-    string | undefined
-  >();
+  const [repayAssetDialog, setRepayAssetDialog] = useState<string>();
 
   const onRepayClick = useCallback((asset: string) => {
     setRepayAssetDialog(asset);

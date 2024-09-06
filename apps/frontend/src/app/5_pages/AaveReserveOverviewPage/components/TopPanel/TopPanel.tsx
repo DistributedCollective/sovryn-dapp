@@ -21,10 +21,11 @@ import { WalletIcon } from '../../../../1_atoms/Icons/Icons';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
-import { useNotifyError } from '../../../../../hooks/useNotifyError';
+import { Reserve } from '../../../../../hooks/aave/useAaveReservesData';
+import { useAddTokenToWallet } from '../../../../../hooks/useAddTokenToWallet';
 import { translations } from '../../../../../locales/i18n';
 import { getBobExplorerUrl } from '../../../../../utils/helpers';
-import { formatUsdAmount } from './TopPanel.utils';
+import { formatAmountWithSuffix } from '../../../../../utils/math';
 import { ReserveTokens } from './components/ReserveTokens/ReserveTokens';
 
 const pageTranslations = translations.aaveReserveOverviewPage.topPanel;
@@ -44,45 +45,32 @@ export type ReserveOverview = {
 };
 
 type TopPanelProps = {
-  reserve: ReserveOverview;
+  reserve: Reserve;
   className?: string;
 };
 
 export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
-  const { notifyError } = useNotifyError();
+  const { addTokenToWallet } = useAddTokenToWallet();
 
   const openInExplorer = useCallback((tokenAddress: string) => {
     const explorer = getBobExplorerUrl();
     window.open(`${explorer}/address/${tokenAddress}`, '_blank');
   }, []);
 
-  const addToWallet = useCallback(
-    (token: string) => {
-      try {
-        if (!(window as any)?.ethereum) {
-          throw new Error('Wallet not available');
-        }
-
-        (window as any)?.ethereum.request({
-          method: 'wallet_watchAsset',
-          params: {
-            type: 'ERC20',
-            options: {
-              chainId: BOB_CHAIN_ID,
-              address: token,
-            },
-          },
-        });
-      } catch (error) {
-        notifyError(error);
-      }
-    },
-    [notifyError],
-  );
-
   const oracleLink = useMemo(() => {
-    return getBobExplorerUrl() + '/address/' + reserve.oracleAddress;
-  }, [reserve.oracleAddress]);
+    return getBobExplorerUrl() + '/address/' + reserve.priceOracle;
+  }, [reserve.priceOracle]);
+
+  const reserveSize = useMemo(() => {
+    return Decimal.from(reserve.availableLiquidityUSD).add(
+      reserve.totalDebtUSD,
+    );
+  }, [reserve]);
+
+  const onTokenClick = useCallback(
+    (tokenAddress: string) => addTokenToWallet(tokenAddress, BOB_CHAIN_ID),
+    [addTokenToWallet],
+  );
 
   return (
     <div className={classNames('w-full flex flex-col gap-6', className)}>
@@ -124,7 +112,7 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
                   underlyingTokenAddress={reserve.underlyingAsset}
                   variableDebtTokenAddress={reserve.variableDebtTokenAddress}
                   stableDebtTokenAddress={reserve.stableDebtTokenAddress}
-                  onClick={openInExplorer}
+                  onTokenClick={openInExplorer}
                 />
               }
             >
@@ -150,7 +138,7 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
                   underlyingTokenAddress={reserve.underlyingAsset}
                   variableDebtTokenAddress={reserve.variableDebtTokenAddress}
                   stableDebtTokenAddress={reserve.stableDebtTokenAddress}
-                  onClick={addToWallet}
+                  onTokenClick={onTokenClick}
                 />
               }
             >
@@ -171,7 +159,7 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
             <AmountRenderer
               prefix="$"
               className="text-2xl"
-              {...formatUsdAmount(reserve.reserveSize)}
+              {...formatAmountWithSuffix(reserveSize)}
             />
           }
         />
@@ -181,7 +169,7 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
             <AmountRenderer
               prefix="$"
               className="text-2xl"
-              {...formatUsdAmount(reserve.availableLiquidity)}
+              {...formatAmountWithSuffix(reserve.formattedAvailableLiquidity)}
             />
           }
         />
@@ -190,7 +178,7 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
           value={
             <AmountRenderer
               suffix="%"
-              value={reserve.utilizationRate}
+              value={reserve.borrowUsageRatio}
               precision={2}
               className="text-2xl"
             />
@@ -202,7 +190,7 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
           value={
             <AmountRenderer
               prefix="$"
-              value={reserve.oraclePrice}
+              value={reserve.priceInUSD}
               precision={2}
               className="text-2xl"
             />

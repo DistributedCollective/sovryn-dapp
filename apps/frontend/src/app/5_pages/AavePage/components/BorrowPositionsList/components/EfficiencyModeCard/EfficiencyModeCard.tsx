@@ -20,7 +20,6 @@ import {
 import { EModeIcon } from '../../../../../../1_atoms/Icons/Icons';
 import { useAaveEModeCategories } from '../../../../../../../hooks/aave/useAaveEModeCategories';
 import { translations } from '../../../../../../../locales/i18n';
-import { EModeCategory } from '../../../../../../../types/aave';
 import { DisableEModeForm } from './components/DisableEModeForm/DisableEModeForm';
 import { EnableEModeForm } from './components/EnableEModeForm/EnableEModeForm';
 import { SwitchEModeForm } from './components/SwitchEModeForm/SwitchEModeForm';
@@ -146,32 +145,36 @@ export const EfficiencyModeCard: FC<EfficiencyModeCardProps> = ({
         </DialogBody>
       </Dialog>
 
-      <Dialog disableFocusTrap isOpen={switchEModeOpen}>
-        <DialogHeader
-          title={t(translations.aavePage.eMode.switchCategory)}
-          onClose={onSwitchEModeClose}
-        />
-        <DialogBody>
-          <SwitchEModeForm
-            categories={eModeCategories}
-            current={currentCategory as EModeCategory}
-            onComplete={onSwitchEModeClose}
+      {currentCategory && (
+        <Dialog disableFocusTrap isOpen={switchEModeOpen}>
+          <DialogHeader
+            title={t(translations.aavePage.eMode.switchCategory)}
+            onClose={onSwitchEModeClose}
           />
-        </DialogBody>
-      </Dialog>
+          <DialogBody>
+            <SwitchEModeForm
+              categories={eModeCategories}
+              current={currentCategory}
+              onComplete={onSwitchEModeClose}
+            />
+          </DialogBody>
+        </Dialog>
+      )}
 
-      <Dialog disableFocusTrap isOpen={disableEModeOpen}>
-        <DialogHeader
-          title={t(translations.aavePage.eMode.disableEMode)}
-          onClose={onDisableEModeClose}
-        />
-        <DialogBody>
-          <DisableEModeForm
-            current={currentCategory as EModeCategory}
-            onComplete={onDisableEModeClose}
+      {currentCategory && (
+        <Dialog disableFocusTrap isOpen={disableEModeOpen}>
+          <DialogHeader
+            title={t(translations.aavePage.eMode.disableEMode)}
+            onClose={onDisableEModeClose}
           />
-        </DialogBody>
-      </Dialog>
+          <DialogBody>
+            <DisableEModeForm
+              current={currentCategory!}
+              onComplete={onDisableEModeClose}
+            />
+          </DialogBody>
+        </Dialog>
+      )}
     </>
   );
 };

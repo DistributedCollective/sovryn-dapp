@@ -6,16 +6,14 @@ import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 
 import { Paragraph, Tabs, TabSize, TabType } from '@sovryn/ui';
-import { Decimal } from '@sovryn/utils';
 
-import { useAaveInterestRatesData } from '../../../hooks/aave/useAaveRates';
 import { useAaveReservesData } from '../../../hooks/aave/useAaveReservesData';
 import { translations } from '../../../locales/i18n';
 import { BorrowDetailsGraph } from './components/BorrowDetailsGraph/BorrowDetailsGraph';
 import { EModeDetails } from './components/EModeDetails/EModeDetails';
 import { InterestRateModelGraph } from './components/InterestRateModelGraph/InterestRateModelGraph';
 import { SupplyDetailsGraph } from './components/SupplyDetailsGraph/SupplyDetailsGraph';
-import { ReserveOverview, TopPanel } from './components/TopPanel/TopPanel';
+import { TopPanel } from './components/TopPanel/TopPanel';
 import { WalletOverview } from './components/WalletOverview/WalletOverview';
 
 const pageTranslations = translations.aaveReserveOverviewPage;
@@ -29,7 +27,6 @@ const AaveReserveOverviewPage: FC = () => {
   const [searchParams] = useSearchParams();
   const symbol = searchParams.get('asset') || 'ETH';
   const { reserves } = useAaveReservesData();
-  const { data: interestRatesData } = useAaveInterestRatesData();
   const [activeOverviewTab, setActiveOverviewTab] = useState<OverviewTab>(
     OverviewTab.RESERVE,
   );
@@ -39,50 +36,14 @@ const AaveReserveOverviewPage: FC = () => {
     [reserves, symbol],
   );
 
-  const reserveOverview: ReserveOverview = useMemo(() => {
-    if (!reserve) {
-      return {
-        symbol,
-        name: symbol,
-        underlyingAsset: '',
-        aTokenAddress: '',
-        variableDebtTokenAddress: '',
-        stableDebtTokenAddress: '',
-        reserveSize: Decimal.from(0),
-        availableLiquidity: Decimal.from(0),
-        utilizationRate: Decimal.from(0),
-        oraclePrice: Decimal.from(0),
-        oracleAddress: '',
-      };
-    }
-
-    return {
-      symbol: reserve.symbol,
-      name: reserve.name,
-      underlyingAsset: reserve.underlyingAsset,
-      aTokenAddress: reserve.aTokenAddress,
-      variableDebtTokenAddress: reserve.variableDebtTokenAddress,
-      stableDebtTokenAddress: reserve.stableDebtTokenAddress,
-      reserveSize: Decimal.from(reserve?.availableLiquidityUSD ?? 0).add(
-        reserve?.totalDebtUSD ?? 0,
-      ),
-      availableLiquidity: Decimal.from(reserve.availableLiquidityUSD),
-      utilizationRate: Decimal.from(reserve.borrowUsageRatio),
-      oraclePrice: Decimal.from(reserve.priceInUSD),
-      oracleAddress: reserve.priceOracle,
-    };
-  }, [reserve, symbol]);
-
+  if (!reserve) return null;
   return (
     <div className="w-full pb-6 2xl:px-12">
       <Helmet>
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
 
-      <TopPanel
-        reserve={reserveOverview}
-        className="lg:mb-[110px] lg:mt-[52px]"
-      />
+      <TopPanel reserve={reserve} className="lg:mb-[110px] lg:mt-[52px]" />
 
       <Paragraph className="text-base mb-4 hidden lg:block">
         {t(pageTranslations.reserveStatusTab.fullTitle)}
@@ -117,15 +78,13 @@ const AaveReserveOverviewPage: FC = () => {
               'lg:block space-y-4 flex-grow w-min',
             )}
           >
-            <SupplyDetailsGraph />
-            <BorrowDetailsGraph />
-            <EModeDetails />
-            {interestRatesData && (
-              <InterestRateModelGraph
-                rates={interestRatesData}
-                reserveFactor={reserve?.reserveFactor}
-              />
-            )}
+            <SupplyDetailsGraph reserve={reserve} />
+
+            <BorrowDetailsGraph reserve={reserve} />
+
+            <EModeDetails reserve={reserve} />
+
+            <InterestRateModelGraph reserve={reserve} />
           </div>
 
           {/* wallet column */}

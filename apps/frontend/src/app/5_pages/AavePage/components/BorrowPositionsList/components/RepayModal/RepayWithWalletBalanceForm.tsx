@@ -6,7 +6,6 @@ import {
   Button,
   ErrorBadge,
   ErrorLevel,
-  HelperButton,
   SimpleTable,
   SimpleTableRow,
 } from '@sovryn/ui';
@@ -14,7 +13,6 @@ import { Decimal } from '@sovryn/utils';
 
 import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 
-import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AmountTransition } from '../../../../../../2_molecules/AmountTransition/AmountTransition';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -25,27 +23,24 @@ import { CollateralRatioHealthBar } from '../../../CollateralRatioHealthBar/Coll
 
 const pageTranslations = translations.aavePage;
 
-type RepayWithCollateralFormProps = {
-  onComplete: () => void;
+type RepayWithWalletBalanceFormProps = {
+  onSuccess: () => void;
 };
 
-export const RepayWithCollateralForm: FC<RepayWithCollateralFormProps> = () => {
-  const assetPrice = 3258.47; // TODO: this is mocked data. Replace with proper hook
+export const RepayWithWalletBalanceForm: FC<
+  RepayWithWalletBalanceFormProps
+> = () => {
   const totalBorrowed = Decimal.from(10); // TODO: this is mocked data. Replace with proper hook
   const collateralToLoanRate = Decimal.from(10); // TODO: this is mocked data. Replace with proper hook
   const collateralSize = Decimal.from(10); // TODO: this is mockd data. Replace with proper hook
-  const assets = useMemo(() => ['BTC', 'SOV'], []); // TODO: this is mocked data. Replace with proper hook
+  const assetsToRepay = useMemo(() => ['BTC', 'SOV'], []); // TODO: this is mocked data. Replace with proper hook
   const [maximumRepayAmount] = useState(Decimal.from(10)); // TODO: this is mocked data. Replace with proper hook
-  const [maximumRepayWithAmount] = useState(Decimal.from(10)); // TODO: this is mocked data. Replace with proper hook
-  const [repayAsset, setRepayAsset] = useState<string>(assets[0]);
+  const [repayAsset, setRepayAsset] = useState<string>(assetsToRepay[0]);
   const [repayAmount, setRepayAmount, repaySize] = useDecimalAmountInput('');
-  const [repayWithAsset, setRepayWithAsset] = useState<string>(assets[0]);
-  const [repayWithAmount, setRepayWithAmount, repayWithSize] =
-    useDecimalAmountInput('');
 
   const repayAssetsOptions = useMemo(
     () =>
-      assets.map(token => ({
+      assetsToRepay.map(token => ({
         value: token,
         label: (
           <AssetRenderer
@@ -55,11 +50,11 @@ export const RepayWithCollateralForm: FC<RepayWithCollateralFormProps> = () => {
           />
         ),
       })),
-    [assets],
+    [assetsToRepay],
   );
 
-  const remainingDebt = useMemo(
-    () => maximumRepayAmount.sub(repaySize),
+  const isValidRepayAmount = useMemo(
+    () => (repaySize.gt(0) ? repaySize.lte(maximumRepayAmount) : true),
     [repaySize, maximumRepayAmount],
   );
 
@@ -71,36 +66,18 @@ export const RepayWithCollateralForm: FC<RepayWithCollateralFormProps> = () => {
     return collateralSize.mul(collateralToLoanRate).div(totalBorrowed).mul(100);
   }, [collateralSize, totalBorrowed, repaySize, collateralToLoanRate]);
 
-  // TODO: add more validations
-  const isValidRepayAmount = useMemo(
-    () => (repaySize.gt(0) ? repaySize.lte(maximumRepayAmount) : true),
-    [repaySize, maximumRepayAmount],
-  );
-
-  // TODO: add more validations
-  const isValidRepayWithAmount = useMemo(
-    () =>
-      repayWithSize.gt(0) ? repayWithSize.lte(maximumRepayWithAmount) : true,
-    [repayWithSize, maximumRepayWithAmount],
-  );
-
-  // TODO: add more validations
+  // TODO: Add validations
   const submitButtonDisabled = useMemo(
-    () =>
-      !isValidRepayAmount ||
-      repaySize.lte(0) ||
-      !isValidRepayWithAmount ||
-      repayWithSize.lte(0),
-    [isValidRepayAmount, repaySize, isValidRepayWithAmount, repayWithSize],
+    () => !isValidRepayAmount || repaySize.lte(0),
+    [isValidRepayAmount, repaySize],
   );
 
   return (
-    <form className="flex flex-col gap-6">
-      <div className="flex flex-col gap-3">
+    <form className="flex flex-col gap-6 relative">
+      <div className="space-y-3">
         <AssetAmountInput
-          label={t(translations.aavePage.repayModal.expectedAmountToRepay)}
-          maxAmount={maximumRepayAmount}
           chainId={BOB_CHAIN_ID}
+          maxAmount={maximumRepayAmount}
           amountLabel={t(translations.common.amount)}
           amountValue={repayAmount}
           onAmountChange={setRepayAmount}
@@ -119,29 +96,6 @@ export const RepayWithCollateralForm: FC<RepayWithCollateralFormProps> = () => {
         )}
       </div>
 
-      <div className="flex flex-col gap-3">
-        <AssetAmountInput
-          label={t(translations.aavePage.repayModal.collateralToRepayWith)}
-          maxAmount={maximumRepayWithAmount}
-          chainId={BOB_CHAIN_ID}
-          amountLabel={t(translations.common.amount)}
-          amountValue={repayWithAmount}
-          onAmountChange={setRepayWithAmount}
-          invalid={!isValidRepayWithAmount}
-          assetValue={repayWithAsset}
-          onAssetChange={setRepayWithAsset}
-          assetOptions={repayAssetsOptions}
-        />
-
-        {!isValidRepayWithAmount && (
-          <ErrorBadge
-            level={ErrorLevel.Critical}
-            message={t(pageTranslations.repayModal.invalidAmountError)}
-            dataAttribute="repay-with-amount-error"
-          />
-        )}
-      </div>
-
       <CollateralRatioHealthBar
         ratio={collateralRatio}
         minimum={config.MinCollateralRatio}
@@ -153,7 +107,7 @@ export const RepayWithCollateralForm: FC<RepayWithCollateralFormProps> = () => {
           value={
             <AmountTransition
               className="justify-end"
-              from={{ value: remainingDebt, suffix: '%' }}
+              from={{ value: 0.002429, suffix: '%' }}
               to={{ value: 0, suffix: '%', className: 'text-primary-10' }}
             />
           }
@@ -174,17 +128,6 @@ export const RepayWithCollateralForm: FC<RepayWithCollateralFormProps> = () => {
               />
             </div>
           }
-        />
-        <SimpleTableRow
-          label={
-            <div className="flex space-x-1">
-              <span>{t(translations.aavePage.repayModal.priceImpact)}</span>{' '}
-              <HelperButton
-                content={t(translations.aavePage.repayModal.priceImpactInfo)}
-              />
-            </div>
-          }
-          value={<AmountRenderer value={assetPrice} prefix="$" />}
         />
       </SimpleTable>
 

@@ -31,7 +31,7 @@ export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({
             <HelperButton content={t(pageTranslations.common.apyInfo)} />
           </span>
         }
-        value={<AmountRenderer value={pool.apy} suffix="%" />}
+        value={<AmountRenderer value={pool.apy} suffix="%" precision={2} />}
       />
 
       {/* Available */}

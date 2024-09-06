@@ -69,6 +69,7 @@ export const DisableEModeForm: FC<DisableEModeFormProps> = ({
     if (!newSummary) {
       return Decimal.from(0);
     }
+
     return AaveCalculations.computeCollateralRatio(
       Decimal.from(newSummary.totalCollateralUSD),
       Decimal.from(newSummary.totalBorrowsUSD),
@@ -76,10 +77,9 @@ export const DisableEModeForm: FC<DisableEModeFormProps> = ({
   }, [newSummary]);
 
   const liquidationRisk = useMemo(() => {
-    if (newSummary?.healthFactor === '-1') {
-      return false;
-    }
-    return Decimal.from(newSummary?.healthFactor ?? 0).lte(1);
+    // if health factor is below 1 we're at risk. Negative means doesn't apply
+    const healthFactor = Decimal.from(newSummary?.healthFactor ?? 0);
+    return healthFactor.lte(1) && healthFactor.gt(0);
   }, [newSummary?.healthFactor]);
 
   const confirmEnabled = useMemo(() => {
@@ -138,7 +138,7 @@ export const DisableEModeForm: FC<DisableEModeFormProps> = ({
           value={
             <div className={'flex items-center justify-end gap-1'}>
               <AmountRenderer
-                value={Decimal.from(current?.ltv ?? 0).div(100)}
+                value={Decimal.from(current?.ltv ?? 0)}
                 precision={2}
                 suffix="%"
               />

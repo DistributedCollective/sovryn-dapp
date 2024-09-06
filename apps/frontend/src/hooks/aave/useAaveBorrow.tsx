@@ -77,18 +77,24 @@ export const useAaveBorrow = () => {
       currentRateMode: BorrowRateMode,
       opts?: TransactionFactoryOptions,
     ) => {
-      if (!aaveBorrowTransactionsFactory) {
-        return;
-      }
+      try {
+        if (!aaveBorrowTransactionsFactory) {
+          throw new Error('Transactions factory not available');
+        }
 
-      aaveBorrowTransactionsFactory
-        .swapBorrowRateMode(asset, currentRateMode, opts)
-        .then(transactions => {
-          setTransactions(transactions);
-          setTitle(t(translations.aavePage.tx.swapBorrowRateModeTitle));
-          setIsOpen(true);
-        })
-        .catch(notifyError);
+        const transactions =
+          await aaveBorrowTransactionsFactory.swapBorrowRateMode(
+            asset,
+            currentRateMode,
+            opts,
+          );
+
+        setTransactions(transactions);
+        setTitle(t(translations.aavePage.tx.swapBorrowRateModeTitle));
+        setIsOpen(true);
+      } catch (e) {
+        notifyError(e);
+      }
     },
     [
       setIsOpen,

@@ -83,7 +83,7 @@ export const EnableEModeForm: FC<EnableEModeFormProps> = ({
           label={t(translations.aavePage.eMode.maxLoanToValue)}
           value={
             <AmountRenderer
-              value={selectedCategory ? selectedCategory.ltv.div(100) : 0}
+              value={selectedCategory ? selectedCategory.ltv : 0}
               suffix="%"
               precision={2}
             />

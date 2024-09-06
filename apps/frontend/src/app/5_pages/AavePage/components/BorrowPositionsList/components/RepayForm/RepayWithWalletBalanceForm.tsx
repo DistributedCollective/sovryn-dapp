@@ -127,6 +127,7 @@ export const RepayWithWalletBalanceForm: FC<
     <form className="flex flex-col gap-6 relative">
       <div className="space-y-3">
         <AssetAmountInput
+          chainId={BOB_CHAIN_ID}
           maxAmount={maximumRepayAmount}
           amountLabel={t(translations.common.amount)}
           amountValue={repayAmount}

@@ -111,7 +111,7 @@
             "stake": "Stake",
             "bitocracy": "Bitocracy",
             "bob": "Go BoB",
-            "claimLp": "Claim LP",
+            "spicePoints": "Spice Points",
             "bridges": {
                 "title": "Transfer Assets",
                 "subMenu": {
@@ -271,17 +271,17 @@
             "withdrawCollateral": "Withdraw collateral"
         },
         "redeem": {
-          "title": "Redeem",
-          "cta": "Redeem",
-          "form": {
-            "description": "You can redeem your ZUSD for RBTC here. The corresponding RBTC is drawn from the lowest-collateralized loans, reducing the borrower's debt while you receive an equivalent value in RBTC.",
-            "link": "Learn more about Redemptions.",
-            "minimum": "Minimum {{value}} {{symbol}}",
-            "confirm": "Confirm"
-          },
-          "tx": {
-            "title": "Redeem {{symbol}}"
-          }
+            "title": "Redeem",
+            "cta": "Redeem",
+            "form": {
+                "description": "You can redeem your ZUSD for RBTC here. The corresponding RBTC is drawn from the lowest-collateralized loans, reducing the borrower's debt while you receive an equivalent value in RBTC.",
+                "link": "Learn more about Redemptions.",
+                "minimum": "Minimum {{value}} {{symbol}}",
+                "confirm": "Confirm"
+            },
+            "tx": {
+                "title": "Redeem {{symbol}}"
+            }
         }
     },
     "stats": {
@@ -1020,9 +1020,13 @@
     },
     "leaderboardPointsPage": {
         "meta": {
-            "title": "Spice & Runes Leaderboard - Sovryn"
+            "title": "Spice Leaderboard - Sovryn"
         },
-        "title": "Spice & Runes Leaderboard",
+        "title": "Spice Leaderboard",
+        "description1": "Spice Points are rewards earned by providing liquidity and staking SOV on the Sovryn DEX on the BOB chain. These points track user contributions and engagement, helping determine future rewards allocated by the BOB team. This leaderboard displays only the rewards distributed by Sovryn (combined Season 1 &2) and allows you to check your accumulated points and current position.",
+        "description2": "If you want to earn your Spice points simply bridge your funds via <0>BOB Fusion and</0> start providing liquidity via our the <1>Market Making</1>  page or start <2>Staking SOV</2> tokens.",
+        "claimDescription": "Users who participated in the Season 1 Liquidity Provisioning campaign can claim their LP tokens here:",
+        "leaderboard": "Leaderboard",
         "claimWarning": "Please note that users claiming from the distributor contract prior to <0>2024-05-31 12:00:00 UTC</0> will not be eligible to Extra Spice, and claiming prior to <1>2024-06-30 12:00:00 UTC</1> will not be eligible to Rune points.",
         "aboutCampaign": "About Extra Spice and Runes campaign",
         "claimLp": "Claim LP tokens",
@@ -2036,7 +2040,7 @@
         }
     },
     "unclaimedVestings": {
-      "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",
-      "cta": "Open Rewards page"
+        "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",
+        "cta": "Open Rewards page"
     }
 }

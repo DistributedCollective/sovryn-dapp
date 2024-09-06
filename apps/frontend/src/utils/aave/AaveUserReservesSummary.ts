@@ -208,6 +208,12 @@ export class AaveUserReservesSummaryFactory {
           const availableLiquidity = Decimal.from(
             formatUnits(r.reserve.availableLiquidity, r.reserve.decimals),
           );
+          const availableToBorrow = availableLiquidity.lt(canBorrow)
+            ? availableLiquidity
+            : canBorrow;
+          const availableToBorrowUSD = availableToBorrow.mul(
+            r.reserve.priceInUSD,
+          );
 
           return {
             asset: symbol,
@@ -221,9 +227,8 @@ export class AaveUserReservesSummaryFactory {
             suppliedUSD: Decimal.from(r.underlyingBalanceUSD),
             borrowed: Decimal.from(r.totalBorrows),
             borrowedUSD: Decimal.from(r.totalBorrowsUSD),
-            availableToBorrow: availableLiquidity.lt(canBorrow)
-              ? availableLiquidity
-              : canBorrow,
+            availableToBorrow,
+            availableToBorrowUSD,
 
             borrowRateMode: Decimal.from(r.variableBorrows).gt(0)
               ? BorrowRateMode.VARIABLE

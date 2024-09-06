@@ -52,7 +52,7 @@ export const normalizeEModeSummary = (
   );
 
   return {
-    ltv: Decimal.from(summary.currentLoanToValue).mul(100),
+    ltv: Decimal.from(summary.currentLoanToValue).div(100),
     collateralRatio,
     liquidationRisk,
   };

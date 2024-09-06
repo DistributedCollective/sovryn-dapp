@@ -13,7 +13,7 @@ import { BorrowRateModeSelect } from '../BorrowRateModeSelect/BorrowRateModeSele
 
 type BorrowPositionDetailsProps = {
   position: BorrowPosition;
-  onRepayClick: () => unknown;
+  onRepayClick: () => void;
 };
 
 export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({

@@ -8,15 +8,14 @@ import {
   GRID_COLOR,
   TICK_COLOR,
 } from './Chart.constants';
-import { MockData } from './Chart.types';
+import { InputData } from './Chart.types';
 import { htmlLegendPlugin } from './Chart.utils';
 
 type ChartProps = {
-  mockData: MockData<any>;
-  yLabel1: string;
+  input: InputData<{ x: number; y: number }>;
 };
 
-export const Chart: FC<ChartProps> = ({ mockData }) => {
+export const Chart: FC<ChartProps> = ({ input }) => {
   const canvas = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<ChartLibrary | null>(null);
 
@@ -35,10 +34,10 @@ export const Chart: FC<ChartProps> = ({ mockData }) => {
         datasets: [
           {
             type: 'line',
-            label: mockData.label1,
-            data: mockData.data1,
+            label: input.label,
+            data: input.data,
             backgroundColor: 'rgba(245, 140, 49, 1)',
-            borderColor: mockData.lineColor,
+            borderColor: input.lineColor,
             borderWidth: 2,
             fill: false,
             pointRadius: 0,
@@ -103,7 +102,7 @@ export const Chart: FC<ChartProps> = ({ mockData }) => {
         chartRef.current.destroy();
       }
     };
-  }, [mockData]);
+  }, [input]);
 
   const stopPropagation = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

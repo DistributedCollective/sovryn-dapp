@@ -5,44 +5,67 @@ import { t } from 'i18next';
 
 import { theme } from '@sovryn/tailwindcss-config';
 import { Accordion, Icon, IconNames, Paragraph } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { Reserve } from '../../../../../hooks/aave/useAaveReservesData';
+import { FormattedReserveHistoryItem } from '../../../../../hooks/aave/useReservesHistory';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
 import { formatAmountWithSuffix } from '../../../../../utils/math';
-import { normalizeSupplyStats } from './SupplyDetailsGraph.utils';
 import { Chart } from './components/Chart/Chart';
-import { harcodedData } from './components/Chart/Chart.constants';
-import { MockData } from './components/Chart/Chart.types';
 
 const pageTranslations = translations.aaveReserveOverviewPage.supplyDetails;
 
-export type SupplyDetailsGraphProps = {
+type SupplyDetailsGraphProps = {
+  history: FormattedReserveHistoryItem[];
   reserve: Reserve;
 };
 
 export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
+  history,
   reserve,
 }) => {
   const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();
 
-  // TODO: mocked amounts
-  const mockData: MockData<{ x: string; y: number }> = useMemo(() => {
-    const data1 = harcodedData;
-
+  const inputData = useMemo(() => {
+    const data = history.map(i => ({ x: i.date, y: i.liquidityRate * 100 }));
     return {
-      data1,
-      label1: t(pageTranslations.chart.label1),
+      data,
+      label: t(pageTranslations.chart.label1),
       lineColor: theme.colors['primary-30'],
-      xLabels: data1.map(item => item.x),
     };
-  }, []);
+  }, [history]);
 
-  const supplyStats = useMemo(() => {
-    return normalizeSupplyStats(reserve);
+  const totalSupplied = useMemo(() => {
+    return Decimal.from(reserve.availableLiquidity).add(reserve.totalDebt);
+  }, [reserve]);
+
+  const totalSuppliedUSD = useMemo(() => {
+    return Decimal.from(reserve.availableLiquidityUSD).add(
+      reserve.totalDebtUSD,
+    );
+  }, [reserve]);
+
+  const supplyCap = useMemo(() => {
+    return Decimal.from(reserve.supplyCap);
+  }, [reserve]);
+
+  const supplyCapUSD = useMemo(() => {
+    return Decimal.from(reserve.supplyCapUSD);
+  }, [reserve]);
+
+  const suppliedPercentage = useMemo(() => {
+    return Decimal.from(totalSuppliedUSD)
+      .div(Decimal.from(reserve.supplyCapUSD))
+      .mul(100)
+      .toString(0);
+  }, [reserve, totalSuppliedUSD]);
+
+  const maxLTV = useMemo(() => {
+    return Decimal.from(reserve.baseLTVasCollateral).div(100);
   }, [reserve]);
 
   return (
@@ -69,14 +92,14 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
                 <div className="space-x-1 font-medium text-base">
                   <AmountRenderer
                     precision={2}
-                    {...formatAmountWithSuffix(supplyStats.totalSupplied)}
+                    {...formatAmountWithSuffix(totalSupplied)}
                   />
-                  {supplyStats.supplyCap.gt(0) && (
+                  {supplyCap.gt(0) && (
                     <>
                       <span>{t(pageTranslations.of)}</span>
                       <AmountRenderer
                         precision={2}
-                        {...formatAmountWithSuffix(supplyStats.supplyCap)}
+                        {...formatAmountWithSuffix(supplyCap)}
                       />
                     </>
                   )}
@@ -86,27 +109,25 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
                   <AmountRenderer
                     prefix="$"
                     precision={2}
-                    {...formatAmountWithSuffix(supplyStats.totalSuppliedUSD)}
+                    {...formatAmountWithSuffix(totalSuppliedUSD)}
                   />
-                  {supplyStats.supplyCap.gt(0) && (
+                  {supplyCap.gt(0) && (
                     <>
                       <span>{t(pageTranslations.of)}</span>
                       <AmountRenderer
                         prefix="$"
                         precision={2}
-                        {...formatAmountWithSuffix(supplyStats.supplyCapUSD)}
+                        {...formatAmountWithSuffix(supplyCapUSD)}
                       />
                     </>
                   )}
                 </div>
 
                 {/* Progress bar */}
-                {supplyStats.supplyCap.gt(0) && (
+                {supplyCap.gt(0) && (
                   <div className="mt-2 h-[3px] w-[160px] bg-gray-70 rounded-full">
                     <div
-                      className={`h-full bg-primary-30 w-[${supplyStats.suppliedPercentage.toString(
-                        0,
-                      )}%]`}
+                      className={`h-full bg-primary-30 w-[${suppliedPercentage}%]`}
                     ></div>
                   </div>
                 )}
@@ -117,7 +138,7 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
             label={t(pageTranslations.apy)}
             value={
               <AmountRenderer
-                value={supplyStats.supplyApy}
+                value={reserve.supplyAPY}
                 suffix="%"
                 precision={2}
               />
@@ -125,7 +146,7 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
           />
         </div>
 
-        <Chart mockData={mockData} yLabel1="" />
+        <Chart input={inputData} />
 
         <div className="space-y-6">
           {/* collateral usage */}
@@ -162,13 +183,7 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
             <StatisticsCard
               label={t(pageTranslations.maxLtv)}
               help={t(pageTranslations.maxLtvInfo)}
-              value={
-                <AmountRenderer
-                  value={supplyStats.maxLTV}
-                  suffix="%"
-                  precision={2}
-                />
-              }
+              value={<AmountRenderer value={maxLTV} suffix="%" precision={2} />}
             />
 
             {/* liquidation threshold */}
@@ -177,7 +192,7 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
               help={t(pageTranslations.liquidationThresholdInfo)}
               value={
                 <AmountRenderer
-                  value={supplyStats.liquidationThreshold}
+                  value={reserve.reserveLiquidationThreshold}
                   suffix="%"
                   precision={2}
                 />
@@ -190,7 +205,7 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
               help={t(pageTranslations.liquidationPenaltyInfo)}
               value={
                 <AmountRenderer
-                  value={supplyStats.liquidationPenalty}
+                  value={reserve.reserveLiquidationBonus}
                   suffix="%"
                   precision={2}
                 />

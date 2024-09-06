@@ -5,7 +5,7 @@ import 'chartjs-adapter-date-fns';
 
 import { theme } from '@sovryn/tailwindcss-config';
 
-import { IRatesDataResult } from '../../../../../../../hooks/aave/useAaveRates';
+import { RatesDataResult } from '../../../../../../../hooks/aave/useAaveRates';
 import {
   CUSTOM_CANVAS_BACKGROUND_COLOR,
   GRID_COLOR,
@@ -18,7 +18,7 @@ type ChartProps = {
     label: string;
     lineColor: string;
   };
-  rates: IRatesDataResult;
+  rates: RatesDataResult;
 };
 
 const calcInterestRateModel = (
@@ -35,7 +35,7 @@ const calcInterestRateModel = (
   return base + slope1 + ((u - optimal) / (1 - optimal)) * slope2;
 };
 
-const calcVariableInterestRateModel = (u: number, rates: IRatesDataResult) => {
+const calcVariableInterestRateModel = (u: number, rates: RatesDataResult) => {
   const base = parseFloat(rates.baseVariableBorrowRate);
   const optimal = parseFloat(rates.optimalUsageRatio);
   const slope1 = parseFloat(rates.variableRateSlope1);
@@ -58,8 +58,12 @@ export const Chart: FC<ChartProps> = ({ meta, rates }) => {
     [rates],
   );
 
-  const optimalPercentage = parseFloat(rates.optimalUsageRatio) * 100;
-  const currentPercentage = parseFloat(rates.currentUsageRatio) * 100;
+  const optimalPercentage = parseFloat(
+    (parseFloat(rates.optimalUsageRatio) * 100).toFixed(2),
+  );
+  const currentPercentage = parseFloat(
+    (parseFloat(rates.currentUsageRatio) * 100).toFixed(2),
+  );
 
   const optimalValue = useMemo(() => {
     return [
@@ -132,6 +136,7 @@ export const Chart: FC<ChartProps> = ({ meta, rates }) => {
               callback: function (value) {
                 return value + '%';
               },
+              //maxTicksLimit: 5,
             },
           },
           y: {

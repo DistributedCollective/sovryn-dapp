@@ -78,9 +78,9 @@ const AaveReserveOverviewPage: FC = () => {
               'lg:block space-y-4 flex-grow w-min',
             )}
           >
-            <SupplyDetailsGraph reserve={reserve} />
+            <SupplyDetailsGraph reserve={reserve} history={[]} />
 
-            <BorrowDetailsGraph reserve={reserve} />
+            <BorrowDetailsGraph reserve={reserve} history={[]} />
 
             <EModeDetails reserve={reserve} />
 

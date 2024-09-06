@@ -22,7 +22,7 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { Reserve } from '../../../../../hooks/aave/useAaveReservesData';
-import { useAddTokenToWallet } from '../../../../../hooks/useAddTokenToWallet';
+import { useNotifyError } from '../../../../../hooks/useNotifyError';
 import { translations } from '../../../../../locales/i18n';
 import { getBobExplorerUrl } from '../../../../../utils/helpers';
 import { formatAmountWithSuffix } from '../../../../../utils/math';
@@ -50,12 +50,36 @@ type TopPanelProps = {
 };
 
 export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
-  const { addTokenToWallet } = useAddTokenToWallet();
+  const { notifyError } = useNotifyError();
 
   const openInExplorer = useCallback((tokenAddress: string) => {
     const explorer = getBobExplorerUrl();
     window.open(`${explorer}/address/${tokenAddress}`, '_blank');
   }, []);
+
+  const addToWallet = useCallback(
+    (token: string) => {
+      try {
+        if (!(window as any)?.ethereum) {
+          throw new Error('Wallet not available');
+        }
+
+        (window as any)?.ethereum.request({
+          method: 'wallet_watchAsset',
+          params: {
+            type: 'ERC20',
+            options: {
+              chainId: BOB_CHAIN_ID,
+              address: token,
+            },
+          },
+        });
+      } catch (error) {
+        notifyError(error);
+      }
+    },
+    [notifyError],
+  );
 
   const oracleLink = useMemo(() => {
     return getBobExplorerUrl() + '/address/' + reserve.priceOracle;
@@ -66,11 +90,6 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
       reserve.totalDebtUSD,
     );
   }, [reserve]);
-
-  const onTokenClick = useCallback(
-    (tokenAddress: string) => addTokenToWallet(tokenAddress, BOB_CHAIN_ID),
-    [addTokenToWallet],
-  );
 
   return (
     <div className={classNames('w-full flex flex-col gap-6', className)}>
@@ -138,7 +157,7 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
                   underlyingTokenAddress={reserve.underlyingAsset}
                   variableDebtTokenAddress={reserve.variableDebtTokenAddress}
                   stableDebtTokenAddress={reserve.stableDebtTokenAddress}
-                  onTokenClick={onTokenClick}
+                  onTokenClick={addToWallet}
                 />
               }
             >
@@ -169,7 +188,7 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
             <AmountRenderer
               prefix="$"
               className="text-2xl"
-              {...formatAmountWithSuffix(reserve.formattedAvailableLiquidity)}
+              {...formatAmountWithSuffix(reserve.availableLiquidity)}
             />
           }
         />

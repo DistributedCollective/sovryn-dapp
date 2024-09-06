@@ -61,7 +61,6 @@ export type AaveUserReservesSummary = {
   borrowPowerUsed: Decimal;
   eModeEnabled: boolean;
   eModeCategoryId: number;
-
   reserves: ReserveSummary[];
 };
 
@@ -209,12 +208,6 @@ export class AaveUserReservesSummaryFactory {
           const availableLiquidity = Decimal.from(
             formatUnits(r.reserve.availableLiquidity, r.reserve.decimals),
           );
-          const availableToBorrow = availableLiquidity.lt(canBorrow)
-            ? availableLiquidity
-            : canBorrow;
-          const availableToBorrowUSD = availableToBorrow.mul(
-            r.reserve.priceInUSD,
-          );
 
           return {
             asset: symbol,
@@ -228,13 +221,14 @@ export class AaveUserReservesSummaryFactory {
             suppliedUSD: Decimal.from(r.underlyingBalanceUSD),
             borrowed: Decimal.from(r.totalBorrows),
             borrowedUSD: Decimal.from(r.totalBorrowsUSD),
-            availableToBorrow,
-            availableToBorrowUSD,
+            availableToBorrow: availableLiquidity.lt(canBorrow)
+              ? availableLiquidity
+              : canBorrow,
 
             borrowRateMode: Decimal.from(r.variableBorrows).gt(0)
               ? BorrowRateMode.VARIABLE
               : BorrowRateMode.STABLE,
-          };
+          } as ReserveSummary;
         }),
       ),
     };

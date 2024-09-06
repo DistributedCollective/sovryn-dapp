@@ -164,7 +164,7 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
             <AmountRenderer
               prefix="$"
               className="text-2xl"
-              {...formatAmountWithSuffix(reserve.availableLiquidity)}
+              {...formatAmountWithSuffix(reserve.formattedAvailableLiquidity)}
             />
           }
         />

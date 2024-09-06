@@ -11,9 +11,12 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
+
 import { AmountTransition } from '../../../../../../2_molecules/AmountTransition/AmountTransition';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { config } from '../../../../../../../constants/aave';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
 import { translations } from '../../../../../../../locales/i18n';
 import { CollateralRatioHealthBar } from '../../../CollateralRatioHealthBar/CollateralRatioHealthBar';
@@ -73,6 +76,7 @@ export const RepayWithWalletBalanceForm: FC<
     <form className="flex flex-col gap-6 relative">
       <div className="space-y-3">
         <AssetAmountInput
+          chainId={BOB_CHAIN_ID}
           maxAmount={maximumRepayAmount}
           amountLabel={t(translations.common.amount)}
           amountValue={repayAmount}
@@ -92,7 +96,10 @@ export const RepayWithWalletBalanceForm: FC<
         )}
       </div>
 
-      <CollateralRatioHealthBar ratio={collateralRatio} />
+      <CollateralRatioHealthBar
+        ratio={collateralRatio}
+        minimum={config.MinCollateralRatio}
+      />
 
       <SimpleTable>
         <SimpleTableRow

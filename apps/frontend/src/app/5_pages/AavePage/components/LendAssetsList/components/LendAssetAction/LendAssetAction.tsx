@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
@@ -6,38 +6,38 @@ import { useNavigate } from 'react-router-dom';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { LendModalContainer } from '../LendModal/LendModalContainer';
 
-export const LendAssetAction: FC = () => {
+type LendAssetActionProps = {
+  disabled: boolean;
+  onLendClick: () => void;
+  asset: string;
+};
+
+export const LendAssetAction: FC<LendAssetActionProps> = ({
+  asset,
+  disabled,
+  onLendClick,
+}) => {
   const navigate = useNavigate();
-  const [isLendModalOpen, setIsLendModalOpen] = useState(false);
 
-  const handleLendClick = useCallback(() => {
-    setIsLendModalOpen(true);
-  }, []);
-
-  const handleLendClose = useCallback(() => {
-    setIsLendModalOpen(false);
-  }, []);
+  const onDetailsClick = useCallback(() => {
+    navigate(`/aave/reserve-overview?asset=${asset}`);
+  }, [navigate, asset]);
 
   return (
     <div className="flex items-center justify-center lg:justify-end space-x-2">
       <Button
-        className="flex-grow"
+        disabled={disabled}
+        className="flex-grow lg:flex-grow-0 lg:w-min"
         text={t(translations.aavePage.common.lend)}
-        onClick={handleLendClick}
+        onClick={onLendClick}
       />
 
       <Button
-        className="flex-grow"
+        className="flex-grow lg:flex-grow-0 lg:w-min"
         text={t(translations.aavePage.common.details)}
         style={ButtonStyle.secondary}
-        onClick={() => navigate('/aave/reserve-overview')}
-      />
-
-      <LendModalContainer
-        handleCloseModal={handleLendClose}
-        isOpen={isLendModalOpen}
+        onClick={onDetailsClick}
       />
     </div>
   );

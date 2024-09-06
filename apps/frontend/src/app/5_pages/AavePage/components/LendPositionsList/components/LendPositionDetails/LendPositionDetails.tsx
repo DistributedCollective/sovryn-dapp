@@ -13,23 +13,28 @@ import { ToggleCollateralAction } from '../ToggleCollateralAction/ToggleCollater
 
 type LendPositionDetailsProps = {
   position: LendPosition;
+  onWithdrawClick: (asset: string) => void;
 };
 
 export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
   position,
+  onWithdrawClick,
 }) => (
   <div className="space-y-3">
     <div>
+      {/* Balance */}
       <SimpleTableRow
         label={t(translations.aavePage.common.balance)}
         value={
           <AssetAmountPriceRenderer
-            value={position.balance}
+            value={position.supplied}
+            valueUSD={position.suppliedUSD}
             asset={position.asset}
           />
         }
       />
 
+      {/* APY */}
       <SimpleTableRow
         label={
           <span className="text-xs font-medium text-gray-30 flex gap-1 items-center">
@@ -43,12 +48,15 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
         value={<AmountRenderer value={position.apy} suffix="%" />}
       />
 
+      {/* Can be collateral */}
       <SimpleTableRow
         label={t(translations.aavePage.lendPositionsList.usedAsCollateral)}
         value={<ToggleCollateralAction position={position} />}
       />
     </div>
 
-    <LendPositionAction />
+    <LendPositionAction
+      onWithdrawClick={() => onWithdrawClick(position.asset)}
+    />
   </div>
 );

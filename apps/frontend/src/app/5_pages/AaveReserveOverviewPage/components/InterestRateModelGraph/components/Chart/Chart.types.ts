@@ -6,3 +6,15 @@ export type MockData<T> = {
   lineColor: string;
   xLabels: string[];
 };
+
+export interface RatesData {
+  currentUsageRatio: string;
+  optimalUsageRatio: string;
+  baseVariableBorrowRate: string;
+  variableRateSlope1: string;
+  variableRateSlope2: string;
+  underlyingAsset: string;
+  name: string;
+  symbol: string;
+  decimals: string;
+}

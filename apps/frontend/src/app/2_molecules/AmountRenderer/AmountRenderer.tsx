@@ -42,6 +42,7 @@ export type AmountRendererProps = {
   trigger?: TooltipTrigger;
   decimals?: number;
   asIf?: boolean;
+  infiniteFrom?: Decimalish;
 };
 
 export const AmountRenderer: FC<AmountRendererProps> = ({
@@ -57,6 +58,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   trigger = TooltipTrigger.click,
   decimals = 18,
   asIf,
+  infiniteFrom,
 }) => {
   const adjustedValue = useMemo(
     () =>
@@ -158,6 +160,8 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
           prefix={shouldShowRoundingPrefix ? `~ ${prefix}` : `${prefix}`}
           suffix={` ${suffix}`}
         />
+      ) : infiniteFrom && Decimal.from(value).gt(infiniteFrom) ? (
+        <span>∞</span>
       ) : (
         <span>
           {shouldShowRoundingPrefix ? '~ ' : ''}

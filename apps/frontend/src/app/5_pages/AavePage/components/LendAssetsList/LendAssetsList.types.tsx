@@ -1,6 +1,8 @@
+import { Decimal } from '@sovryn/utils';
+
 export type LendPoolDetails = {
   asset: string;
-  walletBalance: number;
-  apy: number;
+  apy: Decimal;
   canBeCollateral: boolean;
+  walletBalance: Decimal;
 };

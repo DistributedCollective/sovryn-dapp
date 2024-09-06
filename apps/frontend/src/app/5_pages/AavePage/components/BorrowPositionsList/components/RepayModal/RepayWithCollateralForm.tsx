@@ -12,10 +12,13 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AmountTransition } from '../../../../../../2_molecules/AmountTransition/AmountTransition';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { config } from '../../../../../../../constants/aave';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
 import { translations } from '../../../../../../../locales/i18n';
 import { CollateralRatioHealthBar } from '../../../CollateralRatioHealthBar/CollateralRatioHealthBar';
@@ -95,6 +98,7 @@ export const RepayWithCollateralForm: FC<RepayWithCollateralFormProps> = () => {
     <form className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">
         <AssetAmountInput
+          chainId={BOB_CHAIN_ID}
           label={t(translations.aavePage.repayModal.expectedAmountToRepay)}
           maxAmount={maximumRepayAmount}
           amountLabel={t(translations.common.amount)}
@@ -118,6 +122,7 @@ export const RepayWithCollateralForm: FC<RepayWithCollateralFormProps> = () => {
       <div className="flex flex-col gap-3">
         <AssetAmountInput
           label={t(translations.aavePage.repayModal.collateralToRepayWith)}
+          chainId={BOB_CHAIN_ID}
           maxAmount={maximumRepayWithAmount}
           amountLabel={t(translations.common.amount)}
           amountValue={repayWithAmount}
@@ -137,7 +142,10 @@ export const RepayWithCollateralForm: FC<RepayWithCollateralFormProps> = () => {
         )}
       </div>
 
-      <CollateralRatioHealthBar ratio={collateralRatio} />
+      <CollateralRatioHealthBar
+        ratio={collateralRatio}
+        minimum={config.MinCollateralRatio}
+      />
 
       <SimpleTable>
         <SimpleTableRow

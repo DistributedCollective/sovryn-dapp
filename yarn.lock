@@ -7,6 +7,18 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
+"@aave/contract-helpers@1.29.1":
+  version "1.29.1"
+  resolved "https://registry.yarnpkg.com/@aave/contract-helpers/-/contract-helpers-1.29.1.tgz#34beab8afa35bbfc6168c78ced8317d96a493fe0"
+  integrity sha512-34z5CKpNdEx26G+DSezovdR3PyAf0v0Typbf2udaKG4GrOBgqbKqxr4zqS/dpFO5aAQJJ+nuEM19lKRK4sMcpg==
+  dependencies:
+    isomorphic-unfetch "^3.1.0"
+
+"@aave/math-utils@1.29.1":
+  version "1.29.1"
+  resolved "https://registry.yarnpkg.com/@aave/math-utils/-/math-utils-1.29.1.tgz#fcb9499bd472bde7b80429c7dbe63d4358852697"
+  integrity sha512-a+L2+vjza/nH4BxUTzwDcoJH/Qr6UP+g+9YSwG7YKUgoVfdy8gJs5VyXjfDDEVe9lMeZuPJq7CqrgV4P2M6Nkg==
+
 "@actions/core@^1.10.0":
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/@actions/core/-/core-1.10.0.tgz#44551c3c71163949a2f06e94d9ca2157a0cfac4f"
@@ -10032,6 +10044,11 @@ chart.js@4.1.1:
   integrity sha512-P0pCosNXp+LR8zO/QTkZKT6Hb7p0DPFtypEeVOf+6x06hX13NIb75R0DXUA4Ksx/+48chDQKtCCmRCviQRTqsA==
   dependencies:
     "@kurkle/color" "^0.3.0"
+
+chartjs-adapter-date-fns@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/chartjs-adapter-date-fns/-/chartjs-adapter-date-fns-3.0.0.tgz#c25f63c7f317c1f96f9a7c44bd45eeedb8a478e5"
+  integrity sha512-Rs3iEB3Q5pJ973J93OBTpnP7qoGwvq3nUnoMdtxO+9aoJof7UFcRbWcIDteXuYd1fgAvct/32T9qaLyLuZVwCg==
 
 check-types@^11.1.1:
   version "11.2.2"
@@ -21034,6 +21051,11 @@ redent@^3.0.0:
   dependencies:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
+
+reflect-metadata@0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.2.2.tgz#400c845b6cba87a21f2c65c4aeb158f4fa4d9c5b"
+  integrity sha512-urBwgfrvVP/eAyXx4hluJivBKzuEbSQs9rKWCrCkbSxNv8mxPcUZKeuoF3Uy4mJl3Lwprp6yy5/39VWigZ4K6Q==
 
 refractor@^3.6.0:
   version "3.6.0"

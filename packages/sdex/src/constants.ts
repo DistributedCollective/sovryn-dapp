@@ -64,7 +64,7 @@ const BOB_CHAIN: ChainSpec = {
 };
 
 const BOB_TESTNET_CHAIN: ChainSpec = {
-  nodeUrl: 'https://testnet.rpc.gobob.xyz',
+  nodeUrl: 'https://bob-sepolia.rpc.gobob.xyz',
   // wsUrl: 'wss://sepolia-dencun.rpc.gobob.xyz/wss',
   addrs: {
     dex: '0xA86F239490bd35923eCBD578C2A8989803294bee',
@@ -75,7 +75,7 @@ const BOB_TESTNET_CHAIN: ChainSpec = {
   },
   poolIndex: 36000,
   isTestNet: true,
-  chainId: '0x6f', // 111
+  chainId: '0xc576d', // 808813
   gridSize: 16,
   proxyPaths: {
     cold: 3,

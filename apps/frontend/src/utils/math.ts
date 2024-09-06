@@ -160,3 +160,19 @@ export const bigNumberic = (
 
 export const isScientificNumber = (value: number) =>
   String(value).search(/e[-+]?/) > 0;
+
+export const formatAmountWithSuffix = (
+  _value: Decimalish,
+): {
+  value: string;
+  suffix: string;
+} => {
+  const value = Decimal.from(_value);
+  if (value.gte(1e6)) {
+    return { value: value.div(1e6).toString(1), suffix: 'M' };
+  } else if (value.gte(1e3)) {
+    return { value: value.div(1e3).toString(1), suffix: 'K' };
+  } else {
+    return { value: value.toString(), suffix: '' };
+  }
+};

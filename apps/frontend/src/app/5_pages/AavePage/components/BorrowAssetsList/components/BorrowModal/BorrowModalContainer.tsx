@@ -8,11 +8,13 @@ import { translations } from '../../../../../../../locales/i18n';
 import { BorrowForm } from './BorrowForm';
 
 type BorrowModalContainerProps = {
+  asset: string;
   isOpen: boolean;
   handleCloseModal: () => void;
 };
 
 export const BorrowModalContainer: FC<BorrowModalContainerProps> = ({
+  asset,
   isOpen,
   handleCloseModal,
 }) => (
@@ -22,7 +24,7 @@ export const BorrowModalContainer: FC<BorrowModalContainerProps> = ({
       onClose={handleCloseModal}
     />
     <DialogBody className="flex flex-col gap-6">
-      <BorrowForm onSuccess={handleCloseModal} />
+      <BorrowForm asset={asset} onComplete={handleCloseModal} />
     </DialogBody>
   </Dialog>
 );

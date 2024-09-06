@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
@@ -6,40 +6,36 @@ import { useNavigate } from 'react-router-dom';
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { BorrowModalContainer } from '../BorrowModal/BorrowModalContainer';
 
 const pageTranslations = translations.aavePage;
 
-export const BorrowAssetAction: FC = () => {
+type BorrowAssetActionProps = {
+  onBorrowClick: () => void;
+  asset: string;
+  disabled: boolean;
+};
+
+export const BorrowAssetAction: FC<BorrowAssetActionProps> = ({
+  onBorrowClick,
+  asset,
+  disabled,
+}) => {
   const navigate = useNavigate();
-  const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false);
-
-  const handleBorrowClick = useCallback(() => {
-    setIsBorrowModalOpen(true);
-  }, []);
-
-  const handleBorrowClose = useCallback(() => {
-    setIsBorrowModalOpen(false);
-  }, []);
 
   return (
     <div className="flex items-center justify-center lg:justify-end space-x-2">
       <Button
-        className="flex-grow"
+        disabled={disabled}
+        className="flex-grow lg:flex-grow-0 lg:w-min"
         text={t(pageTranslations.common.borrow)}
-        onClick={handleBorrowClick}
+        onClick={onBorrowClick}
       />
 
       <Button
-        className="flex-grow"
+        className="flex-grow lg:flex-grow-0 lg:w-min"
         text={t(pageTranslations.common.details)}
         style={ButtonStyle.secondary}
-        onClick={() => navigate('/aave/reserve-overview')}
-      />
-
-      <BorrowModalContainer
-        handleCloseModal={handleBorrowClose}
-        isOpen={isBorrowModalOpen}
+        onClick={() => navigate(`/aave/reserve-overview?asset=${asset}`)}
       />
     </div>
   );

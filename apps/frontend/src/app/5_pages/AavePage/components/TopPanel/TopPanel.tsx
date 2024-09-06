@@ -1,8 +1,9 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
+import { Decimalish } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
@@ -11,11 +12,18 @@ import { translations } from '../../../../../locales/i18n';
 
 const pageTranslations = translations.aavePage.topPanel;
 
-export const TopPanel: FC = () => {
+type TopPanelProps = {
+  netWorth: Decimalish;
+  netApy: Decimalish;
+  healthFactor: Decimalish;
+};
+
+export const TopPanel: FC<TopPanelProps> = ({
+  netApy,
+  netWorth,
+  healthFactor,
+}) => {
   const { account } = useAccount();
-  const [netWorth] = useState(1234567.58); // TODO: mock
-  const [netApy] = useState(2.69); // TODO: mock
-  const [collateralRatio] = useState(11); // TODO: mock
 
   return (
     <div className="w-full flex flex-col gap-6">
@@ -36,6 +44,7 @@ export const TopPanel: FC = () => {
               account ? (
                 <AmountRenderer
                   prefix="$"
+                  precision={2}
                   value={netWorth}
                   className="text-2xl"
                 />
@@ -50,6 +59,7 @@ export const TopPanel: FC = () => {
                   <AmountRenderer
                     suffix="%"
                     value={netApy}
+                    precision={2}
                     className="text-2xl"
                   />
                 ) : undefined
@@ -57,17 +67,17 @@ export const TopPanel: FC = () => {
               help={t(pageTranslations.netApyInfo)}
             />
             <StatisticsCard
-              label={t(pageTranslations.collateralRatio)}
+              label={t(pageTranslations.healthFactor)}
               value={
                 account ? (
                   <AmountRenderer
                     suffix="%"
-                    value={collateralRatio}
+                    precision={2}
+                    value={healthFactor}
                     className="text-2xl"
                   />
                 ) : undefined
               }
-              help={t(pageTranslations.collateralRatioInfo)}
             />
           </div>
         </div>

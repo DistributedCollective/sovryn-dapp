@@ -11,21 +11,16 @@ import { getCollateralRatioThresholds } from './CollateralRatioHealthBar.utils';
 
 type CollateralRatioHealthBarProps = {
   ratio: Decimal;
-  thresholds?: {
-    START: number;
-    MIDDLE_START: number;
-    MIDDLE_END: number;
-    END: number;
-  };
+  minimum: Decimal;
 };
 
 export const CollateralRatioHealthBar: FC<CollateralRatioHealthBarProps> = ({
   ratio,
-  thresholds,
+  minimum,
 }) => {
   const collateralRatioThresholds = useMemo(
-    () => thresholds ?? getCollateralRatioThresholds(),
-    [thresholds],
+    () => getCollateralRatioThresholds(minimum),
+    [minimum],
   );
 
   return (
@@ -34,7 +29,12 @@ export const CollateralRatioHealthBar: FC<CollateralRatioHealthBarProps> = ({
         <div className="flex flex-row justify-start items-center gap-2">
           <span>{t(translations.aavePage.common.collateralRatio)}</span>
         </div>
-        <AmountRenderer value={ratio.toString()} suffix="%" />
+        <AmountRenderer
+          value={ratio.mul(100).toString()}
+          suffix="%"
+          precision={2}
+          infiniteFrom={10000}
+        />
       </div>
 
       <HealthBar
@@ -42,7 +42,7 @@ export const CollateralRatioHealthBar: FC<CollateralRatioHealthBarProps> = ({
         middleStart={collateralRatioThresholds.MIDDLE_START}
         middleEnd={collateralRatioThresholds.MIDDLE_END}
         end={collateralRatioThresholds.END}
-        value={ratio.toNumber()}
+        value={ratio.mul(100).toNumber()}
       />
     </div>
   );

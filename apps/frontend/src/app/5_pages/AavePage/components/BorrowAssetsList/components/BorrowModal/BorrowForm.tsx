@@ -7,93 +7,124 @@ import {
   Checkbox,
   ErrorBadge,
   ErrorLevel,
-  HealthBar,
   Link,
   SimpleTable,
   SimpleTableRow,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { config } from '../../../../../../../constants/aave';
+import { useAaveBorrow } from '../../../../../../../hooks/aave/useAaveBorrow';
+import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAaveUserReservesData';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
 import { translations } from '../../../../../../../locales/i18n';
-import { getCollateralRatioThresholds } from './BorrowForm.utils';
+import { BorrowRateMode } from '../../../../../../../types/aave';
+import { AaveCalculations } from '../../../../../../../utils/aave/AaveCalculations';
+import { CollateralRatioHealthBar } from '../../../CollateralRatioHealthBar/CollateralRatioHealthBar';
 
 const pageTranslations = translations.aavePage;
 
 type BorrowFormProps = {
-  onSuccess: () => void;
+  asset: string;
+  onComplete: () => void;
 };
 
-export const BorrowForm: FC<BorrowFormProps> = () => {
-  const assetPrice = 3258.47; // TODO: this is mocked data. Replace with proper hook
-  const totalBorrow = Decimal.from(10); // TODO: this is mocked data. Replace with proper hook
-  const collateralToLoanRate = Decimal.from(10); // TODO: this is mocked data. Replace with proper hook
-  const collateralSize = Decimal.from(10); // TODO: this is mockd data. Replace with proper hook
-  const availablePools = useMemo(() => ['BTC', 'SOV'], []); // TODO: this is mocked data. Replace with proper hook
-  const [maximumBorrowAmount] = useState<Decimal>(Decimal.from(10)); // TODO: this is mocked data. Replace with proper hook
-  const [borrowApr] = useState(2);
-  const [borrowAsset, setBorrowAsset] = useState<string>(availablePools[0]);
+export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
+  const { summary } = useAaveUserReservesData();
+  const [borrowAsset, setBorrowAsset] = useState<string>(asset);
   const [borrowAmount, setBorrowAmount, borrowSize] = useDecimalAmountInput('');
   const [acknowledge, setAcknowledge] = useState<boolean>(false);
-
-  const onBorrowAssetChange = useCallback(v => {
-    setBorrowAsset(v);
-  }, []);
+  const { handleBorrow } = useAaveBorrow();
 
   const borrowableAssetsOptions = useMemo(
     () =>
-      availablePools.map(token => ({
-        value: token,
-        label: (
-          <AssetRenderer
-            showAssetLogo
-            asset={token}
-            assetClassName="font-medium"
-          />
-        ),
-      })),
-    [availablePools],
+      summary.reserves.reduce((acc, r) => {
+        if (r.reserve.borrowingEnabled) {
+          acc.push({
+            value: r.reserve.symbol,
+            label: (
+              <AssetRenderer
+                showAssetLogo
+                asset={r.reserve.symbol}
+                chainId={BOB_CHAIN_ID}
+                assetClassName="font-medium"
+              />
+            ),
+          });
+        }
+        return acc;
+      }, [] as { value: string; label: JSX.Element }[]),
+    [summary.reserves],
   );
+
+  const borrowReserve = useMemo(() => {
+    return summary.reserves.find(r => r.reserve.symbol === borrowAsset);
+  }, [summary.reserves, borrowAsset]);
+
+  const borrowUsdAmount = useMemo(() => {
+    return borrowSize.mul(borrowReserve?.reserve.priceInUSD ?? 0);
+  }, [borrowSize, borrowReserve?.reserve.priceInUSD]);
+
+  const maximumBorrowAmount = useMemo(() => {
+    return borrowReserve?.availableToBorrow ?? Decimal.from(0);
+  }, [borrowReserve?.availableToBorrow]);
+
+  const newCollateralRatio = useMemo(() => {
+    return AaveCalculations.computeCollateralRatio(
+      summary.collateralBalance,
+      summary.borrowBalance.add(borrowUsdAmount),
+    );
+  }, [summary.collateralBalance, summary.borrowBalance, borrowUsdAmount]);
+
+  const liquidationPrice = useMemo(() => {
+    return AaveCalculations.computeLiquidationPrice(
+      borrowSize,
+      summary.currentLiquidationThreshold,
+      summary.collateralBalance,
+    );
+  }, [
+    borrowSize,
+    summary.currentLiquidationThreshold,
+    summary.collateralBalance,
+  ]);
+
+  const borrowApr = useMemo(() => {
+    return Decimal.from(borrowReserve?.reserve.variableBorrowAPR ?? 0).mul(100);
+  }, [borrowReserve?.reserve.variableBorrowAPR]);
 
   const isValidBorrowAmount = useMemo(
     () => (borrowSize.gt(0) ? borrowSize.lte(maximumBorrowAmount) : true),
     [borrowSize, maximumBorrowAmount],
   );
 
-  const collateralRatioThresholds = useMemo(
-    () => getCollateralRatioThresholds(),
-    [],
-  );
-
-  const collateralRatio = useMemo(() => {
-    if ([collateralSize, totalBorrow, borrowSize].some(v => v.isZero())) {
-      return Decimal.ZERO;
-    }
-
-    return collateralSize.mul(collateralToLoanRate).div(totalBorrow).mul(100);
-  }, [collateralSize, totalBorrow, borrowSize, collateralToLoanRate]);
-
-  // TODO: expand validations
-  const submitButtonDisabled = useMemo(
-    () => !isValidBorrowAmount || borrowSize.lte(0) || !acknowledge,
-    [isValidBorrowAmount, borrowSize, acknowledge],
-  );
+  const onConfirm = useCallback(() => {
+    handleBorrow(
+      borrowSize,
+      borrowReserve!.reserve.symbol,
+      BorrowRateMode.VARIABLE,
+      { onComplete },
+    );
+  }, [onComplete, borrowSize, borrowReserve, handleBorrow]);
 
   return (
     <form className="flex flex-col gap-6">
       <div className="space-y-3">
         <AssetAmountInput
           label={t(translations.aavePage.common.borrow)}
+          chainId={BOB_CHAIN_ID}
           amountLabel={t(translations.common.amount)}
           amountValue={borrowAmount}
+          assetUsdValue={borrowUsdAmount}
           onAmountChange={setBorrowAmount}
           maxAmount={maximumBorrowAmount}
           invalid={!isValidBorrowAmount}
           assetValue={borrowAsset}
-          onAssetChange={onBorrowAssetChange}
+          onAssetChange={setBorrowAsset}
           assetOptions={borrowableAssetsOptions}
         />
 
@@ -109,37 +140,33 @@ export const BorrowForm: FC<BorrowFormProps> = () => {
       <SimpleTable>
         <SimpleTableRow
           label={t(translations.aavePage.borrowForm.borrowApr)}
-          value={<AmountRenderer value={borrowApr} suffix="%" />}
+          value={<AmountRenderer value={borrowApr} suffix="%" precision={2} />}
         />
       </SimpleTable>
 
-      <div>
-        <div className="flex flex-row justify-between items-center mt-6 mb-3">
-          <div className="flex flex-row justify-start items-center gap-2">
-            <span>{t(translations.aavePage.borrowForm.collateralRatio)}</span>
-          </div>
-          <AmountRenderer value={collateralRatio.toString()} suffix="%" />
-        </div>
-
-        <HealthBar
-          start={collateralRatioThresholds.START}
-          middleStart={collateralRatioThresholds.MIDDLE_START}
-          middleEnd={collateralRatioThresholds.MIDDLE_END}
-          end={collateralRatioThresholds.END}
-          value={collateralRatio.toNumber()}
-        />
-      </div>
+      <CollateralRatioHealthBar
+        ratio={Decimal.from(newCollateralRatio)}
+        minimum={config.MinCollateralRatio}
+      />
 
       <SimpleTable>
         <SimpleTableRow
           label={t(translations.aavePage.borrowForm.liquidationPrice)}
-          value={<span>{t(translations.common.na)}</span>}
+          value={
+            <AmountRenderer value={liquidationPrice} precision={2} prefix="$" />
+          }
         />
         <SimpleTableRow
           label={t(translations.aavePage.borrowForm.tokenPrice, {
             token: borrowAsset,
           })}
-          value={<AmountRenderer value={assetPrice} prefix="$" />}
+          value={
+            <AmountRenderer
+              value={borrowReserve?.reserve.priceInUSD ?? 0}
+              precision={2}
+              prefix="$"
+            />
+          }
         />
       </SimpleTable>
 
@@ -150,7 +177,7 @@ export const BorrowForm: FC<BorrowFormProps> = () => {
           <span>
             {t(translations.aavePage.borrowForm.acknowledge)}{' '}
             <Link
-              text={translations.aavePage.borrowForm.learnMore}
+              text={t(translations.aavePage.borrowForm.learnMore)}
               href="#learn-more"
             />
             {/* TODO: Add proper learn more href */}
@@ -159,7 +186,13 @@ export const BorrowForm: FC<BorrowFormProps> = () => {
       />
 
       <Button
-        disabled={submitButtonDisabled}
+        onClick={onConfirm}
+        disabled={
+          !isValidBorrowAmount ||
+          borrowSize.lte(0) ||
+          !acknowledge ||
+          !borrowReserve
+        }
         text={t(translations.common.buttons.confirm)}
       />
     </form>

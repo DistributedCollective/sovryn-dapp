@@ -1,6 +1,9 @@
+import { Decimal } from '@sovryn/utils';
+
 export type LendPosition = {
   asset: string;
-  balance: number;
-  apy: number;
+  supplied: Decimal;
+  suppliedUSD: Decimal;
+  apy: Decimal;
   collateral: boolean;
 };

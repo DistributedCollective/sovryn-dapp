@@ -1,35 +1,25 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { WithdrawModalContainer } from '../WithdrawModal/WithdrawModalContainer';
 
-export const LendPositionAction: FC = () => {
-  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+type LendPositionActionProps = {
+  onWithdrawClick: () => unknown;
+};
 
-  const handleWithdrawClick = useCallback(() => {
-    setIsWithdrawModalOpen(true);
-  }, []);
-
-  const handleWithdrawClose = useCallback(() => {
-    setIsWithdrawModalOpen(false);
-  }, []);
-
+export const LendPositionAction: FC<LendPositionActionProps> = ({
+  onWithdrawClick,
+}) => {
   return (
     <div className="flex items-center justify-center lg:justify-end space-x-2">
       <Button
         style={ButtonStyle.secondary}
-        className="flex-grow"
+        className="flex-grow lg:flex-grow-0 lg:w-min"
         text={t(translations.common.buttons.withdraw)}
-        onClick={handleWithdrawClick}
-      />
-
-      <WithdrawModalContainer
-        handleCloseModal={handleWithdrawClose}
-        isOpen={isWithdrawModalOpen}
+        onClick={onWithdrawClick}
       />
     </div>
   );

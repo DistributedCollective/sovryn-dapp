@@ -11,6 +11,8 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -59,6 +61,7 @@ export const LendForm: FC<LendFormProps> = () => {
     <form className="flex flex-col gap-6">
       <div>
         <AssetAmountInput
+          chainId={BOB_CHAIN_ID}
           label={t(translations.aavePage.common.lend)}
           maxAmount={maximumLendAmount}
           amountLabel={t(translations.common.amount)}

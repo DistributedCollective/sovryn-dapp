@@ -14,7 +14,7 @@ import { LendAssetAction } from './components/LendAssetAction/LendAssetAction';
 
 const pageTranslations = translations.aavePage;
 
-export const COLUMNS_CONFIG = (onLendClick: (asset: string) => unknown) => [
+export const COLUMNS_CONFIG = (onLendClick: (asset: string) => void) => [
   {
     id: 'asset',
     sortable: true,

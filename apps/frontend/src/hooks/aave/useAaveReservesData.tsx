@@ -13,6 +13,7 @@ import { getProvider } from '@sovryn/ethers-provider';
 import { BOB_CHAIN_ID } from '../../config/chains';
 
 import { config } from '../../constants/aave';
+import { ETH, WETH } from '../../constants/currencies';
 
 export type Reserve = ReserveDataHumanized & FormatReserveUSDResponse;
 export type ReserveData = { reserves: Reserve[]; loading: boolean };
@@ -44,7 +45,7 @@ export const useAaveReservesData = (): ReserveData => {
     setReserves(
       // rename weth to eth. We don't expose WETH through ui.
       formattedReserves.map(r =>
-        r.symbol === 'WETH' ? { ...r, symbol: 'ETH' } : r,
+        r.symbol === WETH ? { ...r, symbol: ETH } : r,
       ),
     );
   }, [setReserves]);

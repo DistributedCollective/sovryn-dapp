@@ -2,6 +2,8 @@ import { theme } from '@sovryn/tailwindcss-config';
 
 export const GRID_COLOR = '#484d59';
 export const TICK_COLOR = '#b6bac1';
+export const CHART_PERCENTAGES = [0, 0.25, 0.5, 0.75, 1];
+
 const SM_BREAKPOINT = parseInt(theme.screens.sm, 10) || 576;
 
 export const CUSTOM_CANVAS_BACKGROUND_COLOR = {

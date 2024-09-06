@@ -34,6 +34,10 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
     }`;
   }, []);
 
+  const collectorContractUrl = useMemo(() => {
+    return `${getBobExplorerUrl()}/address/${config.TreasuryAddress}`;
+  }, []);
+
   const currentUsageRatio = useMemo(() => {
     return Decimal.from(reserve.borrowUsageRatio).mul(100);
   }, [reserve.borrowUsageRatio]);
@@ -94,7 +98,13 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
           />
           <StatisticsCard
             label={t(pageTranslations.collectorContract)}
-            value={<Link href="#" text={t(pageTranslations.viewContract)} />}
+            value={
+              <Link
+                openNewTab
+                href={collectorContractUrl}
+                text={t(pageTranslations.viewContract)}
+              />
+            }
           />
         </div>
       </div>

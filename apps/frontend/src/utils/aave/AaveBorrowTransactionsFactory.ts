@@ -73,7 +73,9 @@ export class AaveBorrowTransactionsFactory {
         subtitle: t(translations.aavePage.tx.swapBorrowRateModeSubtitle, {
           symbol: asset.symbol,
           mode:
-            currentRateMode === BorrowRateMode.VARIABLE ? 'stable' : 'variable',
+            currentRateMode === BorrowRateMode.VARIABLE
+              ? t(translations.aavePage.common.stable)
+              : t(translations.aavePage.common.variable),
         }),
         request: {
           type: TransactionType.signTransaction,

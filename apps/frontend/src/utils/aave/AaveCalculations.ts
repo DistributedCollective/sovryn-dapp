@@ -29,15 +29,6 @@ export class AaveCalculations {
     );
   }
 
-  static computeBorrowedBalance(
-    reserves: UserSummary['userReservesData'],
-  ): Decimal {
-    return reserves.reduce(
-      (borrowedBalance, r) => borrowedBalance.add(r.totalBorrows),
-      Decimal.from(0),
-    );
-  }
-
   static computeBorrowPower(
     minCollateralRatio: Decimal,
     collateralBalance: Decimal,

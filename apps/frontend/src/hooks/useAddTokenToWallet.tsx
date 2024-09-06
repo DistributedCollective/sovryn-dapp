@@ -2,13 +2,15 @@ import { useCallback } from 'react';
 
 import { useNotifyError } from './useNotifyError';
 
-export const useAddTokenToWallet = (): {
-  addTokenToWallet: (tokenAddress: string, chainId: string) => void;
+export const useAddTokenToWallet = (
+  chainId: string,
+): {
+  addTokenToWallet: (tokenAddress: string) => void;
 } => {
   const { notifyError } = useNotifyError();
 
   const addTokenToWallet = useCallback(
-    (tokenAddress: string, chainId: string) => {
+    (tokenAddress: string) => {
       try {
         if (!(window as any)?.ethereum) {
           throw new Error('Wallet not available');
@@ -28,7 +30,7 @@ export const useAddTokenToWallet = (): {
         notifyError(error);
       }
     },
-    [notifyError],
+    [notifyError, chainId],
   );
 
   return { addTokenToWallet };

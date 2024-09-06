@@ -28,7 +28,7 @@ type WalletOverviewProps = {
 };
 
 export const WalletOverview: FC<WalletOverviewProps> = ({ symbol }) => {
-  const [asset, setAsset] = useState<AssetDetailsData | null>();
+  const [asset, setAsset] = useState<AssetDetailsData>();
   const { account, connectWallet, pending } = useWalletConnect();
   const { summary } = useAaveUserReservesData();
 
@@ -39,6 +39,10 @@ export const WalletOverview: FC<WalletOverviewProps> = ({ symbol }) => {
   const reserveSummary = useMemo(() => {
     return summary.reserves.find(r => r.reserve.symbol === symbol);
   }, [summary, symbol]);
+
+  const supplyCapReached = useMemo(() => {
+    return Decimal.from(reserveSummary?.reserve.supplyUsageRatio ?? 0).gte(1);
+  }, [reserveSummary?.reserve.supplyUsageRatio]);
 
   return (
     <div className="bg-gray-90 p-6 rounded space-y-6 lg:bg-gray-90 lg:p-6 border border-gray-60">
@@ -97,9 +101,7 @@ export const WalletOverview: FC<WalletOverviewProps> = ({ symbol }) => {
             />
           )}
 
-          {Decimal.from(reserveSummary?.reserve.supplyUsageRatio ?? 0).gte(
-            1,
-          ) && (
+          {supplyCapReached && (
             <ErrorBadge
               level={ErrorLevel.Critical}
               message={t(pageTranslations.yourWalletTab.noSupply)}

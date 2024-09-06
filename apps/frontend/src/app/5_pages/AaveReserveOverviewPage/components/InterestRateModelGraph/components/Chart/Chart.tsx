@@ -6,12 +6,16 @@ import 'chartjs-adapter-date-fns';
 import { theme } from '@sovryn/tailwindcss-config';
 
 import {
+  CHART_PERCENTAGES,
   CUSTOM_CANVAS_BACKGROUND_COLOR,
   GRID_COLOR,
   TICK_COLOR,
 } from './Chart.constants';
 import { RatesData } from './Chart.types';
-import { htmlLegendPlugin } from './Chart.utils';
+import {
+  calculateVariableInterestRateModel,
+  htmlLegendPlugin,
+} from './Chart.utils';
 
 type ChartProps = {
   meta: {
@@ -21,30 +25,6 @@ type ChartProps = {
   rates: RatesData;
 };
 
-const calcInterestRateModel = (
-  u: number,
-  base: number,
-  optimal: number,
-  slope1: number,
-  slope2: number,
-) => {
-  if (u === 0) return 0;
-
-  if (u <= optimal) return base + (u / optimal) * slope1;
-
-  return base + slope1 + ((u - optimal) / (1 - optimal)) * slope2;
-};
-
-const calcVariableInterestRateModel = (u: number, rates: RatesData) => {
-  const base = parseFloat(rates.baseVariableBorrowRate);
-  const optimal = parseFloat(rates.optimalUsageRatio);
-  const slope1 = parseFloat(rates.variableRateSlope1);
-  const slope2 = parseFloat(rates.variableRateSlope2);
-
-  return calcInterestRateModel(u, base, optimal, slope1, slope2);
-};
-const CHART_PERCENTAGES = [0, 0.25, 0.5, 0.75, 1];
-
 export const Chart: FC<ChartProps> = ({ meta, rates }) => {
   const canvas = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<ChartLibrary | null>(null);
@@ -53,7 +33,7 @@ export const Chart: FC<ChartProps> = ({ meta, rates }) => {
     () =>
       CHART_PERCENTAGES.map(x => ({
         x: x * 100,
-        y: calcVariableInterestRateModel(x, rates) * 100,
+        y: calculateVariableInterestRateModel(x, rates) * 100,
       })),
     [rates],
   );
@@ -136,7 +116,6 @@ export const Chart: FC<ChartProps> = ({ meta, rates }) => {
               callback: function (value) {
                 return value + '%';
               },
-              //maxTicksLimit: 5,
             },
           },
           y: {

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -40,6 +40,10 @@ export const BorrowAction: FC<BorrowActionProps> = ({
     setOpen(true);
   }, []);
 
+  const isBorrowDisabled = useMemo(() => {
+    return availableToBorrow.lte(0);
+  }, [availableToBorrow]);
+
   return (
     <div className="flex justify-between items-center">
       <div className="space-y-2">
@@ -64,7 +68,7 @@ export const BorrowAction: FC<BorrowActionProps> = ({
       <Button
         onClick={onBorrowOpen}
         text={t(pageTranslations.yourWalletTab.borrow)}
-        disabled={availableToBorrow.lte(0)}
+        disabled={isBorrowDisabled}
       />
 
       <Dialog disableFocusTrap isOpen={open}>

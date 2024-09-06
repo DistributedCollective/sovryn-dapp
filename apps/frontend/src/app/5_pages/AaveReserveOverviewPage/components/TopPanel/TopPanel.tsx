@@ -22,7 +22,7 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { Reserve } from '../../../../../hooks/aave/useAaveReservesData';
-import { useNotifyError } from '../../../../../hooks/useNotifyError';
+import { useAddTokenToWallet } from '../../../../../hooks/useAddTokenToWallet';
 import { translations } from '../../../../../locales/i18n';
 import { getBobExplorerUrl } from '../../../../../utils/helpers';
 import { formatAmountWithSuffix } from '../../../../../utils/math';
@@ -50,36 +50,12 @@ type TopPanelProps = {
 };
 
 export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
-  const { notifyError } = useNotifyError();
+  const { addTokenToWallet } = useAddTokenToWallet(BOB_CHAIN_ID);
 
   const openInExplorer = useCallback((tokenAddress: string) => {
     const explorer = getBobExplorerUrl();
     window.open(`${explorer}/address/${tokenAddress}`, '_blank');
   }, []);
-
-  const addToWallet = useCallback(
-    (token: string) => {
-      try {
-        if (!(window as any)?.ethereum) {
-          throw new Error('Wallet not available');
-        }
-
-        (window as any)?.ethereum.request({
-          method: 'wallet_watchAsset',
-          params: {
-            type: 'ERC20',
-            options: {
-              chainId: BOB_CHAIN_ID,
-              address: token,
-            },
-          },
-        });
-      } catch (error) {
-        notifyError(error);
-      }
-    },
-    [notifyError],
-  );
 
   const oracleLink = useMemo(() => {
     return getBobExplorerUrl() + '/address/' + reserve.priceOracle;
@@ -157,7 +133,7 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
                   underlyingTokenAddress={reserve.underlyingAsset}
                   variableDebtTokenAddress={reserve.variableDebtTokenAddress}
                   stableDebtTokenAddress={reserve.stableDebtTokenAddress}
-                  onTokenClick={addToWallet}
+                  onTokenClick={addTokenToWallet}
                 />
               }
             >

@@ -170,7 +170,7 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
               help={t(pageTranslations.liquidationThresholdInfo)}
               value={
                 <AmountRenderer
-                  value={reserve.reserveLiquidationThreshold}
+                  value={supplyStats.liquidationThreshold}
                   suffix="%"
                   precision={2}
                 />
@@ -183,7 +183,7 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
               help={t(pageTranslations.liquidationPenaltyInfo)}
               value={
                 <AmountRenderer
-                  value={reserve.reserveLiquidationBonus}
+                  value={supplyStats.liquidationPenalty}
                   suffix="%"
                   precision={2}
                 />

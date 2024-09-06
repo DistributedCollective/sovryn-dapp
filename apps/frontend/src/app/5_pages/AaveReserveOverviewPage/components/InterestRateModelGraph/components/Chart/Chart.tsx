@@ -38,12 +38,17 @@ export const Chart: FC<ChartProps> = ({ meta, rates }) => {
     [rates],
   );
 
-  const optimalPercentage = parseFloat(
-    (parseFloat(rates.optimalUsageRatio) * 100).toFixed(2),
-  );
-  const currentPercentage = parseFloat(
-    (parseFloat(rates.currentUsageRatio) * 100).toFixed(2),
-  );
+  const optimalPercentage = useMemo(() => {
+    return rates.optimalUsageRatio
+      ? parseFloat((parseFloat(rates.optimalUsageRatio) * 100).toFixed(2))
+      : 0;
+  }, [rates.optimalUsageRatio]);
+
+  const currentPercentage = useMemo(() => {
+    return rates.currentUsageRatio
+      ? parseFloat((parseFloat(rates.currentUsageRatio) * 100).toFixed(2))
+      : 0;
+  }, [rates.currentUsageRatio]);
 
   const optimalValue = useMemo(() => {
     return [

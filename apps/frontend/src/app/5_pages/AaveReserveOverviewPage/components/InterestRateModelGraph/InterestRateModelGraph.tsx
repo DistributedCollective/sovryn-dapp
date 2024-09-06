@@ -4,16 +4,17 @@ import { t } from 'i18next';
 
 import { theme } from '@sovryn/tailwindcss-config';
 import { Accordion, Link } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { config } from '../../../../../constants/aave';
-import { useAaveInterestRatesData } from '../../../../../hooks/aave/useAaveRates';
 import { Reserve } from '../../../../../hooks/aave/useAaveReservesData';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
 import { getBobExplorerUrl } from '../../../../../utils/helpers';
 import { Chart } from './components/Chart/Chart';
+import { RatesData } from './components/Chart/Chart.types';
 
 const pageTranslations = translations.aaveReserveOverviewPage.interestRateModel;
 
@@ -25,21 +26,18 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
   reserve,
 }) => {
   const { isMobile } = useIsMobile();
+  const [open, setOpen] = useState(true);
+
   const interestRateStrategyUrl = useMemo(() => {
     return `${getBobExplorerUrl()}/address/${
       config.InterestRateStrategyAddress
     }`;
   }, []);
 
-  const [open, setOpen] = useState<boolean>(true);
-  const { data: rates } = useAaveInterestRatesData();
+  const currentUsageRatio = useMemo(() => {
+    return Decimal.from(reserve.borrowUsageRatio).mul(100);
+  }, [reserve.borrowUsageRatio]);
 
-  const meta = {
-    label: t(pageTranslations.chart.label1),
-    lineColor: theme.colors['primary-30'],
-  };
-
-  if (!rates) return null;
   return (
     <Accordion
       label={
@@ -54,46 +52,52 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
       flatMode={!isMobile}
       dataAttribute="interest-rate-model"
     >
-      {rates && (
-        <div className="space-y-8 pt-2">
-          <div className="flex justify-between items-end">
-            <StatisticsCard
-              label={t(pageTranslations.utilizationRate)}
-              value={
-                <AmountRenderer
-                  value={parseFloat(rates.currentUsageRatio) * 100}
-                  precision={2}
-                  suffix="%"
-                />
-              }
-            />
-            <Link
-              href={interestRateStrategyUrl}
-              text={t(pageTranslations.interestRateStrategy)}
-            />
-          </div>
-
-          <Chart meta={meta} rates={rates} />
-          {/* statistics */}
-          <div className="flex gap-8">
-            <StatisticsCard
-              label={t(pageTranslations.reserveFactor)}
-              help={t(pageTranslations.reserveFactorInfo)}
-              value={
-                <AmountRenderer
-                  value={reserve.reserveFactor}
-                  suffix="%"
-                  precision={2}
-                />
-              }
-            />
-            <StatisticsCard
-              label={t(pageTranslations.collectorContract)}
-              value={<Link href="#" text={t(pageTranslations.viewContract)} />}
-            />
-          </div>
+      <div className="space-y-8 pt-2">
+        <div className="flex justify-between items-end">
+          <StatisticsCard
+            label={t(pageTranslations.utilizationRate)}
+            value={
+              <AmountRenderer
+                value={currentUsageRatio}
+                precision={2}
+                suffix="%"
+              />
+            }
+          />
+          <Link
+            href={interestRateStrategyUrl}
+            text={t(pageTranslations.interestRateStrategy)}
+          />
         </div>
-      )}
+
+        <Chart
+          meta={{
+            // TODO: implement this once data is available
+            label: t(pageTranslations.chart.label1),
+            lineColor: theme.colors['primary-30'],
+          }}
+          rates={{} as RatesData}
+        />
+
+        {/* statistics */}
+        <div className="flex gap-8">
+          <StatisticsCard
+            label={t(pageTranslations.reserveFactor)}
+            help={t(pageTranslations.reserveFactorInfo)}
+            value={
+              <AmountRenderer
+                value={Decimal.from(reserve.reserveFactor).mul(100)}
+                suffix="%"
+                precision={2}
+              />
+            }
+          />
+          <StatisticsCard
+            label={t(pageTranslations.collectorContract)}
+            value={<Link href="#" text={t(pageTranslations.viewContract)} />}
+          />
+        </div>
+      </div>
     </Accordion>
   );
 };

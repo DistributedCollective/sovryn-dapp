@@ -36,7 +36,7 @@ export const LendForm: FC<LendFormProps> = ({
 }) => {
   const { account } = useAccount();
   const { reserves } = useAaveReservesData();
-  const [lendAsset, setLendAsset] = useState<string>(initialAsset);
+  const [lendAsset, setLendAsset] = useState(initialAsset);
   const [lendAmount, setLendAmount, lendSize] = useDecimalAmountInput('');
   const { balance: lendAssetBalance } = useAssetBalance(
     lendAsset,
@@ -68,6 +68,10 @@ export const LendForm: FC<LendFormProps> = ({
   const assetUsdValue = useMemo(() => {
     return Decimal.from(reserve?.priceInUSD ?? 0).mul(lendSize);
   }, [reserve, lendSize]);
+
+  const supplyApy = useMemo(() => {
+    return Decimal.from(reserve?.supplyAPY ?? 0).mul(100);
+  }, [reserve]);
 
   const isValidLendAmount = useMemo(
     () => (lendSize.gt(0) ? lendSize.lte(lendAssetBalance) : true),
@@ -112,13 +116,7 @@ export const LendForm: FC<LendFormProps> = ({
       <SimpleTable>
         <SimpleTableRow
           label={t(translations.aavePage.lendModal.lendApy)}
-          value={
-            <AmountRenderer
-              value={Decimal.from(reserve?.supplyAPY ?? 0).mul(100)}
-              suffix="%"
-              precision={2}
-            />
-          }
+          value={<AmountRenderer value={supplyApy} suffix="%" precision={2} />}
         />
         <SimpleTableRow
           label={t(translations.aavePage.lendModal.collateralization)}

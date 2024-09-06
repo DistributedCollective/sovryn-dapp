@@ -169,7 +169,7 @@ export const EfficiencyModeCard: FC<EfficiencyModeCardProps> = ({
           />
           <DialogBody>
             <DisableEModeForm
-              current={currentCategory!}
+              current={currentCategory}
               onComplete={onDisableEModeClose}
             />
           </DialogBody>

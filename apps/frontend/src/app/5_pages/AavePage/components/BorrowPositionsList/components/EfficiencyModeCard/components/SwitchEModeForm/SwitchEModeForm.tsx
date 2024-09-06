@@ -1,5 +1,3 @@
-import { formatReserves, formatUserSummary } from '@aave/math-utils';
-
 import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
@@ -23,8 +21,8 @@ import { useAaveSetUserEMode } from '../../../../../../../../../hooks/aave/useAa
 import { useAaveUserReservesData } from '../../../../../../../../../hooks/aave/useAaveUserReservesData';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { EModeCategory } from '../../../../../../../../../types/aave';
-import { AaveCalculations } from '../../../../../../../../../utils/aave/AaveCalculations';
 import { CollateralRatioHealthBar } from '../../../../../CollateralRatioHealthBar/CollateralRatioHealthBar';
+import { normalizeEModeSummary } from '../../EfficencyModeCard.utils';
 
 type SwitchEModeFormProps = {
   current: EModeCategory;
@@ -55,39 +53,14 @@ export const SwitchEModeForm: FC<SwitchEModeFormProps> = ({
     return categories.find(c => c.id === Number(category));
   }, [category, categories]);
 
-  const newSummary = useMemo(() => {
-    if (!userReservesData || !reservesData) {
-      return;
-    }
-
-    const {
-      marketReferenceCurrencyDecimals,
-      marketReferenceCurrencyPriceInUsd: marketReferencePriceInUsd,
-    } = reservesData.baseCurrencyData;
-    return formatUserSummary({
-      userEmodeCategoryId: selectedCategory?.id ?? 0,
-      currentTimestamp: timestamp,
-      marketReferencePriceInUsd,
-      marketReferenceCurrencyDecimals,
-      userReserves: userReservesData.userReserves,
-      formattedReserves: formatReserves({
-        currentTimestamp: timestamp,
-        marketReferencePriceInUsd,
-        marketReferenceCurrencyDecimals,
-        reserves: reservesData.reservesData,
-      }),
-    });
-  }, [userReservesData, reservesData, timestamp, selectedCategory?.id]);
-
-  const newCollateralRatio = useMemo(() => {
-    if (!newSummary) {
-      return Decimal.from(0);
-    }
-    return AaveCalculations.computeCollateralRatio(
-      Decimal.from(newSummary.totalCollateralUSD),
-      Decimal.from(newSummary.totalBorrowsUSD),
+  const summaryAfterSwitch = useMemo(() => {
+    return normalizeEModeSummary(
+      selectedCategory?.id ?? 0,
+      reservesData,
+      userReservesData,
+      timestamp,
     );
-  }, [newSummary]);
+  }, [userReservesData, reservesData, timestamp, selectedCategory?.id]);
 
   const positionsInOtherCategories = useMemo(() => {
     return summary.reserves.some(
@@ -98,11 +71,11 @@ export const SwitchEModeForm: FC<SwitchEModeFormProps> = ({
   const confirmEnabled = useMemo(() => {
     // cannot switch if undercollateralized or have positions in other categories
     return (
-      Decimal.from(newSummary?.healthFactor ?? 0).lte(1) &&
+      !summaryAfterSwitch.liquidationRisk &&
       !positionsInOtherCategories &&
       selectedCategory
     );
-  }, [newSummary, positionsInOtherCategories, selectedCategory]);
+  }, [summaryAfterSwitch, positionsInOtherCategories, selectedCategory]);
 
   const onConfirm = useCallback(() => {
     if (!selectedCategory) return;
@@ -125,7 +98,7 @@ export const SwitchEModeForm: FC<SwitchEModeFormProps> = ({
       </div>
 
       <CollateralRatioHealthBar
-        ratio={newCollateralRatio}
+        ratio={summaryAfterSwitch.collateralRatio}
         minimum={config.MinCollateralRatio}
       />
 

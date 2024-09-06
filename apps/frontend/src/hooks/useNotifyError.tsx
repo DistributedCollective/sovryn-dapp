@@ -12,10 +12,10 @@ export const useNotifyError = () => {
   const { addNotification } = useNotificationContext();
 
   const notifyError = useCallback(
-    (error: Error) => {
+    (error: Error, title?: string) => {
       addNotification({
         type: NotificationType.error,
-        title: t(translations.common.somethingWentWrong),
+        title: title ?? t(translations.common.somethingWentWrong),
         content: error.message,
         dismissible: true,
         id: nanoid(),

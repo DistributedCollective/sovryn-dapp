@@ -35,17 +35,18 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
   const [lendAssetDialog, setLendAssetDialog] = useState<string | undefined>();
 
-  const onLendClick = useCallback((asset: string) => {
-    setLendAssetDialog(asset);
-  }, []);
-
   const onLendClose = useCallback(() => {
     setLendAssetDialog(undefined);
   }, []);
 
   const mobileRenderer = useCallback(
-    p => <LendAssetDetails pool={p} onLendClick={() => onLendClick(p.asset)} />,
-    [onLendClick],
+    p => (
+      <LendAssetDetails
+        pool={p}
+        onLendClick={() => setLendAssetDialog(p.asset)}
+      />
+    ),
+    [setLendAssetDialog],
   );
 
   const rowTitleRenderer = useCallback(
@@ -62,10 +63,10 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({
   );
 
   const filteredLendPools = useMemo(() => {
-    if (!showZeroBalances) {
-      return lendPools.filter(p => p.walletBalance.gt(0));
+    if (showZeroBalances) {
+      return lendPools;
     }
-    return lendPools;
+    return lendPools.filter(p => p.walletBalance.gt(0));
   }, [lendPools, showZeroBalances]);
 
   return (
@@ -89,7 +90,7 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({
 
       <Table
         isLoading={loading}
-        columns={COLUMNS_CONFIG(onLendClick)}
+        columns={COLUMNS_CONFIG(setLendAssetDialog)}
         rowClassName="bg-gray-80"
         accordionClassName="bg-gray-60 border border-gray-70"
         rowTitle={rowTitleRenderer}

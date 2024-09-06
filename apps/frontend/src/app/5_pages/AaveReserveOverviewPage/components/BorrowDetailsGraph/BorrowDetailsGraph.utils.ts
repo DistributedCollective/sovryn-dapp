@@ -12,10 +12,9 @@ export const normalizeBorrowStats = (reserve: Reserve) => ({
   borrowCapUSD: Decimal.from(reserve.borrowCapUSD),
   borrowedPercentage: Decimal.from(reserve.totalDebtUSD)
     .div(Decimal.from(reserve.debtCeilingUSD))
-    .mul(100)
-    .toString(0),
+    .mul(100),
+  reserveFactor: Decimal.from(reserve.reserveFactor).mul(100),
   collectorContractLink: `${getBobExplorerUrl()}/address/${
     config.TreasuryAddress
   }`,
-  reserveFactor: Decimal.from(reserve.reserveFactor).mul(100),
 });

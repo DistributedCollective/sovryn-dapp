@@ -47,10 +47,6 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
   const [repayAssetDialog, setRepayAssetDialog] = useState<string>();
 
-  const onRepayClick = useCallback((asset: string) => {
-    setRepayAssetDialog(asset);
-  }, []);
-
   const onRepayClose = useCallback(() => {
     setRepayAssetDialog(undefined);
   }, []);
@@ -71,10 +67,10 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
     p => (
       <BorrowPositionDetails
         position={p}
-        onRepayClick={() => onRepayClick(p.asset)}
+        onRepayClick={() => setRepayAssetDialog(p.asset)}
       />
     ),
-    [onRepayClick],
+    [setRepayAssetDialog],
   );
 
   return (
@@ -128,7 +124,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
 
           <Table
             isLoading={loading}
-            columns={COLUMNS_CONFIG(onRepayClick)}
+            columns={COLUMNS_CONFIG(setRepayAssetDialog)}
             rowClassName="bg-gray-80"
             accordionClassName="bg-gray-60 border border-gray-70"
             rowTitle={rowTitleRenderer}

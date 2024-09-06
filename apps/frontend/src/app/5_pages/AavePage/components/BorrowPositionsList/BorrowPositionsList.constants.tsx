@@ -60,7 +60,7 @@ export const COLUMNS_CONFIG = (onRepayClick: (asset: string) => unknown) => [
       </span>
     ),
     cellRenderer: (position: BorrowPosition) => (
-      <AmountRenderer value={position.apy} suffix={'%'} precision={2} />
+      <AmountRenderer value={position.apy} suffix="%" precision={2} />
     ),
   },
   {

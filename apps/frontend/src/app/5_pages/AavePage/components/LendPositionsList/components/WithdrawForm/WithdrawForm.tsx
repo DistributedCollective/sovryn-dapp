@@ -22,6 +22,7 @@ import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAave
 import { useAaveWithdraw } from '../../../../../../../hooks/aave/useAaveWithdraw';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
 import { translations } from '../../../../../../../locales/i18n';
+import { tabItems } from './WithdrawForm.constants';
 
 const pageTranslations = translations.aavePage;
 
@@ -33,7 +34,7 @@ type WithdrawFormProps = {
 export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
   const { handleWithdraw } = useAaveWithdraw();
   const { summary } = useAaveUserReservesData();
-  const [withdrawAsset, setWithdrawAsset] = useState<string>(asset);
+  const [withdrawAsset, setWithdrawAsset] = useState(asset);
   const [withdrawAmount, setWithdrawAmount, withdrawSize] =
     useDecimalAmountInput('');
 
@@ -82,18 +83,6 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
   const submitButtonDisabled = useMemo(
     () => !isValidWithdrawAmount || withdrawSize.lte(0),
     [isValidWithdrawAmount, withdrawSize],
-  );
-
-  const tabItems = useMemo(
-    () => [
-      // For now just withdraw is supported
-      {
-        activeClassName: 'text-primary-20',
-        dataAttribute: 'withdraw',
-        label: t(translations.common.withdraw),
-      },
-    ],
-    [],
   );
 
   const onConfirm = useCallback(() => {

@@ -14,7 +14,7 @@ export const useAddTokenToWallet = (): {
           throw new Error('Wallet not available');
         }
 
-        (window as any)?.ethereum.request({
+        (window as any).ethereum.request({
           method: 'wallet_watchAsset',
           params: {
             type: 'ERC20',

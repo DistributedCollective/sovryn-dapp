@@ -8,11 +8,11 @@ import {
   GRID_COLOR,
   TICK_COLOR,
 } from './Chart.constants';
-import { InputData } from './Chart.types';
+import { ChartData } from './Chart.types';
 import { htmlLegendPlugin } from './Chart.utils';
 
 type ChartProps = {
-  input: InputData<any>;
+  input: ChartData;
 };
 
 export const Chart: FC<ChartProps> = ({ input }) => {

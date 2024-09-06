@@ -35,13 +35,7 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
 }) => {
   const [open, setOpen] = useState(true);
   const [orderOptions, setOrderOptions] = useState<OrderOptions>();
-  const [borrowAssetDialog, setBorrowAssetDialog] = useState<
-    string | undefined
-  >();
-
-  const onBorrowClick = useCallback((asset: string) => {
-    setBorrowAssetDialog(asset);
-  }, []);
+  const [borrowAssetDialog, setBorrowAssetDialog] = useState<string>();
 
   const onBorrowClose = useCallback(() => {
     setBorrowAssetDialog(undefined);
@@ -63,11 +57,11 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
   const mobileRenderer = useCallback(
     p => (
       <BorrowAssetDetails
-        onBorrowClick={() => onBorrowClick(p.asset)}
+        onBorrowClick={() => setBorrowAssetDialog(p.asset)}
         pool={p}
       />
     ),
-    [onBorrowClick],
+    [setBorrowAssetDialog],
   );
 
   return (
@@ -93,7 +87,7 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
       <Table
         isLoading={loading}
         className="mt-4"
-        columns={COLUMNS_CONFIG(onBorrowClick)}
+        columns={COLUMNS_CONFIG(setBorrowAssetDialog)}
         rowClassName="bg-gray-80"
         accordionClassName="bg-gray-60 border border-gray-70"
         rowTitle={rowTitleRenderer}

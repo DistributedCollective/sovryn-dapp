@@ -10,7 +10,6 @@ import { Decimal } from '@sovryn/utils';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { Reserve } from '../../../../../hooks/aave/useAaveReservesData';
-import { FormattedReserveHistoryItem } from '../../../../../hooks/aave/useReservesHistory';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
 import { formatAmountWithSuffix } from '../../../../../utils/math';
@@ -19,25 +18,14 @@ import { Chart } from './components/Chart/Chart';
 const pageTranslations = translations.aaveReserveOverviewPage.supplyDetails;
 
 type SupplyDetailsGraphProps = {
-  history: FormattedReserveHistoryItem[];
   reserve: Reserve;
 };
 
 export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
-  history,
   reserve,
 }) => {
   const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();
-
-  const inputData = useMemo(() => {
-    const data = history.map(i => ({ x: i.date, y: i.liquidityRate * 100 }));
-    return {
-      data,
-      label: t(pageTranslations.chart.label1),
-      lineColor: theme.colors['primary-30'],
-    };
-  }, [history]);
 
   const totalSupplied = useMemo(() => {
     return Decimal.from(reserve.availableLiquidity).add(reserve.totalDebt);
@@ -146,7 +134,14 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
           />
         </div>
 
-        <Chart input={inputData} />
+        <Chart
+          input={{
+            // TODO: implement once data is available
+            data: [],
+            label: t(pageTranslations.chart.label1),
+            lineColor: theme.colors['primary-30'],
+          }}
+        />
 
         <div className="space-y-6">
           {/* collateral usage */}

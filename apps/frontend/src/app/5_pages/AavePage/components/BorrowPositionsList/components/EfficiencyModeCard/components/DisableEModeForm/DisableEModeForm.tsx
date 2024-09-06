@@ -1,5 +1,3 @@
-import { formatReserves, formatUserSummary } from '@aave/math-utils';
-
 import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
@@ -21,8 +19,8 @@ import { useAaveSetUserEMode } from '../../../../../../../../../hooks/aave/useAa
 import { useAaveUserReservesData } from '../../../../../../../../../hooks/aave/useAaveUserReservesData';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { EModeCategory } from '../../../../../../../../../types/aave';
-import { AaveCalculations } from '../../../../../../../../../utils/aave/AaveCalculations';
 import { CollateralRatioHealthBar } from '../../../../../CollateralRatioHealthBar/CollateralRatioHealthBar';
+import { normalizeEModeSummary } from '../../EfficencyModeCard.utils';
 
 type DisableEModeFormProps = {
   current: EModeCategory;
@@ -41,55 +39,23 @@ export const DisableEModeForm: FC<DisableEModeFormProps> = ({
     handleDisableUserEMode({ onComplete });
   }, [handleDisableUserEMode, onComplete]);
 
-  const newSummary = useMemo(() => {
-    if (!userReservesData || !reservesData) {
-      return;
-    }
-
-    const {
-      marketReferenceCurrencyDecimals,
-      marketReferenceCurrencyPriceInUsd: marketReferencePriceInUsd,
-    } = reservesData.baseCurrencyData;
-    return formatUserSummary({
-      userEmodeCategoryId: 0, // disable mode
-      currentTimestamp: timestamp,
-      marketReferencePriceInUsd,
-      marketReferenceCurrencyDecimals,
-      userReserves: userReservesData.userReserves,
-      formattedReserves: formatReserves({
-        currentTimestamp: timestamp,
-        marketReferencePriceInUsd,
-        marketReferenceCurrencyDecimals,
-        reserves: reservesData.reservesData,
-      }),
-    });
-  }, [userReservesData, reservesData, timestamp]);
-
-  const newCollateralRatio = useMemo(() => {
-    if (!newSummary) {
-      return Decimal.from(0);
-    }
-
-    return AaveCalculations.computeCollateralRatio(
-      Decimal.from(newSummary.totalCollateralUSD),
-      Decimal.from(newSummary.totalBorrowsUSD),
+  const summaryAfterDisabled = useMemo(() => {
+    return normalizeEModeSummary(
+      0, // disabled
+      reservesData,
+      userReservesData,
+      timestamp,
     );
-  }, [newSummary]);
-
-  const liquidationRisk = useMemo(() => {
-    // if health factor is below 1 we're at risk. Negative means doesn't apply
-    const healthFactor = Decimal.from(newSummary?.healthFactor ?? 0);
-    return healthFactor.lte(1) && healthFactor.gt(0);
-  }, [newSummary?.healthFactor]);
+  }, [userReservesData, reservesData, timestamp]);
 
   const confirmEnabled = useMemo(() => {
     // cannot disable if undercollateralized
-    return !liquidationRisk;
-  }, [liquidationRisk]);
+    return !summaryAfterDisabled.liquidationRisk;
+  }, [summaryAfterDisabled.liquidationRisk]);
 
   return (
     <div className="space-y-6">
-      {liquidationRisk && (
+      {summaryAfterDisabled.liquidationRisk && (
         <ErrorBadge
           level={ErrorLevel.Critical}
           message={t(translations.aavePage.eMode.liquidationRiskWarning)}
@@ -98,7 +64,7 @@ export const DisableEModeForm: FC<DisableEModeFormProps> = ({
       )}
 
       <CollateralRatioHealthBar
-        ratio={newCollateralRatio}
+        ratio={summaryAfterDisabled.collateralRatio}
         minimum={config.MinCollateralRatio}
       />
 
@@ -147,9 +113,7 @@ export const DisableEModeForm: FC<DisableEModeFormProps> = ({
                 className="h-2 flex-shrink-0"
               />
               <AmountRenderer
-                value={Decimal.from(newSummary?.currentLoanToValue ?? 0).mul(
-                  100,
-                )}
+                value={summaryAfterDisabled.ltv}
                 precision={2}
                 suffix="%"
               />

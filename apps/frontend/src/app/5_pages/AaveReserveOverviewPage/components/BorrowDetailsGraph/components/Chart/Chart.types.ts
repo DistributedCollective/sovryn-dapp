@@ -1,5 +1,5 @@
-export type InputData<T> = {
-  data: T[];
+export type ChartData = {
+  data: { x: number; y: number }[];
   label: string;
   lineColor: string;
 };

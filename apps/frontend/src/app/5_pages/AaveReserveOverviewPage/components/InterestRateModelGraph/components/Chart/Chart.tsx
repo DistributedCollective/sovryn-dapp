@@ -5,12 +5,12 @@ import 'chartjs-adapter-date-fns';
 
 import { theme } from '@sovryn/tailwindcss-config';
 
-import { RatesDataResult } from '../../../../../../../hooks/aave/useAaveRates';
 import {
   CUSTOM_CANVAS_BACKGROUND_COLOR,
   GRID_COLOR,
   TICK_COLOR,
 } from './Chart.constants';
+import { RatesData } from './Chart.types';
 import { htmlLegendPlugin } from './Chart.utils';
 
 type ChartProps = {
@@ -18,7 +18,7 @@ type ChartProps = {
     label: string;
     lineColor: string;
   };
-  rates: RatesDataResult;
+  rates: RatesData;
 };
 
 const calcInterestRateModel = (
@@ -35,7 +35,7 @@ const calcInterestRateModel = (
   return base + slope1 + ((u - optimal) / (1 - optimal)) * slope2;
 };
 
-const calcVariableInterestRateModel = (u: number, rates: RatesDataResult) => {
+const calcVariableInterestRateModel = (u: number, rates: RatesData) => {
   const base = parseFloat(rates.baseVariableBorrowRate);
   const optimal = parseFloat(rates.optimalUsageRatio);
   const slope1 = parseFloat(rates.variableRateSlope1);

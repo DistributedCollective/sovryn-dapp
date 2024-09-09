@@ -11,7 +11,7 @@ import { getProvider } from '@sovryn/ethers-provider';
 
 import { BOB_CHAIN_ID } from '../../config/chains';
 
-import { config } from '../../constants/aave';
+import { AAVE_CONTRACT_ADDRESSES } from '../../constants/aave';
 import { UserReservesData } from '../../types/aave';
 import {
   AaveUserReservesSummary,
@@ -22,7 +22,7 @@ import { useBlockNumber } from '../useBlockNumber';
 
 const uiPoolDataProvider = new UiPoolDataProvider({
   provider: getProvider(BOB_CHAIN_ID),
-  uiPoolDataProviderAddress: config.UiPoolDataProviderV3Address,
+  uiPoolDataProviderAddress: AAVE_CONTRACT_ADDRESSES.UI_POOL_DATA_PROVIDER,
   chainId: Number(BOB_CHAIN_ID),
 });
 
@@ -52,10 +52,12 @@ export const useAaveUserReservesData = (): {
     try {
       const [reservesData, userReservesData] = await Promise.all([
         uiPoolDataProvider.getReservesHumanized({
-          lendingPoolAddressProvider: config.PoolAddressesProviderAddress,
+          lendingPoolAddressProvider:
+            AAVE_CONTRACT_ADDRESSES.POOL_ADDRESSES_PROVIDER,
         }),
         uiPoolDataProvider.getUserReservesHumanized({
-          lendingPoolAddressProvider: config.PoolAddressesProviderAddress,
+          lendingPoolAddressProvider:
+            AAVE_CONTRACT_ADDRESSES.POOL_ADDRESSES_PROVIDER,
           user: account,
         }),
       ]);

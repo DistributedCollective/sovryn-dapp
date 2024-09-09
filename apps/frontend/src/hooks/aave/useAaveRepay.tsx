@@ -8,7 +8,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { BOB_CHAIN_ID } from '../../config/chains';
 
-import { config } from '../../constants/aave';
+import { AAVE_CONTRACT_ADDRESSES } from '../../constants/aave';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { translations } from '../../locales/i18n';
 import { BorrowRateMode, TransactionFactoryOptions } from '../../types/aave';
@@ -24,8 +24,8 @@ export const useAaveRepay = () => {
   const aaveRepayTransactionsFactory = useMemo(() => {
     if (!signer) return null;
     return new AaveRepayTransactionsFactory(
-      config.PoolAddress,
-      config.WETHGatewayAddress,
+      AAVE_CONTRACT_ADDRESSES.POOL,
+      AAVE_CONTRACT_ADDRESSES.WETH_GATEWAY,
       signer,
     );
   }, [signer]);

@@ -8,7 +8,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
-import { config } from '../../../../../constants/aave';
+import { AAVE_CONTRACT_ADDRESSES } from '../../../../../constants/aave';
 import { Reserve } from '../../../../../hooks/aave/useAaveReservesData';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
@@ -30,12 +30,12 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
 
   const interestRateStrategyUrl = useMemo(() => {
     return `${getBobExplorerUrl()}/address/${
-      config.InterestRateStrategyAddress
+      AAVE_CONTRACT_ADDRESSES.INTEREST_RATE_STRATEGY
     }`;
   }, []);
 
   const collectorContractUrl = useMemo(() => {
-    return `${getBobExplorerUrl()}/address/${config.TreasuryAddress}`;
+    return `${getBobExplorerUrl()}/address/${AAVE_CONTRACT_ADDRESSES.TREASURY}`;
   }, []);
 
   const currentUsageRatio = useMemo(() => {

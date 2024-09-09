@@ -1,6 +1,6 @@
 import { Decimal } from '@sovryn/utils';
 
-import { config } from '../../../../../constants/aave';
+import { AAVE_CONTRACT_ADDRESSES } from '../../../../../constants/aave';
 import { Reserve } from '../../../../../hooks/aave/useAaveReservesData';
 import { getBobExplorerUrl } from '../../../../../utils/helpers';
 
@@ -15,6 +15,6 @@ export const normalizeBorrowStats = (reserve: Reserve) => ({
     .mul(100),
   reserveFactor: Decimal.from(reserve.reserveFactor).mul(100),
   collectorContractLink: `${getBobExplorerUrl()}/address/${
-    config.TreasuryAddress
+    AAVE_CONTRACT_ADDRESSES.TREASURY
   }`,
 });

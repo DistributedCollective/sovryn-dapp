@@ -102,7 +102,7 @@ export const BorrowDetailsGraph: FC<BorrowDetailsGraphProps> = ({
               label={t(pageTranslations.apr)}
               value={
                 <AmountRenderer
-                  value={reserve.variableBorrowAPR}
+                  value={borrowStats.apr}
                   suffix="%"
                   precision={2}
                 />
@@ -144,7 +144,7 @@ export const BorrowDetailsGraph: FC<BorrowDetailsGraphProps> = ({
               help={t(pageTranslations.reserveFactorInfo)}
               value={
                 <AmountRenderer
-                  value={reserve.reserveFactor}
+                  value={borrowStats.reserveFactor}
                   precision={2}
                   suffix="%"
                 />

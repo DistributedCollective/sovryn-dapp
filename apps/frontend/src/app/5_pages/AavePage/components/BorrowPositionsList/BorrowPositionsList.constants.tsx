@@ -35,7 +35,7 @@ export const COLUMNS_CONFIG = (onRepayClick: (asset: string) => void) => [
     ),
   },
   {
-    id: 'balance',
+    id: 'borrowed',
     sortable: true,
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
@@ -64,7 +64,7 @@ export const COLUMNS_CONFIG = (onRepayClick: (asset: string) => void) => [
     ),
   },
   {
-    id: 'apyType',
+    id: 'borrowRateMode',
     sortable: true,
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head

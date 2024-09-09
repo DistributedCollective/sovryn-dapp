@@ -1,5 +1,6 @@
 import { t } from 'i18next';
 
+import { OrderDirection, OrderOptions } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import {
@@ -145,4 +146,16 @@ export const normalizeLendPoolDetails = (
     canBeCollateral: r.reserve.usageAsCollateralEnabled,
     walletBalance: r.walletBalance,
   }));
+};
+
+export const sortRowsByOrderOptions = (
+  orderOptions: OrderOptions,
+  rows: any[],
+) => {
+  const direction = orderOptions.orderDirection === OrderDirection.Asc ? 1 : -1;
+  return rows.sort((a, b) =>
+    b[orderOptions.orderBy || ''] > a[orderOptions.orderBy || '']
+      ? direction
+      : -direction,
+  );
 };

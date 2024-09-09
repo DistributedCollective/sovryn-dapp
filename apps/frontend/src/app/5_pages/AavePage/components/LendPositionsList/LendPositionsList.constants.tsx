@@ -36,7 +36,7 @@ export const COLUMNS_CONFIG = (onWithdrawClick: (asset: string) => void) => [
     ),
   },
   {
-    id: 'balance',
+    id: 'suppliedUSD',
     sortable: true,
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head

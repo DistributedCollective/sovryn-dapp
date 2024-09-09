@@ -35,7 +35,7 @@ export const COLUMNS_CONFIG = (onBorrowClick: (asset: string) => void) => [
     ),
   },
   {
-    id: 'available',
+    id: 'availableUSD',
     sortable: true,
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
@@ -66,8 +66,8 @@ export const COLUMNS_CONFIG = (onBorrowClick: (asset: string) => void) => [
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
     title: (
       <span className="flex items-center gap-1 text-gray-30">
-        {t(pageTranslations.common.apr)}{' '}
-        <HelperButton content={t(pageTranslations.common.aprInfo)} />
+        {t(pageTranslations.common.apy)}{' '}
+        <HelperButton content={t(pageTranslations.common.apyInfo)} />
       </span>
     ),
     cellRenderer: (pool: BorrowPoolDetails) => (

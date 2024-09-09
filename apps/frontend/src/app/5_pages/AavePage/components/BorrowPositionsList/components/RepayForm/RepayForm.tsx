@@ -5,13 +5,13 @@ import { t } from 'i18next';
 import { Paragraph, ParagraphSize, Tabs, TabType } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { tabItems } from './RepayForm.constants';
+import { TAB_ITEMS } from './RepayForm.constants';
 import { RepayWithCollateralForm } from './RepayWithCollateralForm';
 import { RepayWithWalletBalanceForm } from './RepayWithWalletBalanceForm';
 
 type RepayFormProps = {
   asset: string;
-  onComplete: () => unknown;
+  onComplete: () => void;
 };
 
 enum RepayWith {
@@ -36,7 +36,7 @@ export const RepayForm: FC<RepayFormProps> = ({ asset, onComplete }) => {
         contentClassName="p-4"
         index={activeTab}
         onChange={setActiveTab}
-        items={tabItems}
+        items={TAB_ITEMS}
         type={TabType.secondary}
       />
 

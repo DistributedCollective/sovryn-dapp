@@ -7,7 +7,7 @@ import { Button, ButtonStyle } from '@sovryn/ui';
 import { translations } from '../../../../../../../locales/i18n';
 
 type LendPositionActionProps = {
-  onWithdrawClick: () => unknown;
+  onWithdrawClick: () => void;
 };
 
 export const LendPositionAction: FC<LendPositionActionProps> = ({

@@ -22,7 +22,7 @@ import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAave
 import { useAaveWithdraw } from '../../../../../../../hooks/aave/useAaveWithdraw';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
 import { translations } from '../../../../../../../locales/i18n';
-import { tabItems } from './WithdrawForm.constants';
+import { TAB_ITEMS } from './WithdrawForm.constants';
 
 const pageTranslations = translations.aavePage;
 
@@ -103,7 +103,7 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
   return (
     <form className="flex flex-col gap-6">
       <div className="space-y-2">
-        <Tabs type={TabType.secondary} index={0} items={tabItems} />
+        <Tabs type={TabType.secondary} index={0} items={TAB_ITEMS} />
 
         <div className="space-y-3">
           <AssetAmountInput

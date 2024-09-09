@@ -10,6 +10,7 @@ import {
   IconNames,
   Paragraph,
   Select,
+  SelectOption,
   SimpleTable,
   SimpleTableRow,
 } from '@sovryn/ui';
@@ -41,12 +42,19 @@ export const SwitchEModeForm: FC<SwitchEModeFormProps> = ({
     useAaveUserReservesData();
 
   const categoriesOptions = useMemo(() => {
-    return categories
-      .filter(c => c.id !== current.id)
-      .map(category => ({
-        label: category.label,
-        value: String(category.id),
-      }));
+    return categories.reduce((acc, category) => {
+      if (category.id === current?.id) {
+        return acc; // skip current category
+      }
+
+      return [
+        ...acc,
+        {
+          label: category.label,
+          value: String(category.id),
+        },
+      ];
+    }, [] as SelectOption[]);
   }, [categories, current?.id]);
 
   const selectedCategory = useMemo(() => {
@@ -78,8 +86,7 @@ export const SwitchEModeForm: FC<SwitchEModeFormProps> = ({
   }, [summaryAfterSwitch, positionsInOtherCategories, selectedCategory]);
 
   const onConfirm = useCallback(() => {
-    if (!selectedCategory) return;
-    handleSetUserEMode(selectedCategory, { onComplete });
+    handleSetUserEMode(selectedCategory!, { onComplete });
   }, [handleSetUserEMode, selectedCategory, onComplete]);
 
   return (

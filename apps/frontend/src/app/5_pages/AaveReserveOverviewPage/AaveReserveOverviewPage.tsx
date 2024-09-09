@@ -9,7 +9,7 @@ import { Paragraph, Tabs, TabSize, TabType } from '@sovryn/ui';
 
 import { useAaveReservesData } from '../../../hooks/aave/useAaveReservesData';
 import { translations } from '../../../locales/i18n';
-import { tabItems } from '../AavePage/components/BorrowPositionsList/components/RepayForm/RepayForm.constants';
+import { TAB_ITEMS } from './AaveReserveOverviewPage.constants';
 import { BorrowDetailsGraph } from './components/BorrowDetailsGraph/BorrowDetailsGraph';
 import { EModeDetails } from './components/EModeDetails/EModeDetails';
 import { InterestRateModelGraph } from './components/InterestRateModelGraph/InterestRateModelGraph';
@@ -54,7 +54,7 @@ const AaveReserveOverviewPage: FC = () => {
         <Tabs
           className="w-full bg-gray-80 rounded p-1 border border-gray-60 lg:hidden"
           index={activeOverviewTab}
-          items={tabItems}
+          items={TAB_ITEMS}
           onChange={e => setActiveOverviewTab(e)}
           size={TabSize.normal}
           type={TabType.secondary}

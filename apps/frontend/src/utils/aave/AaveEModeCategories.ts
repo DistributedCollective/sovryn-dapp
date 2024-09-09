@@ -76,9 +76,10 @@ export class AaveEModeCategories {
         this.getEModeCategory(categoryId, reserves),
       ),
     ).then(res =>
-      res
-        .filter(r => r.status === 'fulfilled')
-        .map(r => (r as PromiseFulfilledResult<EModeCategory>).value),
+      res.reduce(
+        (acc, r) => (r.status === 'fulfilled' ? [...acc, r.value] : acc),
+        [] as EModeCategory[],
+      ),
     );
   }
 
@@ -89,9 +90,10 @@ export class AaveEModeCategories {
     const [ltv, liquidationThreshold, liquidationBonus, , label] =
       await this.Pool.getEModeCategoryData(categoryId);
 
-    const assets = reserves
-      .filter(r => r.eModeCategoryId === categoryId)
-      .map(r => r.symbol);
+    const assets = reserves.reduce(
+      (acc, r) => (r.eModeCategoryId === categoryId ? [...acc, r.symbol] : acc),
+      [] as string[],
+    );
 
     return {
       id: categoryId,

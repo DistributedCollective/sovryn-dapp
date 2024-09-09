@@ -1,12 +1,11 @@
-import React, { FC, ReactElement, useEffect, useMemo } from 'react';
+import React, { FC } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
 
-import { getAssetData } from '@sovryn/contracts';
-
 import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 
+import { AssetIcon } from '../../../../../../2_molecules/AssetIcon/AssetIcon';
 import { translations } from '../../../../../../../locales/i18n';
 import { TokenButton } from './components/TokenButton/TokenButton';
 
@@ -28,57 +27,40 @@ export const ReserveTokens: FC<ReserveTokensProps> = ({
   variableDebtTokenAddress,
   stableDebtTokenAddress,
   className,
-}) => {
-  const [tokenLogo, setTokenLogo] = React.useState<string>();
+}) => (
+  <div className={classNames('divide-y divide-gray-20', className)}>
+    <TokenButton
+      title={t(translations.aaveReserveOverviewPage.topPanel.underlyingToken)}
+      label={symbol}
+      logo={<AssetIcon chainId={BOB_CHAIN_ID} symbol={symbol} />}
+      onClick={() => onTokenClick(underlyingTokenAddress)}
+    />
 
-  useEffect(() => {
-    getAssetData(symbol, BOB_CHAIN_ID).then(data => {
-      setTokenLogo(data.icon);
-    });
-  }, [symbol]);
+    <TokenButton
+      title={t(translations.aaveReserveOverviewPage.topPanel.aToken)}
+      label={`a${symbol}`}
+      logo={<AssetIcon chainId={BOB_CHAIN_ID} symbol={symbol} />}
+      onClick={() => onTokenClick(aTokenAddress)}
+    />
 
-  const TokenLogo: ReactElement = useMemo(() => {
-    if (!tokenLogo) return <></>;
-    else return <div dangerouslySetInnerHTML={{ __html: tokenLogo }} />;
-  }, [tokenLogo]);
+    <TokenButton
+      title={t(translations.aaveReserveOverviewPage.topPanel.variableDebtToken)}
+      label={t(
+        translations.aaveReserveOverviewPage.topPanel.variableDebtTokenName,
+        { symbol },
+      )}
+      logo={<AssetIcon chainId={BOB_CHAIN_ID} symbol={symbol} />}
+      onClick={() => onTokenClick(variableDebtTokenAddress)}
+    />
 
-  return (
-    <div className={classNames('divide-y divide-gray-20', className)}>
-      <TokenButton
-        title={t(translations.aaveReserveOverviewPage.topPanel.underlyingToken)}
-        label={symbol}
-        logo={TokenLogo}
-        onClick={() => onTokenClick(underlyingTokenAddress)}
-      />
-
-      <TokenButton
-        title={t(translations.aaveReserveOverviewPage.topPanel.aToken)}
-        label={`a${symbol}`}
-        logo={TokenLogo}
-        onClick={() => onTokenClick(aTokenAddress)}
-      />
-
-      <TokenButton
-        title={t(
-          translations.aaveReserveOverviewPage.topPanel.variableDebtToken,
-        )}
-        label={t(
-          translations.aaveReserveOverviewPage.topPanel.variableDebtTokenName,
-          { symbol },
-        )}
-        logo={TokenLogo}
-        onClick={() => onTokenClick(variableDebtTokenAddress)}
-      />
-
-      <TokenButton
-        title={t(translations.aaveReserveOverviewPage.topPanel.stableDebtToken)}
-        label={t(
-          translations.aaveReserveOverviewPage.topPanel.stableDebtTokenName,
-          { symbol },
-        )}
-        logo={TokenLogo}
-        onClick={() => onTokenClick(stableDebtTokenAddress)}
-      />
-    </div>
-  );
-};
+    <TokenButton
+      title={t(translations.aaveReserveOverviewPage.topPanel.stableDebtToken)}
+      label={t(
+        translations.aaveReserveOverviewPage.topPanel.stableDebtTokenName,
+        { symbol },
+      )}
+      logo={<AssetIcon chainId={BOB_CHAIN_ID} symbol={symbol} />}
+      onClick={() => onTokenClick(stableDebtTokenAddress)}
+    />
+  </div>
+);

@@ -2,7 +2,7 @@ import { t } from 'i18next';
 
 import { translations } from '../../../../../../../locales/i18n';
 
-export const tabItems = [
+export const TAB_ITEMS = [
   {
     activeClassName: 'text-primary-20',
     dataAttribute: 'wallet-balance',

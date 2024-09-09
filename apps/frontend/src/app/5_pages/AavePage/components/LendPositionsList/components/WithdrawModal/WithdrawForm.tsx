@@ -6,6 +6,7 @@ import {
   Button,
   ErrorBadge,
   ErrorLevel,
+  SelectOption,
   SimpleTable,
   SimpleTableRow,
   Tabs,
@@ -22,6 +23,7 @@ import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAave
 import { useAaveWithdraw } from '../../../../../../../hooks/aave/useAaveWithdraw';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
 import { translations } from '../../../../../../../locales/i18n';
+import { TAB_ITEMS } from './WithdrawForm.constants';
 
 const pageTranslations = translations.aavePage;
 
@@ -39,19 +41,27 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
 
   const withdrawableAssetsOptions = useMemo(
     () =>
-      summary.reserves
-        .filter(r => r.supplied.gt(0))
-        .map(sa => ({
-          value: sa.asset,
-          label: (
-            <AssetRenderer
-              showAssetLogo
-              asset={sa.asset}
-              assetClassName="font-medium"
-              chainId={BOB_CHAIN_ID}
-            />
-          ),
-        })),
+      summary.reserves.reduce((acc, r) => {
+        if (r.supplied.lte(0)) {
+          return acc;
+        }
+
+        return [
+          ...acc,
+          {
+            value: r.asset,
+            label: (
+              <AssetRenderer
+                showAssetLogo
+                asset={r.asset}
+                assetClassName="font-medium"
+                chainId={BOB_CHAIN_ID}
+              />
+            ),
+          },
+        ];
+      }, [] as SelectOption<string>[]),
+
     [summary],
   );
 
@@ -84,18 +94,6 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     [isValidWithdrawAmount, withdrawSize],
   );
 
-  const tabItems = useMemo(
-    () => [
-      // For now just withdraw is supported
-      {
-        activeClassName: 'text-primary-20',
-        dataAttribute: 'withdraw',
-        label: t(translations.common.withdraw),
-      },
-    ],
-    [],
-  );
-
   const onConfirm = useCallback(() => {
     handleWithdraw(
       withdrawSize,
@@ -114,7 +112,7 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
   return (
     <form className="flex flex-col gap-6">
       <div className="space-y-2">
-        <Tabs type={TabType.secondary} index={0} items={tabItems} />
+        <Tabs type={TabType.secondary} index={0} items={TAB_ITEMS} />
 
         <div className="space-y-3">
           <AssetAmountInput

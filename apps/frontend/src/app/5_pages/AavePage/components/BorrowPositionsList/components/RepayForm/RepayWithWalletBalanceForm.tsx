@@ -97,9 +97,9 @@ export const RepayWithWalletBalanceForm: FC<
   const newCollateralRatio = useMemo(() => {
     return AaveCalculations.computeCollateralRatio(
       summary.collateralBalance,
-      summary.borrowBalance.add(newDebtAmountUSD),
+      summary.borrowBalance.sub(repayUsdAmount),
     );
-  }, [summary, newDebtAmountUSD]);
+  }, [summary, repayUsdAmount]);
 
   const isValidRepayAmount = useMemo(
     () => (repaySize.gt(0) ? repaySize.lte(maximumRepayAmount) : true),

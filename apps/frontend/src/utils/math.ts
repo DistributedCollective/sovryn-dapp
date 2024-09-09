@@ -173,6 +173,6 @@ export const formatAmountWithSuffix = (
   } else if (value.gte(1e3)) {
     return { value: value.div(1e3).toString(1), suffix: 'K' };
   } else {
-    return { value: value.toString(), suffix: '' };
+    return { value: value.toString(1), suffix: '' };
   }
 };

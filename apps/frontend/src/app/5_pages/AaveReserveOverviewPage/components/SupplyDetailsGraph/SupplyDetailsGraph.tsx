@@ -103,7 +103,7 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
             label={t(pageTranslations.apy)}
             value={
               <AmountRenderer
-                value={reserve.supplyAPY}
+                value={supplyStats.supplyApy}
                 suffix="%"
                 precision={2}
               />

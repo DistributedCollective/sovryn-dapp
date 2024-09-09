@@ -6,6 +6,7 @@ import {
   Button,
   ErrorBadge,
   ErrorLevel,
+  SelectOption,
   SimpleTable,
   SimpleTableRow,
   Tabs,
@@ -18,6 +19,7 @@ import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE } from '../../../../../../../constants/aave';
 import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAaveUserReservesData';
 import { useAaveWithdraw } from '../../../../../../../hooks/aave/useAaveWithdraw';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
@@ -40,19 +42,26 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
 
   const withdrawableAssetsOptions = useMemo(
     () =>
-      summary.reserves
-        .filter(r => r.supplied.gt(0))
-        .map(sa => ({
-          value: sa.asset,
-          label: (
-            <AssetRenderer
-              showAssetLogo
-              asset={sa.asset}
-              assetClassName="font-medium"
-              chainId={BOB_CHAIN_ID}
-            />
-          ),
-        })),
+      summary.reserves.reduce((acc, r) => {
+        if (r.supplied.lte(0)) {
+          return acc;
+        }
+
+        return [
+          ...acc,
+          {
+            value: r.asset,
+            label: (
+              <AssetRenderer
+                showAssetLogo
+                asset={r.asset}
+                assetClassName="font-medium"
+                chainId={BOB_CHAIN_ID}
+              />
+            ),
+          },
+        ];
+      }, [] as SelectOption<string>[]),
     [summary],
   );
 
@@ -60,19 +69,29 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     return summary.reserves.find(r => r.reserve.symbol === withdrawAsset);
   }, [withdrawAsset, summary]);
 
-  const maximumWithdrawAmount: Decimal = useMemo(() => {
-    return withdrawReserve ? withdrawReserve.supplied : Decimal.from(0);
-  }, [withdrawReserve]);
+  const maximumWithdrawAmount = useMemo(() => {
+    if (!withdrawReserve) {
+      return Decimal.from(0);
+    }
 
-  const withdrawAmountUsd: Decimal = useMemo(() => {
-    return withdrawReserve
-      ? withdrawSize.mul(withdrawReserve.reserve.priceInUSD)
-      : Decimal.from(0);
+    // min collateral at which we reach minimum collateral ratio
+    const minCollateralUSD = MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE.mul(
+      withdrawReserve.borrowedUSD,
+    );
+    const maxUSDWithdrawal = summary.supplyBalance.sub(minCollateralUSD);
+
+    return maxUSDWithdrawal.gt(withdrawReserve.suppliedUSD)
+      ? withdrawReserve.supplied // we can withdraw all, we'll still have collateral on other asset
+      : maxUSDWithdrawal.div(withdrawReserve.reserve.priceInUSD); // only partial withdraw
+  }, [withdrawReserve, summary.supplyBalance]);
+
+  const withdrawAmountUsd = useMemo(() => {
+    return withdrawSize.mul(withdrawReserve?.reserve.priceInUSD ?? 0);
   }, [withdrawSize, withdrawReserve]);
 
   const remainingSupply = useMemo(
-    () => maximumWithdrawAmount.sub(withdrawSize),
-    [withdrawSize, maximumWithdrawAmount],
+    () => withdrawReserve?.supplied.sub(withdrawSize) ?? Decimal.from(0),
+    [withdrawSize, withdrawReserve?.supplied],
   );
 
   const isValidWithdrawAmount = useMemo(

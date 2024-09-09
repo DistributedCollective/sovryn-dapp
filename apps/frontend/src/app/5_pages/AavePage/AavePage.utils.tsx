@@ -82,21 +82,29 @@ export const normalizeBorrowPoolDetails = (
     }, [] as BorrowPoolDetails[]);
   } else {
     return reserves.reduce((acc, r) => {
-      if (
-        r.borrowingEnabled &&
-        (userReservesSummary.eModeCategoryId === r.eModeCategoryId ||
-          userReservesSummary.eModeCategoryId === 0)
-      ) {
-        acc.push({
-          asset: r.symbol,
-          apy: Decimal.from(r.variableBorrowAPY).mul(100),
-          available:
-            userReservesSummary.reserves.find(
-              userReserve => r.symbol === userReserve.asset,
-            )?.availableToBorrow || Decimal.from(0),
-          availableUSD: userReservesSummary.borrowPower,
-        });
+      // skip borrow pools that are not enabled
+      if (!r.borrowingEnabled) {
+        return acc;
       }
+
+      // skip borrow pools that are not enabled for the user
+      if (
+        userReservesSummary.eModeCategoryId !== r.eModeCategoryId &&
+        userReservesSummary.eModeCategoryId !== 0
+      ) {
+        return acc;
+      }
+
+      const userSummary = userReservesSummary.reserves.find(
+        userReserve => r.symbol === userReserve.asset,
+      );
+      acc.push({
+        asset: r.symbol,
+        apy: Decimal.from(r.variableBorrowAPY).mul(100),
+        available: userSummary?.availableToBorrow,
+        availableUSD: userSummary?.availableToBorrowUSD,
+      });
+
       return acc;
     }, [] as BorrowPoolDetails[]);
   }

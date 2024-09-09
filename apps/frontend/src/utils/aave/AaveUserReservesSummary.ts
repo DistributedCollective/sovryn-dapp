@@ -204,10 +204,16 @@ export class AaveUserReservesSummaryFactory {
           const asset = await getAssetData(symbol, BOB_CHAIN_ID);
           const balance = await getBalance(asset, account, provider);
           const decimalBalance = decimalic(fromWei(balance, asset.decimals));
-          const canBorrow = borrowPower.div(r.reserve.priceInUSD);
           const availableLiquidity = Decimal.from(
             formatUnits(r.reserve.availableLiquidity, r.reserve.decimals),
           );
+
+          // how much the user can borrow if there's no limit of supply
+          const canBorrow = borrowPower
+            .sub(borrowBalance)
+            .div(r.reserve.priceInUSD);
+
+          // available to borrow for user including liquidity limitation
           const availableToBorrow = availableLiquidity.lt(canBorrow)
             ? availableLiquidity
             : canBorrow;

@@ -2059,5 +2059,11 @@
             "deposit": "Deposit",
             "withdraw": "Withdraw"
         }
+    },
+    "liquidityBookDeposit": {
+      "title": "Add Liquidity",
+      "errors": {
+        "invalidRange": "Range selected is too big."
+      }
     }
 }

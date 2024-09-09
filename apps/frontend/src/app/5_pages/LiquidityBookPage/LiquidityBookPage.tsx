@@ -9,6 +9,7 @@ import { BOB_CHAIN_ID } from '../../../config/chains';
 
 import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import { translations } from '../../../locales/i18n';
+import { LiquidityBookModal } from './components/AddLiquidityModal/AddLiquidityModal';
 import { BalanceRenderer } from './components/BalanceRenderer/BalanceRenderer';
 import { LiquidityBookFrame } from './components/LiquidityBookFrame/LiquidityBookFrame';
 
@@ -30,6 +31,7 @@ const LiquidityBookPage: FC = () => (
         </NetworkBanner>
       </div>
     </div>
+    <LiquidityBookModal />
   </>
 );
 

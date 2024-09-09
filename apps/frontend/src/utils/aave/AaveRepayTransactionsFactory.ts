@@ -9,7 +9,10 @@ import {
   Transaction,
   TransactionType,
 } from '../../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
-import { config } from '../../constants/aave';
+import {
+  AAVE_CONTRACT_ADDRESSES,
+  REPAY_ALL_ETH_SURPLUS_AAVE,
+} from '../../constants/aave';
 import { translations } from '../../locales/i18n';
 import { BorrowRateMode, TransactionFactoryOptions } from '../../types/aave';
 import { prepareApproveTransaction } from '../transactions';
@@ -49,7 +52,7 @@ export class AaveRepayTransactionsFactory {
   ): Promise<Transaction[]> {
     if (
       token.isNative ||
-      token.address.toLowerCase() === config.WETHAddress.toLowerCase()
+      token.address.toLowerCase() === AAVE_CONTRACT_ADDRESSES.WETH.toLowerCase()
     ) {
       return this.repayNative(amount, isEntireDebt, borrowRateMode, opts);
     } else
@@ -108,7 +111,7 @@ export class AaveRepayTransactionsFactory {
       constants.AddressZero,
       BOB_CHAIN_ID,
     );
-    amount = isEntireDebt ? amount.add(config.RepayAllETHSurplus) : amount;
+    amount = isEntireDebt ? amount.add(REPAY_ALL_ETH_SURPLUS_AAVE) : amount;
 
     return [
       {

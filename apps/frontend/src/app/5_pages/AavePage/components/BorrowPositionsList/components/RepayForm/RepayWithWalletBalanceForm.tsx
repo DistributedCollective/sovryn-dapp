@@ -16,7 +16,7 @@ import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 import { AmountTransition } from '../../../../../../2_molecules/AmountTransition/AmountTransition';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { config } from '../../../../../../../constants/aave';
+import { MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE } from '../../../../../../../constants/aave';
 import { useAaveRepay } from '../../../../../../../hooks/aave/useAaveRepay';
 import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAaveUserReservesData';
 import { useAccount } from '../../../../../../../hooks/useAccount';
@@ -150,7 +150,7 @@ export const RepayWithWalletBalanceForm: FC<
 
       <CollateralRatioHealthBar
         ratio={newCollateralRatio}
-        minimum={config.MinCollateralRatio}
+        minimum={MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE}
       />
 
       <SimpleTable>

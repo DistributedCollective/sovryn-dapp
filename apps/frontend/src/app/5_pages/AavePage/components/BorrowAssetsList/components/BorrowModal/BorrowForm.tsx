@@ -19,7 +19,7 @@ import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { config } from '../../../../../../../constants/aave';
+import { MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE } from '../../../../../../../constants/aave';
 import { useAaveBorrow } from '../../../../../../../hooks/aave/useAaveBorrow';
 import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAaveUserReservesData';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
@@ -147,7 +147,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
 
       <CollateralRatioHealthBar
         ratio={Decimal.from(newCollateralRatio)}
-        minimum={config.MinCollateralRatio}
+        minimum={MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE}
       />
 
       <SimpleTable>

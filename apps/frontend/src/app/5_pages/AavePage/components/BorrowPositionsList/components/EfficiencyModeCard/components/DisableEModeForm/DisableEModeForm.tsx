@@ -15,8 +15,8 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import {
-  config,
   EMODE_DISABLED_ID,
+  MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE,
 } from '../../../../../../../../../constants/aave';
 import { useAaveSetUserEMode } from '../../../../../../../../../hooks/aave/useAaveSetUserEMode';
 import { useAaveUserReservesData } from '../../../../../../../../../hooks/aave/useAaveUserReservesData';
@@ -68,7 +68,7 @@ export const DisableEModeForm: FC<DisableEModeFormProps> = ({
 
       <CollateralRatioHealthBar
         ratio={summaryAfterDisabled.collateralRatio}
-        minimum={config.MinCollateralRatio}
+        minimum={MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE}
       />
 
       <SimpleTable>

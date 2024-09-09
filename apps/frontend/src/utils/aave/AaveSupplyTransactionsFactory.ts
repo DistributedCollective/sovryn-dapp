@@ -9,7 +9,7 @@ import {
   Transaction,
   TransactionType,
 } from '../../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
-import { config } from '../../constants/aave';
+import { AAVE_CONTRACT_ADDRESSES } from '../../constants/aave';
 import { translations } from '../../locales/i18n';
 import { TransactionFactoryOptions } from '../../types/aave';
 import { prepareApproveTransaction } from '../transactions';
@@ -48,7 +48,7 @@ export class AaveSupplyTransactionsFactory {
   ): Promise<Transaction[]> {
     if (
       token.isNative ||
-      token.address.toLowerCase() === config.WETHAddress.toLowerCase()
+      token.address.toLowerCase() === AAVE_CONTRACT_ADDRESSES.WETH.toLowerCase()
     ) {
       return this.supplyNative(amount, opts);
     } else return this.supplyToken(token, amount, opts);
@@ -59,7 +59,9 @@ export class AaveSupplyTransactionsFactory {
     useAsCollateral: boolean,
     opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
-    const tokenAddress = token.isNative ? config.WETHAddress : token.address;
+    const tokenAddress = token.isNative
+      ? AAVE_CONTRACT_ADDRESSES.WETH
+      : token.address;
 
     return [
       {

@@ -6,4 +6,5 @@ export type LendPosition = {
   suppliedUSD: Decimal;
   apy: Decimal;
   collateral: boolean;
+  canToggleCollateral: boolean;
 };

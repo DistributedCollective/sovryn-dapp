@@ -2,10 +2,14 @@ import { t } from 'i18next';
 
 import { Decimal } from '@sovryn/utils';
 
-import { EMODE_DISABLED_ID } from '../../../constants/aave';
+import {
+  EMODE_DISABLED_ID,
+  MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE,
+} from '../../../constants/aave';
 import { Reserve } from '../../../hooks/aave/useAaveReservesData';
 import { translations } from '../../../locales/i18n';
 import { BorrowRateMode } from '../../../types/aave';
+import { AaveCalculations } from '../../../utils/aave/AaveCalculations';
 import { AaveUserReservesSummary } from '../../../utils/aave/AaveUserReservesSummary';
 import { BorrowPoolDetails } from './components/BorrowAssetsList/BorrowAssetsList.types';
 import { BorrowPosition } from './components/BorrowPositionsList/BorrowPositionsList.types';
@@ -30,12 +34,21 @@ export const normalizeLendPositions = (
 ): LendPosition[] => {
   return userReservesSummary.reserves.reduce((acc, r) => {
     if (r.supplied.gt(0)) {
+      // can toggle if disabled or if after disabling collateralRatio is still above minimum
+      const canToggleCollateral =
+        !r.collateral ||
+        AaveCalculations.computeCollateralRatio(
+          userReservesSummary.collateralBalance.sub(r.suppliedUSD),
+          userReservesSummary.borrowBalance,
+        ).gt(MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE);
+
       acc.push({
         asset: r.reserve.symbol,
         apy: Decimal.from(r.reserve.supplyAPY).mul(100),
         supplied: r.supplied,
         suppliedUSD: r.suppliedUSD,
         collateral: r.collateral,
+        canToggleCollateral,
       });
     }
     return acc;

@@ -12,7 +12,7 @@ import { LendAssetAction } from '../LendAssetAction/LendAssetAction';
 
 type LendAssetDetailsProps = {
   pool: LendPoolDetails;
-  onLendClick: () => unknown;
+  onLendClick: () => void;
 };
 
 export const LendAssetDetails: FC<LendAssetDetailsProps> = ({

@@ -8,6 +8,7 @@ import {
   ErrorBadge,
   ErrorLevel,
   Link,
+  SelectOption,
   SimpleTable,
   SimpleTableRow,
 } from '@sovryn/ui';
@@ -58,7 +59,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
           });
         }
         return acc;
-      }, [] as { value: string; label: JSX.Element }[]),
+      }, [] as SelectOption<string>[]),
     [summary.reserves],
   );
 

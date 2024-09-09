@@ -2,6 +2,7 @@ import { t } from 'i18next';
 
 import { Decimal } from '@sovryn/utils';
 
+import { EMODE_DISABLED_ID } from '../../../constants/aave';
 import { Reserve } from '../../../hooks/aave/useAaveReservesData';
 import { translations } from '../../../locales/i18n';
 import { BorrowRateMode } from '../../../types/aave';
@@ -31,7 +32,7 @@ export const normalizeLendPositions = (
     if (r.supplied.gt(0)) {
       acc.push({
         asset: r.reserve.symbol,
-        apy: Decimal.from(r.reserve.variableBorrowAPY),
+        apy: Decimal.from(r.reserve.supplyAPY).mul(100),
         supplied: r.supplied,
         suppliedUSD: r.suppliedUSD,
         collateral: r.collateral,
@@ -70,6 +71,7 @@ export const normalizeBorrowPoolDetails = (
   reserves: Reserve[],
   userReservesSummary: AaveUserReservesSummary,
 ): BorrowPoolDetails[] => {
+  // wallet not connected or summary not available at this point
   if (userReservesSummary.reserves.length === 0) {
     return reserves.reduce((acc, r) => {
       if (r.borrowingEnabled) {
@@ -80,32 +82,41 @@ export const normalizeBorrowPoolDetails = (
       }
       return acc;
     }, [] as BorrowPoolDetails[]);
-  } else {
-    return reserves.reduce((acc, r) => {
-      if (
-        r.borrowingEnabled &&
-        (userReservesSummary.eModeCategoryId === r.eModeCategoryId ||
-          userReservesSummary.eModeCategoryId === 0)
-      ) {
-        acc.push({
-          asset: r.symbol,
-          apy: Decimal.from(r.variableBorrowAPY).mul(100),
-          available:
-            userReservesSummary.reserves.find(
-              userReserve => r.symbol === userReserve.asset,
-            )?.availableToBorrow || Decimal.from(0),
-          availableUSD: userReservesSummary.borrowPower,
-        });
-      }
-      return acc;
-    }, [] as BorrowPoolDetails[]);
   }
+
+  return reserves.reduce((acc, r) => {
+    // skip borrow pools that are not enabled
+    if (!r.borrowingEnabled) {
+      return acc;
+    }
+
+    // skip borrow pools that are not enabled for the user
+    if (
+      userReservesSummary.eModeCategoryId !== r.eModeCategoryId &&
+      userReservesSummary.eModeCategoryId !== EMODE_DISABLED_ID
+    ) {
+      return acc;
+    }
+
+    const userSummary = userReservesSummary.reserves.find(
+      userReserve => r.symbol === userReserve.asset,
+    );
+    acc.push({
+      asset: r.symbol,
+      apy: Decimal.from(r.variableBorrowAPY).mul(100),
+      available: userSummary?.availableToBorrow,
+      availableUSD: userSummary?.availableToBorrowUSD,
+    });
+
+    return acc;
+  }, [] as BorrowPoolDetails[]);
 };
 
 export const normalizeLendPoolDetails = (
   reserves: Reserve[],
   userReservesSummary: AaveUserReservesSummary,
 ): LendPoolDetails[] => {
+  // wallet not connected or summary not available at this point
   if (userReservesSummary.reserves.length === 0) {
     return reserves.map(r => ({
       asset: r.symbol,
@@ -113,12 +124,12 @@ export const normalizeLendPoolDetails = (
       canBeCollateral: r.usageAsCollateralEnabled,
       walletBalance: Decimal.from(0),
     }));
-  } else {
-    return userReservesSummary.reserves.map(r => ({
-      asset: r.reserve.symbol,
-      apy: Decimal.from(r.reserve.supplyAPY).mul(100),
-      canBeCollateral: r.reserve.usageAsCollateralEnabled,
-      walletBalance: r.walletBalance,
-    }));
   }
+
+  return userReservesSummary.reserves.map(r => ({
+    asset: r.reserve.symbol,
+    apy: Decimal.from(r.reserve.supplyAPY).mul(100),
+    canBeCollateral: r.reserve.usageAsCollateralEnabled,
+    walletBalance: r.walletBalance,
+  }));
 };

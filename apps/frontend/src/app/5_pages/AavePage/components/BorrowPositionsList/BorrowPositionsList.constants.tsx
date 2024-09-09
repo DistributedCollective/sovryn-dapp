@@ -45,7 +45,7 @@ export const COLUMNS_CONFIG = (onRepayClick: (asset: string) => void) => [
       </span>
     ),
     cellRenderer: (pool: BorrowPosition) => (
-      <AmountRenderer value={pool.borrowed} suffix={pool.asset} />
+      <AmountRenderer value={pool.borrowed} suffix={pool.asset} precision={2} />
     ),
   },
   {

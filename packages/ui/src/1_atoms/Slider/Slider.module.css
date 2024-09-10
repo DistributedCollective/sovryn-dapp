@@ -1,15 +1,18 @@
 .track {
   @apply h-1 bg-gray-50 rounded;
+}
 
-  & .track-0 {
-    @apply h-1 bg-gray-50 rounded;
-  }
-
-  &.track-1 {
-    @apply h-1 rounded bg-primary-30;
+.rangeSlider {
+  & .track {
+    &:nth-child(1), &:nth-child(3) {
+      @apply bg-gray-50 !important;
+    }
   }
 }
 
 .thumb {
   @apply h-2.5 w-2.5 bg-sov-white rounded-full -top-[3px];
+  &:focus {
+    @apply outline-none;
+  }
 }

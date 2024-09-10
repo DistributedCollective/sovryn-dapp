@@ -1,28 +1,65 @@
-import React, { FC, useCallback, useReducer } from 'react';
+import React, { FC, useCallback, useMemo, useReducer } from 'react';
 
 import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { Accordion, Button, ButtonStyle, Paragraph } from '@sovryn/ui';
+import { Accordion, Button, ButtonStyle } from '@sovryn/ui';
+
+import { BOB_CHAIN_ID, RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { BITCOIN, USD } from '../../../../../constants/currencies';
+import { NativeTokenAmount } from '../../../../2_molecules/NativeTokenAmount/NativeTokenAmount';
+import { USD } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
-import {
-  BTC_VALUE_PRECISION,
-  USD_VALUE_PRECISION,
-} from './ProtocolData.constants';
+import { decimalic } from '../../../../../utils/math';
+import { USD_VALUE_PRECISION } from './ProtocolData.constants';
 import styles from './ProtocolData.module.css';
-import { useGetData } from './hooks/useGetData';
+import { useGetBOBVolume } from './hooks/useGetBOBVolume';
+import { useGetLockedData } from './hooks/useGetLockedData';
+import { useGetRSKVolume } from './hooks/useGetRSKVolume';
 
 const pageTranslations = translations.landingPage.protocolDataSection;
 
 export const ProtocolData: FC = () => {
-  const { lockedData, volumeData } = useGetData();
+  const lockedData = useGetLockedData(RSK_CHAIN_ID);
+  const rskVolume = useGetRSKVolume();
+
+  const bobLockedData = useGetLockedData(BOB_CHAIN_ID);
+  const bobVolume = useGetBOBVolume();
+
   const navigate = useNavigate();
   const [open, toggle] = useReducer(v => !v, false);
 
   const handleClick = useCallback(() => navigate('/stats'), [navigate]);
+
+  const rskTVL = useMemo(
+    () =>
+      decimalic(lockedData.tvlAmm?.totalUsd || '0')
+        .add(lockedData.tvlLending?.totalUsd || '0')
+        .add(lockedData.tvlMynt?.totalUsd || '0')
+        .add(lockedData.tvlProtocol?.totalUsd || '0')
+        .add(lockedData.tvlStaking?.totalUsd || '0')
+        .add(lockedData.tvlSubprotocols?.totalUsd || '0')
+        .add(lockedData.tvlZero?.totalUsd || '0')
+        .toString(),
+    [
+      lockedData.tvlAmm?.totalUsd,
+      lockedData.tvlLending?.totalUsd,
+      lockedData.tvlMynt?.totalUsd,
+      lockedData.tvlProtocol?.totalUsd,
+      lockedData.tvlStaking?.totalUsd,
+      lockedData.tvlSubprotocols?.totalUsd,
+      lockedData.tvlZero?.totalUsd,
+    ],
+  );
+
+  const total = useMemo(() => {
+    return {
+      lockedData:
+        Number(rskTVL || '0') + Number(bobLockedData.total_usd || '0'),
+      volumeData: Number(rskVolume || '0') + Number(bobVolume || '0'),
+    };
+  }, [bobLockedData.total_usd, bobVolume, rskTVL, rskVolume]);
 
   return (
     <div>
@@ -46,17 +83,13 @@ export const ProtocolData: FC = () => {
               <div className="text-xs text-gray-30 mb-2">
                 {t(pageTranslations.totalValueLockedAllNetworks)}
               </div>
-              <div className="sm:text-2xl text-gray-10 text-sm sm:font-medium font-semibold leading-8">
-                <AmountRenderer
-                  value={lockedData.total_btc}
-                  suffix={BITCOIN}
-                  precision={BTC_VALUE_PRECISION}
-                />
+              <div className="sm:text-xl text-gray-10 text-sm sm:font-medium font-semibold leading-8">
+                <NativeTokenAmount usdValue={total.lockedData} precision={4} />
               </div>
 
               <div className="text-gray-50 text-sm">
                 <AmountRenderer
-                  value={lockedData.total_usd}
+                  value={total.lockedData}
                   suffix={USD}
                   precision={USD_VALUE_PRECISION}
                 />
@@ -68,16 +101,12 @@ export const ProtocolData: FC = () => {
                 {t(pageTranslations.volumeAllNetworks)}
               </div>
               <div className="sm:text-2xl text-gray-10 text-sm sm:font-medium font-semibold leading-8">
-                <AmountRenderer
-                  value={volumeData.btc}
-                  suffix={BITCOIN}
-                  precision={BTC_VALUE_PRECISION}
-                />
+                <NativeTokenAmount usdValue={total.volumeData} />
               </div>
 
               <div className="text-gray-50 text-sm">
                 <AmountRenderer
-                  value={volumeData.usd}
+                  value={total.volumeData}
                   suffix={USD}
                   precision={USD_VALUE_PRECISION}
                 />
@@ -93,16 +122,12 @@ export const ProtocolData: FC = () => {
                   {t(pageTranslations.tvlRskNetwork)}
                 </div>
                 <div className="text-gray-10 text-sm sm:font-medium font-semibold">
-                  <AmountRenderer
-                    value={lockedData.total_btc}
-                    suffix={BITCOIN}
-                    precision={BTC_VALUE_PRECISION}
-                  />
+                  <NativeTokenAmount usdValue={rskTVL} />
                 </div>
 
                 <div className="text-gray-50 text-sm">
                   <AmountRenderer
-                    value={lockedData.total_usd}
+                    value={rskTVL}
                     suffix={USD}
                     precision={USD_VALUE_PRECISION}
                   />
@@ -114,16 +139,12 @@ export const ProtocolData: FC = () => {
                   {t(pageTranslations.volumeRskNetwork)}
                 </div>
                 <div className="text-gray-10 text-sm sm:font-medium font-semibold">
-                  <AmountRenderer
-                    value={volumeData.btc}
-                    suffix={BITCOIN}
-                    precision={BTC_VALUE_PRECISION}
-                  />
+                  <NativeTokenAmount usdValue={rskVolume} />
                 </div>
 
                 <div className="text-gray-50 text-sm">
                   <AmountRenderer
-                    value={volumeData.usd}
+                    value={rskVolume}
                     suffix={USD}
                     precision={USD_VALUE_PRECISION}
                   />
@@ -136,8 +157,15 @@ export const ProtocolData: FC = () => {
                 <div className="text-xs text-gray-30 mb-2">
                   {t(pageTranslations.tvlBobNetwork)}
                 </div>
-                <div className="text-gray-10 text-sm italic">
-                  <Paragraph children={t(pageTranslations.dataComingSoon)} />
+                <div className="text-gray-10 text-sm">
+                  <NativeTokenAmount usdValue={bobLockedData.total_usd} />
+                </div>
+                <div className="text-gray-50 text-sm">
+                  <AmountRenderer
+                    value={bobLockedData.total_usd}
+                    suffix={USD}
+                    precision={USD_VALUE_PRECISION}
+                  />
                 </div>
               </div>
 
@@ -145,8 +173,16 @@ export const ProtocolData: FC = () => {
                 <div className="text-xs text-gray-30 mb-2">
                   {t(pageTranslations.volumeBobNetwork)}
                 </div>
-                <div className="text-gray-10 text-sm italic">
-                  <Paragraph children={t(pageTranslations.dataComingSoon)} />
+                <div className="text-gray-10 text-sm sm:font-medium font-semibold">
+                  <NativeTokenAmount usdValue={bobVolume} />
+                </div>
+
+                <div className="text-gray-50 text-sm">
+                  <AmountRenderer
+                    value={bobVolume}
+                    suffix={USD}
+                    precision={USD_VALUE_PRECISION}
+                  />
                 </div>
               </div>
             </div>

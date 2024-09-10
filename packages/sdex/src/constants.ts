@@ -138,7 +138,7 @@ const LOCAL_FORK_CHAIN: ChainSpec = Object.assign({}, SEPOLIA_CHAIN, {
 
 export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
   '0xed88': BOB_CHAIN,
-  '0x6f': BOB_TESTNET_CHAIN,
+  '0xc576d': BOB_TESTNET_CHAIN,
   '0x7a69': LOCAL_FORK_CHAIN,
   '0xaa36a7': SEPOLIA_CHAIN,
   '0x1b669': TENDERLY_FORK,

@@ -23,6 +23,7 @@ import { decimalic } from '../../../../../utils/math';
 import { LiquidityBookPool } from '../../LiquidityBookPage.types';
 import { useHandleLiquidity } from '../../hooks/useHandleLiquidity';
 import { LiquidityPriceForm } from './LiquidityPriceForm';
+import { DEFAULT_BIN_RADIUS, MAX_BIN_RANGE } from './constants';
 
 type ContentProps = {
   pool: LiquidityBookPool;
@@ -40,12 +41,12 @@ export const Content: FC<ContentProps> = ({ pool, onClose }) => {
   const [baseAmount, onBaseAmountChange] = useAmountInput('');
   const [quoteAmount, onQuoteAmountChange] = useAmountInput('');
 
-  const [shape, setShape] = useState<LiquidityDistribution>(
+  const [shape /*, setShape*/] = useState<LiquidityDistribution>(
     LiquidityDistribution.SPOT,
   );
 
-  const [min, setMin] = useState<number>(pool.activeBinId - 25);
-  const [max, setMax] = useState<number>(pool.activeBinId + 25);
+  const [min, setMin] = useState(pool.activeBinId - DEFAULT_BIN_RADIUS);
+  const [max, setMax] = useState(pool.activeBinId + DEFAULT_BIN_RADIUS);
 
   const handleMaxBase = useCallback(
     () => onBaseAmountChange(baseBalance.toString()),
@@ -82,7 +83,7 @@ export const Content: FC<ContentProps> = ({ pool, onClose }) => {
     if (isBaseInvalid || isQuoteInvalid) {
       return true;
     }
-    if (max - min > 60) {
+    if (max - min > MAX_BIN_RANGE) {
       return true;
     }
     if (decimalic(baseAmount).isZero() || decimalic(quoteAmount).isZero()) {
@@ -166,7 +167,7 @@ export const Content: FC<ContentProps> = ({ pool, onClose }) => {
         )}
       </FormGroup>
 
-      <h2 className="my-4">Shape</h2>
+      {/*<h2 className="my-4">Shape</h2>
 
       <div className="flex flex-row justify-between gap-x-4">
         <Button
@@ -196,7 +197,7 @@ export const Content: FC<ContentProps> = ({ pool, onClose }) => {
               : ButtonStyle.secondary
           }
         />
-      </div>
+      </div>*/}
 
       <LiquidityPriceForm
         pool={pool}
@@ -207,7 +208,7 @@ export const Content: FC<ContentProps> = ({ pool, onClose }) => {
 
       <Button
         onClick={handleSubmit}
-        text="Confirm"
+        text={t(translations.common.buttons.confirm)}
         className="w-full mt-4"
         style={ButtonStyle.primary}
         disabled={submitDisabled}

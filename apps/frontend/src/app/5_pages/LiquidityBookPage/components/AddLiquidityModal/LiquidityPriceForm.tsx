@@ -15,6 +15,7 @@ import {
 import { useAmountInput } from '../../../../../hooks/useAmountInput';
 import { translations } from '../../../../../locales/i18n';
 import { LiquidityBookPool } from '../../LiquidityBookPage.types';
+import { MAX_BIN_RANGE } from './constants';
 
 type LiquidityPriceFormProps = {
   pool: LiquidityBookPool;
@@ -37,13 +38,11 @@ export const LiquidityPriceForm: FC<LiquidityPriceFormProps> = ({
   const baseSymbol = pool.pair[0].symbol!;
   const quoteSymbol = pool.pair[1].symbol!;
 
-  const [type, setType] = useState<PriceType>(PriceType.range);
+  const [type, setType] = useState(PriceType.range);
   const [targetPrice, setTargetPrice] = useAmountInput(
     Bin.getPriceFromId(pool.activeBinId, pool.binStep).toString(),
   );
-  const [radius, setRadius] = useState<string>(
-    Math.round((max - min) / 2).toString(),
-  );
+  const [radius, setRadius] = useState(Math.round((max - min) / 2).toString());
 
   const minPrice = useMemo(
     () => Bin.getPriceFromId(min, pool.binStep).toString(),
@@ -102,7 +101,7 @@ export const LiquidityPriceForm: FC<LiquidityPriceFormProps> = ({
     [onChange, pool.binStep, targetPrice],
   );
 
-  const isRangeInvalid = useMemo(() => max - min >= 60, [max, min]);
+  const isRangeInvalid = useMemo(() => max - min >= MAX_BIN_RANGE, [max, min]);
 
   return (
     <>
@@ -114,7 +113,7 @@ export const LiquidityPriceForm: FC<LiquidityPriceFormProps> = ({
               ? ButtonStyle.primary
               : ButtonStyle.secondary
           }
-          text="By Range"
+          text={t(translations.liquidityBookDeposit.types.range)}
         />
         <Button
           onClick={() => setType(PriceType.radius)}
@@ -123,33 +122,31 @@ export const LiquidityPriceForm: FC<LiquidityPriceFormProps> = ({
               ? ButtonStyle.primary
               : ButtonStyle.secondary
           }
-          text="By Radius"
+          text={t(translations.liquidityBookDeposit.types.radius)}
         />
       </div>
-      <h2>Price</h2>
+      <h2>{t(translations.liquidityBookDeposit.price)}</h2>
       {type === PriceType.range ? (
         <>
           <div className="flex flex-row justify-between space-x-4">
-            <FormGroup label="Min Price">
+            <FormGroup label={t(translations.liquidityBookDeposit.minPrice)}>
               <AmountInput
                 value={minPrice}
                 onChangeText={handleMinChange}
-                unit={
-                  <>
-                    {quoteSymbol} per {baseSymbol}
-                  </>
-                }
+                unit={t(translations.liquidityBookDeposit.priceFormat, {
+                  quote: quoteSymbol,
+                  base: baseSymbol,
+                })}
               />
             </FormGroup>
-            <FormGroup label="Max Price">
+            <FormGroup label={t(translations.liquidityBookDeposit.maxPrice)}>
               <AmountInput
                 value={maxPrice}
                 onChangeText={handleMaxChange}
-                unit={
-                  <>
-                    {quoteSymbol} per {baseSymbol}
-                  </>
-                }
+                unit={t(translations.liquidityBookDeposit.priceFormat, {
+                  quote: quoteSymbol,
+                  base: baseSymbol,
+                })}
               />
             </FormGroup>
           </div>
@@ -157,42 +154,39 @@ export const LiquidityPriceForm: FC<LiquidityPriceFormProps> = ({
       ) : (
         <>
           <div className="flex flex-row justify-between space-x-4">
-            <FormGroup label="Target Price">
+            <FormGroup label={t(translations.liquidityBookDeposit.targetPrice)}>
               <AmountInput
                 value={targetPrice}
                 onChangeText={handleTargetPrice}
-                unit={
-                  <>
-                    {quoteSymbol} per {baseSymbol}
-                  </>
-                }
+                unit={t(translations.liquidityBookDeposit.priceFormat, {
+                  quote: quoteSymbol,
+                  base: baseSymbol,
+                })}
               />
             </FormGroup>
-            <FormGroup label="Radius (number of bins)">
+            <FormGroup label={t(translations.liquidityBookDeposit.radius)}>
               <AmountInput value={radius} onChangeText={handleRadius} />
             </FormGroup>
           </div>
           <div className="flex flex-row justify-between space-x-4 mt-4">
-            <FormGroup label="Range Min">
+            <FormGroup label={t(translations.liquidityBookDeposit.rangeMin)}>
               <AmountInput
                 value={minPrice}
                 readOnly
-                unit={
-                  <>
-                    {quoteSymbol} per {baseSymbol}
-                  </>
-                }
+                unit={t(translations.liquidityBookDeposit.priceFormat, {
+                  quote: quoteSymbol,
+                  base: baseSymbol,
+                })}
               />
             </FormGroup>
-            <FormGroup label="Range Max">
+            <FormGroup label={t(translations.liquidityBookDeposit.rangeMax)}>
               <AmountInput
                 value={maxPrice}
                 readOnly
-                unit={
-                  <>
-                    {quoteSymbol} per {baseSymbol}
-                  </>
-                }
+                unit={t(translations.liquidityBookDeposit.priceFormat, {
+                  quote: quoteSymbol,
+                  base: baseSymbol,
+                })}
               />
             </FormGroup>
           </div>
@@ -210,7 +204,7 @@ export const LiquidityPriceForm: FC<LiquidityPriceFormProps> = ({
       <div className="mt-4 flex flex-row justify-end">
         <Button
           onClick={handleSetRewardedRange}
-          text="Set rewarded range"
+          text={t(translations.liquidityBookDeposit.setRewardedRange)}
           style={ButtonStyle.ghost}
         />
       </div>

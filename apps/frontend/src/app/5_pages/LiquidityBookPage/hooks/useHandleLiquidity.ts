@@ -10,6 +10,7 @@ import {
   JSBI,
   LBPairV21ABI,
   LBRouterV22ABI,
+  LiquidityDistribution,
 } from '@sovryn/joe-sdk-v2';
 
 import { BOB_CHAIN_ID } from '../../../../config/chains';
@@ -48,6 +49,9 @@ export const useHandleLiquidity = (pool: LiquidityBookPool) => {
     async (
       tokenXAmount: string,
       tokenYAmount: string,
+      shape: LiquidityDistribution,
+      min: number,
+      max: number,
       onComplete: () => void,
     ) => {
       if (!account || !signer) {
@@ -83,12 +87,10 @@ export const useHandleLiquidity = (pool: LiquidityBookPool) => {
         JSBI.BigInt(10000),
       );
 
-      const binRange = [
-        pool.activeBinId - pool.binStep,
-        pool.activeBinId + pool.binStep,
-      ];
+      // const { deltaIds, distributionX, distributionY } =
+      //   getLiquidityConfig(shape);
       const { deltaIds, distributionX, distributionY } =
-        getUniformDistributionFromBinRange(pool.activeBinId, binRange);
+        getUniformDistributionFromBinRange(pool.activeBinId, [min, max]);
 
       const args = [
         {

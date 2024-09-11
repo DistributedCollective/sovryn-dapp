@@ -6,11 +6,21 @@ import { Button, ButtonStyle } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
-import { LiquidityBookProps } from '../../../../LiquidityBookPage.types';
+import { eventDriven } from '../../../../../../../store/rxjs/event-driven';
+import { Nullable } from '../../../../../../../types/global';
+import {
+  LiquidityBookPool,
+  LiquidityBookProps,
+} from '../../../../LiquidityBookPage.types';
 import { useGetUserOwnedBins } from '../../../../hooks/useGetUserOwnedBins';
 import { useHandleLiquidity } from '../../../../hooks/useHandleLiquidity';
+import { LBModalType } from '../../../../utils/constants';
 
 export const LiquidityBookFrameAction: FC<LiquidityBookProps> = ({ pool }) => {
+  const { push } = useMemo(
+    () => eventDriven<Nullable<LiquidityBookPool>>(LBModalType.deposit),
+    [],
+  );
   const { account } = useAccount();
   const { userOwnedBins, nonZeroAmounts, loading } = useGetUserOwnedBins(pool);
 
@@ -18,7 +28,7 @@ export const LiquidityBookFrameAction: FC<LiquidityBookProps> = ({ pool }) => {
     console.log('Successful transaction');
   }, []);
 
-  const { handleDeposit, handleWithdraw } = useHandleLiquidity(pool);
+  const { handleWithdraw } = useHandleLiquidity(pool);
 
   const isWithdrawDisabled = useMemo(() => {
     return (
@@ -26,10 +36,7 @@ export const LiquidityBookFrameAction: FC<LiquidityBookProps> = ({ pool }) => {
     );
   }, [account, userOwnedBins, nonZeroAmounts, loading]);
 
-  const deposit = useCallback(
-    () => handleDeposit('1000000', '500000', onComplete),
-    [handleDeposit, onComplete],
-  );
+  const deposit = useCallback(() => push(pool), [pool, push]);
 
   const withdraw = useCallback(
     () => handleWithdraw(onComplete),

@@ -2059,5 +2059,24 @@
             "deposit": "Deposit",
             "withdraw": "Withdraw"
         }
+    },
+    "liquidityBookDeposit": {
+      "title": "Add Liquidity",
+      "errors": {
+        "invalidRange": "Range selected is too big."
+      },
+      "types": {
+        "range": "By range",
+        "radius": "By radius"
+      },
+      "price": "Price",
+      "priceFormat": "{{quote}} per {{base}}",
+      "setRewardedRange": "Set rewarded range",
+      "minPrice": "Min price",
+      "maxPrice": "Max price",
+      "targetPrice": "Target price",
+      "radius": "Radius (number of bins)",
+      "rangeMin": "Range Min",
+      "rangeMax": "Range Max"
     }
 }

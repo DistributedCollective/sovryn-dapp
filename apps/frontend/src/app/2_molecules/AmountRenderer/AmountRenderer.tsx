@@ -131,6 +131,11 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     [adjustedValue, calculatedPrecision, precision],
   );
 
+  const isInfinite = useMemo(
+    () => !!(infiniteFrom && Decimal.from(value).gt(infiniteFrom)),
+    [infiniteFrom, value],
+  );
+
   return (
     <Tooltip
       content={
@@ -145,7 +150,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
         </span>
       }
       className={classNames({ 'cursor-pointer': shouldShowTooltip }, className)}
-      disabled={!shouldShowTooltip}
+      disabled={!shouldShowTooltip || isInfinite}
       trigger={trigger}
       dataAttribute={dataAttribute}
     >
@@ -160,7 +165,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
           prefix={shouldShowRoundingPrefix ? `~ ${prefix}` : `${prefix}`}
           suffix={` ${suffix}`}
         />
-      ) : infiniteFrom && Decimal.from(value).gt(infiniteFrom) ? (
+      ) : isInfinite ? (
         <span>∞</span>
       ) : (
         <span>

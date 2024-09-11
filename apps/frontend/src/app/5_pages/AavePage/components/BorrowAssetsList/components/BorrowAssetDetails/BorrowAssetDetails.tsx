@@ -38,10 +38,10 @@ export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({
       <SimpleTableRow
         label={t(pageTranslations.borrowAssetsList.available)}
         value={
-          pool.available && pool.availableUSD ? (
+          pool.available && pool.availableUsd ? (
             <AssetAmountPriceRenderer
               value={pool.available}
-              valueUSD={pool.availableUSD}
+              valueUsd={pool.availableUsd}
               asset={pool.asset}
             />
           ) : (

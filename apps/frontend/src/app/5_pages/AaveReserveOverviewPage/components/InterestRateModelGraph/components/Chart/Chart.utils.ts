@@ -91,27 +91,42 @@ export const htmlLegendPlugin = {
 };
 
 export const calculateInterestRateModel = (
-  u: number,
-  base: number,
-  optimal: number,
-  slope1: number,
-  slope2: number,
-) => {
-  if (u === 0) return 0;
+  utilization: number,
+  baseRate: number,
+  optimalUtilization: number,
+  initialSlope: number,
+  secondarySlope: number,
+): number => {
+  if (utilization === 0) {
+    return 0;
+  }
 
-  if (u <= optimal) return base + (u / optimal) * slope1;
+  if (utilization <= optimalUtilization) {
+    return baseRate + (utilization / optimalUtilization) * initialSlope;
+  }
 
-  return base + slope1 + ((u - optimal) / (1 - optimal)) * slope2;
+  return (
+    baseRate +
+    initialSlope +
+    ((utilization - optimalUtilization) / (1 - optimalUtilization)) *
+      secondarySlope
+  );
 };
 
 export const calculateVariableInterestRateModel = (
-  u: number,
+  utilization: number,
   rates: RatesData,
-) => {
-  const base = parseFloat(rates.baseVariableBorrowRate);
-  const optimal = parseFloat(rates.optimalUsageRatio);
-  const slope1 = parseFloat(rates.variableRateSlope1);
-  const slope2 = parseFloat(rates.variableRateSlope2);
+): number => {
+  const baseRate = parseFloat(rates.baseVariableBorrowRate);
+  const optimalUtilization = parseFloat(rates.optimalUsageRatio);
+  const initialSlope = parseFloat(rates.variableRateSlope1);
+  const secondarySlope = parseFloat(rates.variableRateSlope2);
 
-  return calculateInterestRateModel(u, base, optimal, slope1, slope2);
+  return calculateInterestRateModel(
+    utilization,
+    baseRate,
+    optimalUtilization,
+    initialSlope,
+    secondarySlope,
+  );
 };

@@ -9,7 +9,7 @@ import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 type AssetAmountPriceRendererProps = {
   asset: string;
   value: Decimalish;
-  valueUSD: Decimalish;
+  valueUsd: Decimalish;
   className?: string;
   valueClassName?: string;
   priceClassName?: string;
@@ -18,7 +18,7 @@ type AssetAmountPriceRendererProps = {
 export const AssetAmountPriceRenderer: FC<AssetAmountPriceRendererProps> = ({
   asset,
   value,
-  valueUSD,
+  valueUsd,
   className,
   valueClassName,
   priceClassName,
@@ -32,7 +32,7 @@ export const AssetAmountPriceRenderer: FC<AssetAmountPriceRendererProps> = ({
         precision={2}
       />
       <AmountRenderer
-        value={valueUSD}
+        value={valueUsd}
         prefix="$"
         precision={2}
         className={classNames(

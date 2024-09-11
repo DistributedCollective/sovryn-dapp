@@ -15,7 +15,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { AssetAmountPriceRenderer } from '../../../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 import { translations } from '../../../../../../../locales/i18n';
-import { BorrowForm } from '../../../../../AavePage/components/BorrowAssetsList/components/BorrowModal/BorrowForm';
+import { BorrowForm } from '../../../../../AavePage/components/BorrowAssetsList/components/BorrowForm/BorrowForm';
 
 const pageTranslations = translations.aaveReserveOverviewPage;
 
@@ -32,13 +32,9 @@ export const BorrowAction: FC<BorrowActionProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
 
-  const onBorrowClose = useCallback(() => {
-    setOpen(false);
-  }, []);
+  const onBorrowClose = useCallback(() => setOpen(false), []);
 
-  const onBorrowOpen = useCallback(() => {
-    setOpen(true);
-  }, []);
+  const onBorrowOpen = useCallback(() => setOpen(true), []);
 
   const isBorrowDisabled = useMemo(() => {
     return availableToBorrow.lte(0);
@@ -47,18 +43,17 @@ export const BorrowAction: FC<BorrowActionProps> = ({
   return (
     <div className="flex justify-between items-center">
       <div className="space-y-2">
-        <Paragraph
-          size={ParagraphSize.small}
-          className="text-gray-30 flex items-center gap-1"
-        >
-          {t(pageTranslations.yourWalletTab.availableToBorrow)}{' '}
+        <div className="flex items-center gap-1">
+          <Paragraph size={ParagraphSize.small} className="text-gray-30 ">
+            {t(pageTranslations.yourWalletTab.availableToBorrow)}{' '}
+          </Paragraph>
           <HelperButton
             content={t(pageTranslations.yourWalletTab.availableToBorrowInfo)}
           />
-        </Paragraph>
+        </div>
         <AssetAmountPriceRenderer
           value={availableToBorrow}
-          valueUSD={availableToBorrowUsd}
+          valueUsd={availableToBorrowUsd}
           asset={asset}
           className="text-left flex flex-col"
           valueClassName="font-medium"

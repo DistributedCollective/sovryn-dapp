@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -17,6 +17,7 @@ import { Decimal } from '@sovryn/utils';
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
+import { sortRowsByOrderOptions } from '../../AavePage.utils';
 import { PoolPositionStat } from '../PoolPositionStat/PoolPositionStat';
 import { COLUMNS_CONFIG } from './LendPositionsList.constants';
 import { LendPosition } from './LendPositionsList.types';
@@ -44,13 +45,14 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
   const [open, setOpen] = useState(true);
   const [withdrawAssetDialog, setWithdrawAssetDialog] = useState<string>();
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
-    orderBy: 'balance',
-    orderDirection: OrderDirection.Asc,
+    orderBy: 'asset',
+    orderDirection: OrderDirection.Desc,
   });
 
-  const onWithdrawClose = useCallback(() => {
-    setWithdrawAssetDialog(undefined);
-  }, []);
+  const onWithdrawClose = useCallback(
+    () => setWithdrawAssetDialog(undefined),
+    [],
+  );
 
   const mobileRenderer = useCallback(
     p => (
@@ -72,6 +74,11 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
       />
     ),
     [],
+  );
+
+  const rows = useMemo(
+    () => sortRowsByOrderOptions(orderOptions, lendPositions),
+    [orderOptions, lendPositions],
   );
 
   return (
@@ -118,7 +125,7 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
             accordionClassName="bg-gray-60 border border-gray-70"
             rowTitle={rowTitleRenderer}
             mobileRenderer={mobileRenderer}
-            rows={lendPositions}
+            rows={rows}
             orderOptions={orderOptions}
             setOrderOptions={setOrderOptions}
           />

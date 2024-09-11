@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -7,6 +7,7 @@ import {
   Dialog,
   DialogBody,
   DialogHeader,
+  OrderDirection,
   OrderOptions,
   Paragraph,
   Table,
@@ -16,6 +17,7 @@ import { Decimal } from '@sovryn/utils';
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
+import { sortRowsByOrderOptions } from '../../AavePage.utils';
 import { PoolPositionStat } from '../PoolPositionStat/PoolPositionStat';
 import { COLUMNS_CONFIG } from './BorrowPositionsList.constants';
 import { BorrowPosition } from './BorrowPositionsList.types';
@@ -44,12 +46,13 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
 }) => {
   const { account } = useAccount();
   const [open, setOpen] = useState(true);
-  const [orderOptions, setOrderOptions] = useState<OrderOptions>();
+  const [orderOptions, setOrderOptions] = useState<OrderOptions>({
+    orderBy: 'asset',
+    orderDirection: OrderDirection.Desc,
+  });
   const [repayAssetDialog, setRepayAssetDialog] = useState<string>();
 
-  const onRepayClose = useCallback(() => {
-    setRepayAssetDialog(undefined);
-  }, []);
+  const onRepayClose = useCallback(() => setRepayAssetDialog(undefined), []);
 
   const rowTitleRenderer = useCallback(
     (r: BorrowPosition) => (
@@ -71,6 +74,11 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
       />
     ),
     [setRepayAssetDialog],
+  );
+
+  const rows = useMemo(
+    () => sortRowsByOrderOptions(orderOptions, borrowPositions),
+    [orderOptions, borrowPositions],
   );
 
   return (
@@ -129,7 +137,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
             accordionClassName="bg-gray-60 border border-gray-70"
             rowTitle={rowTitleRenderer}
             mobileRenderer={mobileRenderer}
-            rows={borrowPositions}
+            rows={rows}
             orderOptions={orderOptions}
             setOrderOptions={setOrderOptions}
           />

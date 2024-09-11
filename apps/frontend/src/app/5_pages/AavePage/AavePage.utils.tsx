@@ -1,11 +1,16 @@
 import { t } from 'i18next';
 
+import { OrderDirection, OrderOptions } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { EMODE_DISABLED_ID } from '../../../constants/aave';
+import {
+  EMODE_DISABLED_ID,
+  MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE,
+} from '../../../constants/aave';
 import { Reserve } from '../../../hooks/aave/useAaveReservesData';
 import { translations } from '../../../locales/i18n';
 import { BorrowRateMode } from '../../../types/aave';
+import { AaveCalculations } from '../../../utils/aave/AaveCalculations';
 import { AaveUserReservesSummary } from '../../../utils/aave/AaveUserReservesSummary';
 import { BorrowPoolDetails } from './components/BorrowAssetsList/BorrowAssetsList.types';
 import { BorrowPosition } from './components/BorrowPositionsList/BorrowPositionsList.types';
@@ -30,12 +35,21 @@ export const normalizeLendPositions = (
 ): LendPosition[] => {
   return userReservesSummary.reserves.reduce((acc, r) => {
     if (r.supplied.gt(0)) {
+      // can toggle if disabled or if after disabling collateralRatio is still above minimum
+      const canToggleCollateral =
+        !r.collateral ||
+        AaveCalculations.computeCollateralRatio(
+          userReservesSummary.collateralBalance.sub(r.suppliedUsd),
+          userReservesSummary.borrowBalance,
+        ).gt(MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE);
+
       acc.push({
         asset: r.reserve.symbol,
         apy: Decimal.from(r.reserve.supplyAPY).mul(100),
         supplied: r.supplied,
-        suppliedUSD: r.suppliedUSD,
+        suppliedUsd: r.suppliedUsd,
         collateral: r.collateral,
+        canToggleCollateral,
       });
     }
     return acc;
@@ -44,8 +58,8 @@ export const normalizeLendPositions = (
 
 export const normalizeBorrowPositions = (
   userReservesSummary: AaveUserReservesSummary,
-): BorrowPosition[] => {
-  return userReservesSummary.reserves.reduce((acc, r) => {
+): BorrowPosition[] =>
+  userReservesSummary.reserves.reduce((acc, r) => {
     if (r.borrowed.gt(0)) {
       acc.push({
         asset: r.reserve.symbol,
@@ -59,13 +73,12 @@ export const normalizeBorrowPositions = (
         variableApy: Decimal.from(r.reserve.variableBorrowAPY).mul(100),
         stableBorrowEnabled: r.reserve.stableBorrowRateEnabled,
         borrowed: r.borrowed,
-        borrowedUSD: r.borrowedUSD,
+        borrowedUsd: r.borrowedUsd,
         isCollateral: r.collateral,
       });
     }
     return acc;
   }, [] as BorrowPosition[]);
-};
 
 export const normalizeBorrowPoolDetails = (
   reserves: Reserve[],
@@ -105,7 +118,7 @@ export const normalizeBorrowPoolDetails = (
       asset: r.symbol,
       apy: Decimal.from(r.variableBorrowAPY).mul(100),
       available: userSummary?.availableToBorrow,
-      availableUSD: userSummary?.availableToBorrowUSD,
+      availableUsd: userSummary?.availableToBorrowUsd,
     });
 
     return acc;
@@ -132,4 +145,16 @@ export const normalizeLendPoolDetails = (
     canBeCollateral: r.reserve.usageAsCollateralEnabled,
     walletBalance: r.walletBalance,
   }));
+};
+
+export const sortRowsByOrderOptions = (
+  orderOptions: OrderOptions,
+  rows: any[],
+) => {
+  const direction = orderOptions.orderDirection === OrderDirection.Asc ? 1 : -1;
+  return rows.sort((a, b) =>
+    b[orderOptions.orderBy || ''] > a[orderOptions.orderBy || '']
+      ? direction
+      : -direction,
+  );
 };

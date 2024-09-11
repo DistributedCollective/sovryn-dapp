@@ -22,11 +22,11 @@ export const EModeDetails: FC<EModeDetailsProps> = ({ reserve }) => {
   const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();
 
-  const eModeStats = useMemo(() => {
-    return normalizeEModeStats(reserve);
-  }, [reserve]);
+  const eModeStats = useMemo(() => normalizeEModeStats(reserve), [reserve]);
 
-  if (!eModeStats.enabled) return null;
+  if (!eModeStats.enabled) {
+    return null;
+  }
   return (
     <Accordion
       label={

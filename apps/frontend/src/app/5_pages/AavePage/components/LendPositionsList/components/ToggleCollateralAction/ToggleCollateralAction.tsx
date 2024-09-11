@@ -15,17 +15,20 @@ export const ToggleCollateralAction: FC<ToggleCollateralActionProps> = ({
   const { handleSwitchCollateral } = useAaveSupply();
   const [isCollateral, setIsCollateral] = useState(position.collateral);
 
-  const toggleCollateral = useCallback(() => {
-    handleSwitchCollateral(position.asset, !isCollateral, {
-      onComplete: () => setIsCollateral(!isCollateral),
-    });
-  }, [handleSwitchCollateral, setIsCollateral, isCollateral, position.asset]);
+  const toggleCollateral = useCallback(
+    () =>
+      handleSwitchCollateral(position.asset, !isCollateral, {
+        onComplete: () => setIsCollateral(!isCollateral),
+      }),
+    [handleSwitchCollateral, setIsCollateral, isCollateral, position.asset],
+  );
 
   return (
     <Toggle
       className="[&_*]:ml-0"
       checked={isCollateral}
       onChange={toggleCollateral}
+      disabled={position.canToggleCollateral === false}
     />
   );
 };

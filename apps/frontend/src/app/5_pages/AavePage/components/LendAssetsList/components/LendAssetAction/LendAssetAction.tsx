@@ -20,9 +20,10 @@ export const LendAssetAction: FC<LendAssetActionProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const onDetailsClick = useCallback(() => {
-    navigate(`/aave/reserve-overview?asset=${asset}`);
-  }, [navigate, asset]);
+  const onDetailsClick = useCallback(
+    () => navigate(`/aave/reserve-overview?asset=${asset}`),
+    [navigate, asset],
+  );
 
   return (
     <div className="flex items-center justify-center lg:justify-end space-x-2">

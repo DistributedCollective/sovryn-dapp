@@ -22,23 +22,19 @@ const pageTranslations = translations.aaveReserveOverviewPage;
 type SupplyActionProps = {
   asset: string;
   availableToSupply: Decimal;
-  availableToSupplyUSD: Decimal;
+  availableToSupplyUsd: Decimal;
 };
 
 export const SupplyAction: FC<SupplyActionProps> = ({
   asset,
   availableToSupply,
-  availableToSupplyUSD,
+  availableToSupplyUsd,
 }) => {
   const [open, setOpen] = useState(false);
 
-  const onSupplyClose = useCallback(() => {
-    setOpen(false);
-  }, []);
+  const onSupplyClose = useCallback(() => setOpen(false), []);
 
-  const onSupplyOpen = useCallback(() => {
-    setOpen(true);
-  }, []);
+  const onSupplyOpen = useCallback(() => setOpen(true), []);
 
   return (
     <div className="flex justify-between items-center">
@@ -53,7 +49,7 @@ export const SupplyAction: FC<SupplyActionProps> = ({
         </div>
         <AssetAmountPriceRenderer
           value={availableToSupply}
-          valueUSD={availableToSupplyUSD}
+          valueUsd={availableToSupplyUsd}
           asset={asset}
           className="text-left flex flex-col"
           valueClassName="font-medium"

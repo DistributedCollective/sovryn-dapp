@@ -36,7 +36,7 @@ export const COLUMNS_CONFIG = (onWithdrawClick: (asset: string) => void) => [
     ),
   },
   {
-    id: 'balance',
+    id: 'suppliedUsd',
     sortable: true,
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
@@ -46,7 +46,7 @@ export const COLUMNS_CONFIG = (onWithdrawClick: (asset: string) => void) => [
     cellRenderer: (position: LendPosition) => (
       <AssetAmountPriceRenderer
         value={position.supplied}
-        valueUSD={position.suppliedUSD}
+        valueUsd={position.suppliedUsd}
         asset={position.asset}
       />
     ),

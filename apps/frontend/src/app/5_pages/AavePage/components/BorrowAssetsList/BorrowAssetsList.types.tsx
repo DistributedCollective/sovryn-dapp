@@ -4,5 +4,5 @@ export type BorrowPoolDetails = {
   asset: string;
   apy: Decimal;
   available?: Decimal;
-  availableUSD?: Decimal;
+  availableUsd?: Decimal;
 };

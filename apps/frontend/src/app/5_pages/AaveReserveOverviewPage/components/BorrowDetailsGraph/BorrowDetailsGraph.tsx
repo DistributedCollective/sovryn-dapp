@@ -26,9 +26,7 @@ export const BorrowDetailsGraph: FC<BorrowDetailsGraphProps> = ({
   const { isMobile } = useIsMobile();
   const [open, setOpen] = useState(true);
 
-  const borrowStats = useMemo(() => {
-    return normalizeBorrowStats(reserve);
-  }, [reserve]);
+  const borrowStats = useMemo(() => normalizeBorrowStats(reserve), [reserve]);
 
   return (
     <Accordion
@@ -70,7 +68,7 @@ export const BorrowDetailsGraph: FC<BorrowDetailsGraphProps> = ({
                   <AmountRenderer
                     prefix="$"
                     precision={2}
-                    {...formatAmountWithSuffix(borrowStats.totalBorrowedUSD)}
+                    {...formatAmountWithSuffix(borrowStats.totalBorrowedUsd)}
                   />
                   {borrowStats.borrowCap.gt(0) && (
                     <>
@@ -78,7 +76,7 @@ export const BorrowDetailsGraph: FC<BorrowDetailsGraphProps> = ({
                       <AmountRenderer
                         prefix="$"
                         precision={2}
-                        {...formatAmountWithSuffix(borrowStats.borrowCapUSD)}
+                        {...formatAmountWithSuffix(borrowStats.borrowCapUsd)}
                       />
                     </>
                   )}

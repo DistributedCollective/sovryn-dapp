@@ -28,7 +28,7 @@ export const LendPositionDetails: FC<LendPositionDetailsProps> = ({
         value={
           <AssetAmountPriceRenderer
             value={position.supplied}
-            valueUSD={position.suppliedUSD}
+            valueUsd={position.suppliedUsd}
             asset={position.asset}
           />
         }

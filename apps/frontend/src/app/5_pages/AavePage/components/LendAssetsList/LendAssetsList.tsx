@@ -8,12 +8,14 @@ import {
   Dialog,
   DialogBody,
   DialogHeader,
+  OrderDirection,
   OrderOptions,
   Table,
 } from '@sovryn/ui';
 
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { translations } from '../../../../../locales/i18n';
+import { sortRowsByOrderOptions } from '../../AavePage.utils';
 import { COLUMNS_CONFIG } from './LendAssetsList.constants';
 import { LendPoolDetails } from './LendAssetsList.types';
 import { LendAssetDetails } from './components/LendAssetDetails/LendAssetDetails';
@@ -32,12 +34,13 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({
 }) => {
   const [open, setOpen] = useState(true);
   const [showZeroBalances, setShowZeroBalances] = useState(true);
-  const [orderOptions, setOrderOptions] = useState<OrderOptions>();
+  const [orderOptions, setOrderOptions] = useState<OrderOptions>({
+    orderBy: 'asset',
+    orderDirection: OrderDirection.Desc,
+  });
   const [lendAssetDialog, setLendAssetDialog] = useState<string | undefined>();
 
-  const onLendClose = useCallback(() => {
-    setLendAssetDialog(undefined);
-  }, []);
+  const onLendClose = useCallback(() => setLendAssetDialog(undefined), []);
 
   const mobileRenderer = useCallback(
     p => (
@@ -62,12 +65,13 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({
     [],
   );
 
-  const filteredLendPools = useMemo(() => {
-    if (showZeroBalances) {
-      return lendPools;
-    }
-    return lendPools.filter(p => p.walletBalance.gt(0));
-  }, [lendPools, showZeroBalances]);
+  const rows = useMemo(() => {
+    const filtered = showZeroBalances
+      ? lendPools
+      : lendPools.filter(p => p.walletBalance.gt(0));
+
+    return sortRowsByOrderOptions(orderOptions, filtered);
+  }, [lendPools, showZeroBalances, orderOptions]);
 
   return (
     <Accordion
@@ -95,7 +99,7 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({
         accordionClassName="bg-gray-60 border border-gray-70"
         rowTitle={rowTitleRenderer}
         mobileRenderer={mobileRenderer}
-        rows={filteredLendPools}
+        rows={rows}
         orderOptions={orderOptions}
         setOrderOptions={setOrderOptions}
       />

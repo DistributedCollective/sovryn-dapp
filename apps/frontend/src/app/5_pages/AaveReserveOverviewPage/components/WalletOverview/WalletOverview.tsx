@@ -36,13 +36,15 @@ export const WalletOverview: FC<WalletOverviewProps> = ({ symbol }) => {
     getAssetData(symbol, BOB_CHAIN_ID).then(setAsset);
   }, [symbol]);
 
-  const reserveSummary = useMemo(() => {
-    return summary.reserves.find(r => r.reserve.symbol === symbol);
-  }, [summary, symbol]);
+  const reserveSummary = useMemo(
+    () => summary.reserves.find(r => r.reserve.symbol === symbol),
+    [summary, symbol],
+  );
 
-  const supplyCapReached = useMemo(() => {
-    return Decimal.from(reserveSummary?.reserve.supplyUsageRatio ?? 0).gte(1);
-  }, [reserveSummary?.reserve.supplyUsageRatio]);
+  const supplyCapReached = useMemo(
+    () => Decimal.from(reserveSummary?.reserve.supplyUsageRatio ?? 0).gte(1),
+    [reserveSummary?.reserve.supplyUsageRatio],
+  );
 
   return (
     <div className="bg-gray-90 p-6 rounded space-y-6 lg:bg-gray-90 lg:p-6 border border-gray-60">
@@ -76,7 +78,7 @@ export const WalletOverview: FC<WalletOverviewProps> = ({ symbol }) => {
               availableToSupply={Decimal.from(
                 reserveSummary?.walletBalance ?? 0,
               )}
-              availableToSupplyUSD={Decimal.from(
+              availableToSupplyUsd={Decimal.from(
                 reserveSummary?.walletBalanceUsd ?? 0,
               )}
             />
@@ -88,7 +90,7 @@ export const WalletOverview: FC<WalletOverviewProps> = ({ symbol }) => {
                 reserveSummary?.availableToBorrow ?? 0,
               )}
               availableToBorrowUsd={Decimal.from(
-                reserveSummary?.availableToBorrowUSD ?? 0,
+                reserveSummary?.availableToBorrowUsd ?? 0,
               )}
             />
           </div>

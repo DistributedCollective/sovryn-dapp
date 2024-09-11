@@ -91,17 +91,26 @@ export const htmlLegendPlugin = {
 };
 
 export const calculateInterestRateModel = (
-  u: number,
-  base: number,
-  optimal: number,
-  slope1: number,
-  slope2: number,
-) => {
-  if (u === 0) return 0;
+  utilization: number,
+  baseRate: number,
+  optimalUtilization: number,
+  initialSlope: number,
+  secondarySlope: number,
+): number => {
+  if (utilization === 0) {
+    return 0;
+  }
 
-  if (u <= optimal) return base + (u / optimal) * slope1;
+  if (utilization <= optimalUtilization) {
+    return baseRate + (utilization / optimalUtilization) * initialSlope;
+  }
 
-  return base + slope1 + ((u - optimal) / (1 - optimal)) * slope2;
+  return (
+    baseRate +
+    initialSlope +
+    ((utilization - optimalUtilization) / (1 - optimalUtilization)) *
+      secondarySlope
+  );
 };
 
 export const calculateVariableInterestRateModel = (

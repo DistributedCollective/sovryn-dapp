@@ -15,7 +15,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { AssetAmountPriceRenderer } from '../../../../../../2_molecules/AssetAmountPriceRenderer/AssetAmountPriceRenderer';
 import { translations } from '../../../../../../../locales/i18n';
-import { BorrowForm } from '../../../../../AavePage/components/BorrowAssetsList/components/BorrowModal/BorrowForm';
+import { BorrowForm } from '../../../../../AavePage/components/BorrowAssetsList/components/BorrowForm/BorrowForm';
 
 const pageTranslations = translations.aaveReserveOverviewPage;
 

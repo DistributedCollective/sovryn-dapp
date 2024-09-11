@@ -20,7 +20,7 @@ import { sortRowsByOrderOptions } from '../../AavePage.utils';
 import { COLUMNS_CONFIG } from './BorrowAssetsList.constants';
 import { BorrowPoolDetails } from './BorrowAssetsList.types';
 import { BorrowAssetDetails } from './components/BorrowAssetDetails/BorrowAssetDetails';
-import { BorrowForm } from './components/BorrowModal/BorrowForm';
+import { BorrowForm } from './components/BorrowForm/BorrowForm';
 
 const pageTranslations = translations.aavePage.borrowAssetsList;
 

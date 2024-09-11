@@ -1,9 +1,12 @@
 import React, { FC } from 'react';
 
 import classNames from 'classnames';
+import { t } from 'i18next';
 import { ReactElement } from 'react-markdown/lib/react-markdown';
 
 import { HelperButton, Icon, IconNames } from '@sovryn/ui';
+
+import { translations } from '../../../locales/i18n';
 
 type StatisticsCardProps = {
   label: string;
@@ -42,7 +45,7 @@ export const StatisticsCard: FC<StatisticsCardProps> = ({
             )}
           </>
         ) : (
-          <span>---</span>
+          <span>{t(translations.common.na)}</span>
         )}
       </div>
     </div>

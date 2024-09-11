@@ -122,6 +122,15 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
     [onComplete, borrowSize, borrowReserve, handleBorrow],
   );
 
+  const isConfirmDisabled = useMemo(() => {
+    return (
+      !isValidBorrowAmount ||
+      borrowSize.lte(0) ||
+      !acknowledge ||
+      !borrowReserve
+    );
+  }, [isValidBorrowAmount, borrowSize, acknowledge, borrowReserve]);
+
   return (
     <form className="flex flex-col gap-6">
       <div className="space-y-3">
@@ -198,12 +207,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
 
       <Button
         onClick={onConfirm}
-        disabled={
-          !isValidBorrowAmount ||
-          borrowSize.lte(0) ||
-          !acknowledge ||
-          !borrowReserve
-        }
+        disabled={isConfirmDisabled}
         text={t(translations.common.buttons.confirm)}
       />
     </form>

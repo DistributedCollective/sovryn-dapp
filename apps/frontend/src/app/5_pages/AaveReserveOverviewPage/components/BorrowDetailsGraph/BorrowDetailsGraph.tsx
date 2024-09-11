@@ -68,7 +68,7 @@ export const BorrowDetailsGraph: FC<BorrowDetailsGraphProps> = ({
                   <AmountRenderer
                     prefix="$"
                     precision={2}
-                    {...formatAmountWithSuffix(borrowStats.totalBorrowedUSD)}
+                    {...formatAmountWithSuffix(borrowStats.totalBorrowedUsd)}
                   />
                   {borrowStats.borrowCap.gt(0) && (
                     <>
@@ -76,7 +76,7 @@ export const BorrowDetailsGraph: FC<BorrowDetailsGraphProps> = ({
                       <AmountRenderer
                         prefix="$"
                         precision={2}
-                        {...formatAmountWithSuffix(borrowStats.borrowCapUSD)}
+                        {...formatAmountWithSuffix(borrowStats.borrowCapUsd)}
                       />
                     </>
                   )}

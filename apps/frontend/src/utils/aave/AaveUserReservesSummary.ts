@@ -35,12 +35,12 @@ export type ReserveSummary = {
   walletBalanceUsd: Decimal;
   collateral: boolean;
   supplied: Decimal;
-  suppliedUSD: Decimal;
+  suppliedUsd: Decimal;
   borrowed: Decimal;
-  borrowedUSD: Decimal;
+  borrowedUsd: Decimal;
   borrowRateMode: BorrowRateMode;
   availableToBorrow: Decimal;
-  availableToBorrowUSD: Decimal;
+  availableToBorrowUsd: Decimal;
 };
 
 export type AaveUserReservesSummary = {
@@ -93,13 +93,13 @@ export class AaveUserReservesSummaryFactory {
         walletBalanceUsd: Decimal.ZERO,
         collateral: false,
         supplied: Decimal.ZERO,
-        suppliedUSD: Decimal.ZERO,
+        suppliedUsd: Decimal.ZERO,
         availableToSupply: Decimal.ZERO,
         borrowed: Decimal.ZERO,
-        borrowedUSD: Decimal.ZERO,
+        borrowedUsd: Decimal.ZERO,
         borrowRateMode: BorrowRateMode.VARIABLE,
         availableToBorrow: Decimal.ZERO,
-        availableToBorrowUSD: Decimal.ZERO,
+        availableToBorrowUsd: Decimal.ZERO,
       })),
     };
   }
@@ -217,7 +217,7 @@ export class AaveUserReservesSummaryFactory {
           const availableToBorrow = availableLiquidity.lt(canBorrow)
             ? availableLiquidity
             : canBorrow;
-          const availableToBorrowUSD = availableToBorrow.mul(
+          const availableToBorrowUsd = availableToBorrow.mul(
             r.reserve.priceInUSD,
           );
 
@@ -230,11 +230,11 @@ export class AaveUserReservesSummaryFactory {
             collateral: r.usageAsCollateralEnabledOnUser,
 
             supplied: Decimal.from(r.underlyingBalance),
-            suppliedUSD: Decimal.from(r.underlyingBalanceUSD),
+            suppliedUsd: Decimal.from(r.underlyingBalanceUSD),
             borrowed: Decimal.from(r.totalBorrows),
-            borrowedUSD: Decimal.from(r.totalBorrowsUSD),
+            borrowedUsd: Decimal.from(r.totalBorrowsUSD),
             availableToBorrow,
-            availableToBorrowUSD,
+            availableToBorrowUsd,
 
             borrowRateMode: Decimal.from(r.variableBorrows).gt(0)
               ? BorrowRateMode.VARIABLE

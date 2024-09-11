@@ -77,45 +77,45 @@ export class AaveCalculations {
   static computeWeightedBorrowApy(
     reserves: UserSummary['userReservesData'],
   ): Decimal {
-    let totalBorrowedUSD = Decimal.from(0);
+    let totalBorrowedUsd = Decimal.from(0);
     let weightedBorrowAPYSum = Decimal.from(0);
 
     reserves.forEach(reserve => {
-      const borrowedAmountUSD = Decimal.from(reserve.totalBorrowsUSD);
+      const borrowedAmountUsd = Decimal.from(reserve.totalBorrowsUSD);
       const borrowAPY = Decimal.from(reserve.reserve.variableBorrowAPY);
 
       weightedBorrowAPYSum = weightedBorrowAPYSum.add(
-        borrowAPY.mul(borrowedAmountUSD),
+        borrowAPY.mul(borrowedAmountUsd),
       );
-      totalBorrowedUSD = totalBorrowedUSD.add(borrowedAmountUSD);
+      totalBorrowedUsd = totalBorrowedUsd.add(borrowedAmountUsd);
     });
 
-    if (totalBorrowedUSD.eq(0) || weightedBorrowAPYSum.eq(0)) {
+    if (totalBorrowedUsd.eq(0) || weightedBorrowAPYSum.eq(0)) {
       return Decimal.from(0);
     }
-    return weightedBorrowAPYSum.div(totalBorrowedUSD).mul(100);
+    return weightedBorrowAPYSum.div(totalBorrowedUsd).mul(100);
   }
 
   static computeWeightedSupplyApy(
     reserves: UserSummary['userReservesData'],
   ): Decimal {
-    let totalSuppliedUSD = Decimal.from(0);
+    let totalSuppliedUsd = Decimal.from(0);
     let weightedSupplyAPYSum = Decimal.from(0);
 
     reserves.forEach(reserve => {
-      const suppliedAmountUSD = Decimal.from(reserve.underlyingBalanceUSD);
+      const suppliedAmountUsd = Decimal.from(reserve.underlyingBalanceUSD);
       const supplyAPY = Decimal.from(reserve.reserve.supplyAPY);
 
       weightedSupplyAPYSum = weightedSupplyAPYSum.add(
-        supplyAPY.mul(suppliedAmountUSD),
+        supplyAPY.mul(suppliedAmountUsd),
       );
-      totalSuppliedUSD = totalSuppliedUSD.add(suppliedAmountUSD);
+      totalSuppliedUsd = totalSuppliedUsd.add(suppliedAmountUsd);
     });
 
-    if (totalSuppliedUSD.eq(0) || weightedSupplyAPYSum.eq(0)) {
+    if (totalSuppliedUsd.eq(0) || weightedSupplyAPYSum.eq(0)) {
       return Decimal.from(0);
     }
-    return weightedSupplyAPYSum.div(totalSuppliedUSD).mul(100);
+    return weightedSupplyAPYSum.div(totalSuppliedUsd).mul(100);
   }
 
   static computeLiquidationPrice(

@@ -39,7 +39,7 @@ export const normalizeLendPositions = (
       const canToggleCollateral =
         !r.collateral ||
         AaveCalculations.computeCollateralRatio(
-          userReservesSummary.collateralBalance.sub(r.suppliedUSD),
+          userReservesSummary.collateralBalance.sub(r.suppliedUsd),
           userReservesSummary.borrowBalance,
         ).gt(MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE);
 
@@ -47,7 +47,7 @@ export const normalizeLendPositions = (
         asset: r.reserve.symbol,
         apy: Decimal.from(r.reserve.supplyAPY).mul(100),
         supplied: r.supplied,
-        suppliedUSD: r.suppliedUSD,
+        suppliedUsd: r.suppliedUsd,
         collateral: r.collateral,
         canToggleCollateral,
       });
@@ -73,7 +73,7 @@ export const normalizeBorrowPositions = (
         variableApy: Decimal.from(r.reserve.variableBorrowAPY).mul(100),
         stableBorrowEnabled: r.reserve.stableBorrowRateEnabled,
         borrowed: r.borrowed,
-        borrowedUSD: r.borrowedUSD,
+        borrowedUsd: r.borrowedUsd,
         isCollateral: r.collateral,
       });
     }
@@ -118,7 +118,7 @@ export const normalizeBorrowPoolDetails = (
       asset: r.symbol,
       apy: Decimal.from(r.variableBorrowAPY).mul(100),
       available: userSummary?.availableToBorrow,
-      availableUSD: userSummary?.availableToBorrowUSD,
+      availableUsd: userSummary?.availableToBorrowUsd,
     });
 
     return acc;

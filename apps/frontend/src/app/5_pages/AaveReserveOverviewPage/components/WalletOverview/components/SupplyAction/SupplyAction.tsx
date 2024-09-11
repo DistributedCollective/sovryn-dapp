@@ -22,13 +22,13 @@ const pageTranslations = translations.aaveReserveOverviewPage;
 type SupplyActionProps = {
   asset: string;
   availableToSupply: Decimal;
-  availableToSupplyUSD: Decimal;
+  availableToSupplyUsd: Decimal;
 };
 
 export const SupplyAction: FC<SupplyActionProps> = ({
   asset,
   availableToSupply,
-  availableToSupplyUSD,
+  availableToSupplyUsd,
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -49,7 +49,7 @@ export const SupplyAction: FC<SupplyActionProps> = ({
         </div>
         <AssetAmountPriceRenderer
           value={availableToSupply}
-          valueUSD={availableToSupplyUSD}
+          valueUsd={availableToSupplyUsd}
           asset={asset}
           className="text-left flex flex-col"
           valueClassName="font-medium"

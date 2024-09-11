@@ -76,14 +76,14 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     }
 
     // min collateral at which we reach minimum collateral ratio
-    const minCollateralUSD = MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE.mul(
-      withdrawReserve.borrowedUSD,
+    const minCollateralUsd = MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE.mul(
+      withdrawReserve.borrowedUsd,
     );
-    const maxUSDWithdrawal = summary.supplyBalance.sub(minCollateralUSD);
+    const maxUsdWithdrawal = summary.supplyBalance.sub(minCollateralUsd);
 
-    return maxUSDWithdrawal.gt(withdrawReserve.suppliedUSD)
+    return maxUsdWithdrawal.gt(withdrawReserve.suppliedUsd)
       ? withdrawReserve.supplied // we can withdraw all, we'll still have collateral on other asset
-      : maxUSDWithdrawal.div(withdrawReserve.reserve.priceInUSD); // only partial withdraw
+      : maxUsdWithdrawal.div(withdrawReserve.reserve.priceInUSD); // only partial withdraw
   }, [withdrawReserve, summary.supplyBalance]);
 
   const withdrawAmountUsd = useMemo(

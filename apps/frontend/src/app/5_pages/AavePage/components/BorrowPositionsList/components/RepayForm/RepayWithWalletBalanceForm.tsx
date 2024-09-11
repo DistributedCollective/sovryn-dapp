@@ -180,12 +180,12 @@ export const RepayWithWalletBalanceForm: FC<
                 className="justify-end text-gray-40"
                 from={{
                   precision: 2,
-                  value: repayReserve?.borrowedUSD ?? Decimal.from(0),
+                  value: repayReserve?.borrowedUsd ?? Decimal.from(0),
                   prefix: '$',
                 }}
                 to={{
                   precision: 2,
-                  value: newDebtAmountUSD,
+                  value: newDebtAmountUsd,
                   prefix: '$',
                 }}
               />

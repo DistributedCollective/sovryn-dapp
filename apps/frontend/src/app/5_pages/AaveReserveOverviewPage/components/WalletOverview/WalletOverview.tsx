@@ -78,7 +78,7 @@ export const WalletOverview: FC<WalletOverviewProps> = ({ symbol }) => {
               availableToSupply={Decimal.from(
                 reserveSummary?.walletBalance ?? 0,
               )}
-              availableToSupplyUSD={Decimal.from(
+              availableToSupplyUsd={Decimal.from(
                 reserveSummary?.walletBalanceUsd ?? 0,
               )}
             />
@@ -90,7 +90,7 @@ export const WalletOverview: FC<WalletOverviewProps> = ({ symbol }) => {
                 reserveSummary?.availableToBorrow ?? 0,
               )}
               availableToBorrowUsd={Decimal.from(
-                reserveSummary?.availableToBorrowUSD ?? 0,
+                reserveSummary?.availableToBorrowUsd ?? 0,
               )}
             />
           </div>

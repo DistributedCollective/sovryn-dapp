@@ -6,12 +6,12 @@ export const normalizeSupplyStats = (reserve: Reserve) => ({
   totalSupplied: Decimal.from(reserve.formattedAvailableLiquidity).add(
     reserve.totalDebt,
   ),
-  totalSuppliedUSD: Decimal.from(reserve.availableLiquidityUSD).add(
+  totalSuppliedUsd: Decimal.from(reserve.availableLiquidityUSD).add(
     reserve.totalDebtUSD,
   ),
   supplyApy: Decimal.from(reserve.supplyAPY).mul(100),
   supplyCap: Decimal.from(reserve.supplyCap),
-  supplyCapUSD: Decimal.from(reserve.supplyCapUSD),
+  supplyCapUsd: Decimal.from(reserve.supplyCapUSD),
   suppliedPercentage: Decimal.from(reserve.supplyCapUSD)
     .div(Decimal.from(reserve.supplyCapUSD))
     .mul(100),

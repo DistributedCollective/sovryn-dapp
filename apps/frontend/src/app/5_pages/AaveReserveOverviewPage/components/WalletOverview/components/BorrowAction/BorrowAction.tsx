@@ -54,7 +54,7 @@ export const BorrowAction: FC<BorrowActionProps> = ({
         </Paragraph>
         <AssetAmountPriceRenderer
           value={availableToBorrow}
-          valueUSD={availableToBorrowUsd}
+          valueUsd={availableToBorrowUsd}
           asset={asset}
           className="text-left flex flex-col"
           valueClassName="font-medium"

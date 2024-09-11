@@ -7,9 +7,9 @@ import { getBobExplorerUrl } from '../../../../../utils/helpers';
 export const normalizeBorrowStats = (reserve: Reserve) => ({
   apr: Decimal.from(reserve.variableBorrowAPR).mul(100),
   totalBorrowed: Decimal.from(reserve.totalDebt),
-  totalBorrowedUSD: Decimal.from(reserve.totalDebtUSD),
+  totalBorrowedUsd: Decimal.from(reserve.totalDebtUSD),
   borrowCap: Decimal.from(reserve.borrowCap),
-  borrowCapUSD: Decimal.from(reserve.borrowCapUSD),
+  borrowCapUsd: Decimal.from(reserve.borrowCapUSD),
   borrowedPercentage: Decimal.from(reserve.totalDebtUSD)
     .div(Decimal.from(reserve.debtCeilingUSD))
     .mul(100),

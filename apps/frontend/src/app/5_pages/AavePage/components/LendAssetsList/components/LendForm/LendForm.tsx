@@ -66,7 +66,7 @@ export const LendForm: FC<LendFormProps> = ({
     [reserves, lendAsset],
   );
 
- const assetUsdValue = useMemo(
+  const assetUsdValue = useMemo(
     () => Decimal.from(reserve?.priceInUSD ?? 0).mul(lendSize),
     [reserve, lendSize],
   );

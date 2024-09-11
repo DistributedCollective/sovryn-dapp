@@ -57,7 +57,7 @@ export const DisableEModeForm: FC<DisableEModeFormProps> = ({
   const isConfirmEnabled = useMemo(
     () => !summaryAfterDisabled.liquidationRisk,
     [summaryAfterDisabled.liquidationRisk],
-  );```
+  );
 
   return (
     <div className="space-y-6">

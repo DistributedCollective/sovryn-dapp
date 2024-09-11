@@ -15,7 +15,7 @@ export const ToggleCollateralAction: FC<ToggleCollateralActionProps> = ({
   const { handleSwitchCollateral } = useAaveSupply();
   const [isCollateral, setIsCollateral] = useState(position.collateral);
 
- const toggleCollateral = useCallback(
+  const toggleCollateral = useCallback(
     () =>
       handleSwitchCollateral(position.asset, !isCollateral, {
         onComplete: () => setIsCollateral(!isCollateral),

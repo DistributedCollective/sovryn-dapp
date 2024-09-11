@@ -70,7 +70,7 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
                   <AmountRenderer
                     prefix="$"
                     precision={2}
-                    {...formatAmountWithSuffix(supplyStats.totalSuppliedUSD)}
+                    {...formatAmountWithSuffix(supplyStats.totalSuppliedUsd)}
                   />
                   {supplyStats.supplyCap.gt(0) && (
                     <>
@@ -78,7 +78,7 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
                       <AmountRenderer
                         prefix="$"
                         precision={2}
-                        {...formatAmountWithSuffix(supplyStats.supplyCapUSD)}
+                        {...formatAmountWithSuffix(supplyStats.supplyCapUsd)}
                       />
                     </>
                   )}

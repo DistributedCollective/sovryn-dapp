@@ -29,7 +29,7 @@ export const BorrowPositionDetails: FC<BorrowPositionDetailsProps> = ({
           <AssetAmountPriceRenderer
             asset={position.asset}
             value={position.borrowed}
-            valueUSD={position.borrowedUSD}
+            valueUsd={position.borrowedUsd}
           />
         }
       />

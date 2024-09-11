@@ -35,7 +35,7 @@ export const COLUMNS_CONFIG = (onBorrowClick: (asset: string) => void) => [
     ),
   },
   {
-    id: 'availableUSD',
+    id: 'availableUsd',
     sortable: true,
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
@@ -49,10 +49,10 @@ export const COLUMNS_CONFIG = (onBorrowClick: (asset: string) => void) => [
     ),
     cellRenderer: (position: BorrowPoolDetails) =>
       position.available !== undefined &&
-      position.availableUSD !== undefined ? (
+      position.availableUsd !== undefined ? (
         <AssetAmountPriceRenderer
           value={position.available}
-          valueUSD={position.availableUSD}
+          valueUsd={position.availableUsd}
           asset={position.asset}
         />
       ) : (

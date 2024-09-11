@@ -26,9 +26,7 @@ export const BorrowDetailsGraph: FC<BorrowDetailsGraphProps> = ({
   const { isMobile } = useIsMobile();
   const [open, setOpen] = useState(true);
 
-  const borrowStats = useMemo(() => {
-    return normalizeBorrowStats(reserve);
-  }, [reserve]);
+  const borrowStats = useMemo(() => normalizeBorrowStats(reserve), [reserve]);
 
   return (
     <Accordion

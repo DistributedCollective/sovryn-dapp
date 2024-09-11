@@ -39,7 +39,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
   const { summary } = useAaveUserReservesData();
   const [borrowAsset, setBorrowAsset] = useState<string>(asset);
   const [borrowAmount, setBorrowAmount, borrowSize] = useDecimalAmountInput('');
-  const [acknowledge, setAcknowledge] = useState<boolean>(false);
+  const [acknowledge, setAcknowledge] = useState(false);
   const { handleBorrow } = useAaveBorrow();
 
   const borrowableAssetsOptions = useMemo(
@@ -63,54 +63,64 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
     [summary.reserves],
   );
 
-  const borrowReserve = useMemo(() => {
-    return summary.reserves.find(r => r.reserve.symbol === borrowAsset);
-  }, [summary.reserves, borrowAsset]);
+  const borrowReserve = useMemo(
+    () => summary.reserves.find(r => r.reserve.symbol === borrowAsset),
+    [summary.reserves, borrowAsset],
+  );
 
-  const borrowUsdAmount = useMemo(() => {
-    return borrowSize.mul(borrowReserve?.reserve.priceInUSD ?? 0);
-  }, [borrowSize, borrowReserve?.reserve.priceInUSD]);
+  const borrowUsdAmount = useMemo(
+    () => borrowSize.mul(borrowReserve?.reserve.priceInUSD ?? 0),
+    [borrowSize, borrowReserve?.reserve.priceInUSD],
+  );
 
-  const maximumBorrowAmount = useMemo(() => {
-    return borrowReserve?.availableToBorrow ?? Decimal.from(0);
-  }, [borrowReserve?.availableToBorrow]);
+  const maximumBorrowAmount = useMemo(
+    () => borrowReserve?.availableToBorrow ?? Decimal.from(0),
+    [borrowReserve?.availableToBorrow],
+  );
 
-  const newCollateralRatio = useMemo(() => {
-    return AaveCalculations.computeCollateralRatio(
-      summary.collateralBalance,
-      summary.borrowBalance.add(borrowUsdAmount),
-    );
-  }, [summary.collateralBalance, summary.borrowBalance, borrowUsdAmount]);
+  const newCollateralRatio = useMemo(
+    () =>
+      AaveCalculations.computeCollateralRatio(
+        summary.collateralBalance,
+        summary.borrowBalance.add(borrowUsdAmount),
+      ),
+    [summary.collateralBalance, summary.borrowBalance, borrowUsdAmount],
+  );
 
-  const liquidationPrice = useMemo(() => {
-    return AaveCalculations.computeLiquidationPrice(
+  const liquidationPrice = useMemo(
+    () =>
+      AaveCalculations.computeLiquidationPrice(
+        borrowSize,
+        summary.currentLiquidationThreshold,
+        summary.collateralBalance,
+      ),
+    [
       borrowSize,
       summary.currentLiquidationThreshold,
       summary.collateralBalance,
-    );
-  }, [
-    borrowSize,
-    summary.currentLiquidationThreshold,
-    summary.collateralBalance,
-  ]);
+    ],
+  );
 
-  const borrowApr = useMemo(() => {
-    return Decimal.from(borrowReserve?.reserve.variableBorrowAPR ?? 0).mul(100);
-  }, [borrowReserve?.reserve.variableBorrowAPR]);
+  const borrowApr = useMemo(
+    () => Decimal.from(borrowReserve?.reserve.variableBorrowAPR ?? 0).mul(100),
+    [borrowReserve?.reserve.variableBorrowAPR],
+  );
 
   const isValidBorrowAmount = useMemo(
     () => (borrowSize.gt(0) ? borrowSize.lte(maximumBorrowAmount) : true),
     [borrowSize, maximumBorrowAmount],
   );
 
-  const onConfirm = useCallback(() => {
-    handleBorrow(
-      borrowSize,
-      borrowReserve!.reserve.symbol,
-      BorrowRateMode.VARIABLE,
-      { onComplete },
-    );
-  }, [onComplete, borrowSize, borrowReserve, handleBorrow]);
+  const onConfirm = useCallback(
+    () =>
+      handleBorrow(
+        borrowSize,
+        borrowReserve!.reserve.symbol,
+        BorrowRateMode.VARIABLE,
+        { onComplete },
+      ),
+    [onComplete, borrowSize, borrowReserve, handleBorrow],
+  );
 
   return (
     <form className="flex flex-col gap-6">

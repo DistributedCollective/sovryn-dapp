@@ -57,15 +57,15 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
     window.open(`${explorer}/address/${tokenAddress}`, '_blank');
   }, []);
 
-  const oracleLink = useMemo(() => {
-    return getBobExplorerUrl() + '/address/' + reserve.priceOracle;
-  }, [reserve.priceOracle]);
+  const oracleLink = useMemo(
+    () => getBobExplorerUrl() + '/address/' + reserve.priceOracle,
+    [reserve.priceOracle],
+  );
 
-  const reserveSize = useMemo(() => {
-    return Decimal.from(reserve.availableLiquidityUSD).add(
-      reserve.totalDebtUSD,
-    );
-  }, [reserve]);
+  const reserveSize = useMemo(
+    () => Decimal.from(reserve.availableLiquidityUSD).add(reserve.totalDebtUSD),
+    [reserve],
+  );
 
   return (
     <div className={classNames('w-full flex flex-col gap-6', className)}>

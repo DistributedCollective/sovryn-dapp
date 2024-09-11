@@ -65,9 +65,10 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     [summary],
   );
 
-  const withdrawReserve = useMemo(() => {
-    return summary.reserves.find(r => r.reserve.symbol === withdrawAsset);
-  }, [withdrawAsset, summary]);
+  const withdrawReserve = useMemo(
+    () => summary.reserves.find(r => r.reserve.symbol === withdrawAsset),
+    [withdrawAsset, summary],
+  );
 
   const maximumWithdrawAmount = useMemo(() => {
     if (!withdrawReserve) {
@@ -85,9 +86,10 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
       : maxUSDWithdrawal.div(withdrawReserve.reserve.priceInUSD); // only partial withdraw
   }, [withdrawReserve, summary.supplyBalance]);
 
-  const withdrawAmountUsd = useMemo(() => {
-    return withdrawSize.mul(withdrawReserve?.reserve.priceInUSD ?? 0);
-  }, [withdrawSize, withdrawReserve]);
+  const withdrawAmountUsd = useMemo(
+    () => withdrawSize.mul(withdrawReserve?.reserve.priceInUSD ?? 0),
+    [withdrawSize, withdrawReserve],
+  );
 
   const remainingSupply = useMemo(
     () => withdrawReserve?.supplied.sub(withdrawSize) ?? Decimal.from(0),
@@ -104,20 +106,22 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     [isValidWithdrawAmount, withdrawSize],
   );
 
-  const onConfirm = useCallback(() => {
-    handleWithdraw(
+  const onConfirm = useCallback(
+    () =>
+      handleWithdraw(
+        withdrawSize,
+        withdrawAsset,
+        withdrawSize.eq(maximumWithdrawAmount),
+        { onComplete },
+      ),
+    [
+      handleWithdraw,
       withdrawSize,
       withdrawAsset,
-      withdrawSize.eq(maximumWithdrawAmount),
-      { onComplete },
-    );
-  }, [
-    handleWithdraw,
-    withdrawSize,
-    withdrawAsset,
-    onComplete,
-    maximumWithdrawAmount,
-  ]);
+      onComplete,
+      maximumWithdrawAmount,
+    ],
+  );
 
   return (
     <form className="flex flex-col gap-6">

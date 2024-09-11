@@ -40,9 +40,7 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({
   });
   const [lendAssetDialog, setLendAssetDialog] = useState<string | undefined>();
 
-  const onLendClose = useCallback(() => {
-    setLendAssetDialog(undefined);
-  }, []);
+  const onLendClose = useCallback(() => setLendAssetDialog(undefined), []);
 
   const mobileRenderer = useCallback(
     p => (

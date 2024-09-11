@@ -28,19 +28,23 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
   const { isMobile } = useIsMobile();
   const [open, setOpen] = useState(true);
 
-  const interestRateStrategyUrl = useMemo(() => {
-    return `${getBobExplorerUrl()}/address/${
-      AAVE_CONTRACT_ADDRESSES.INTEREST_RATE_STRATEGY
-    }`;
-  }, []);
+  const interestRateStrategyUrl = useMemo(
+    () =>
+      `${getBobExplorerUrl()}/address/${
+        AAVE_CONTRACT_ADDRESSES.INTEREST_RATE_STRATEGY
+      }`,
+    [],
+  );
 
-  const collectorContractUrl = useMemo(() => {
-    return `${getBobExplorerUrl()}/address/${AAVE_CONTRACT_ADDRESSES.TREASURY}`;
-  }, []);
+  const collectorContractUrl = useMemo(
+    () => `${getBobExplorerUrl()}/address/${AAVE_CONTRACT_ADDRESSES.TREASURY}`,
+    [],
+  );
 
-  const currentUsageRatio = useMemo(() => {
-    return Decimal.from(reserve.borrowUsageRatio).mul(100);
-  }, [reserve.borrowUsageRatio]);
+  const currentUsageRatio = useMemo(
+    () => Decimal.from(reserve.borrowUsageRatio).mul(100),
+    [reserve.borrowUsageRatio],
+  );
 
   return (
     <Accordion

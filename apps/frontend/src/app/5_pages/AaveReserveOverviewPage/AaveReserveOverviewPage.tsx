@@ -10,6 +10,7 @@ import { Paragraph, Tabs, TabSize, TabType } from '@sovryn/ui';
 import { useAaveReservesData } from '../../../hooks/aave/useAaveReservesData';
 import { translations } from '../../../locales/i18n';
 import { TAB_ITEMS } from './AaveReserveOverviewPage.constants';
+import { COMMON_SYMBOLS } from '../../../utils/asset';
 import { BorrowDetailsGraph } from './components/BorrowDetailsGraph/BorrowDetailsGraph';
 import { EModeDetails } from './components/EModeDetails/EModeDetails';
 import { InterestRateModelGraph } from './components/InterestRateModelGraph/InterestRateModelGraph';
@@ -26,7 +27,7 @@ enum OverviewTab {
 
 const AaveReserveOverviewPage: FC = () => {
   const [searchParams] = useSearchParams();
-  const symbol = searchParams.get('asset') || 'ETH';
+  const symbol = searchParams.get('asset') || COMMON_SYMBOLS.ETH;
   const { reserves } = useAaveReservesData();
   const [activeOverviewTab, setActiveOverviewTab] = useState<OverviewTab>(
     OverviewTab.RESERVE,
@@ -37,7 +38,9 @@ const AaveReserveOverviewPage: FC = () => {
     [reserves, symbol],
   );
 
-  if (!reserve) return null;
+  if (!reserve) {
+    return null;
+  }
   return (
     <div className="w-full pb-6 2xl:px-12">
       <Helmet>
@@ -55,7 +58,7 @@ const AaveReserveOverviewPage: FC = () => {
           className="w-full bg-gray-80 rounded p-1 border border-gray-60 lg:hidden"
           index={activeOverviewTab}
           items={TAB_ITEMS}
-          onChange={e => setActiveOverviewTab(e)}
+          onChange={setActiveOverviewTab}
           size={TabSize.normal}
           type={TabType.secondary}
         />

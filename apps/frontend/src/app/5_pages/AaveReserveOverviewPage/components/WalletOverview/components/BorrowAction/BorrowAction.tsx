@@ -32,13 +32,9 @@ export const BorrowAction: FC<BorrowActionProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
 
-  const onBorrowClose = useCallback(() => {
-    setOpen(false);
-  }, []);
+  const onBorrowClose = useCallback(() => setOpen(false), []);
 
-  const onBorrowOpen = useCallback(() => {
-    setOpen(true);
-  }, []);
+  const onBorrowOpen = useCallback(() => setOpen(true), []);
 
   const isBorrowDisabled = useMemo(() => {
     return availableToBorrow.lte(0);

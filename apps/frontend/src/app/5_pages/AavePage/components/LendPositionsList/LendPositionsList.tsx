@@ -49,9 +49,10 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
     orderDirection: OrderDirection.Desc,
   });
 
-  const onWithdrawClose = useCallback(() => {
-    setWithdrawAssetDialog(undefined);
-  }, []);
+  const onWithdrawClose = useCallback(
+    () => setWithdrawAssetDialog(undefined),
+    [],
+  );
 
   const mobileRenderer = useCallback(
     p => (

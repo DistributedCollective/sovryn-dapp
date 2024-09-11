@@ -38,23 +38,26 @@ export const DisableEModeForm: FC<DisableEModeFormProps> = ({
   const { userReservesData, reservesData, timestamp } =
     useAaveUserReservesData();
 
-  const onConfirm = useCallback(() => {
-    handleDisableUserEMode({ onComplete });
-  }, [handleDisableUserEMode, onComplete]);
+  const onConfirm = useCallback(
+    () => handleDisableUserEMode({ onComplete }),
+    [handleDisableUserEMode, onComplete],
+  );
 
-  const summaryAfterDisabled = useMemo(() => {
-    return normalizeEModeSummary(
-      EMODE_DISABLED_ID,
-      reservesData,
-      userReservesData,
-      timestamp,
-    );
-  }, [userReservesData, reservesData, timestamp]);
+  const summaryAfterDisabled = useMemo(
+    () =>
+      normalizeEModeSummary(
+        EMODE_DISABLED_ID,
+        reservesData,
+        userReservesData,
+        timestamp,
+      ),
+    [userReservesData, reservesData, timestamp],
+  );
 
-  const confirmEnabled = useMemo(() => {
-    // cannot disable if undercollateralized
-    return !summaryAfterDisabled.liquidationRisk;
-  }, [summaryAfterDisabled.liquidationRisk]);
+  const isConfirmEnabled = useMemo(
+    () => !summaryAfterDisabled.liquidationRisk,
+    [summaryAfterDisabled.liquidationRisk],
+  );```
 
   return (
     <div className="space-y-6">
@@ -127,7 +130,7 @@ export const DisableEModeForm: FC<DisableEModeFormProps> = ({
 
       <Button
         className="w-full"
-        disabled={!confirmEnabled}
+        disabled={!isConfirmEnabled}
         text={t(translations.aavePage.eMode.disableEMode)}
         onClick={onConfirm}
       />

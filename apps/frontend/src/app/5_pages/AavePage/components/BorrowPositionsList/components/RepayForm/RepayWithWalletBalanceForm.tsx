@@ -65,21 +65,25 @@ export const RepayWithWalletBalanceForm: FC<
     [summary],
   );
 
-  const repayReserve = useMemo(() => {
-    return summary.reserves.find(r => r.reserve.symbol === repayAsset);
-  }, [summary.reserves, repayAsset]);
+  const repayReserve = useMemo(
+    () => summary.reserves.find(r => r.reserve.symbol === repayAsset),
+    [summary.reserves, repayAsset],
+  );
 
-  const maximumRepayAmount = useMemo(() => {
-    return repayReserve
-      ? repayReserve.borrowed.gt(repayAssetBalance)
-        ? repayAssetBalance
-        : repayReserve.borrowed
-      : Decimal.from(0);
-  }, [repayReserve, repayAssetBalance]);
+  const maximumRepayAmount = useMemo(
+    () =>
+      repayReserve
+        ? repayReserve.borrowed.gt(repayAssetBalance)
+          ? repayAssetBalance
+          : repayReserve.borrowed
+        : Decimal.from(0),
+    [repayReserve, repayAssetBalance],
+  );
 
-  const repayUsdAmount = useMemo(() => {
-    return repaySize.mul(repayReserve?.reserve.priceInUSD ?? 0);
-  }, [repaySize, repayReserve]);
+  const repayUsdAmount = useMemo(
+    () => repaySize.mul(repayReserve?.reserve.priceInUSD ?? 0),
+    [repaySize, repayReserve],
+  );
 
   const newDebtAmount = useMemo(() => {
     const newDebt = repayReserve?.borrowed
@@ -90,38 +94,43 @@ export const RepayWithWalletBalanceForm: FC<
     return newDebt.gt(0) ? newDebt : Decimal.from(0);
   }, [repayReserve?.borrowed, repaySize]);
 
-  const newDebtAmountUSD = useMemo(() => {
-    return newDebtAmount.mul(repayReserve?.reserve.priceInUSD ?? 0);
-  }, [newDebtAmount, repayReserve]);
+  const newDebtAmountUsd = useMemo(
+    () => newDebtAmount.mul(repayReserve?.reserve.priceInUSD ?? 0),
+    [newDebtAmount, repayReserve],
+  );
 
-  const newCollateralRatio = useMemo(() => {
-    return AaveCalculations.computeCollateralRatio(
-      summary.collateralBalance,
-      summary.borrowBalance.sub(repayUsdAmount),
-    );
-  }, [summary, repayUsdAmount]);
+  const newCollateralRatio = useMemo(
+    () =>
+      AaveCalculations.computeCollateralRatio(
+        summary.collateralBalance,
+        summary.borrowBalance.sub(repayUsdAmount),
+      ),
+    [summary, repayUsdAmount],
+  );
 
   const isValidRepayAmount = useMemo(
     () => (repaySize.gt(0) ? repaySize.lte(maximumRepayAmount) : true),
     [repaySize, maximumRepayAmount],
   );
 
-  const onConfirm = useCallback(() => {
-    handleRepay(
+  const onConfirm = useCallback(
+    () =>
+      handleRepay(
+        repayAsset,
+        repaySize,
+        repaySize.eq(maximumRepayAmount),
+        repayReserve!.borrowRateMode,
+        { onComplete },
+      ),
+    [
+      handleRepay,
       repayAsset,
       repaySize,
-      repaySize.eq(maximumRepayAmount),
-      repayReserve!.borrowRateMode,
-      { onComplete },
-    );
-  }, [
-    handleRepay,
-    repayAsset,
-    repaySize,
-    onComplete,
-    repayReserve,
-    maximumRepayAmount,
-  ]);
+      onComplete,
+      repayReserve,
+      maximumRepayAmount,
+    ],
+  );
 
   return (
     <form className="flex flex-col gap-6 relative">

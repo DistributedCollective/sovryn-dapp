@@ -38,21 +38,16 @@ export const EfficiencyModeCard: FC<EfficiencyModeCardProps> = ({
   const [disableEModeOpen, setDisableEModeOpen] = useState(false);
   const [switchEModeOpen, setSwitchEModeOpen] = useState(false);
 
-  const onEnableEModeClose = useCallback(() => {
-    setEnableEModeOpen(false);
-  }, []);
+  const onEnableEModeClose = useCallback(() => setEnableEModeOpen(false), []);
 
-  const onDisableEModeClose = useCallback(() => {
-    setDisableEModeOpen(false);
-  }, []);
+const onDisableEModeClose = useCallback(() => setDisableEModeOpen(false), []);
 
-  const onSwitchEModeClose = useCallback(() => {
-    setSwitchEModeOpen(false);
-  }, []);
+const onSwitchEModeClose = useCallback(() => setSwitchEModeOpen(false), []);
 
-  const currentCategory = useMemo(() => {
-    return eModeCategories.find(c => c.id === eModeCategoryId);
-  }, [eModeCategories, eModeCategoryId]);
+  const currentCategory = useMemo(
+    () => eModeCategories.find(c => c.id === eModeCategoryId),
+    [eModeCategories, eModeCategoryId],
+  );
 
   return (
     <>

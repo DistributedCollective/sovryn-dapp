@@ -32,13 +32,9 @@ export const SupplyAction: FC<SupplyActionProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
 
-  const onSupplyClose = useCallback(() => {
-    setOpen(false);
-  }, []);
+  const onSupplyClose = useCallback(() => setOpen(false), []);
 
-  const onSupplyOpen = useCallback(() => {
-    setOpen(true);
-  }, []);
+  const onSupplyOpen = useCallback(() => setOpen(true), []);
 
   return (
     <div className="flex justify-between items-center">

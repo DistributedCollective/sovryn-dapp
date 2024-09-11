@@ -58,8 +58,8 @@ export const normalizeLendPositions = (
 
 export const normalizeBorrowPositions = (
   userReservesSummary: AaveUserReservesSummary,
-): BorrowPosition[] => {
-  return userReservesSummary.reserves.reduce((acc, r) => {
+): BorrowPosition[] =>
+  userReservesSummary.reserves.reduce((acc, r) => {
     if (r.borrowed.gt(0)) {
       acc.push({
         asset: r.reserve.symbol,
@@ -79,7 +79,6 @@ export const normalizeBorrowPositions = (
     }
     return acc;
   }, [] as BorrowPosition[]);
-};
 
 export const normalizeBorrowPoolDetails = (
   reserves: Reserve[],

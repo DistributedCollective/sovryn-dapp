@@ -61,17 +61,20 @@ export const LendForm: FC<LendFormProps> = ({
     [reserves],
   );
 
-  const reserve = useMemo(() => {
-    return reserves.find(r => r.symbol === lendAsset) ?? reserves[0];
-  }, [reserves, lendAsset]);
+  const reserve = useMemo(
+    () => reserves.find(r => r.symbol === lendAsset) ?? reserves[0],
+    [reserves, lendAsset],
+  );
 
-  const assetUsdValue = useMemo(() => {
-    return Decimal.from(reserve?.priceInUSD ?? 0).mul(lendSize);
-  }, [reserve, lendSize]);
+ const assetUsdValue = useMemo(
+    () => Decimal.from(reserve?.priceInUSD ?? 0).mul(lendSize),
+    [reserve, lendSize],
+  );
 
-  const supplyApy = useMemo(() => {
-    return Decimal.from(reserve?.supplyAPY ?? 0).mul(100);
-  }, [reserve]);
+  const supplyApy = useMemo(
+    () => Decimal.from(reserve?.supplyAPY ?? 0).mul(100),
+    [reserve],
+  );
 
   const isValidLendAmount = useMemo(
     () => (lendSize.gt(0) ? lendSize.lte(lendAssetBalance) : true),
@@ -83,9 +86,10 @@ export const LendForm: FC<LendFormProps> = ({
     [lendSize, isValidLendAmount],
   );
 
-  const onConfirm = useCallback(() => {
-    handleDeposit(lendSize, reserve.symbol, { onComplete });
-  }, [handleDeposit, lendSize, reserve, onComplete]);
+  const onConfirm = useCallback(
+    () => handleDeposit(lendSize, reserve.symbol, { onComplete }),
+    [handleDeposit, lendSize, reserve, onComplete],
+  );
 
   return (
     <form className="flex flex-col gap-6">

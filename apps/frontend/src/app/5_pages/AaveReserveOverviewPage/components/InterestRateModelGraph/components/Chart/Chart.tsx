@@ -38,31 +38,37 @@ export const Chart: FC<ChartProps> = ({ meta, rates }) => {
     [rates],
   );
 
-  const optimalPercentage = useMemo(() => {
-    return rates.optimalUsageRatio
-      ? parseFloat((parseFloat(rates.optimalUsageRatio) * 100).toFixed(2))
-      : 0;
-  }, [rates.optimalUsageRatio]);
+  const optimalPercentage = useMemo(
+    () =>
+      rates.optimalUsageRatio
+        ? parseFloat((parseFloat(rates.optimalUsageRatio) * 100).toFixed(2))
+        : 0,
+    [rates.optimalUsageRatio],
+  );
 
-  const currentPercentage = useMemo(() => {
-    return rates.currentUsageRatio
-      ? parseFloat((parseFloat(rates.currentUsageRatio) * 100).toFixed(2))
-      : 0;
-  }, [rates.currentUsageRatio]);
+  const currentPercentage = useMemo(
+    () =>
+      rates.currentUsageRatio
+        ? parseFloat((parseFloat(rates.currentUsageRatio) * 100).toFixed(2))
+        : 0,
+    [rates.currentUsageRatio],
+  );
 
-  const optimalValue = useMemo(() => {
-    return [
+  const optimalValue = useMemo(
+    () => [
       { x: optimalPercentage, y: 0 },
       { x: optimalPercentage, y: 75 },
-    ];
-  }, [optimalPercentage]);
+    ],
+    [optimalPercentage],
+  );
 
-  const currentValue = useMemo(() => {
-    return [
+  const currentValue = useMemo(
+    () => [
       { x: currentPercentage, y: 0 },
       { x: currentPercentage, y: 75 },
-    ];
-  }, [currentPercentage]);
+    ],
+    [currentPercentage],
+  );
 
   useEffect(() => {
     if (chartRef.current) {

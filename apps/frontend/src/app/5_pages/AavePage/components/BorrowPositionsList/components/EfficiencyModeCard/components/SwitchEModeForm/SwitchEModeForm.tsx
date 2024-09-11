@@ -37,57 +37,64 @@ export const SwitchEModeForm: FC<SwitchEModeFormProps> = ({
   onComplete,
 }) => {
   const { handleSetUserEMode } = useAaveSetUserEMode();
-  const [category, setCategory] = useState<string>('');
+  const [category, setCategory] = useState('');
   const { summary, userReservesData, reservesData, timestamp } =
     useAaveUserReservesData();
 
-  const categoriesOptions = useMemo(() => {
-    return categories.reduce((acc, category) => {
-      if (category.id === current?.id) {
-        return acc; // skip current category
-      }
+  const categoriesOptions = useMemo(
+    () =>
+      categories.reduce((acc, category) => {
+        if (category.id === current?.id) {
+          return acc; // skip current category
+        }
 
-      return [
-        ...acc,
-        {
-          label: category.label,
-          value: String(category.id),
-        },
-      ];
-    }, [] as SelectOption[]);
-  }, [categories, current?.id]);
+        return [
+          ...acc,
+          {
+            label: category.label,
+            value: String(category.id),
+          },
+        ];
+      }, [] as SelectOption[]),
+    [categories, current?.id],
+  );
 
-  const selectedCategory = useMemo(() => {
-    return categories.find(c => c.id === Number(category));
-  }, [category, categories]);
+  const selectedCategory = useMemo(
+    () => categories.find(c => c.id === Number(category)),
+    [category, categories],
+  );
 
-  const summaryAfterSwitch = useMemo(() => {
-    return normalizeEModeSummary(
-      selectedCategory?.id ?? 0,
-      reservesData,
-      userReservesData,
-      timestamp,
-    );
-  }, [userReservesData, reservesData, timestamp, selectedCategory?.id]);
+  const summaryAfterSwitch = useMemo(
+    () =>
+      normalizeEModeSummary(
+        selectedCategory?.id ?? 0,
+        reservesData,
+        userReservesData,
+        timestamp,
+      ),
+    [userReservesData, reservesData, timestamp, selectedCategory?.id],
+  );
 
-  const positionsInOtherCategories = useMemo(() => {
-    return summary.reserves.some(
-      r => r.reserve.eModeCategoryId !== Number(category) && r.borrowed.gt(0),
-    );
-  }, [summary, category]);
+  const positionsInOtherCategories = useMemo(
+    () =>
+      summary.reserves.some(
+        r => r.reserve.eModeCategoryId !== Number(category) && r.borrowed.gt(0),
+      ),
+    [summary, category],
+  );
 
-  const confirmEnabled = useMemo(() => {
-    // cannot switch if undercollateralized or have positions in other categories
-    return (
+  const isConfirmEnabled = useMemo(
+    () =>
       !summaryAfterSwitch.liquidationRisk &&
       !positionsInOtherCategories &&
-      selectedCategory
-    );
-  }, [summaryAfterSwitch, positionsInOtherCategories, selectedCategory]);
+      selectedCategory,
+    [summaryAfterSwitch, positionsInOtherCategories, selectedCategory],
+  );
 
-  const onConfirm = useCallback(() => {
-    handleSetUserEMode(selectedCategory!, { onComplete });
-  }, [handleSetUserEMode, selectedCategory, onComplete]);
+  const onConfirm = useCallback(
+    () => handleSetUserEMode(selectedCategory!, { onComplete }),
+    [handleSetUserEMode, selectedCategory, onComplete],
+  );
 
   return (
     <div className="space-y-6">
@@ -160,7 +167,7 @@ export const SwitchEModeForm: FC<SwitchEModeFormProps> = ({
 
       <Button
         className="w-full"
-        disabled={!confirmEnabled}
+        disabled={!isConfirmEnabled}
         text={t(translations.aavePage.eMode.switchCategory)}
         onClick={onConfirm}
       />

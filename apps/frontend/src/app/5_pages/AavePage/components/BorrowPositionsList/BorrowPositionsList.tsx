@@ -52,9 +52,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
   });
   const [repayAssetDialog, setRepayAssetDialog] = useState<string>();
 
-  const onRepayClose = useCallback(() => {
-    setRepayAssetDialog(undefined);
-  }, []);
+  const onBorrowClose = useCallback(() => setBorrowAssetDialog(undefined), []);
 
   const rowTitleRenderer = useCallback(
     (r: BorrowPosition) => (

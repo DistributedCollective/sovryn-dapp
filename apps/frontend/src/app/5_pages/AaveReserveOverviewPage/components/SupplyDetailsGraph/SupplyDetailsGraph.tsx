@@ -27,9 +27,7 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
   const [open, setOpen] = useState(true);
   const { isMobile } = useIsMobile();
 
-  const supplyStats = useMemo(() => {
-    return normalizeSupplyStats(reserve);
-  }, [reserve]);
+  const supplyStats = useMemo(() => normalizeSupplyStats(reserve), [reserve]);
 
   return (
     <Accordion

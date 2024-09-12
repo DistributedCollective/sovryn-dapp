@@ -4,15 +4,18 @@ import { t } from 'i18next';
 
 import { Align, HelperButton } from '@sovryn/ui';
 
+import { BOB_CHAIN_ID } from '../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { BorrowPosition } from './BorrowPositionsList.types';
 import { BorrowPositionAction } from './components/BorrowPositionAction/BorrowPositionAction';
+import { BorrowRateModeSelect } from './components/BorrowRateModeSelect/BorrowRateModeSelect';
 
 const pageTranslations = translations.aavePage;
 
-export const COLUMNS_CONFIG = [
+export const COLUMNS_CONFIG = (onRepayClick: (asset: string) => void) => [
   {
     id: 'asset',
     sortable: true,
@@ -25,13 +28,14 @@ export const COLUMNS_CONFIG = [
         dataAttribute="borrow-asset"
         showAssetLogo
         asset={position.asset}
+        chainId={BOB_CHAIN_ID}
         className="lg:justify-start justify-end"
         logoClassName="[&>svg]:h-8 [&>svg]:w-8 [&>svg]:mr-[10px]"
       />
     ),
   },
   {
-    id: 'balance',
+    id: 'borrowed',
     sortable: true,
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
@@ -41,26 +45,26 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (pool: BorrowPosition) => (
-      <AmountRenderer value={pool.balance} suffix={pool.asset} />
+      <AmountRenderer value={pool.borrowed} suffix={pool.asset} precision={2} />
     ),
   },
   {
-    id: 'apr',
+    id: 'apy',
     sortable: true,
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
     title: (
       <span className="flex items-center gap-1 text-gray-30">
-        {t(translations.aavePage.common.apr)}{' '}
-        <HelperButton content={t(pageTranslations.common.aprInfo)} />
+        {t(translations.aavePage.common.apy)}{' '}
+        <HelperButton content={t(pageTranslations.common.apyInfo)} />
       </span>
     ),
     cellRenderer: (position: BorrowPosition) => (
-      <AmountRenderer value={position.apr} suffix="%" />
+      <AmountRenderer value={position.apy} suffix="%" precision={2} />
     ),
   },
   {
-    id: 'apyType',
+    id: 'borrowRateMode',
     sortable: true,
     align: Align.center,
     className: '[&_*]:mx-auto [&_*]:space-x-2', // center head
@@ -71,13 +75,17 @@ export const COLUMNS_CONFIG = [
       </span>
     ),
     cellRenderer: (position: BorrowPosition) => (
-      <span>{t(pageTranslations.common[position.apyType])}</span>
+      <div className="flex items-center justify-center">
+        <BorrowRateModeSelect position={position} />
+      </div>
     ),
   },
   {
     id: 'actions',
     align: Align.center,
     title: ' ',
-    cellRenderer: () => <BorrowPositionAction />,
+    cellRenderer: (position: BorrowPosition) => (
+      <BorrowPositionAction onRepayClick={() => onRepayClick(position.asset)} />
+    ),
   },
 ];

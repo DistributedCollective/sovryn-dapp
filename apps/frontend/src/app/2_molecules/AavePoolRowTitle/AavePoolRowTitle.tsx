@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 
+import { BOB_CHAIN_ID } from '../../../config/chains';
+
 import {
   AmountRenderer,
   AmountRendererProps,
@@ -17,7 +19,12 @@ export const AaveRowTitle: FC<AaveRowTitleProps> = ({
   ...props
 }) => (
   <div className="flex justify-between items-center w-full pr-3">
-    <AssetRenderer showAssetLogo asset={asset} className="mr-1" />
+    <AssetRenderer
+      showAssetLogo
+      asset={asset}
+      className="mr-1"
+      chainId={BOB_CHAIN_ID}
+    />
     <div className="pl-1 flex items-center font-medium">
       <AmountRenderer {...props} />
       {label && (

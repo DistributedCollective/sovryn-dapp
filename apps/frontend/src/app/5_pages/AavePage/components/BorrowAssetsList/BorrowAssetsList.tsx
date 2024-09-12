@@ -1,49 +1,78 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { Accordion, OrderOptions, Table } from '@sovryn/ui';
+import {
+  Accordion,
+  Dialog,
+  DialogBody,
+  DialogHeader,
+  ErrorBadge,
+  ErrorLevel,
+  OrderDirection,
+  OrderOptions,
+  Table,
+} from '@sovryn/ui';
 
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { translations } from '../../../../../locales/i18n';
+import { sortRowsByOrderOptions } from '../../AavePage.utils';
 import { COLUMNS_CONFIG } from './BorrowAssetsList.constants';
 import { BorrowPoolDetails } from './BorrowAssetsList.types';
 import { BorrowAssetDetails } from './components/BorrowAssetDetails/BorrowAssetDetails';
+import { BorrowForm } from './components/BorrowForm/BorrowForm';
 
 const pageTranslations = translations.aavePage.borrowAssetsList;
 
-export const BorrowAssetsList: FC = () => {
+type BorrowAssetsListProps = {
+  borrowPools: BorrowPoolDetails[];
+  eModeEnabled: boolean;
+  loading: boolean;
+};
+
+export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
+  borrowPools,
+  eModeEnabled,
+  loading,
+}) => {
   const [open, setOpen] = useState(true);
-  const [orderOptions, setOrderOptions] = useState<OrderOptions>();
+  const [orderOptions, setOrderOptions] = useState<OrderOptions>({
+    orderBy: 'asset',
+    orderDirection: OrderDirection.Desc,
+  });
+  const [borrowAssetDialog, setBorrowAssetDialog] = useState<string>();
+
+  const onBorrowClose = useCallback(() => {
+    setBorrowAssetDialog(undefined);
+  }, []);
 
   const rowTitleRenderer = useCallback(
-    row => (
+    (row: BorrowPoolDetails) => (
       <AaveRowTitle
         asset={row.asset}
-        value={row.apr}
+        value={row.apy}
         suffix="%"
-        label={t(translations.aavePage.common.apy)}
+        label={t(translations.aavePage.common.apr)}
+        precision={2}
       />
     ),
     [],
   );
-  const mobileRenderer = useCallback(p => <BorrowAssetDetails pool={p} />, []);
 
-  // TODO: just a mock for now
-  const borrowPools: BorrowPoolDetails[] = [
-    {
-      asset: 'BTC',
-      apr: 2.01,
-      available: 12.34,
-      availableUsd: 100,
-    },
-    {
-      asset: 'ETH',
-      apr: 2.01,
-      available: 12.34,
-      availableUsd: 100,
-    },
-  ];
+  const mobileRenderer = useCallback(
+    p => (
+      <BorrowAssetDetails
+        onBorrowClick={() => setBorrowAssetDialog(p.asset)}
+        pool={p}
+      />
+    ),
+    [setBorrowAssetDialog],
+  );
+
+  const rows = useMemo(
+    () => sortRowsByOrderOptions(orderOptions, borrowPools),
+    [orderOptions, borrowPools],
+  );
 
   return (
     <Accordion
@@ -57,17 +86,36 @@ export const BorrowAssetsList: FC = () => {
       open={open}
       onClick={setOpen}
     >
+      {eModeEnabled && (
+        <ErrorBadge
+          className="flex justify-start"
+          level={ErrorLevel.Warning}
+          message={t(translations.aavePage.eMode.eModeActivatedWarning)}
+        />
+      )}
+
       <Table
-        className="mt-3"
-        columns={COLUMNS_CONFIG}
+        isLoading={loading}
+        className="mt-4"
+        columns={COLUMNS_CONFIG(setBorrowAssetDialog)}
         rowClassName="bg-gray-80"
         accordionClassName="bg-gray-60 border border-gray-70"
         rowTitle={rowTitleRenderer}
         mobileRenderer={mobileRenderer}
-        rows={borrowPools}
+        rows={rows}
         orderOptions={orderOptions}
         setOrderOptions={setOrderOptions}
       />
+
+      <Dialog disableFocusTrap isOpen={!!borrowAssetDialog}>
+        <DialogHeader
+          title={t(translations.aavePage.common.borrow)}
+          onClose={onBorrowClose}
+        />
+        <DialogBody className="flex flex-col gap-6">
+          <BorrowForm asset={borrowAssetDialog!} onComplete={onBorrowClose} />
+        </DialogBody>
+      </Dialog>
     </Accordion>
   );
 };

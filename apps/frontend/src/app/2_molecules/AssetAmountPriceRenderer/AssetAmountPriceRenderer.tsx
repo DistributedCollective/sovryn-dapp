@@ -7,29 +7,34 @@ import { Decimalish } from '@sovryn/utils';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 
 type AssetAmountPriceRendererProps = {
-  value: Decimalish;
   asset: string;
+  value: Decimalish;
+  valueUsd: Decimalish;
   className?: string;
   valueClassName?: string;
   priceClassName?: string;
 };
 
 export const AssetAmountPriceRenderer: FC<AssetAmountPriceRendererProps> = ({
-  value,
   asset,
+  value,
+  valueUsd,
   className,
   valueClassName,
   priceClassName,
 }) => {
-  // TODO: get price in usd
-  const usdPrice = value;
-
   return (
-    <div className={className ?? 'flex flex-col text-right space-y-1'}>
-      <AmountRenderer value={value} suffix={asset} className={valueClassName} />
+    <div className={classNames('flex flex-col gap-1', className)}>
       <AmountRenderer
-        value={usdPrice}
+        value={value}
+        suffix={asset}
+        className={valueClassName}
+        precision={2}
+      />
+      <AmountRenderer
+        value={valueUsd}
         prefix="$"
+        precision={2}
         className={classNames(
           'text-gray-40 text-xs font-medium',
           priceClassName,

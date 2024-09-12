@@ -1,3 +1,5 @@
+import { RatesData } from './Chart.types';
+
 const getOrCreateLegendList = id => {
   const legendContainer = document.getElementById(id);
   if (!legendContainer) {
@@ -86,4 +88,45 @@ export const htmlLegendPlugin = {
       ul.appendChild(li);
     });
   },
+};
+
+export const calculateInterestRateModel = (
+  utilization: number,
+  baseRate: number,
+  optimalUtilization: number,
+  initialSlope: number,
+  secondarySlope: number,
+): number => {
+  if (utilization === 0) {
+    return 0;
+  }
+
+  if (utilization <= optimalUtilization) {
+    return baseRate + (utilization / optimalUtilization) * initialSlope;
+  }
+
+  return (
+    baseRate +
+    initialSlope +
+    ((utilization - optimalUtilization) / (1 - optimalUtilization)) *
+      secondarySlope
+  );
+};
+
+export const calculateVariableInterestRateModel = (
+  utilization: number,
+  rates: RatesData,
+): number => {
+  const baseRate = parseFloat(rates.baseVariableBorrowRate);
+  const optimalUtilization = parseFloat(rates.optimalUsageRatio);
+  const initialSlope = parseFloat(rates.variableRateSlope1);
+  const secondarySlope = parseFloat(rates.variableRateSlope2);
+
+  return calculateInterestRateModel(
+    utilization,
+    baseRate,
+    optimalUtilization,
+    initialSlope,
+    secondarySlope,
+  );
 };

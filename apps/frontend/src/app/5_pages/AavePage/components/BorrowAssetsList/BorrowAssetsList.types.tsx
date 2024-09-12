@@ -1,6 +1,8 @@
+import { Decimal } from '@sovryn/utils';
+
 export type BorrowPoolDetails = {
   asset: string;
-  apr: number;
-  available: number;
-  availableUsd: number;
+  apy: Decimal;
+  available?: Decimal;
+  availableUsd?: Decimal;
 };

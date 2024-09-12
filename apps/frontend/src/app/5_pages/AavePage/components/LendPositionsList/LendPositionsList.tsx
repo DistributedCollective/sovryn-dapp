@@ -1,60 +1,85 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
 import {
   Accordion,
+  Dialog,
+  DialogBody,
+  DialogHeader,
   OrderDirection,
   OrderOptions,
   Paragraph,
   Table,
 } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
+import { sortRowsByOrderOptions } from '../../AavePage.utils';
 import { PoolPositionStat } from '../PoolPositionStat/PoolPositionStat';
 import { COLUMNS_CONFIG } from './LendPositionsList.constants';
 import { LendPosition } from './LendPositionsList.types';
 import { LendPositionDetails } from './components/LendPositionDetails/LendPositionDetails';
+import { WithdrawForm } from './components/WithdrawForm/WithdrawForm';
 
 const pageTranslations = translations.aavePage;
 
-export const LendPositionsList: FC = () => {
+type LendPositionsListProps = {
+  supplyBalance: Decimal;
+  supplyWeightedApy: Decimal;
+  collateralBalance: Decimal;
+  lendPositions: LendPosition[];
+  loading: boolean;
+};
+
+export const LendPositionsList: FC<LendPositionsListProps> = ({
+  supplyBalance,
+  supplyWeightedApy,
+  collateralBalance,
+  lendPositions,
+  loading,
+}) => {
   const { account } = useAccount();
   const [open, setOpen] = useState(true);
-  const [balance] = useState(100); // TODO: mocked data
-  const [apy] = useState(2.3); // TODO: mocked data
-  const [collateral] = useState(3); // TODO: mocked data
+  const [withdrawAssetDialog, setWithdrawAssetDialog] = useState<string>();
   const [orderOptions, setOrderOptions] = useState<OrderOptions>({
-    orderBy: 'balance',
-    orderDirection: OrderDirection.Asc,
+    orderBy: 'asset',
+    orderDirection: OrderDirection.Desc,
   });
 
-  const rowTitleRenderer = useCallback(
-    r => <AaveRowTitle asset={r.asset} value={r.balance} suffix={r.asset} />,
-    [],
-  );
-  const mobileRenderer = useCallback(
-    p => <LendPositionDetails position={p} />,
+  const onWithdrawClose = useCallback(
+    () => setWithdrawAssetDialog(undefined),
     [],
   );
 
-  // TODO: mocked data
-  const lendPositions: LendPosition[] = [
-    {
-      asset: 'BTC',
-      apy: 2.01,
-      balance: 12.34,
-      collateral: true,
-    },
-    {
-      asset: 'ETH',
-      apy: 2.04,
-      balance: 1.34,
-      collateral: false,
-    },
-  ];
+  const mobileRenderer = useCallback(
+    p => (
+      <LendPositionDetails
+        position={p}
+        onWithdrawClick={setWithdrawAssetDialog}
+      />
+    ),
+    [setWithdrawAssetDialog],
+  );
+
+  const rowTitleRenderer = useCallback(
+    (r: LendPosition) => (
+      <AaveRowTitle
+        asset={r.asset}
+        value={r.supplied}
+        suffix={r.asset}
+        precision={2}
+      />
+    ),
+    [],
+  );
+
+  const rows = useMemo(
+    () => sortRowsByOrderOptions(orderOptions, lendPositions),
+    [orderOptions, lendPositions],
+  );
 
   return (
     <Accordion
@@ -73,34 +98,50 @@ export const LendPositionsList: FC = () => {
           <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:gap-6 lg:mb-6">
             <PoolPositionStat
               label={t(pageTranslations.common.balance)}
-              value={balance}
+              value={supplyBalance}
               prefix="$"
               precision={2}
             />
             <PoolPositionStat
               label={t(pageTranslations.common.apy)}
               labelInfo={t(pageTranslations.common.apyInfo)}
-              value={apy}
+              value={supplyWeightedApy}
               suffix="%"
               precision={2}
             />
             <PoolPositionStat
               label={t(pageTranslations.common.collateral)}
-              value={collateral}
+              labelInfo={t(pageTranslations.common.collateralInfo)}
+              value={collateralBalance}
               prefix="$"
               precision={2}
             />
           </div>
+
           <Table
-            columns={COLUMNS_CONFIG}
+            isLoading={loading}
+            columns={COLUMNS_CONFIG(setWithdrawAssetDialog)}
             rowClassName="bg-gray-80"
             accordionClassName="bg-gray-60 border border-gray-70"
             rowTitle={rowTitleRenderer}
             mobileRenderer={mobileRenderer}
-            rows={lendPositions}
+            rows={rows}
             orderOptions={orderOptions}
             setOrderOptions={setOrderOptions}
           />
+
+          <Dialog disableFocusTrap isOpen={!!withdrawAssetDialog}>
+            <DialogHeader
+              title={t(translations.aavePage.common.withdraw)}
+              onClose={onWithdrawClose}
+            />
+            <DialogBody className="flex flex-col gap-6">
+              <WithdrawForm
+                asset={withdrawAssetDialog!}
+                onComplete={onWithdrawClose}
+              />
+            </DialogBody>
+          </Dialog>
         </>
       ) : (
         <div className="flex items-center justify-center lg:h-12">

@@ -1,6 +1,5 @@
-export type MockData<T> = {
-  data1: T[];
-  label1: string;
+export type ChartData = {
+  data: { x: number; y: number }[];
+  label: string;
   lineColor: string;
-  xLabels: string[];
 };

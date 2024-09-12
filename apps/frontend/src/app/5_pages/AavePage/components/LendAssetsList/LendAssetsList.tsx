@@ -1,23 +1,57 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { Accordion, Checkbox, OrderOptions, Table } from '@sovryn/ui';
+import {
+  Accordion,
+  Checkbox,
+  Dialog,
+  DialogBody,
+  DialogHeader,
+  OrderDirection,
+  OrderOptions,
+  Table,
+} from '@sovryn/ui';
 
 import { AaveRowTitle } from '../../../../2_molecules/AavePoolRowTitle/AavePoolRowTitle';
 import { translations } from '../../../../../locales/i18n';
+import { sortRowsByOrderOptions } from '../../AavePage.utils';
 import { COLUMNS_CONFIG } from './LendAssetsList.constants';
 import { LendPoolDetails } from './LendAssetsList.types';
 import { LendAssetDetails } from './components/LendAssetDetails/LendAssetDetails';
+import { LendForm } from './components/LendForm/LendForm';
 
 const pageTranslations = translations.aavePage;
 
-export const LendAssetsList: FC = () => {
+type LendAssetsListProps = {
+  loading: boolean;
+  lendPools: LendPoolDetails[];
+};
+
+export const LendAssetsList: FC<LendAssetsListProps> = ({
+  lendPools,
+  loading,
+}) => {
   const [open, setOpen] = useState(true);
   const [showZeroBalances, setShowZeroBalances] = useState(true);
-  const [orderOptions, setOrderOptions] = useState<OrderOptions>();
+  const [orderOptions, setOrderOptions] = useState<OrderOptions>({
+    orderBy: 'asset',
+    orderDirection: OrderDirection.Desc,
+  });
+  const [lendAssetDialog, setLendAssetDialog] = useState<string | undefined>();
 
-  const mobileRenderer = useCallback(p => <LendAssetDetails pool={p} />, []);
+  const onLendClose = useCallback(() => setLendAssetDialog(undefined), []);
+
+  const mobileRenderer = useCallback(
+    p => (
+      <LendAssetDetails
+        pool={p}
+        onLendClick={() => setLendAssetDialog(p.asset)}
+      />
+    ),
+    [setLendAssetDialog],
+  );
+
   const rowTitleRenderer = useCallback(
     row => (
       <AaveRowTitle
@@ -25,26 +59,19 @@ export const LendAssetsList: FC = () => {
         value={row.apy}
         suffix="%"
         label={t(translations.aavePage.common.apy)}
+        precision={2}
       />
     ),
     [],
   );
 
-  // TODO: mocked values and filter
-  const lendPools: LendPoolDetails[] = [
-    {
-      asset: 'BTC',
-      apy: 2.02,
-      walletBalance: 12.34,
-      canBeCollateral: true,
-    },
-    {
-      asset: 'ETH',
-      apy: 2.02,
-      walletBalance: 12.34,
-      canBeCollateral: false,
-    },
-  ];
+  const rows = useMemo(() => {
+    const filtered = showZeroBalances
+      ? lendPools
+      : lendPools.filter(p => p.walletBalance.gt(0));
+
+    return sortRowsByOrderOptions(orderOptions, filtered);
+  }, [lendPools, showZeroBalances, orderOptions]);
 
   return (
     <Accordion
@@ -66,15 +93,26 @@ export const LendAssetsList: FC = () => {
       />
 
       <Table
-        columns={COLUMNS_CONFIG}
+        isLoading={loading}
+        columns={COLUMNS_CONFIG(setLendAssetDialog)}
         rowClassName="bg-gray-80"
         accordionClassName="bg-gray-60 border border-gray-70"
         rowTitle={rowTitleRenderer}
         mobileRenderer={mobileRenderer}
-        rows={lendPools}
+        rows={rows}
         orderOptions={orderOptions}
         setOrderOptions={setOrderOptions}
       />
+
+      <Dialog disableFocusTrap isOpen={!!lendAssetDialog}>
+        <DialogHeader
+          title={t(translations.aavePage.lendModal.title)}
+          onClose={onLendClose}
+        />
+        <DialogBody className="flex flex-col gap-6">
+          <LendForm onComplete={onLendClose} asset={lendAssetDialog!} />
+        </DialogBody>
+      </Dialog>
     </Accordion>
   );
 };

@@ -14,31 +14,47 @@ const pageTranslations = translations.aavePage;
 
 type BorrowAssetDetailsProps = {
   pool: BorrowPoolDetails;
+  onBorrowClick: () => void;
 };
 
-export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({ pool }) => (
+export const BorrowAssetDetails: FC<BorrowAssetDetailsProps> = ({
+  pool,
+  onBorrowClick,
+}) => (
   <div className="space-y-3">
     <div>
-      {/* APR */}
+      {/* APY */}
       <SimpleTableRow
         label={
           <span className="text-xs font-medium text-gray-30 items-center flex gap-1">
-            {t(pageTranslations.common.apr)}{' '}
-            <HelperButton content={t(pageTranslations.common.aprInfo)} />
+            {t(pageTranslations.common.apy)}{' '}
+            <HelperButton content={t(pageTranslations.common.apyInfo)} />
           </span>
         }
-        value={<AmountRenderer value={pool.apr} suffix="%" />}
+        value={<AmountRenderer value={pool.apy} suffix="%" precision={2} />}
       />
 
       {/* Available */}
       <SimpleTableRow
         label={t(pageTranslations.borrowAssetsList.available)}
         value={
-          <AssetAmountPriceRenderer value={pool.available} asset={pool.asset} />
+          pool.available && pool.availableUsd ? (
+            <AssetAmountPriceRenderer
+              value={pool.available}
+              valueUsd={pool.availableUsd}
+              asset={pool.asset}
+            />
+          ) : (
+            <span>-</span>
+          )
         }
       />
     </div>
 
-    <BorrowAssetAction />
+    <BorrowAssetAction
+      disabled={!pool.available || pool.available.eq(0)}
+      onBorrowClick={onBorrowClick}
+      asset={pool.asset}
+    />
   </div>
 );

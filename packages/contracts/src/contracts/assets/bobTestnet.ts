@@ -42,7 +42,7 @@ export const bobTestnet: Array<AssetDetails> = [
   },
   {
     symbol: 'DAI',
-    address: '0x2528AC8426DdCbfd2E038D90532F52a9Ad5BD594',
+    address: '0xcb913C75362A7Fd39de6A5DDE4341F370F5B4419',
     name: 'DAI Stablecoin',
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/dai')).default,
@@ -56,9 +56,9 @@ export const bobTestnet: Array<AssetDetails> = [
   },
   {
     symbol: 'USDC',
-    address: '0x143050408aCCb9A9a2f285e625537d48674f3e58',
+    address: '0x14E986C4a733B555c317D95Fe0FC5bFB5a7D166C',
     name: 'USD Coin',
-    decimals: 6,
+    decimals: 18,
     getIcon: async () => (await import('./icons/bob/usdc')).default,
   },
   {
@@ -81,5 +81,19 @@ export const bobTestnet: Array<AssetDetails> = [
     name: 'Wrapped Staked ETH',
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/wsteth')).default,
+  },
+  {
+    symbol: 'aWETH',
+    address: '0xe2B24ff36891017CeB3D9CDc20d576276BE1959C',
+    name: 'Aave Wrapped ETH',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/eth')).default,
+  },
+  {
+    symbol: 'WETH',
+    address: '0x8CEc2719a2e896A11eA3f10406EfDb6Ad87281D9',
+    name: 'Wrapped ETH',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/eth')).default,
   },
 ];

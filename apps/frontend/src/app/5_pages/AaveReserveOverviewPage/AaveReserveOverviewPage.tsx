@@ -84,7 +84,7 @@ const AaveReserveOverviewPage: FC = () => {
           <div
             className={classNames(
               { hidden: activeOverviewTab !== OverviewTab.WALLET },
-              'lg:block space-y-4 w-[450px] shrink-0',
+              'lg:block space-y-4 w-full lg:w-[450px] shrink-0',
             )}
           >
             <WalletOverview symbol={symbol} />

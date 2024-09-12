@@ -1,3 +1,5 @@
+import { Decimal } from '@sovryn/utils';
+
 export type MockData<T> = {
   data1: T[];
   data2: T[];
@@ -8,13 +10,13 @@ export type MockData<T> = {
 };
 
 export interface RatesData {
-  currentUsageRatio: string;
-  optimalUsageRatio: string;
-  baseVariableBorrowRate: string;
-  variableRateSlope1: string;
-  variableRateSlope2: string;
+  currentUsageRatio: Decimal;
+  optimalUsageRatio: Decimal;
+  baseVariableBorrowRate: Decimal;
+  variableRateSlope1: Decimal;
+  variableRateSlope2: Decimal;
   underlyingAsset: string;
   name: string;
   symbol: string;
-  decimals: string;
+  decimals: number;
 }

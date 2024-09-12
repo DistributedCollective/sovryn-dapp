@@ -999,7 +999,7 @@
             "of": "of",
             "apy": "APY",
             "chart": {
-                "label1": "Supply APR"
+                "suppApr": "Supply APR"
             }
         },
         "borrowDetails": {
@@ -1015,7 +1015,7 @@
             "collectorContract": "Collector contract",
             "viewContract": "View contract",
             "chart": {
-                "label1": "Borrow APR, variable"
+                "aprVarLabel": "Borrow APR, variable"
             }
         },
         "interestRateModel": {
@@ -1027,7 +1027,7 @@
             "collectorContract": "Collector contract",
             "viewContract": "View contract",
             "chart": {
-                "label1": "Borrow APR, variable"
+                "aprVarLabel": "Borrow APR, variable"
             }
         }
     },

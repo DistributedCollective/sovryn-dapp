@@ -8,7 +8,13 @@ import { Accordion, Icon, IconNames, Paragraph } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
+import { AAVE_CONTRACT_ADDRESSES } from '../../../../../constants/aave';
 import { Reserve } from '../../../../../hooks/aave/useAaveReservesData';
+import {
+  ESupportedTimeRanges,
+  ReserveRateTimeRange,
+  useAaveReservesHistory,
+} from '../../../../../hooks/aave/useAaveReservesHistory';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
 import { formatAmountWithSuffix } from '../../../../../utils/math';
@@ -28,6 +34,23 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
   const { isMobile } = useIsMobile();
 
   const supplyStats = useMemo(() => normalizeSupplyStats(reserve), [reserve]);
+
+  const [timeRange, setTimeRange] = useState<ReserveRateTimeRange>(
+    ESupportedTimeRanges.OneMonth,
+  );
+  const { data: history } = useAaveReservesHistory(
+    `${reserve.underlyingAsset}${AAVE_CONTRACT_ADDRESSES.POOL_ADDRESSES_PROVIDER}`,
+    timeRange,
+  );
+
+  const supplyChartData = useMemo(
+    () =>
+      history.map(i => ({
+        x: i.date,
+        y: i.liquidityRate * 100,
+      })),
+    [history],
+  );
 
   return (
     <Accordion
@@ -111,11 +134,11 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
 
         <Chart
           input={{
-            // TODO: implement once data is available
-            data: [],
-            label: t(pageTranslations.chart.label1),
+            data: supplyChartData,
+            label: t(pageTranslations.chart.suppApr),
             lineColor: theme.colors['primary-30'],
           }}
+          onTimeRangeChange={setTimeRange}
         />
 
         <div className="space-y-6">

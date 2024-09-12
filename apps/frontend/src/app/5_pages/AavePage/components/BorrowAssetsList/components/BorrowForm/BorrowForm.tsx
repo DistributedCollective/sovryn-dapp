@@ -122,14 +122,14 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
     [onComplete, borrowSize, borrowReserve, handleBorrow],
   );
 
-  const isConfirmDisabled = useMemo(() => {
-    return (
+  const isConfirmDisabled = useMemo(
+    () =>
       !isValidBorrowAmount ||
       borrowSize.lte(0) ||
       !acknowledge ||
-      !borrowReserve
-    );
-  }, [isValidBorrowAmount, borrowSize, acknowledge, borrowReserve]);
+      !borrowReserve,
+    [isValidBorrowAmount, borrowSize, acknowledge, borrowReserve],
+  );
 
   return (
     <form className="flex flex-col gap-6">

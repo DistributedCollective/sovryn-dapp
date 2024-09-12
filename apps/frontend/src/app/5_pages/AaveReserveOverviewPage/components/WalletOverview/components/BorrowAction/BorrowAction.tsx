@@ -36,9 +36,10 @@ export const BorrowAction: FC<BorrowActionProps> = ({
 
   const onBorrowOpen = useCallback(() => setOpen(true), []);
 
-  const isBorrowDisabled = useMemo(() => {
-    return availableToBorrow.lte(0);
-  }, [availableToBorrow]);
+  const isBorrowDisabled = useMemo(
+    () => availableToBorrow.lte(0),
+    [availableToBorrow],
+  );
 
   return (
     <div className="flex justify-between items-center">

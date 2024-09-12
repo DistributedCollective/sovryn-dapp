@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { ethers } from 'ethers';
 import { t } from 'i18next';
 
 import { prettyTx } from '@sovryn/ui';
@@ -8,32 +9,33 @@ import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRen
 import { translations } from '../../../../../locales/i18n';
 
 export const DATA_ENDPOINT_URL =
-  'https://season2-spice-points-bucket.s3.us-east-2.amazonaws.com/latest_Season2_Spice_distributed.json';
+  'https://season2-spice-points-bucket.s3.us-east-2.amazonaws.com/Total_S1&S2_Spice_Leaderboard.json';
 
 export const PAGE_SIZE = 50;
 
 export const COLUMNS_CONFIG = (isSingleUser: boolean = false) => [
   {
-    id: isSingleUser ? 'position' : '',
-    title: isSingleUser
-      ? t(translations.leaderboardPointsPage.table.yourPosition)
-      : '',
+    id: '',
+    title: '',
     cellRenderer: user => user.id,
+    className: 'w-24 invisible lg:visible h-0 lg:h-auto',
   },
   {
-    id: isSingleUser ? '' : 'wallet',
+    id: '',
     title: isSingleUser
-      ? ''
+      ? t(translations.leaderboardPointsPage.table.yourPosition)
       : t(translations.leaderboardPointsPage.table.participant),
     cellRenderer: user => (
       <div className="text-right lg:text-left w-full">
         {prettyTx(user.wallet, 4)}
       </div>
     ),
+    sampleData: prettyTx(ethers.constants.AddressZero, 4),
   },
   {
-    id: 'points',
-    title: t(translations.leaderboardPointsPage.table.points),
+    id: '',
+    title: t(translations.leaderboardPointsPage.table.spice),
     cellRenderer: user => <AmountRenderer value={user.points} />,
+    sampleData: '111,111,111.1111',
   },
 ];

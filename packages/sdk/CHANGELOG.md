@@ -1,5 +1,20 @@
 # @sovryn/sdk
 
+## 2.0.0
+
+### Patch Changes
+
+- Updated dependencies [f8c2f1e4]
+- Updated dependencies [ee1cbe42]
+  - @sovryn/contracts@1.2.0
+  - @sovryn/ethers-provider@1.0.3
+
+## 1.0.10
+
+### Patch Changes
+
+- 7625e9fc: chore: bring back WBTC/SAT pool
+
 ## 1.0.9
 
 ### Patch Changes

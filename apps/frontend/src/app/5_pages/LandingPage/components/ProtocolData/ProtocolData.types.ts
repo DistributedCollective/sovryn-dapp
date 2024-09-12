@@ -1,37 +1,47 @@
 export type LockedDataResult = {
-  tvlLending: {
-    totalBtc: number;
-    totalUsd: number;
-  };
-  tvlAmm: {
-    totalBtc: number;
-    totalUsd: number;
-  };
-  tvlProtocol: {
-    totalBtc: number;
-    totalUsd: number;
-  };
-  tvlStaking: {
-    totalBtc: number;
-    totalUsd: number;
-  };
-  tvlSubprotocols: {
-    totalBtc: number;
-    totalUsd: number;
-  };
-  tvlZero: {
-    totalBtc: number;
-    totalUsd: number;
-  };
-  tvlMynt: {
-    totalBtc: number;
-    totalUsd: number;
-  };
-  total_btc: number;
-  total_usd: number;
+  tvlLending:
+    | {
+        totalUsd: string;
+      }
+    | undefined;
+  tvlAmm:
+    | {
+        totalUsd: string;
+      }
+    | undefined;
+  tvlProtocol:
+    | {
+        totalUsd: string;
+      }
+    | undefined;
+  tvlStaking:
+    | {
+        totalUsd: string;
+      }
+    | undefined;
+  tvlSubprotocols:
+    | {
+        totalUsd: string;
+      }
+    | undefined;
+  tvlZero:
+    | {
+        totalUsd: string;
+      }
+    | undefined;
+  tvlMynt:
+    | {
+        totalUsd: string;
+      }
+    | undefined;
+  tvlSdex:
+    | {
+        totalUsd: string;
+      }
+    | undefined;
+  total_usd: string;
 };
 
 export type VolumeDataResult = {
-  btc: number;
   usd: number;
 };

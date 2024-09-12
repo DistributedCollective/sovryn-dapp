@@ -11,7 +11,7 @@ import axios from 'axios';
 
 import { DATA_REFRESH_INTERVAL } from '../constants/general';
 import { useCurrentChain } from '../hooks/useChainStore';
-import { getSdexUri } from '../utils/indexer';
+import { getSovrynIndexerUri } from '../utils/indexer';
 import { decimalic } from '../utils/math';
 
 interface TokenPricesContextType {
@@ -23,7 +23,7 @@ interface TokenPricesProviderProps {
   children: ReactNode;
 }
 
-type TokenDataProps = {
+export type TokenData = {
   symbol: string;
   name: string;
   decimals: number;
@@ -46,12 +46,16 @@ export const TokenPricesProvider: React.FC<TokenPricesProviderProps> = ({
   const fetchTokenPrices = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${getSdexUri(currentChainId)}/tokens`);
+      const response = await axios.get(
+        `${getSovrynIndexerUri(
+          currentChainId,
+        )}/tokens?chainId=${currentChainId}`,
+      );
       const { data } = response.data;
 
       if (data) {
         const prices = data.reduce(
-          (acc: Record<string, string>, tokenData: TokenDataProps) => {
+          (acc: Record<string, string>, tokenData: TokenData) => {
             acc[tokenData.address.toLowerCase()] = decimalic(
               tokenData.usdPrice,
             ).toString();

@@ -5,7 +5,7 @@ import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCachedData } from '../../../../../../hooks/useCachedData';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
-import { getSdexUri } from '../../../../../../utils/indexer';
+import { getSovrynIndexerUri } from '../../../../../../utils/indexer';
 import { PoolPositionType } from '../../../MarketMakingPage.types';
 import { AmbientPosition } from '../AmbientMarketMaking.types';
 import { AmbientLiquidityPool } from '../utils/AmbientLiquidityPool';
@@ -39,7 +39,7 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
 
       try {
         const { data } = await axios.get<any>(
-          `${getSdexUri(
+          `${getSovrynIndexerUri(
             chainId,
           )}/sdex/user_pool_positions?user=${account}&base=${
             pool.baseAddress

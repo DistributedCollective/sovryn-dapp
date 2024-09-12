@@ -22,7 +22,9 @@ export const useAaveBorrow = () => {
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const aaveBorrowTransactionsFactory = useMemo(() => {
-    if (!signer) return null;
+    if (!signer) {
+      return null;
+    }
     return new AaveBorrowTransactionsFactory(
       AAVE_CONTRACT_ADDRESSES.POOL,
       AAVE_CONTRACT_ADDRESSES.WETH_GATEWAY,

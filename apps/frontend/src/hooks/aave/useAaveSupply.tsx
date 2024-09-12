@@ -22,7 +22,9 @@ export const useAaveSupply = () => {
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const aaveSupplyTransactionsFactory = useMemo(() => {
-    if (!signer) return null;
+    if (!signer) {
+      return null;
+    }
     return new AaveSupplyTransactionsFactory(
       AAVE_CONTRACT_ADDRESSES.POOL,
       AAVE_CONTRACT_ADDRESSES.WETH_GATEWAY,

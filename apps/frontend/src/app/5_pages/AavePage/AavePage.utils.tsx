@@ -32,8 +32,8 @@ export const tabsItems = [
 
 export const normalizeLendPositions = (
   userReservesSummary: AaveUserReservesSummary,
-): LendPosition[] => {
-  return userReservesSummary.reserves.reduce((acc, r) => {
+): LendPosition[] =>
+  userReservesSummary.reserves.reduce((acc, r) => {
     if (r.supplied.gt(0)) {
       // can toggle if disabled or if after disabling collateralRatio is still above minimum
       const canToggleCollateral =
@@ -54,7 +54,6 @@ export const normalizeLendPositions = (
     }
     return acc;
   }, [] as LendPosition[]);
-};
 
 export const normalizeBorrowPositions = (
   userReservesSummary: AaveUserReservesSummary,

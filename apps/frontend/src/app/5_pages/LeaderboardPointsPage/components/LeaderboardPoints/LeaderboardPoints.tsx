@@ -8,14 +8,11 @@ import { ConnectWalletMessage } from '../../../../2_molecules/ConnectWalletMessa
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useHandlePagination } from '../../../../../hooks/useHandlePagination';
 import { translations } from '../../../../../locales/i18n';
-import { generateRowTitle } from '../../LeaderboardPointsPage.utils';
-import {
-  COLUMNS_CONFIG,
-  PAGE_SIZE,
-} from './LeaderboardPointsSeason2.constants';
+import { COLUMNS_CONFIG, PAGE_SIZE } from './LeaderboardPoints.constants';
+import { generateRowTitle } from './LeaderboardPoints.utils';
 import { useGetPoints } from './hooks/useGetPoints';
 
-export const LeaderboardPointsSeason2: FC = () => {
+export const LeaderboardPoints: FC = () => {
   const { account } = useAccount();
   const { connectedWalletPoints, points } = useGetPoints();
 
@@ -24,13 +21,14 @@ export const LeaderboardPointsSeason2: FC = () => {
 
   return (
     <div className="flex flex-col md:pt-0 pt-6">
-      <div className="lg:border rounded lg:p-6">
+      <div className="lg:border lg:border-gray-50 rounded lg:p-6">
         <div className="lg:p-4">
           <Table
             columns={COLUMNS_CONFIG(true)}
             rows={connectedWalletPoints}
             rowTitle={row => generateRowTitle(row.id, row.wallet)}
             className="text-gray-10 lg:px-6 lg:py-4 text-xs mb-5"
+            rowClassName="bg-gray-70 outline-gray-50"
             dataAttribute="leaderboard-points-user-table"
             noData={
               !account ? (

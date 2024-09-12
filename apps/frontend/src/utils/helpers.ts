@@ -16,6 +16,7 @@ import { MS } from '../constants/general';
 import {
   AMM_SERVICE,
   GRAPH_WRAPPER,
+  INDEXER_SERVICE,
   SERVICES_CONFIG,
 } from '../constants/infrastructure';
 import { BOB } from '../constants/infrastructure/bob';
@@ -80,6 +81,9 @@ export const getBitocracyUrl = () =>
 
 export const getGraphWrapperUrl = () =>
   GRAPH_WRAPPER[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+
+export const getIndexerUrl = () =>
+  INDEXER_SERVICE[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
 export const getAmmServiceUrl = () =>
   AMM_SERVICE[isMainnet() ? Environments.Mainnet : Environments.Testnet];

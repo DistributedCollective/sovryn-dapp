@@ -15,7 +15,6 @@ import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
-import { COMMON_SYMBOLS } from '../../../../../../../utils/asset';
 import { useCheckPoolMaintenance } from '../../../../hooks/useCheckPoolMaintenance';
 import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
@@ -109,11 +108,7 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
                 <Button
                   style={ButtonStyle.primary}
                   size={ButtonSize.small}
-                  text={
-                    pool.assetA === COMMON_SYMBOLS.SOV
-                      ? t(translations.common.withdraw)
-                      : t(translations.common.deposit)
-                  }
+                  text={t(translations.common.deposit)}
                   dataAttribute="pools-table-deposit-button"
                   className="w-full lg:w-auto prevent-row-click"
                   disabledStyle={actionLocked}

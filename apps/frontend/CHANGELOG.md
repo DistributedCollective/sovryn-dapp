@@ -1,5 +1,35 @@
 # frontend
 
+## 1.1.20
+
+### Patch Changes
+
+- b8351846: SOV-4388: Fix USD prices on Portfolio page
+- 6d7e3402: feat: pull TVL and 24 hour volume from Sovryn Indexer
+- 2136f594: SOV-4393: Fix deposit button on Market Making page
+- 8ce58dc6: SOV-4344: consolidate spice leaderboard
+- Updated dependencies [d9898545]
+- Updated dependencies [e9a94007]
+  - @sovryn/ui@1.0.30
+
+## 1.1.19
+
+### Patch Changes
+
+- 19c5e754: SOV-4357: Fix Portfolio responsive issues
+- ba632524: SOV-4358: Market-Making page: wrong fee rates for V2 pools
+- ea23f1f6: SOV-4331: Remove Rune points copy on promo card
+- 79b88d16: SOV-4328: BOB LP value display only showing one asset
+- c93bae35: SOV-3346: paginate bitocracy proposal overview table
+
+## 1.1.18
+
+### Patch Changes
+
+- 7625e9fc: chore: bring back WBTC/SAT pool
+- Updated dependencies [7625e9fc]
+  - @sovryn/sdk@1.0.10
+
 ## 1.1.17
 
 ### Patch Changes

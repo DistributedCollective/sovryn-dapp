@@ -1,5 +1,12 @@
 # @sovryn/ui
 
+## 1.0.30
+
+### Patch Changes
+
+- d9898545: SOV-4411: Update Slider component with Ranged functionality
+- e9a94007: SOV-4406: Fix Tooltip arrow color
+
 ## 1.0.29
 
 ### Patch Changes

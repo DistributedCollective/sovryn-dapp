@@ -1,7 +1,5 @@
 import React, { FC, useCallback } from 'react';
 
-import { t } from 'i18next';
-
 import { Button, ButtonStyle } from '@sovryn/ui';
 
 type SectionLinkProps = {
@@ -24,7 +22,7 @@ export const SectionLinks: FC<SectionLinkProps> = ({ refs, labels }) => {
       {refs.map((ref, index) => (
         <Button
           key={index}
-          text={t(labels[index])}
+          text={labels[index]}
           onClick={() => handleRefClick(ref)}
           style={ButtonStyle.ghost}
           className="text-sm font-medium"

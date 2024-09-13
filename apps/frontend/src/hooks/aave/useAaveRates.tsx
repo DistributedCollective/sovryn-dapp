@@ -33,7 +33,9 @@ export const useAaveInterestRatesData = (
     const reserve = reserves.find(
       r => r.symbol.toLocaleLowerCase() === symbol.toLocaleLowerCase(),
     );
-    if (!reserve) return;
+    if (!reserve) {
+      return;
+    }
     try {
       const utilizationRate = AaveCalculations.calculateUtilizationRate(
         reserve.decimals,

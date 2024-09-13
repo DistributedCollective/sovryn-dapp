@@ -16,6 +16,7 @@ import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
 import { getBobExplorerUrl } from '../../../../../utils/helpers';
 import { Chart } from './components/Chart/Chart';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 const pageTranslations = translations.aaveReserveOverviewPage.interestRateModel;
 
@@ -27,7 +28,7 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
   reserve,
 }) => {
   const [searchParams] = useSearchParams();
-  const symbol = searchParams.get('asset') || 'ETH';
+  const symbol = searchParams.get('asset') || COMMON_SYMBOLS.ETH;
   const { data: rates } = useAaveInterestRatesData(symbol);
   const { isMobile } = useIsMobile();
   const [open, setOpen] = useState(true);
@@ -50,7 +51,9 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
     [reserve.borrowUsageRatio],
   );
 
-  if (!rates) return null;
+  if (!rates) {
+    return null;
+  }
   return (
     <Accordion
       label={

@@ -26,8 +26,7 @@ export const useGetNativeTokenPrice = () => {
       });
 
       const price = data?.data[0]?.usdPrice as string;
-
-      return price;
+      return price ?? '0';
     },
     [currentChainId],
   );
@@ -37,10 +36,10 @@ export const useGetNativeTokenPrice = () => {
     toWei(1).toString(),
   );
 
-  const price = useMemo(
-    () => (isRskChain(currentChainId) ? rBTCPrice : ethPrice),
-    [currentChainId, ethPrice, rBTCPrice],
-  );
+  const price = useMemo(() => {
+    const nativePrice = isRskChain(currentChainId) ? rBTCPrice : ethPrice;
+    return nativePrice || '0';
+  }, [currentChainId, ethPrice, rBTCPrice]);
 
   const nativeToken = useMemo(
     () => (isRskChain(currentChainId) ? BITCOIN : ETH),

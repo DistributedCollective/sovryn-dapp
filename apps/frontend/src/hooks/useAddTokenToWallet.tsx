@@ -22,11 +22,13 @@ export const useAddTokenToWallet = (
             type: 'ERC20',
             options: {
               chainId,
+              symbol: 'vBOB',
               address: tokenAddress,
             },
           },
         });
       } catch (error) {
+        console.log('error', error);
         notifyError(error);
       }
     },

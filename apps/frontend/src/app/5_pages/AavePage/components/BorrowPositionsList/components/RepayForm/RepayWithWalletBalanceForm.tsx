@@ -118,7 +118,7 @@ export const RepayWithWalletBalanceForm: FC<
       handleRepay(
         repayAsset,
         repaySize,
-        repaySize.eq(maximumRepayAmount),
+        repaySize.gte(maximumRepayAmount),
         repayReserve!.borrowRateMode,
         { onComplete },
       ),

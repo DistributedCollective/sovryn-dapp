@@ -209,9 +209,10 @@ export class AaveUserReservesSummaryFactory {
           );
 
           // how much the user can borrow if there's no limit of supply
-          const canBorrow = borrowPower
+          let canBorrow = borrowPower
             .sub(borrowBalance)
             .div(r.reserve.priceInUSD);
+          canBorrow = canBorrow.gt(0) ? canBorrow : Decimal.ZERO;
 
           // available to borrow for user including liquidity limitation
           const availableToBorrow = availableLiquidity.lt(canBorrow)

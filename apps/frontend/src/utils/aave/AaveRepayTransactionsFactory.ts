@@ -71,6 +71,7 @@ export class AaveRepayTransactionsFactory {
       token: asset.symbol,
       contract: new Contract(asset.address, asset.abi, this.signer),
       amount: isEntireDebt ? constants.MaxUint256 : amount,
+      approveMaximumAmount: isEntireDebt,
       chain: BOB_CHAIN_ID,
     });
     const transactions: Transaction[] = approval ? [approval] : [];

@@ -3,4 +3,4 @@
 "@sovryn/sdex": patch
 ---
 
-Portfolio page in D2 on RSK fix
+SOV-4453: Fixed issue with Portfolio page crashing on RSK chain

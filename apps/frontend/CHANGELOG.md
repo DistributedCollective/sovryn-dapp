@@ -1,5 +1,13 @@
 # frontend
 
+## 1.1.21
+
+### Patch Changes
+
+- 5f000110: SOV-4453: Fixed issue with Portfolio page crashing on RSK chain
+- Updated dependencies [5f000110]
+  - @sovryn/sdex@0.3.14
+
 ## 1.1.20
 
 ### Patch Changes

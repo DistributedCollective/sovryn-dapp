@@ -22,7 +22,9 @@ export const useAaveWithdraw = () => {
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const aaveWithdrawTransactionsFactory = useMemo(() => {
-    if (!signer) return null;
+    if (!signer) {
+      return null;
+    }
     return new AaveWithdrawTransactionsFactory(
       AAVE_CONTRACT_ADDRESSES.POOL,
       AAVE_CONTRACT_ADDRESSES.WETH_GATEWAY,

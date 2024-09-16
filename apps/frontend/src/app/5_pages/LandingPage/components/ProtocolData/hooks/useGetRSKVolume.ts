@@ -2,41 +2,18 @@ import { useState, useRef, useCallback } from 'react';
 
 import axios, { Canceler } from 'axios';
 
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
+
 import { DATA_REFRESH_INTERVAL } from '../../../../../../constants/general';
 import { useInterval } from '../../../../../../hooks/useInterval';
 import {
-  DEFAULT_LOCKED_DATA,
   DEFAULT_VOLUME_DATA,
-  LOCKED_DATA_URL,
   VOLUME_DATA_URL,
 } from '../ProtocolData.constants';
 
-export const useGetData = () => {
-  const [lockedData, setLockedData] = useState(DEFAULT_LOCKED_DATA);
-  const cancelLockedDataRequest = useRef<Canceler>();
-
+export const useGetRSKVolume = () => {
   const [volumeData, setVolumeData] = useState(DEFAULT_VOLUME_DATA);
   const cancelVolumeDataRequest = useRef<Canceler>();
-
-  const fetchLockedData = useCallback(() => {
-    cancelLockedDataRequest.current && cancelLockedDataRequest.current();
-
-    const cancelToken = new axios.CancelToken(c => {
-      cancelLockedDataRequest.current = c;
-    });
-
-    axios
-      .get(LOCKED_DATA_URL, {
-        params: {
-          stmp: Date.now(),
-        },
-        cancelToken,
-      })
-      .then(result => {
-        setLockedData(result.data);
-      })
-      .catch(() => {});
-  }, []);
 
   const fetchVolumeData = useCallback(() => {
     cancelVolumeDataRequest.current && cancelVolumeDataRequest.current();
@@ -50,6 +27,7 @@ export const useGetData = () => {
         params: {
           extra: true,
           stmp: Date.now(),
+          chainId: Number(RSK_CHAIN_ID),
         },
         headers: {
           'Cache-Control': 'no-cache',
@@ -60,8 +38,7 @@ export const useGetData = () => {
       })
       .then(result => {
         setVolumeData({
-          btc: result.data?.total_volume_btc || 0,
-          usd: result.data?.total_volume_usd || 0,
+          usd: result.data?.data?.total_volume_usd || 0,
         });
       })
       .catch(() => {});
@@ -69,12 +46,11 @@ export const useGetData = () => {
 
   useInterval(
     () => {
-      fetchLockedData();
       fetchVolumeData();
     },
     DATA_REFRESH_INTERVAL,
     { immediate: true },
   );
 
-  return { lockedData, volumeData };
+  return volumeData.usd || 0;
 };

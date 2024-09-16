@@ -71,7 +71,7 @@ export const Header: FC = () => {
             <ProductLinks />
             {isBobChain(chainId) && (
               <Button
-                text={t(translations.header.nav.claimLp)}
+                text={t(translations.header.nav.spicePoints)}
                 style={ButtonStyle.primary}
                 className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
                 onClick={() => navigate('/claim-lp')}

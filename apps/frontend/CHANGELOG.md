@@ -1,5 +1,25 @@
 # frontend
 
+## 1.1.21
+
+### Patch Changes
+
+- 5f000110: SOV-4453: Fixed issue with Portfolio page crashing on RSK chain
+- Updated dependencies [5f000110]
+  - @sovryn/sdex@0.3.14
+
+## 1.1.20
+
+### Patch Changes
+
+- b8351846: SOV-4388: Fix USD prices on Portfolio page
+- 6d7e3402: feat: pull TVL and 24 hour volume from Sovryn Indexer
+- 2136f594: SOV-4393: Fix deposit button on Market Making page
+- 8ce58dc6: SOV-4344: consolidate spice leaderboard
+- Updated dependencies [d9898545]
+- Updated dependencies [e9a94007]
+  - @sovryn/ui@1.0.30
+
 ## 1.1.19
 
 ### Patch Changes

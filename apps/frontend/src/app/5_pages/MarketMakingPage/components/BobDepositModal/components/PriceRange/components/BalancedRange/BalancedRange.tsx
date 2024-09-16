@@ -53,10 +53,12 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
   }, [rangeWidth, setMaximumPrice, setMinimumPrice, currentPrice]);
 
   const onRangeChange = useCallback(
-    (value: number) => {
-      setMinimumPrice(calculateBoundedPrice(true, value, currentPrice));
-      setMaximumPrice(calculateBoundedPrice(false, value, currentPrice));
-      setRangeWidth(value);
+    (value: number | number[]) => {
+      if (typeof value === 'number') {
+        setMinimumPrice(calculateBoundedPrice(true, value, currentPrice));
+        setMaximumPrice(calculateBoundedPrice(false, value, currentPrice));
+        setRangeWidth(value);
+      }
     },
     [setMaximumPrice, setMinimumPrice, setRangeWidth, currentPrice],
   );

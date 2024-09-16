@@ -1,25 +1,50 @@
 import { useMemo } from 'react';
 
+import axios from 'axios';
+
+import { BITCOIN, ETH } from '../constants/currencies';
 import { COMMON_SYMBOLS } from '../utils/asset';
 import { isRskChain } from '../utils/chain';
+import { getIndexerUrl } from '../utils/helpers';
 import { toWei } from '../utils/math';
+import { useCacheCall } from './useCacheCall';
 import { useCurrentChain } from './useChainStore';
 import { useDollarValue } from './useDollarValue';
-import { useGetRBTCPrice } from './zero/useGetRBTCPrice';
 
 export const useGetNativeTokenPrice = () => {
-  const chainId = useCurrentChain();
-  const { price: rBTCPrice } = useGetRBTCPrice();
+  const currentChainId = useCurrentChain();
+
+  const { value: rBTCPrice } = useCacheCall(
+    'rbtc-price/indexer',
+    currentChainId,
+    async () => {
+      const { data } = await axios.get(getIndexerUrl() + 'tokens', {
+        params: {
+          chainId: Number(currentChainId),
+          limit: 1,
+        },
+      });
+
+      const price = data?.data[0]?.usdPrice as string;
+      return price ?? '0';
+    },
+    [currentChainId],
+  );
 
   const { usdValue: ethPrice } = useDollarValue(
     COMMON_SYMBOLS.ETH,
     toWei(1).toString(),
   );
 
-  const price = useMemo(
-    () => (isRskChain(chainId) ? rBTCPrice : ethPrice),
-    [chainId, ethPrice, rBTCPrice],
+  const price = useMemo(() => {
+    const nativePrice = isRskChain(currentChainId) ? rBTCPrice : ethPrice;
+    return nativePrice || '0';
+  }, [currentChainId, ethPrice, rBTCPrice]);
+
+  const nativeToken = useMemo(
+    () => (isRskChain(currentChainId) ? BITCOIN : ETH),
+    [currentChainId],
   );
 
-  return { price };
+  return { price, nativeToken };
 };

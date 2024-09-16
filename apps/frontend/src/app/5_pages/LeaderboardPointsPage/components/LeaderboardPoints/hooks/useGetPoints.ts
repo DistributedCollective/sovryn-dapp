@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { areAddressesEqual } from '../../../../../../utils/helpers';
 import { UserPoints } from '../../../LeaderboardPointsPage.types';
-import { DATA_ENDPOINT_URL } from '../LeaderboardPointsSeason2.constants';
+import { DATA_ENDPOINT_URL } from '../LeaderboardPoints.constants';
 
 export const useGetPoints = () => {
   const { account } = useAccount();

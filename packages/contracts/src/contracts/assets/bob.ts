@@ -83,7 +83,7 @@ export const bob: Array<AssetDetails> = [
     getIcon: async () => (await import('./icons/bob/powa')).default,
   },
   {
-    symbol: 'SAT',
+    symbol: '$satUSD',
     address: '0x78fea795cbfcc5ffd6fb5b845a4f53d25c283bdb',
     name: 'Satoshi Stablecoin',
     decimals: 18,

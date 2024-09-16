@@ -9,8 +9,8 @@ import { Paragraph, Tabs, TabSize, TabType } from '@sovryn/ui';
 
 import { useAaveReservesData } from '../../../hooks/aave/useAaveReservesData';
 import { translations } from '../../../locales/i18n';
-import { TAB_ITEMS } from './AaveReserveOverviewPage.constants';
 import { COMMON_SYMBOLS } from '../../../utils/asset';
+import { TAB_ITEMS } from './AaveReserveOverviewPage.constants';
 import { BorrowDetailsGraph } from './components/BorrowDetailsGraph/BorrowDetailsGraph';
 import { EModeDetails } from './components/EModeDetails/EModeDetails';
 import { InterestRateModelGraph } from './components/InterestRateModelGraph/InterestRateModelGraph';
@@ -84,7 +84,7 @@ const AaveReserveOverviewPage: FC = () => {
           <div
             className={classNames(
               { hidden: activeOverviewTab !== OverviewTab.WALLET },
-              'lg:block space-y-4 w-[450px] shrink-0',
+              'lg:block space-y-4 w-full lg:w-[450px] shrink-0',
             )}
           >
             <WalletOverview symbol={symbol} />

@@ -1,4 +1,5 @@
 import { IS_MAINNET } from '../config/chains';
+
 import { decimalic } from '../utils/math';
 
 export const EMODE_DISABLED_ID = 0;
@@ -25,4 +26,5 @@ export const AAVE_CONTRACT_ADDRESSES = IS_MAINNET
       WETH: '0x8CEc2719a2e896A11eA3f10406EfDb6Ad87281D9',
       TREASURY: '0x2a9d8f5b2f7b8f5b4b5d5e7f3b4b5d5b5d5d5d5d',
       INTEREST_RATE_STRATEGY: '0x847A3364Cc5fE389283bD821cfC8A477288D9e82',
+      RATES_HISTORY_API_URL: process.env.REACT_APP_RATES_HISTORY_API_URL,
     };

@@ -33,7 +33,7 @@ export const Chart: FC<ChartProps> = ({ meta, rates }) => {
     () =>
       CHART_PERCENTAGES.map(x => ({
         x: x * 100,
-        y: calculateVariableInterestRateModel(x, rates) * 100,
+        y: calculateVariableInterestRateModel(x, rates).mul(100).toNumber(),
       })),
     [rates],
   );
@@ -41,7 +41,7 @@ export const Chart: FC<ChartProps> = ({ meta, rates }) => {
   const optimalPercentage = useMemo(
     () =>
       rates.optimalUsageRatio
-        ? parseFloat((parseFloat(rates.optimalUsageRatio) * 100).toFixed(2))
+        ? Math.round(rates.optimalUsageRatio.mul(100).toNumber() * 100) / 100
         : 0,
     [rates.optimalUsageRatio],
   );
@@ -49,7 +49,7 @@ export const Chart: FC<ChartProps> = ({ meta, rates }) => {
   const currentPercentage = useMemo(
     () =>
       rates.currentUsageRatio
-        ? parseFloat((parseFloat(rates.currentUsageRatio) * 100).toFixed(2))
+        ? Math.round(rates.currentUsageRatio.mul(100).toNumber() * 100) / 100
         : 0,
     [rates.currentUsageRatio],
   );

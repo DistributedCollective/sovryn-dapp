@@ -1,6 +1,7 @@
 import React, { FC, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
+import { useSearchParams } from 'react-router-dom';
 
 import { theme } from '@sovryn/tailwindcss-config';
 import { Accordion, Link } from '@sovryn/ui';
@@ -9,12 +10,13 @@ import { Decimal } from '@sovryn/utils';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { StatisticsCard } from '../../../../2_molecules/StatisticsCard/StatisticsCard';
 import { AAVE_CONTRACT_ADDRESSES } from '../../../../../constants/aave';
+import { useAaveInterestRatesData } from '../../../../../hooks/aave/useAaveRates';
 import { Reserve } from '../../../../../hooks/aave/useAaveReservesData';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
 import { getBobExplorerUrl } from '../../../../../utils/helpers';
 import { Chart } from './components/Chart/Chart';
-import { RatesData } from './components/Chart/Chart.types';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 const pageTranslations = translations.aaveReserveOverviewPage.interestRateModel;
 
@@ -25,6 +27,9 @@ type InterestRateModelGraphProps = {
 export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
   reserve,
 }) => {
+  const [searchParams] = useSearchParams();
+  const symbol = searchParams.get('asset') || COMMON_SYMBOLS.ETH;
+  const { data: rates } = useAaveInterestRatesData(symbol);
   const { isMobile } = useIsMobile();
   const [open, setOpen] = useState(true);
 
@@ -46,6 +51,9 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
     [reserve.borrowUsageRatio],
   );
 
+  if (!rates) {
+    return null;
+  }
   return (
     <Accordion
       label={
@@ -80,11 +88,10 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
 
         <Chart
           meta={{
-            // TODO: implement this once data is available
-            label: t(pageTranslations.chart.label1),
+            label: t(pageTranslations.chart.aprVarLabel),
             lineColor: theme.colors['primary-30'],
           }}
-          rates={{} as RatesData}
+          rates={rates}
         />
 
         {/* statistics */}

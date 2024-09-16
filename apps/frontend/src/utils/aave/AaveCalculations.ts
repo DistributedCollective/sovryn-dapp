@@ -1,3 +1,5 @@
+import { utils } from 'ethers';
+
 import { Decimal } from '@sovryn/utils';
 
 import { UserSummary } from './AaveUserReservesSummary';
@@ -128,4 +130,41 @@ export class AaveCalculations {
     }
     return borrowSize.mul(currentLiquidationThreshold).div(collateralBalance);
   }
+
+  static calculateUtilizationRate = (
+    decimals: number,
+    totalDebt: string,
+    availableLiquidity: string,
+  ): Decimal => {
+    const totalBorrowBigInt = BigInt(
+      utils.parseUnits(totalDebt, decimals).toString(),
+    );
+    const availableLiquidityBigInt = BigInt(availableLiquidity);
+
+    const totalSupplyBigInt = totalBorrowBigInt + availableLiquidityBigInt;
+
+    if (totalSupplyBigInt === BigInt(0)) {
+      return Decimal.from(0);
+    }
+
+    const utilizationRateBigInt =
+      (totalBorrowBigInt * BigInt(10 ** decimals)) / totalSupplyBigInt;
+
+    const utilizationRate = utils.formatUnits(
+      utilizationRateBigInt.toString(),
+      decimals,
+    );
+
+    const utilizationRateDecimal = Decimal.from(utilizationRate);
+
+    const isBetweenZeroAndOne =
+      utilizationRateDecimal.gte(Decimal.from(0)) &&
+      utilizationRateDecimal.lte(Decimal.from(1));
+
+    if (!isBetweenZeroAndOne) {
+      return Decimal.from(0);
+    }
+
+    return utilizationRateDecimal;
+  };
 }

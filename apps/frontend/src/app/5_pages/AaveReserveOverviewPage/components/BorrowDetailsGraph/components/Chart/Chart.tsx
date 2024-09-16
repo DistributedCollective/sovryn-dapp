@@ -3,6 +3,8 @@ import React, { FC, useCallback, useEffect, useRef } from 'react';
 import ChartLibrary from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
 
+import { TimeRangeButtons } from '../../../TimeRangeButtons/TimeRangeButtons';
+import { ReserveRateTimeRange } from './../../../../../../../hooks/aave/useAaveReservesHistory';
 import {
   CUSTOM_CANVAS_BACKGROUND_COLOR,
   GRID_COLOR,
@@ -13,9 +15,10 @@ import { htmlLegendPlugin } from './Chart.utils';
 
 type ChartProps = {
   input: ChartData;
+  onTimeRangeChange: (range: ReserveRateTimeRange) => void;
 };
 
-export const Chart: FC<ChartProps> = ({ input }) => {
+export const Chart: FC<ChartProps> = ({ input, onTimeRangeChange }) => {
   const canvas = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<ChartLibrary | null>(null);
 
@@ -111,7 +114,10 @@ export const Chart: FC<ChartProps> = ({ input }) => {
 
   return (
     <div onClick={stopPropagation} className="lg:p-6 lg:bg-gray-80">
-      <span id="legend-container-borrow-chart" className="text-tiny"></span>
+      <div className="flex items-center justify-between">
+        <span id="legend-container-borrow-chart" className="text-tiny"></span>
+        <TimeRangeButtons onChange={onTimeRangeChange} />
+      </div>
       <canvas ref={canvas}></canvas>
     </div>
   );

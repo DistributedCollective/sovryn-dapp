@@ -61,7 +61,7 @@ import {
   SWAP_ROUTES,
 } from './ConvertPage.constants';
 import { CategoryType } from './ConvertPage.types';
-import { CategoryDropdown } from './components/CategoryDropdown/CategoryDropdown';
+import { AssetDropdownWithFilters } from './components/AssetDropdownWithFilters/AssetDropdownWithFilters';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
@@ -619,7 +619,7 @@ const ConvertPage: FC = () => {
                 dataAttribute="convert-from-amount"
                 placeholder="0"
               />
-              <CategoryDropdown
+              <AssetDropdownWithFilters
                 token={sourceToken}
                 selectedCategories={sourceCategories}
                 tokenOptions={sourceTokenOptions}
@@ -668,7 +668,7 @@ const ConvertPage: FC = () => {
                 className="w-full flex-grow-0 flex-shrink"
                 dataAttribute="convert-to-amount"
               />
-              <CategoryDropdown
+              <AssetDropdownWithFilters
                 token={destinationToken}
                 selectedCategories={destinationCategories}
                 tokenOptions={destinationTokenOptions}

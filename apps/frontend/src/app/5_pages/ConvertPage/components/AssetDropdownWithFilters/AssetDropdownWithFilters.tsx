@@ -16,7 +16,7 @@ import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
 import { CategoryType } from '../../ConvertPage.types';
 
-type CategoryDropdownProps = {
+type AssetDropdownWithFiltersProps = {
   token: string;
   selectedCategories: CategoryType[];
   tokenOptions: SelectOption<string>[];
@@ -25,7 +25,7 @@ type CategoryDropdownProps = {
   dataAttribute: string;
 };
 
-export const CategoryDropdown: FC<CategoryDropdownProps> = ({
+export const AssetDropdownWithFilters: FC<AssetDropdownWithFiltersProps> = ({
   token,
   selectedCategories,
   tokenOptions,

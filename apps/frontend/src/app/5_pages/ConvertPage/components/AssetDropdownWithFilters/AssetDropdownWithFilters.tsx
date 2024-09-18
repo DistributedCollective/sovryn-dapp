@@ -79,7 +79,7 @@ export const AssetDropdownWithFilters: FC<AssetDropdownWithFiltersProps> = ({
         ))}
         {tokenOptions.length === 0 && (
           <MenuItem
-            text={t(translations.convertPage.form.noDestinationTokens)}
+            text={t(translations.convertPage.form.noAvailableTokens)}
             disabled
           />
         )}

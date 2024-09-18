@@ -425,7 +425,7 @@
             "convertTo": "To",
             "invalidAmountError": "Exceeds maximum amount",
             "quoteError": "No route found, please try another asset or a lower amount",
-            "noDestinationTokens": "No destination tokens available"
+            "noAvailableTokens": "No available tokens"
         },
         "txDialog": {
             "convertTitle": "Convert {{from}} to {{to}}",

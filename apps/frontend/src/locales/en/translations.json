@@ -25,6 +25,7 @@
             "back": "Back"
         },
         "na": "N/A",
+        "select": "Select",
         "tables": {
             "columnTitles": {
                 "amount": "Amount",
@@ -423,7 +424,8 @@
             "convertFrom": "Convert from",
             "convertTo": "To",
             "invalidAmountError": "Exceeds maximum amount",
-            "quoteError": "No route found, please try another asset or a lower amount"
+            "quoteError": "No route found, please try another asset or a lower amount",
+            "noDestinationTokens": "No destination tokens available"
         },
         "txDialog": {
             "convertTitle": "Convert {{from}} to {{to}}",

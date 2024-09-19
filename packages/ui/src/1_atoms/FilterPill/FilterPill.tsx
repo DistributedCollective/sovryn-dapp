@@ -10,14 +10,14 @@ type FilterPillProps = {
   dataAttribute?: string;
   className?: string;
   isActive?: boolean;
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 export const FilterPill: FC<FilterPillProps> = ({
   text,
   dataAttribute,
   className,
-  isActive,
+  isActive = false,
   onClick,
 }) => (
   <button

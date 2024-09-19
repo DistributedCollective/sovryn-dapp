@@ -50,6 +50,14 @@ export const AssetDropdownWithFilters: FC<AssetDropdownWithFiltersProps> = ({
     [currentChainId],
   );
 
+  const handleCategoryClick = useCallback(
+    (e: React.MouseEvent, category: CategoryType) => {
+      e.stopPropagation();
+      onCategorySelect(category);
+    },
+    [onCategorySelect],
+  );
+
   return (
     <Dropdown
       text={getAssetRenderer(token)}
@@ -57,6 +65,7 @@ export const AssetDropdownWithFilters: FC<AssetDropdownWithFiltersProps> = ({
       dropdownClassName="max-h-[12rem] sm:max-h-[14.5rem] border border-gray-70 rounded min-w-48"
       mode={DropdownMode.right}
       dataAttribute={dataAttribute}
+      closeOnClick
     >
       <div className="items-center flex-wrap bg-gray-80 p-3 grid grid-cols-2 gap-2">
         {Object.values(CategoryType).map(category => (
@@ -64,7 +73,7 @@ export const AssetDropdownWithFilters: FC<AssetDropdownWithFiltersProps> = ({
             text={category}
             key={category}
             isActive={selectedCategories.includes(category)}
-            onClick={() => onCategorySelect(category)}
+            onClick={e => handleCategoryClick(e, category)}
           />
         ))}
       </div>

@@ -9,6 +9,7 @@ import {
 import { AssetRenderer } from '../AssetRenderer/AssetRenderer';
 
 type AaveRowTitleProps = AmountRendererProps & {
+  isOpen?: boolean;
   asset: string;
   label?: string;
 };
@@ -16,6 +17,7 @@ type AaveRowTitleProps = AmountRendererProps & {
 export const AaveRowTitle: FC<AaveRowTitleProps> = ({
   asset,
   label,
+  isOpen,
   ...props
 }) => (
   <div className="flex justify-between items-center w-full pr-3">
@@ -25,11 +27,15 @@ export const AaveRowTitle: FC<AaveRowTitleProps> = ({
       className="mr-1"
       chainId={BOB_CHAIN_ID}
     />
-    <div className="pl-1 flex items-center font-medium">
-      <AmountRenderer {...props} />
-      {label && (
-        <span className="ml-1 text-gray-30 font-semibold text-sm">{label}</span>
-      )}
-    </div>
+    {!isOpen && (
+      <div className="pl-1 flex items-center font-medium">
+        <AmountRenderer {...props} />
+        {label && (
+          <span className="ml-1 text-gray-30 font-semibold text-sm">
+            {label}
+          </span>
+        )}
+      </div>
+    )}
   </div>
 );

@@ -874,7 +874,8 @@
             "eMode": "E-Mode",
             "selectVariableApy": "APY, variable {{apy}} %",
             "selectStableApy": "APY, stable {{apy}} %",
-            "apyInfo": "The weighted average of APY for all borrowed assets, including incentives."
+            "apyInfo": "The weighted average of APY for all borrowed assets, including incentives.",
+            "noData": "You don't have any loans yet"
         },
         "borrowAssetsList": {
             "title": "Assets to borrow",
@@ -883,7 +884,8 @@
         },
         "lendPositionsList": {
             "title": "Your lending deposits",
-            "usedAsCollateral": "Used as collateral"
+            "usedAsCollateral": "Used as collateral",
+            "noData": "You don't have any deposits yet"
         },
         "lendAssetsList": {
             "title": "Assets to lend",
@@ -898,7 +900,7 @@
             "collateralRatio": "Collateral ratio",
             "remainingDebt": "Remaining debt",
             "newCollateralBalance": "New collateral balance",
-            "invalidAmountError": "Invalid amount",
+            "invalidAmountError": "Exceeds maximum amount",
             "tokenPrice": "{{token}} price",
             "walletBalance": "Wallet balance",
             "priceImpact": "Price impact",
@@ -912,16 +914,16 @@
             "collateralRatio": "Collateral ratio",
             "liquidationPrice": "Liquidation price",
             "acknowledge": "I understand that my collateral may be liquidated or used to pay rollover fees if applicable.",
-            "invalidAmountError": "Invalid amount",
+            "invalidAmountError": "Exceeds maximum amount",
             "tokenPrice": "{{token}} price"
         },
         "withdrawForm": {
             "remainingSupply": "Remaining supply",
-            "invalidAmountError": "Invalid amount"
+            "invalidAmountError": "Exceeds maximum amount"
         },
         "lendModal": {
             "title": "Deposit",
-            "invalidAmountError": "Invalid amount",
+            "exceedsMaxAmount": "Exceeds maximum amount",
             "collateralization": "Collateralization",
             "lendApy": "Lend APY",
             "deposit": "Deposit",

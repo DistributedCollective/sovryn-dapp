@@ -53,8 +53,9 @@ export const LendAssetsList: FC<LendAssetsListProps> = ({
   );
 
   const rowTitleRenderer = useCallback(
-    row => (
+    (row: LendPoolDetails, isOpen?: boolean) => (
       <AaveRowTitle
+        isOpen={isOpen || false}
         asset={row.asset}
         value={row.apy}
         suffix="%"

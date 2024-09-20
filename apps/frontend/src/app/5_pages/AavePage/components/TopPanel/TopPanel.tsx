@@ -71,7 +71,6 @@ export const TopPanel: FC<TopPanelProps> = ({
                 label={t(pageTranslations.healthFactor)}
                 value={
                   <AmountRenderer
-                    suffix="%"
                     precision={2}
                     value={healthFactor}
                     className="text-2xl"

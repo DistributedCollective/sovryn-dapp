@@ -24,20 +24,27 @@ type PoolsTableProps = {
   activePool?: string;
   setActivePool: (poolKey: string) => void;
   shouldScroll?: boolean;
+  isNew?: boolean;
 };
 
 export const PoolsTable: FC<PoolsTableProps> = ({
   activePool,
   setActivePool,
   shouldScroll = false,
+  isNew,
 }) => {
   const navigate = useNavigate();
   const { account } = useAccount();
   const tableRef = useRef<HTMLDivElement>(null);
 
+  const pools = useMemo(
+    () => ammPools.filter(pool => pool.isNew === !!isNew),
+    [isNew],
+  );
+
   const expandedIndex = useMemo(
-    () => ammPools.findIndex(pool => pool.key === activePool),
-    [activePool],
+    () => pools.findIndex(pool => pool.key === activePool),
+    [activePool, pools],
   );
 
   const generateRowTitle = useCallback(
@@ -95,7 +102,7 @@ export const PoolsTable: FC<PoolsTableProps> = ({
   }, [activePool, shouldScroll]);
 
   return (
-    <div ref={tableRef} className="bg-gray-90 py-4 px-4 rounded w-full mt-8">
+    <div ref={tableRef} className="bg-gray-90 py-4 px-4 rounded w-full">
       {account && (
         <div className="flex justify-end mb-2.5">
           <Button
@@ -110,7 +117,7 @@ export const PoolsTable: FC<PoolsTableProps> = ({
       )}
       <Table
         columns={COLUMNS_CONFIG}
-        rows={ammPools}
+        rows={pools}
         onRowClick={onPoolClick}
         expandedIndex={expandedIndex}
         className={styles.table}

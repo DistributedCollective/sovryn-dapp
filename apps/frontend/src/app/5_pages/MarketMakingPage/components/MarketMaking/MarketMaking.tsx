@@ -59,6 +59,25 @@ export const MarketMaking: FC = () => {
             onClick={setIsPromoCardClicked}
           />
 
+          <Paragraph
+            className="pl-2 w-full text-base font-medium text-left mb-4 mt-8"
+            size={ParagraphSize.base}
+          >
+            {t(translations.marketMakingPage.newPairs)}
+          </Paragraph>
+          <PoolsTable
+            setActivePool={setActivePoolKey}
+            shouldScroll={isPromoCardClicked}
+            activePool={activePool}
+            isNew
+          />
+
+          <Paragraph
+            className="pl-2 w-full text-base font-medium text-left mb-4 mt-8"
+            size={ParagraphSize.base}
+          >
+            {t(translations.marketMakingPage.allPairs)}
+          </Paragraph>
           <PoolsTable
             setActivePool={setActivePoolKey}
             shouldScroll={isPromoCardClicked}

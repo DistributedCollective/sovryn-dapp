@@ -15,7 +15,7 @@
     "@sovryn/onboard-common": "1.0.0",
     "@sovryn/onboard-core": "1.0.6",
     "@sovryn/onboard-hw-common": "1.0.7",
-    "@sovryn/onboard-injected": "1.0.4",
+    "@sovryn/onboard-injected": "1.0.5",
     "@sovryn/onboard-ledger": "1.0.7",
     "@sovryn/onboard-react": "1.0.14",
     "@sovryn/onboard-trezor": "1.0.7",

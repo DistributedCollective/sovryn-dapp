@@ -66,7 +66,7 @@ const resolutionForTimeRange = (
   switch (timeRange) {
     case ESupportedTimeRanges.OneMonth:
       return {
-        from: dayjs().subtract(30, 'day').unix(),
+        from: dayjs().subtract(1, 'month').unix(),
         resolutionInHours: 6,
       };
     case ESupportedTimeRanges.SixMonths:

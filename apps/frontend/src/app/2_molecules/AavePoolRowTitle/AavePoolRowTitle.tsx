@@ -17,7 +17,7 @@ type AaveRowTitleProps = AmountRendererProps & {
 export const AaveRowTitle: FC<AaveRowTitleProps> = ({
   asset,
   label,
-  isOpen,
+  isOpen = false,
   ...props
 }) => (
   <div className="flex justify-between items-center w-full pr-3">

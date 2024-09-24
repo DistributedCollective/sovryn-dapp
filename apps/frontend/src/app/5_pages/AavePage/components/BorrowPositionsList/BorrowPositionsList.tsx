@@ -57,7 +57,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
   const rowTitleRenderer = useCallback(
     (r: BorrowPosition, isOpen?: boolean) => (
       <AaveRowTitle
-        isOpen={isOpen || false}
+        isOpen={isOpen}
         asset={r.asset}
         value={r.borrowed}
         suffix={r.asset}

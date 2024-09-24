@@ -24,22 +24,23 @@ type PoolsTableProps = {
   activePool?: string;
   setActivePool: (poolKey: string) => void;
   shouldScroll?: boolean;
-  isNew?: boolean;
+  showHighlightedPools?: boolean;
 };
 
 export const PoolsTable: FC<PoolsTableProps> = ({
   activePool,
   setActivePool,
   shouldScroll = false,
-  isNew,
+  showHighlightedPools,
 }) => {
   const navigate = useNavigate();
   const { account } = useAccount();
   const tableRef = useRef<HTMLDivElement>(null);
 
   const pools = useMemo(
-    () => ammPools.filter(pool => pool.isNew === !!isNew),
-    [isNew],
+    () =>
+      ammPools.filter(pool => pool.isHighlighted === !!showHighlightedPools),
+    [showHighlightedPools],
   );
 
   const expandedIndex = useMemo(

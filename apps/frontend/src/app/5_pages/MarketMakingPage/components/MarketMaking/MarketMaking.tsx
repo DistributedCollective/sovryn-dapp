@@ -69,7 +69,7 @@ export const MarketMaking: FC = () => {
             setActivePool={setActivePoolKey}
             shouldScroll={isPromoCardClicked}
             activePool={activePool}
-            isNew
+            showHighlightedPools
           />
 
           <Paragraph

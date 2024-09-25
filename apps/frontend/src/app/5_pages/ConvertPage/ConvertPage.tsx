@@ -101,7 +101,8 @@ const ConvertPage: FC = () => {
           .filter(
             // filter out WBTC token on rsk chain
             item =>
-              findAsset('WBTC', RSK_CHAIN_ID).address !== item.toLowerCase(),
+              findAsset('WBTC', RSK_CHAIN_ID).address.toLowerCase() !==
+              item.toLowerCase(),
           )
           .map(address => smartRouter.getTokenDetails(address, chain)),
       ).then(tokens => {

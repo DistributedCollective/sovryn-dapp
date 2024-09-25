@@ -59,7 +59,7 @@ export const MarketMaking: FC = () => {
             onClick={setIsPromoCardClicked}
           />
 
-          <Paragraph
+          {/* <Paragraph
             className="pl-2 w-full text-base font-medium text-left mb-4 mt-8"
             size={ParagraphSize.base}
           >
@@ -77,7 +77,7 @@ export const MarketMaking: FC = () => {
             size={ParagraphSize.base}
           >
             {t(translations.marketMakingPage.allPairs)}
-          </Paragraph>
+          </Paragraph> */}
           <PoolsTable
             setActivePool={setActivePoolKey}
             shouldScroll={isPromoCardClicked}

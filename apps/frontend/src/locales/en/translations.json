@@ -1394,6 +1394,8 @@
             "p2": "Next rewards recalibration on {{recalibrationDate}}.",
             "learnMoreLink": "Learn more"
         },
+        "newPairs": "New Pairs",
+        "allPairs": "All Pairs",
         "rewards": "Rewards",
         "poolsTable": {
             "pair": "Pair",

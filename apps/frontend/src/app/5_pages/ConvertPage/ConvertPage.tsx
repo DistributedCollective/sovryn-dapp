@@ -115,7 +115,12 @@ const ConvertPage: FC = () => {
 
         const filteredTokens = tokensWithCategories.filter(token => {
           if (categories.includes(CategoryType.BTC)) {
-            return token.symbol.includes(CategoryType.BTC);
+            if (
+              token.symbol.toUpperCase() === CategoryType.BTC ||
+              token.symbol.includes(CategoryType.BTC)
+            ) {
+              return true;
+            }
           }
 
           return (

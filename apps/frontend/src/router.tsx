@@ -62,10 +62,6 @@ const ProtocolDataPage = loadable(
   () => import('./app/5_pages/ProtocolDataPage/ProtocolDataPage'),
 );
 
-const LeaderboardPage = loadable(
-  () => import('./app/5_pages/LeaderboardPage/LeaderboardPage'),
-);
-
 const LeaderboardPointsPage = loadable(
   () => import('./app/5_pages/LeaderboardPointsPage/LeaderboardPointsPage'),
 );
@@ -152,10 +148,6 @@ const routes = [
       {
         path: '/earn/staking',
         element: <StakePage />,
-      },
-      {
-        path: '/powa',
-        element: <LeaderboardPage />,
       },
       {
         path: '/bob-lp-points',

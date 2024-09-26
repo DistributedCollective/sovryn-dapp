@@ -59,11 +59,6 @@ export const menuItemsMapping: MenuItem[] = [
         label: t(translations.header.nav.earn.subMenu.stakingDescription),
         url: '/earn/staking',
       },
-      {
-        text: t(translations.leaderboardPage.headerLink),
-        label: t(translations.leaderboardPage.headerDescription),
-        url: '/powa',
-      },
     ],
   },
   {

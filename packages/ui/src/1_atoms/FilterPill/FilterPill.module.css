@@ -1,0 +1,11 @@
+.filterPill {
+  @apply flex items-center justify-center text-gray-30 text-xs border border-gray-70 rounded-full px-3 h-[1.625rem] font-medium transition cursor-pointer;
+  &.active {
+    @apply bg-gray-70 text-gray-10 cursor-pointer;
+  }
+  @screen lg {
+    &:hover {
+      @apply bg-gray-70 text-gray-10 cursor-pointer;
+    }
+  }
+}

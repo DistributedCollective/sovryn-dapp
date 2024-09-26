@@ -94,12 +94,12 @@ const ConvertPage: FC = () => {
       addresses: string[],
       chain: ChainId,
       callback: (options: SelectOption<string>[]) => void,
-      categories: string[],
+      categories: CategoryType[],
     ) => {
       Promise.all(
         addresses
           .filter(
-            // filter out WBTC token on rsk chain
+            // filter out WBTC token on RSK chain
             item =>
               findAsset('WBTC', RSK_CHAIN_ID).address.toLowerCase() !==
               item.toLowerCase(),
@@ -113,12 +113,16 @@ const ConvertPage: FC = () => {
           return { ...token, category };
         });
 
-        const filteredTokens =
-          categories.includes(CategoryType.All) || categories.length === 0
-            ? tokensWithCategories
-            : tokensWithCategories.filter(token =>
-                categories.includes(token.category),
-              );
+        const filteredTokens = tokensWithCategories.filter(token => {
+          if (categories.includes(CategoryType.BTC)) {
+            return token.symbol.includes(CategoryType.BTC);
+          }
+
+          return (
+            categories.includes(token.category) ||
+            categories.includes(CategoryType.All)
+          );
+        });
 
         callback(
           filteredTokens.map(token => ({
@@ -190,7 +194,9 @@ const ConvertPage: FC = () => {
         category === CategoryType.All
           ? [CategoryType.All]
           : prevCategories.includes(category)
-          ? prevCategories.filter(prevCategory => prevCategory !== category)
+          ? prevCategories.length === 1
+            ? [CategoryType.All]
+            : prevCategories.filter(prevCategory => prevCategory !== category)
           : [
               ...prevCategories.filter(
                 prevCategory => prevCategory !== CategoryType.All,

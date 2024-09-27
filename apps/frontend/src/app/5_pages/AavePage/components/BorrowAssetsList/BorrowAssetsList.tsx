@@ -47,12 +47,13 @@ export const BorrowAssetsList: FC<BorrowAssetsListProps> = ({
   }, []);
 
   const rowTitleRenderer = useCallback(
-    (row: BorrowPoolDetails) => (
+    (row: BorrowPoolDetails, isOpen?: boolean) => (
       <AaveRowTitle
+        isOpen={isOpen}
         asset={row.asset}
         value={row.apy}
         suffix="%"
-        label={t(translations.aavePage.common.apr)}
+        label={t(translations.aavePage.common.apy)}
         precision={2}
       />
     ),

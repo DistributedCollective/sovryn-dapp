@@ -65,8 +65,9 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
   );
 
   const rowTitleRenderer = useCallback(
-    (r: LendPosition) => (
+    (r: LendPosition, isOpen?: boolean) => (
       <AaveRowTitle
+        isOpen={isOpen}
         asset={r.asset}
         value={r.supplied}
         suffix={r.asset}
@@ -81,6 +82,22 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
     [orderOptions, lendPositions],
   );
 
+  if (!account) {
+    return (
+      <div className="bg-gray-70 px-4 py-3 rounded lg:bg-gray-90 lg:pb-6 lg:px-6 lg:pt-3 lg:border lg:border-gray-60">
+        <div className="text-base font-medium text-left py-[6px] lg:pt-2 lg:pb-3 lg:flex lg:items-center lg:gap-8">
+          <span>{t(pageTranslations.lendPositionsList.title)}</span>
+        </div>
+
+        <div className="flex items-center justify-center lg:h-12">
+          <Paragraph className="text-xs text-center text-gray-30 italic font-medium leading-5 lg:text-white">
+            {t(pageTranslations.common.connectWallet)}
+          </Paragraph>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Accordion
       label={
@@ -93,7 +110,7 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
       open={open}
       onClick={setOpen}
     >
-      {account ? (
+      {rows.length ? (
         <>
           <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:gap-6 lg:mb-6">
             <PoolPositionStat
@@ -117,39 +134,38 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
               precision={2}
             />
           </div>
-
-          <Table
-            isLoading={loading}
-            columns={COLUMNS_CONFIG(setWithdrawAssetDialog)}
-            rowClassName="bg-gray-80"
-            accordionClassName="bg-gray-60 border border-gray-70"
-            rowTitle={rowTitleRenderer}
-            mobileRenderer={mobileRenderer}
-            rows={rows}
-            orderOptions={orderOptions}
-            setOrderOptions={setOrderOptions}
-          />
-
-          <Dialog disableFocusTrap isOpen={!!withdrawAssetDialog}>
-            <DialogHeader
-              title={t(translations.aavePage.common.withdraw)}
-              onClose={onWithdrawClose}
-            />
-            <DialogBody className="flex flex-col gap-6">
-              <WithdrawForm
-                asset={withdrawAssetDialog!}
-                onComplete={onWithdrawClose}
-              />
-            </DialogBody>
-          </Dialog>
         </>
-      ) : (
-        <div className="flex items-center justify-center lg:h-12">
-          <Paragraph className="text-xs text-center text-gray-30 italic font-medium leading-5 lg:text-white">
-            {t(pageTranslations.common.connectWallet)}
-          </Paragraph>
-        </div>
-      )}
+      ) : null}
+
+      <Table
+        isLoading={loading}
+        columns={COLUMNS_CONFIG(setWithdrawAssetDialog)}
+        rowClassName="bg-gray-80"
+        accordionClassName="bg-gray-60 border border-gray-70"
+        rowTitle={rowTitleRenderer}
+        mobileRenderer={mobileRenderer}
+        rows={rows}
+        orderOptions={orderOptions}
+        setOrderOptions={setOrderOptions}
+        noData={
+          <span className="text-gray-30 text-sm lg:text-white">
+            {t(pageTranslations.lendPositionsList.noData)}
+          </span>
+        }
+      />
+
+      <Dialog disableFocusTrap isOpen={!!withdrawAssetDialog}>
+        <DialogHeader
+          title={t(translations.aavePage.common.withdraw)}
+          onClose={onWithdrawClose}
+        />
+        <DialogBody className="flex flex-col gap-6">
+          <WithdrawForm
+            asset={withdrawAssetDialog!}
+            onComplete={onWithdrawClose}
+          />
+        </DialogBody>
+      </Dialog>
     </Accordion>
   );
 };

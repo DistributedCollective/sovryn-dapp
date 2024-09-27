@@ -55,8 +55,9 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
   const onRepayClose = useCallback(() => setRepayAssetDialog(undefined), []);
 
   const rowTitleRenderer = useCallback(
-    (r: BorrowPosition) => (
+    (r: BorrowPosition, isOpen?: boolean) => (
       <AaveRowTitle
+        isOpen={isOpen}
         asset={r.asset}
         value={r.borrowed}
         suffix={r.asset}
@@ -81,6 +82,22 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
     [orderOptions, borrowPositions],
   );
 
+  if (!account) {
+    return (
+      <div className="bg-gray-70 px-4 py-3 rounded lg:bg-gray-90 lg:pb-6 lg:px-6 lg:pt-3 lg:border lg:border-gray-60">
+        <div className="text-base font-medium text-left py-[6px] lg:pt-2 lg:pb-3 lg:flex lg:items-center lg:gap-8">
+          <span>{t(pageTranslations.borrowPositionsList.title)}</span>
+        </div>
+
+        <div className="flex items-center justify-center lg:h-12">
+          <Paragraph className="text-xs text-center text-gray-30 italic font-medium leading-5 lg:text-white">
+            {t(pageTranslations.common.connectWallet)}
+          </Paragraph>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Accordion
       label={
@@ -99,7 +116,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
       open={open}
       onClick={setOpen}
     >
-      {account ? (
+      {rows.length ? (
         <>
           <EfficiencyModeCard
             eModeCategoryId={eModeCategoryId}
@@ -129,36 +146,35 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
               precision={2}
             />
           </div>
-
-          <Table
-            isLoading={loading}
-            columns={COLUMNS_CONFIG(setRepayAssetDialog)}
-            rowClassName="bg-gray-80"
-            accordionClassName="bg-gray-60 border border-gray-70"
-            rowTitle={rowTitleRenderer}
-            mobileRenderer={mobileRenderer}
-            rows={rows}
-            orderOptions={orderOptions}
-            setOrderOptions={setOrderOptions}
-          />
-
-          <Dialog disableFocusTrap isOpen={!!repayAssetDialog}>
-            <DialogHeader
-              title={t(translations.aavePage.repayModal.title)}
-              onClose={onRepayClose}
-            />
-            <DialogBody className="space-y-3">
-              <RepayForm asset={repayAssetDialog!} onComplete={onRepayClose} />
-            </DialogBody>
-          </Dialog>
         </>
-      ) : (
-        <div className="flex items-center justify-center lg:h-12">
-          <Paragraph className="text-xs text-center text-gray-30 italic font-medium leading-5 lg:text-white">
-            {t(pageTranslations.common.connectWallet)}
-          </Paragraph>
-        </div>
-      )}
+      ) : null}
+
+      <Table
+        isLoading={loading}
+        columns={COLUMNS_CONFIG(setRepayAssetDialog)}
+        rowClassName="bg-gray-80"
+        accordionClassName="bg-gray-60 border border-gray-70"
+        rowTitle={rowTitleRenderer}
+        mobileRenderer={mobileRenderer}
+        rows={rows}
+        orderOptions={orderOptions}
+        setOrderOptions={setOrderOptions}
+        noData={
+          <span className="text-gray-30 text-sm lg:text-white">
+            {t(pageTranslations.borrowPositionsList.noData)}
+          </span>
+        }
+      />
+
+      <Dialog disableFocusTrap isOpen={!!repayAssetDialog}>
+        <DialogHeader
+          title={t(translations.aavePage.repayModal.title)}
+          onClose={onRepayClose}
+        />
+        <DialogBody className="space-y-3">
+          <RepayForm asset={repayAssetDialog!} onComplete={onRepayClose} />
+        </DialogBody>
+      </Dialog>
     </Accordion>
   );
 };

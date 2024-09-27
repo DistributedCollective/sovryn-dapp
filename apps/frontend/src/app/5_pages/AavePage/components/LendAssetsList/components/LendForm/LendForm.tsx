@@ -111,7 +111,7 @@ export const LendForm: FC<LendFormProps> = ({
         {!isValidLendAmount && (
           <ErrorBadge
             level={ErrorLevel.Critical}
-            message={t(pageTranslations.lendModal.invalidAmountError)}
+            message={t(pageTranslations.lendModal.exceedsMaxAmount)}
             dataAttribute="lend-amount-error"
           />
         )}

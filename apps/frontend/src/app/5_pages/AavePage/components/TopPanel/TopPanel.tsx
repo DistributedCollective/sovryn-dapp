@@ -66,19 +66,18 @@ export const TopPanel: FC<TopPanelProps> = ({
               }
               help={t(pageTranslations.netApyInfo)}
             />
-            <StatisticsCard
-              label={t(pageTranslations.healthFactor)}
-              value={
-                account ? (
+            {account && (
+              <StatisticsCard
+                label={t(pageTranslations.healthFactor)}
+                value={
                   <AmountRenderer
-                    suffix="%"
                     precision={2}
                     value={healthFactor}
                     className="text-2xl"
                   />
-                ) : undefined
-              }
-            />
+                }
+              />
+            )}
           </div>
         </div>
       </div>

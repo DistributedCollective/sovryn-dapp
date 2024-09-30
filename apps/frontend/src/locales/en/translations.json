@@ -127,8 +127,7 @@
                     "ercBridge": "ERC-20",
                     "ercBridgeDescription": "Transfer between BOB and other chains"
                 }
-            },
-            "claimPowa": "Claim POWA"
+            }
         }
     },
     "footer": {
@@ -1937,25 +1936,6 @@
             "description": "Claim your LP tokens from Sovryn & BOB liquidity campaign"
         },
         "ammCta": "Claim LP tokens"
-    },
-    "claimPowaPage": {
-        "meta": {
-            "title": "POWA to the People - Sovryn"
-        },
-        "title": "POWA to the People",
-        "subtitle": "Claim your POWA",
-        "claimPowa": "Claim your POWA",
-        "details": "Details about the POWA campaign",
-        "descriptionValues": {
-            "aboutClaiming": "Claim your POWA rune token to the same Rootstock address you used for the Trading and Staking leaderboards or the one you gave out in Gleam for the influence campaign. Make sure it’s connected now to Sovryn.",
-            "rskAddressCTA": "Supply one here.",
-            "faq": "Got questions? Please ask in our <0>telegram channel.</0> ",
-            "faqCTA": "telegram channel."
-        },
-        "claimTx": {
-            "title": "Claim your POWA",
-            "description": "Claim your POWA points"
-        }
     },
     "unclaimedVestings": {
         "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",

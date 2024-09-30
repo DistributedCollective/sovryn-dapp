@@ -9,14 +9,17 @@ type NativeTokenAmountProps = {
   usdValue?: string | number;
   dataAttribute?: string;
   precision?: number;
+  token?: 'BTC' | 'ETH';
 };
 
 export const NativeTokenAmount: FC<NativeTokenAmountProps> = ({
   usdValue,
   dataAttribute,
   precision,
+  token,
 }) => {
-  const { price: nativeTokenPrice, nativeToken } = useGetNativeTokenPrice();
+  const { price: nativeTokenPrice, nativeToken } =
+    useGetNativeTokenPrice(token);
 
   const value = useMemo(
     () =>

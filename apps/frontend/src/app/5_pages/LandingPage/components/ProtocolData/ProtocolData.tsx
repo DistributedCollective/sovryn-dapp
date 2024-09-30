@@ -9,7 +9,7 @@ import { BOB_CHAIN_ID, RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { NativeTokenAmount } from '../../../../2_molecules/NativeTokenAmount/NativeTokenAmount';
-import { USD } from '../../../../../constants/currencies';
+import { BITCOIN, USD } from '../../../../../constants/currencies';
 import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import { USD_VALUE_PRECISION } from './ProtocolData.constants';
@@ -84,7 +84,11 @@ export const ProtocolData: FC = () => {
                 {t(pageTranslations.totalValueLockedAllNetworks)}
               </div>
               <div className="sm:text-xl text-gray-10 text-sm sm:font-medium font-semibold leading-8">
-                <NativeTokenAmount usdValue={total.lockedData} precision={4} />
+                <NativeTokenAmount
+                  token={BITCOIN}
+                  usdValue={total.lockedData}
+                  precision={4}
+                />
               </div>
 
               <div className="text-gray-50 text-sm">
@@ -101,7 +105,10 @@ export const ProtocolData: FC = () => {
                 {t(pageTranslations.volumeAllNetworks)}
               </div>
               <div className="sm:text-2xl text-gray-10 text-sm sm:font-medium font-semibold leading-8">
-                <NativeTokenAmount usdValue={total.volumeData} />
+                <NativeTokenAmount
+                  token={BITCOIN}
+                  usdValue={total.volumeData}
+                />
               </div>
 
               <div className="text-gray-50 text-sm">
@@ -122,7 +129,7 @@ export const ProtocolData: FC = () => {
                   {t(pageTranslations.tvlRskNetwork)}
                 </div>
                 <div className="text-gray-10 text-sm sm:font-medium font-semibold">
-                  <NativeTokenAmount usdValue={rskTVL} />
+                  <NativeTokenAmount token={BITCOIN} usdValue={rskTVL} />
                 </div>
 
                 <div className="text-gray-50 text-sm">
@@ -139,7 +146,7 @@ export const ProtocolData: FC = () => {
                   {t(pageTranslations.volumeRskNetwork)}
                 </div>
                 <div className="text-gray-10 text-sm sm:font-medium font-semibold">
-                  <NativeTokenAmount usdValue={rskVolume} />
+                  <NativeTokenAmount token={BITCOIN} usdValue={rskVolume} />
                 </div>
 
                 <div className="text-gray-50 text-sm">
@@ -158,7 +165,10 @@ export const ProtocolData: FC = () => {
                   {t(pageTranslations.tvlBobNetwork)}
                 </div>
                 <div className="text-gray-10 text-sm">
-                  <NativeTokenAmount usdValue={bobLockedData.total_usd} />
+                  <NativeTokenAmount
+                    token={BITCOIN}
+                    usdValue={bobLockedData.total_usd}
+                  />
                 </div>
                 <div className="text-gray-50 text-sm">
                   <AmountRenderer
@@ -174,7 +184,7 @@ export const ProtocolData: FC = () => {
                   {t(pageTranslations.volumeBobNetwork)}
                 </div>
                 <div className="text-gray-10 text-sm sm:font-medium font-semibold">
-                  <NativeTokenAmount usdValue={bobVolume} />
+                  <NativeTokenAmount token={BITCOIN} usdValue={bobVolume} />
                 </div>
 
                 <div className="text-gray-50 text-sm">

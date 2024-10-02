@@ -101,9 +101,9 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
     ],
   );
 
-  const borrowApr = useMemo(
-    () => Decimal.from(borrowReserve?.reserve.variableBorrowAPR ?? 0).mul(100),
-    [borrowReserve?.reserve.variableBorrowAPR],
+  const borrowApy = useMemo(
+    () => Decimal.from(borrowReserve?.reserve.variableBorrowAPY ?? 0).mul(100),
+    [borrowReserve?.reserve.variableBorrowAPY],
   );
 
   const isValidBorrowAmount = useMemo(
@@ -159,8 +159,8 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
 
       <SimpleTable>
         <SimpleTableRow
-          label={t(translations.aavePage.borrowForm.borrowApr)}
-          value={<AmountRenderer value={borrowApr} suffix="%" precision={2} />}
+          label={t(translations.aavePage.borrowForm.borrowApy)}
+          value={<AmountRenderer value={borrowApy} suffix="%" precision={2} />}
         />
       </SimpleTable>
 

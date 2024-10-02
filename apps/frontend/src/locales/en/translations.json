@@ -909,7 +909,7 @@
             "collateralToRepayWith": "Collateral to repay with"
         },
         "borrowForm": {
-            "borrowApr": "Borrow APR",
+            "borrowApy": "Borrow APY",
             "learnMore":"Learn more",
             "collateralRatio": "Collateral ratio",
             "liquidationPrice": "Liquidation price",

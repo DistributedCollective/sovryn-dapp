@@ -127,8 +127,7 @@
                     "ercBridge": "ERC-20",
                     "ercBridgeDescription": "Transfer between BOB and other chains"
                 }
-            },
-            "claimPowa": "Claim POWA"
+            }
         }
     },
     "footer": {
@@ -934,92 +933,6 @@
         }
     },
 
-    "leaderboardPage": {
-        "headerLink": "POWA Points",
-        "headerDescription": "Earn Points, Earn POWA",
-        "title": "You’ve got the POWA!",
-        "subtitle": "The POWA Points campaign is now closed. <br/>POWA will drop on the halving.",
-        "description1": "POWA is the most powaful Bitcoin token! Minted on an entirely new Bitcoin technology, POWA tokens allow early use of what's to come with the <0>BitcoinOS</0> launch.",
-        "description2": "Stake, Trade, or use your Influence to earn Points and POWA. Connect your wallet to see how many points you already have!",
-        "primaryCta": "How to earn points",
-        "secondaryCta": "More about POWA",
-        "ctaLinksSection": {
-            "title": "1 Trillion POWA Prize Pool!",
-            "subtitle": "The more points you’ll have - the more POWA you’ll get!",
-            "stake": {
-                "title": "Stake",
-                "description": "The longer you stake, the more POWA you’ll get! Existing stakes earn 1 point for each Voting Power. New and re-stakes earn 10 points for each VP.",
-                "cta": "Stake SOV"
-            },
-            "trade": {
-                "title": "Trade",
-                "description": "Get 25 points per $1 value you bridge into Sovryn, 10 points per $1 deposit into the SOV or DLLR AMMs, and 1 point per $1 trade.",
-                "cta": "Deposit stablecoins"
-            },
-            "social": {
-                "title": "Influence",
-                "description": "Earn points for your social influence! Like, Share, and Tweet to be given the POWA!",
-                "cta": "Twitter quests"
-            }
-        },
-        "tables": {
-            "connectWalletText": "Connect your wallet to see how many points you’ve got.",
-            "participantNotFound": "Take any action on the dapp to start earning points",
-            "connectWalletCta": "Connect wallet",
-            "baseTable": {
-                "participant": "Participant",
-                "points": "Points",
-                "yourPosition": "Your position",
-                "badges": {
-                    "earlyUser": "+5% Early user",
-                    "genesis": "+5% Genesis",
-                    "nft": "+5% NFT holder",
-                    "origin": "+5% Origin",
-                    "topImporterDay": "+10% Daily top importer",
-                    "topImporterWeek": "+10% Weekly top importer",
-                    "voter": "+5% Voter",
-                    "topStakerDay": "+10% Daily top staker",
-                    "topStakerWeek": "+10% Weekly top trader",
-                    "wallet": "+100 points"
-                }
-            },
-            "trading": {
-                "tabTitle": "Trading"
-            },
-            "staking": {
-                "tabTitle": "Staking",
-                "tableSubtitle": "Please note that the system is currently undercounting restaking. This will be addressed in a coming update."
-            },
-            "social": {
-                "tabTitle": "Influence"
-            }
-        },
-        "pointsSection": {
-            "title": "Gain POWA!",
-            "description": "Actions on the Sovryn dApp and on Twitter earn you points. Points convert to POWA - the next Bitcoin token class.",
-            "tables": {
-                "trading": {
-                    "title": "Trade",
-                    "item1": "Provide liquidity for SOV or DLLR AMMs, per $1 value",
-                    "item2": "Any AMM trade, per $1 value",
-                    "item3": "Import stablecoins, per $1 value",
-                    "item4": "Weekly top  importer",
-                    "item5": "Daily top importer"
-                },
-                "staking": {
-                    "title": "Stake",
-                    "item1": "New and re-stakes, 1VP",
-                    "item2": "Existing stakes, 1 VP",
-                    "item3": "Weekly top staker",
-                    "item4": "Daily top staker"
-                },
-                "social": {
-                    "title": "Influence",
-                    "item1": "See Influence leaderboard for current quests points breakdown."
-                }
-            }
-        }
-    },
     "leaderboardPointsPage": {
         "meta": {
             "title": "Spice Leaderboard - Sovryn"
@@ -2023,25 +1936,6 @@
             "description": "Claim your LP tokens from Sovryn & BOB liquidity campaign"
         },
         "ammCta": "Claim LP tokens"
-    },
-    "claimPowaPage": {
-        "meta": {
-            "title": "POWA to the People - Sovryn"
-        },
-        "title": "POWA to the People",
-        "subtitle": "Claim your POWA",
-        "claimPowa": "Claim your POWA",
-        "details": "Details about the POWA campaign",
-        "descriptionValues": {
-            "aboutClaiming": "Claim your POWA rune token to the same Rootstock address you used for the Trading and Staking leaderboards or the one you gave out in Gleam for the influence campaign. Make sure it’s connected now to Sovryn.",
-            "rskAddressCTA": "Supply one here.",
-            "faq": "Got questions? Please ask in our <0>telegram channel.</0> ",
-            "faqCTA": "telegram channel."
-        },
-        "claimTx": {
-            "title": "Claim your POWA",
-            "description": "Claim your POWA points"
-        }
     },
     "unclaimedVestings": {
         "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",

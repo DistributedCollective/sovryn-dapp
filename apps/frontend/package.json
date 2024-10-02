@@ -9,6 +9,7 @@
     "@loadable/component": "5.15.2",
     "@sovryn-zero/lib-base": "0.2.1",
     "@sovryn-zero/lib-ethers": "0.2.5",
+    "@sovryn/charting-library": "1.0.0",
     "@sovryn/contracts": "*",
     "@sovryn/ethers-provider": "*",
     "@sovryn/onboard-bitget": "1.0.1",
@@ -58,6 +59,7 @@
     "rxjs": "7.5.6",
     "sanitize-html": "2.11.0",
     "socket.io-client": "4.5.4",
+    "storage-factory": "^0.2.1",
     "utf8": "^3.0.0",
     "zustand": "^4.5.1"
   },
@@ -94,14 +96,15 @@
     "predev": "yarn generate:graphql",
     "dev": "craco start",
     "prebuild": "yarn generate:graphql",
-    "build": "craco build",
+    "build": "yarn copy-libs && craco build",
     "test": "craco test --watchAll=false --passWithNoTests",
     "test:staged": "craco test --watchAll=false --passWithNoTests --bail --onlyChanged",
     "lint": "eslint -c .eslintrc.js ./",
     "generate:graphql": "graphql-codegen",
     "generate:graphql:fetch:testnet": "env-cmd -f .env.development.local graphql-codegen -c codegen.fetch.yml",
     "generate:graphql:fetch:mainnet": "env-cmd -f .env.staging graphql-codegen -c codegen.fetch.yml",
-    "find-deadcode": "ts-prune -s .generated.tsx | grep -v '(used in module)'"
+    "find-deadcode": "ts-prune -s .generated.tsx | grep -v '(used in module)'",
+    "copy-libs": "node scripts/copyLibs.js"
   },
   "browserslist": [
     "last 5 chrome version",

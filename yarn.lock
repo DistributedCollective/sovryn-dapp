@@ -4708,6 +4708,11 @@
   resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-0.2.5.tgz#a689b6b86686f7e54a6bbfac965a40f49a2fa4ea"
   integrity sha512-EflaS8gsnlnslo1ZgxFm4c6xBAGPW1dJJ/8ItSgKhYBTYy50zulGRZwln3c4QVt4Sq6dkasix5NsqGXkTQutOA==
 
+"@sovryn/charting-library@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@sovryn/charting-library/-/charting-library-1.0.0.tgz#96e5846feae39cd06b28e3cdf8233fa2e0928d43"
+  integrity sha512-5PkZ29YC4YeAh8tOmGMs71rp7UPzTu28EuVp+O5Y2DwO1c/Eqfh6wVP0W7dd2Bg8oscyN5W3cAz9y9L620JnvA==
+
 "@sovryn/onboard-bitget@1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@sovryn/onboard-bitget/-/onboard-bitget-1.0.1.tgz#aee1c3a1fc714e9232e84b54e7732f2191fd6e7d"
@@ -21600,14 +21605,7 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   dependencies:
     aproba "^1.1.1"
 
-rxjs@6:
-  version "6.6.7"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
-  integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
-  dependencies:
-    tslib "^1.9.0"
-
-rxjs@7.5.6, rxjs@^7.5.5, rxjs@^7.5.6:
+rxjs@6, rxjs@7.5.6, rxjs@^7.5.5, rxjs@^7.5.6:
   version "7.5.6"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.6.tgz#0446577557862afd6903517ce7cae79ecb9662bc"
   integrity sha512-dnyv2/YsXhnm461G+R/Pe5bWP41Nm6LBXEYWI6eiFP4fiwx6WRI/CD0zbdVAudd9xwLEF2IDcKXLHit0FYjUzw==
@@ -22467,6 +22465,11 @@ statuses@2.0.1:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.5.0.tgz#161c7dac177659fd9811f43771fa99381478628c"
   integrity sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==
+
+storage-factory@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/storage-factory/-/storage-factory-0.2.1.tgz#e484493a888cd2de6ffcb51ad2c95bad0964f950"
+  integrity sha512-zyhSqhFbK7q1ovq1Tf4WyshYwy8jLkKIUnWBPnakXarvFRljemhz9Zlg0rxwnZiqUdJQ3iox36VLtE/XHqQ4og==
 
 store2@^2.12.0:
   version "2.14.2"
@@ -23492,7 +23495,7 @@ tsconfig-paths@^3.14.1:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tslib@1.14.1, tslib@^1.13.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
+tslib@1.14.1, tslib@^1.13.0, tslib@^1.8.1, tslib@^1.9.3:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==

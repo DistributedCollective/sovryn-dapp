@@ -24,7 +24,7 @@ export const ProtocolSection: FC = () => {
   const [value, setValue] = useState(Decimal.ZERO);
   const [protocolValues, setProtocolValues] = useState<PoolValues>({});
 
-  const { price: nativeTokenPrice } = useGetNativeTokenPrice();
+  const { price: nativeTokenPrice } = useGetNativeTokenPrice(chainId);
 
   const handleValueUpdate = useCallback(
     (newBalance: Decimal, protocolIdentifier: ProtocolTypes) => {

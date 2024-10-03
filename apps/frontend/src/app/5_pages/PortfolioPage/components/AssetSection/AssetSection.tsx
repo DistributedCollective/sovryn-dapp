@@ -24,7 +24,7 @@ export const AssetSection: FC = () => {
     getNativeToken(chainId),
   );
   const [usdValues, setUsdValues] = useState({});
-  const { price: nativeTokenPrice } = useGetNativeTokenPrice();
+  const { price: nativeTokenPrice } = useGetNativeTokenPrice(chainId);
   const availableTokens = useMemo(() => getAvailableTokens(chainId), [chainId]);
 
   useEffect(() => {

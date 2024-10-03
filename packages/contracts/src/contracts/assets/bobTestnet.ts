@@ -13,6 +13,15 @@ export const bobTestnet: Array<AssetDetails> = [
     description: 'BOB Ether',
   },
   {
+    symbol: 'AAVE',
+    address: '0xF1b760dcB43A93694333A0E0ABc20F4D3e611985',
+    name: 'Aave',
+    isNative: false,
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/eth')).default,
+    description: 'BOB Aave',
+  },
+  {
     symbol: 'WBTC',
     address: '0xb5E3dbAF69A46B71Fe9c055e6Fa36992ae6b2c1A',
     name: 'Wrapped Bitcoin',
@@ -84,14 +93,14 @@ export const bobTestnet: Array<AssetDetails> = [
   },
   {
     symbol: 'aWETH',
-    address: '0xe2B24ff36891017CeB3D9CDc20d576276BE1959C',
+    address: '0xF32A8Cd16B00705Bc28F08645304019CA9565022',
     name: 'Aave Wrapped ETH',
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/eth')).default,
   },
   {
     symbol: 'WETH',
-    address: '0x8CEc2719a2e896A11eA3f10406EfDb6Ad87281D9',
+    address: '0x327E7E4A9e054ecC67dFa9E3Af158347116321Bf',
     name: 'Wrapped ETH',
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/eth')).default,

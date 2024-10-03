@@ -28,7 +28,10 @@ export const ToggleCollateralAction: FC<ToggleCollateralActionProps> = ({
       className="[&_*]:ml-0"
       checked={isCollateral}
       onChange={toggleCollateral}
-      disabled={position.canToggleCollateral === false}
+      disabled={
+        position.canToggleCollateral === false ||
+        position.canBeCollateral === false
+      }
     />
   );
 };

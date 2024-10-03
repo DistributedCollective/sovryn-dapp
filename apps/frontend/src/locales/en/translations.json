@@ -919,6 +919,7 @@
         },
         "withdrawForm": {
             "remainingSupply": "Remaining supply",
+            "notLiquidityEnoughError": "Max liquidity available: {{maxLiquidity}}",
             "invalidAmountError": "Exceeds maximum amount"
         },
         "lendModal": {

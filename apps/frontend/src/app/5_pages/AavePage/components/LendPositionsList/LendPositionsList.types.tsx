@@ -7,4 +7,5 @@ export type LendPosition = {
   apy: Decimal;
   collateral: boolean;
   canToggleCollateral: boolean;
+  canBeCollateral: boolean;
 };

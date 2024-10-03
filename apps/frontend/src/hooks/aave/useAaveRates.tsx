@@ -18,6 +18,7 @@ export interface RatesDataResult {
   name: string;
   symbol: string;
   decimals: number;
+  interestRateStrategyAddress: string;
 }
 
 export const useAaveInterestRatesData = (
@@ -60,6 +61,7 @@ export const useAaveInterestRatesData = (
         name: reserve.name,
         symbol: reserve.symbol,
         decimals: reserve.decimals,
+        interestRateStrategyAddress: reserve.interestRateStrategyAddress,
       });
     } catch (error) {
       setError(error.message);

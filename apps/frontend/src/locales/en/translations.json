@@ -1940,5 +1940,45 @@
     "unclaimedVestings": {
         "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",
         "cta": "Open Rewards page"
+    },
+    "liquidityBookPage": {
+        "meta": {
+            "title": "Liquidity book - Sovryn"
+        },
+        "title": "Liquidity book - Trader Joe",
+        "table": {
+            "pair": "Pair",
+            "liquidity": "Liquidity",
+            "balance": "Balance",
+            "addLiquidity": "Add liquidity",
+            "removeLiquidity": "Remove liquidity",
+            "approveForAll": "Approve for all"
+        },
+        "loading": "Loading...",
+        "walletBalance": "Wallet balance",
+        "connectWallet": "Connect wallet",
+        "actions": {
+            "deposit": "Deposit",
+            "withdraw": "Withdraw"
+        }
+    },
+    "liquidityBookDeposit": {
+      "title": "Add Liquidity",
+      "errors": {
+        "invalidRange": "Range selected is too big."
+      },
+      "types": {
+        "range": "By range",
+        "radius": "By radius"
+      },
+      "price": "Price",
+      "priceFormat": "{{quote}} per {{base}}",
+      "setRewardedRange": "Set rewarded range",
+      "minPrice": "Min price",
+      "maxPrice": "Max price",
+      "targetPrice": "Target price",
+      "radius": "Radius (number of bins)",
+      "rangeMin": "Range Min",
+      "rangeMax": "Range Max"
     }
 }

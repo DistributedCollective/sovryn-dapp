@@ -68,3 +68,5 @@ export const canSwapPair = (
 
 export const areAddressesEqual = (a: string, b: string) =>
   a.toLowerCase() === b.toLowerCase();
+
+export const unique = <T>(arr: T[]) => Array.from(new Set(arr));

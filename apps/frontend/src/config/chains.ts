@@ -1,3 +1,5 @@
+import { defineChain } from 'viem';
+
 import setup, { Chain, ChainIds } from '@sovryn/ethers-provider';
 import { ChainId } from '@sovryn/ethers-provider';
 
@@ -31,6 +33,30 @@ export const BOB_CHAIN_ID = (
 ) as ChainId;
 
 export type ChainWithLogo = Chain & { icon: string };
+
+export const BOB_CUSTOM_CHAIN_ID = defineChain({
+  id: IS_MAINNET ? Number(ChainIds.BOB_MAINNET) : Number(ChainIds.BOB_TESTNET),
+  name: IS_MAINNET ? 'Bob Mainnet' : 'Bob Testnet',
+  nativeCurrency: {
+    name: IS_MAINNET ? 'Bob' : 'Bob Testnet',
+    symbol: IS_MAINNET ? 'ETH' : 'tETH',
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: [
+        IS_MAINNET
+          ? BOB.publicRpc[Environments.Mainnet]
+          : BOB.publicRpc[Environments.Testnet],
+      ],
+    },
+  },
+  blockExplorerUrls: [
+    IS_MAINNET
+      ? BOB.explorer[Environments.Mainnet]
+      : BOB.explorer[Environments.Testnet],
+  ],
+});
 
 export const APP_CHAIN_LIST: ChainWithLogo[] = [
   ...(IS_MAINNET

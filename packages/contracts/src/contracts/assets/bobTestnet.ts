@@ -82,4 +82,11 @@ export const bobTestnet: Array<AssetDetails> = [
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/wsteth')).default,
   },
+  {
+    symbol: 'WETH',
+    address: '0x5c7bEa38BD9d825212a1BCf0cCA4b9C122f6Bd00',
+    name: 'Wrapped ETH',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/wsteth')).default,
+  },
 ];

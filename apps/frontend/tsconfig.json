@@ -1,5 +1,5 @@
 {
-  "extends": "@sovryn/tsconfig/base.json",
+  "extends": "../../node_modules/@sovryn/tsconfig/base.json",
   "exclude": ["node_modules"],
-  "include": ["src"]
+  "include": ["src/**/*"],
 }

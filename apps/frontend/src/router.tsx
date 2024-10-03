@@ -46,6 +46,9 @@ const StakePage = loadable(() => import('./app/5_pages/StakePage/StakePage'));
 const BorrowPage = loadable(
   () => import('./app/5_pages/BorrowPage/BorrowPage'),
 );
+const BobGateway = loadable(
+  () => import('./app/5_pages/BobGateway/BobGateway'),
+);
 const BitocracyPage = loadable(
   () => import('./app/5_pages/BitocracyPage/BitocracyPage'),
 );
@@ -97,6 +100,10 @@ const routes = [
       {
         path: '/borrow/fixed-interest',
         element: <BorrowPage />,
+      },
+      {
+        path: '/bob-gateway',
+        element: <BobGateway />,
       },
       {
         path: '/borrow',

@@ -158,6 +158,3 @@ export const sortRowsByOrderOptions = (
       : -direction,
   );
 };
-
-export const formatFloorNumber = (num: Decimal, precision = 2) =>
-  Math.floor(num.toNumber() * 10 ** precision) / 10 ** precision;

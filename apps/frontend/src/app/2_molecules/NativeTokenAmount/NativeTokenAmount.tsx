@@ -22,6 +22,7 @@ export const NativeTokenAmount: FC<NativeTokenAmountProps> = ({
   chainId,
 }) => {
   const currentChainId = useCurrentChain();
+
   const { price: nativeTokenPrice, nativeToken } = useGetNativeTokenPrice(
     chainId ?? currentChainId,
   );

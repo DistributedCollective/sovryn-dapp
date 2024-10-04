@@ -17,4 +17,6 @@ export type UserDeposit = {
 export type UserPoints = {
   wallet: string;
   points: number;
+  s3Points: number;
+  total: number;
 };

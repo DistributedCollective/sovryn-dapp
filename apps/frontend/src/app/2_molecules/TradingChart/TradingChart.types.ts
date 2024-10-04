@@ -1,3 +1,7 @@
+export type TradingChartProps = {
+  pair: string;
+};
+
 export enum SeriesStyle {
   Bars = 0,
   Candles = 1,

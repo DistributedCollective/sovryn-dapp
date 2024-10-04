@@ -7,6 +7,7 @@ import { useSearchParams } from 'react-router-dom';
 
 import { getAssetData } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
+import { ChainId } from '@sovryn/onboard-common';
 import { SwapRoute } from '@sovryn/sdk';
 import { SmartRouter } from '@sovryn/sdk';
 import {
@@ -65,7 +66,6 @@ import { AssetDropdownWithFilters } from './components/AssetDropdownWithFilters/
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
-import { ChainId } from '@sovryn/onboard-common';
 
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
@@ -609,10 +609,10 @@ const ConvertPage: FC = () => {
           {t(pageTranslations.subtitle)}
         </Paragraph>
 
-        <div className="flex flex-col lg:flex-row space-x-4 xl:w-9/12 w-full">
+        <div className="flex flex-col-reverse lg:flex-row lg:space-x-6 xl:w-9/12 w-full">
           <TradingChart pair={renderPair} />
 
-          <div className="mt-12 p-0 sm:border sm:border-gray-50 sm:rounded lg:min-w-[28rem] sm:p-6 sm:bg-gray-90">
+          <div className="lg:mt-12 mt-6 p-0 sm:border sm:border-gray-50 sm:rounded lg:min-w-[28rem] sm:p-6 sm:bg-gray-90">
             <div className="bg-gray-80 rounded p-6">
               <div className="w-full flex flex-row justify-between items-center">
                 <Paragraph size={ParagraphSize.base} className="font-medium">

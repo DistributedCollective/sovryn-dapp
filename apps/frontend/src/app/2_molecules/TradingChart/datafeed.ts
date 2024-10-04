@@ -1,25 +1,21 @@
-/**
- * TradingChart Datafeed
- *
- * Implementation of TradingView Charting Library JS API (v18.043):
- * https://github.com/tradingview/charting_library/wiki/JS-Api/f62fddae9ad1923b9f4c97dbbde1e62ff437b924
- *
- * If the version of the library is updated, then modifications may
- * be necessary to this file and the realtime streaming.ts file in
- * this directory. Refer to:
- * https://github.com/tradingview/charting_library/wiki/Breaking-Changes
- */
 import { ApolloClient } from '@apollo/client';
 
 import {
   ChartingLibraryWidgetOptions,
+  DatafeedErrorCallback,
+  HistoryCallback,
   LibrarySymbolInfo,
-} from '@sovryn/charting-library/src/charting_library/charting_library.min';
+  PeriodParams,
+  ResolutionString,
+} from '@sovryn/charting-library/charting_library';
 
 import {
   config,
   resolutionMap,
   supportedResolutions,
+} from './TradingChart.constants';
+import { Bar } from './TradingChart.types';
+import {
   getTokensFromSymbol,
   hasDirectFeed,
   queryPairByChunks,
@@ -28,7 +24,6 @@ import {
 import { TradingCandleDictionary } from './dictionary';
 import { CandleDuration } from './hooks/useGetCandles';
 import { stream } from './streaming';
-import { Bar } from './TradingChart.types';
 
 const newestBarsCache = new Map<string, Bar>();
 const oldestBarsCache = new Map<string, Bar>();
@@ -38,14 +33,9 @@ const tradingChartDataFeeds = (
 ): ChartingLibraryWidgetOptions['datafeed'] => ({
   onReady: callback => setTimeout(() => callback(config)),
   searchSymbols: () => {},
-  resolveSymbol: async (
-    symbolName,
-    onSymbolResolvedCallback,
-    onResolveErrorCallback,
-  ) => {
+  resolveSymbol: async (symbolName, onSymbolResolvedCallback) => {
     const symbolInfo: LibrarySymbolInfo = {
       name: symbolName,
-      full_name: symbolName,
       description: '',
       type: 'crypto',
       exchange: '',
@@ -60,7 +50,6 @@ const tradingChartDataFeeds = (
       has_intraday: true,
       intraday_multipliers: ['1', '15', '60', '240'],
       supported_resolutions: supportedResolutions,
-      has_no_volume: false,
       has_empty_bars: false,
       has_daily: true,
       has_weekly_and_monthly: false,
@@ -70,14 +59,13 @@ const tradingChartDataFeeds = (
     setTimeout(() => onSymbolResolvedCallback(symbolInfo));
   },
   getBars: async (
-    symbolInfo,
-    resolution,
-    from,
-    to,
-    onHistoryCallback,
-    onErrorCallback,
-    firstDataRequest,
+    symbolInfo: LibrarySymbolInfo,
+    resolution: ResolutionString,
+    periodParams: PeriodParams,
+    onResult: HistoryCallback,
+    onError: DatafeedErrorCallback,
   ) => {
+    const { from, to, firstDataRequest } = periodParams;
     const candleDuration: CandleDuration = resolutionMap[resolution];
     const candleDetails = TradingCandleDictionary.get(candleDuration);
 
@@ -97,8 +85,6 @@ const tradingChartDataFeeds = (
 
     try {
       const { baseToken, quoteToken } = getTokensFromSymbol(symbolInfo.name);
-      console.log('baseToken', baseToken);
-      console.log('quoteToken', quoteToken);
 
       let items = await queryPairByChunks(
         graphqlClient,
@@ -113,9 +99,7 @@ const tradingChartDataFeeds = (
       );
 
       if (!items || items.length === 0) {
-        onHistoryCallback([], {
-          noData: true,
-        });
+        onResult([], { noData: true });
         return;
       }
 
@@ -147,22 +131,11 @@ const tradingChartDataFeeds = (
         oldestBarsCache.set(symbolInfo.name, currentOldest);
       }
 
-      onHistoryCallback(items, {
-        noData: false,
-      });
+      onResult(items, { noData: false });
     } catch (error) {
       console.log('error', error);
-      onErrorCallback(error);
+      onError(error.message);
     }
-  },
-  calculateHistoryDepth: (resolution, resolutionBack, intervalBack) => {
-    const candleDetails = TradingCandleDictionary.get(
-      resolutionMap[resolution],
-    );
-    return {
-      resolutionBack: candleDetails.resolutionBack,
-      intervalBack: candleDetails.intervalBack,
-    };
   },
   subscribeBars: (
     symbolInfo,

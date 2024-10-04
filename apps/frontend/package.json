@@ -9,7 +9,7 @@
     "@loadable/component": "5.15.2",
     "@sovryn-zero/lib-base": "0.2.1",
     "@sovryn-zero/lib-ethers": "0.2.5",
-    "@sovryn/charting-library": "1.0.0",
+    "@sovryn/charting-library": "2.0.0",
     "@sovryn/contracts": "*",
     "@sovryn/ethers-provider": "*",
     "@sovryn/onboard-bitget": "1.0.1",

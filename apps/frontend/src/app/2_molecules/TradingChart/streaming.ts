@@ -1,28 +1,15 @@
-/**
- * TradingChart "realtime" data stream.
- *
- * Implementation of TradingView Charting Library (v18.043) subscribeBars() and unsubscribeBars():
- * https://github.com/tradingview/charting_library/wiki/JS-Api/f62fddae9ad1923b9f4c97dbbde1e62ff437b924#subscribebarssymbolinfo-resolution-onrealtimecallback-subscriberuid-onresetcacheneededcallback
- *
- * If the version of the library is updated, then modifications may
- * be necessary to this file and the datafeed.ts file in
- * this directory. Refer to:
- * https://github.com/tradingview/charting_library/wiki/Breaking-Changes
- */
 import { ApolloClient } from '@apollo/client';
 
+import { REFRESH_RATE, resolutionMap } from './TradingChart.constants';
+import { SubItem } from './TradingChart.types';
 import {
   getTokensFromSymbol,
   hasDirectFeed,
   pushPrice,
   queryPairByChunks,
-  resolutionMap,
 } from './TradingChart.utils';
-import { CandleDuration } from './hooks/useGetCandles';
 import { TradingCandleDictionary } from './dictionary';
-import { SubItem } from './TradingChart.types';
-
-const REFRESH_RATE = 15 * 1e3;
+import { CandleDuration } from './hooks/useGetCandles';
 
 export class Streaming {
   private client: ApolloClient<any> | null = null;

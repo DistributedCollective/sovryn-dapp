@@ -50,6 +50,7 @@ export const normalizeLendPositions = (
         suppliedUsd: r.suppliedUsd,
         collateral: r.collateral,
         canToggleCollateral,
+        canBeCollateral: r.reserve.usageAsCollateralEnabled,
       });
     }
     return acc;

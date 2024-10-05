@@ -885,7 +885,7 @@
         "lendPositionsList": {
             "title": "Your lending deposits",
             "usedAsCollateral": "Used as collateral",
-            "noData": "You don't have any deposits yet"
+            "noData": "You don't have any deposits/loans yet"
         },
         "lendAssetsList": {
             "title": "Assets to lend",
@@ -909,7 +909,7 @@
             "collateralToRepayWith": "Collateral to repay with"
         },
         "borrowForm": {
-            "borrowApr": "Borrow APR",
+            "borrowApy": "Borrow APY",
             "learnMore":"Learn more",
             "collateralRatio": "Collateral ratio",
             "liquidationPrice": "Liquidation price",
@@ -919,6 +919,7 @@
         },
         "withdrawForm": {
             "remainingSupply": "Remaining supply",
+            "notLiquidityEnoughError": "Max liquidity available: {{maxLiquidity}}",
             "invalidAmountError": "Exceeds maximum amount"
         },
         "lendModal": {

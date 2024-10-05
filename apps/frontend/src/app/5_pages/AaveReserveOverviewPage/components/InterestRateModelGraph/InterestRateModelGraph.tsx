@@ -14,9 +14,9 @@ import { useAaveInterestRatesData } from '../../../../../hooks/aave/useAaveRates
 import { Reserve } from '../../../../../hooks/aave/useAaveReservesData';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { getBobExplorerUrl } from '../../../../../utils/helpers';
 import { Chart } from './components/Chart/Chart';
-import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 const pageTranslations = translations.aaveReserveOverviewPage.interestRateModel;
 
@@ -35,10 +35,8 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
 
   const interestRateStrategyUrl = useMemo(
     () =>
-      `${getBobExplorerUrl()}/address/${
-        AAVE_CONTRACT_ADDRESSES.INTEREST_RATE_STRATEGY
-      }`,
-    [],
+      `${getBobExplorerUrl()}/address/${rates?.interestRateStrategyAddress}`,
+    [rates?.interestRateStrategyAddress],
   );
 
   const collectorContractUrl = useMemo(

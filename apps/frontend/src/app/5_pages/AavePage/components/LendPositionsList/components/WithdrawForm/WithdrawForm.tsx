@@ -70,6 +70,15 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     [withdrawAsset, summary],
   );
 
+  const availableLiquidity = useMemo(() => {
+    const reserve = withdrawReserve?.reserve;
+    if (!reserve) {
+      return Decimal.from(0);
+    }
+
+    return Decimal.from(reserve.availableLiquidity).toUnits(reserve.decimals);
+  }, [withdrawReserve]);
+
   const maximumWithdrawAmount = useMemo(() => {
     if (!withdrawReserve) {
       return Decimal.from(0);
@@ -96,10 +105,28 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     [withdrawSize, withdrawReserve?.supplied],
   );
 
-  const isValidWithdrawAmount = useMemo(
-    () => (withdrawSize.gt(0) ? withdrawSize.lte(maximumWithdrawAmount) : true),
-    [withdrawSize, maximumWithdrawAmount],
-  );
+  const [isValidWithdrawAmount, errorMessage] = useMemo(() => {
+    if (withdrawSize.eq(0)) {
+      return [true, ''];
+    }
+
+    const liquidityEnough = withdrawSize.lte(availableLiquidity);
+    const balanceEnough = withdrawSize.lte(maximumWithdrawAmount);
+
+    if (!liquidityEnough) {
+      return [
+        false,
+        t(pageTranslations.withdrawForm.notLiquidityEnoughError, {
+          maxLiquidity: availableLiquidity.toString(2),
+        }),
+      ];
+    }
+    if (!balanceEnough) {
+      return [false, t(pageTranslations.withdrawForm.invalidAmountError)];
+    }
+
+    return [true, ''];
+  }, [withdrawSize, maximumWithdrawAmount, availableLiquidity]);
 
   const submitButtonDisabled = useMemo(
     () => !isValidWithdrawAmount || withdrawSize.lte(0),
@@ -144,7 +171,7 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
           {!isValidWithdrawAmount && (
             <ErrorBadge
               level={ErrorLevel.Critical}
-              message={t(pageTranslations.withdrawForm.invalidAmountError)}
+              message={errorMessage}
               dataAttribute="withdraw-amount-error"
             />
           )}

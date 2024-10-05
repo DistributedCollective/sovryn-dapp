@@ -10,6 +10,7 @@ import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 import { useAaveBorrow } from '../../../../../../../hooks/aave/useAaveBorrow';
 import { translations } from '../../../../../../../locales/i18n';
 import { BorrowRateMode } from '../../../../../../../types/aave';
+import { formatValue } from '../../../../../../../utils/math';
 import { BorrowPosition } from '../../BorrowPositionsList.types';
 
 type BorrowRateModeSelectProps = {
@@ -24,9 +25,10 @@ export const BorrowRateModeSelect: FC<BorrowRateModeSelectProps> = ({
   const options = useMemo(() => {
     const borrowRateModeOptions = [
       {
-        label: t(translations.aavePage.borrowPositionsList.selectVariableApy, {
-          apy: position.variableApy.toString(2),
-        }),
+        label: t(
+          translations.aavePage.borrowPositionsList.selectVariableApy,
+          {},
+        ),
         value: String(BorrowRateMode.VARIABLE),
       },
     ];
@@ -38,7 +40,7 @@ export const BorrowRateModeSelect: FC<BorrowRateModeSelectProps> = ({
     ) {
       borrowRateModeOptions.push({
         label: t(translations.aavePage.borrowPositionsList.selectStableApy, {
-          apy: position.stableApy.toString(2),
+          apy: formatValue(position.stableApy, 2),
         }),
         value: String(BorrowRateMode.STABLE),
       });

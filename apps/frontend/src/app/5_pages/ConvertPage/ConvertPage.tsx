@@ -24,7 +24,6 @@ import {
   IconNames,
   Paragraph,
   ParagraphSize,
-  Select,
   SelectOption,
   SimpleTable,
   SimpleTableRow,
@@ -51,12 +50,18 @@ import {
 } from '../../../utils/asset';
 import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei } from '../../../utils/math';
-import { FIXED_MYNT_RATE, FIXED_RATE_ROUTES } from './ConvertPage.constants';
+import {
+  CATEGORY_TOKENS,
+  FIXED_MYNT_RATE,
+  FIXED_RATE_ROUTES,
+} from './ConvertPage.constants';
 import {
   DEFAULT_SWAP_ENTRIES,
   SMART_ROUTER_STABLECOINS,
   SWAP_ROUTES,
 } from './ConvertPage.constants';
+import { CategoryType } from './ConvertPage.types';
+import { AssetDropdownWithFilters } from './components/AssetDropdownWithFilters/AssetDropdownWithFilters';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
 import { useGetMaximumAvailableAmount } from './hooks/useGetMaximumAvailableAmount';
 import { useHandleConversion } from './hooks/useHandleConversion';
@@ -76,23 +81,56 @@ const ConvertPage: FC = () => {
     [currentChainId],
   );
 
+  const [sourceCategories, setSourceCategories] = useState<CategoryType[]>([
+    CategoryType.All,
+  ]);
+
+  const [destinationCategories, setDestinationCategories] = useState<
+    CategoryType[]
+  >([CategoryType.All]);
+
   const tokensToOptions = useCallback(
     (
       addresses: string[],
       chain: ChainId,
       callback: (options: SelectOption<string>[]) => void,
-    ) =>
+      categories: CategoryType[],
+    ) => {
       Promise.all(
         addresses
           .filter(
-            // filter out WBTC token on rsk chain
+            // filter out WBTC token on RSK chain
             item =>
-              findAsset('WBTC', RSK_CHAIN_ID).address !== item.toLowerCase(),
+              findAsset('WBTC', RSK_CHAIN_ID).address.toLowerCase() !==
+              item.toLowerCase(),
           )
           .map(address => smartRouter.getTokenDetails(address, chain)),
-      ).then(tokens =>
+      ).then(tokens => {
+        const tokensWithCategories = tokens.map(token => {
+          const category = Object.keys(CATEGORY_TOKENS).find(type =>
+            CATEGORY_TOKENS[type].includes(token.symbol),
+          ) as CategoryType;
+          return { ...token, category };
+        });
+
+        const filteredTokens = tokensWithCategories.filter(token => {
+          if (categories.includes(CategoryType.BTC)) {
+            if (
+              token.symbol.toUpperCase() === CategoryType.BTC ||
+              token.symbol.includes(CategoryType.BTC)
+            ) {
+              return true;
+            }
+          }
+
+          return (
+            categories.includes(token.category) ||
+            categories.includes(CategoryType.All)
+          );
+        });
+
         callback(
-          tokens.map(token => ({
+          filteredTokens.map(token => ({
             value: token.symbol,
             label: (
               <AssetRenderer
@@ -103,8 +141,9 @@ const ConvertPage: FC = () => {
               />
             ),
           })),
-        ),
-      ),
+        );
+      });
+    },
     [smartRouter],
   );
 
@@ -112,7 +151,20 @@ const ConvertPage: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const fromToken = searchParams.get('from') || '';
   const toToken = searchParams.get('to') || '';
+  const categoryFromToken = searchParams.get('categoryFrom') || '';
+  const categoryToToken = searchParams.get('categoryTo') || '';
   const { balance: myntBalance } = useAssetBalance(MYNT_TOKEN);
+
+  const parsedSourceCategories = useMemo(
+    () =>
+      categoryFromToken ? categoryFromToken.split(',') : [CategoryType.All],
+    [categoryFromToken],
+  );
+
+  const parsedDestinationCategories = useMemo(
+    () => (categoryToToken ? categoryToToken.split(',') : [CategoryType.All]),
+    [categoryToToken],
+  );
 
   const [slippageTolerance, setSlippageTolerance] = useState('0.5');
 
@@ -138,6 +190,28 @@ const ConvertPage: FC = () => {
 
   const [sourceToken, setSourceToken] = useState<string>(defaultSourceToken);
 
+  const handleCategorySelect = useCallback(
+    (
+      category: CategoryType,
+      setCategories: React.Dispatch<React.SetStateAction<CategoryType[]>>,
+    ) =>
+      setCategories(prevCategories =>
+        category === CategoryType.All
+          ? [CategoryType.All]
+          : prevCategories.includes(category)
+          ? prevCategories.length === 1
+            ? [CategoryType.All]
+            : prevCategories.filter(prevCategory => prevCategory !== category)
+          : [
+              ...prevCategories.filter(
+                prevCategory => prevCategory !== CategoryType.All,
+              ),
+              category,
+            ],
+      ),
+    [],
+  );
+
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(true);
 
   const [tokenOptions, setTokenOptions] = useState<SelectOption<string>[]>([]);
@@ -157,8 +231,15 @@ const ConvertPage: FC = () => {
   useEffect(() => {
     smartRouter
       .getEntries(currentChainId)
-      .then(tokens => tokensToOptions(tokens, currentChainId, setTokenOptions));
-  }, [currentChainId, smartRouter, tokensToOptions]);
+      .then(tokens =>
+        tokensToOptions(
+          tokens,
+          currentChainId,
+          setTokenOptions,
+          sourceCategories,
+        ),
+      );
+  }, [currentChainId, smartRouter, tokensToOptions, sourceCategories]);
 
   useEffect(() => {
     (async () => {
@@ -168,15 +249,26 @@ const ConvertPage: FC = () => {
       );
       smartRouter
         .getDestination(currentChainId, sourceTokenDetails.address)
-        .then(tokens => {
-          tokensToOptions(tokens, currentChainId, setDestinationTokenOptions);
-        });
+        .then(tokens =>
+          tokensToOptions(
+            tokens,
+            currentChainId,
+            setDestinationTokenOptions,
+            destinationCategories,
+          ),
+        );
 
       if (sourceToken === MYNT_TOKEN) {
         setDestinationToken(COMMON_SYMBOLS.SOV);
       }
     })();
-  }, [currentChainId, smartRouter, sourceToken, tokensToOptions]);
+  }, [
+    currentChainId,
+    smartRouter,
+    sourceToken,
+    tokensToOptions,
+    destinationCategories,
+  ]);
 
   const sourceTokenOptions = useMemo(
     () =>
@@ -331,18 +423,6 @@ const ConvertPage: FC = () => {
     setHasQuoteError(false);
   }, []);
 
-  const getAssetRenderer = useCallback(
-    (token: string) => (
-      <AssetRenderer
-        showAssetLogo
-        asset={token}
-        chainId={currentChainId}
-        assetClassName="font-medium"
-      />
-    ),
-    [currentChainId],
-  );
-
   const { handleSubmit } = useHandleConversion(
     sourceToken,
     destinationToken,
@@ -410,7 +490,26 @@ const ConvertPage: FC = () => {
     if (toToken) {
       setDestinationToken(toToken);
     }
-  }, [fromToken, toToken]);
+    if (categoryFromToken) {
+      const sourceCategories = parsedSourceCategories.map(
+        category => CategoryType[category] || CategoryType.All,
+      );
+      setSourceCategories(sourceCategories);
+    }
+    if (categoryToToken) {
+      const destinationCategories = parsedDestinationCategories.map(
+        category => CategoryType[category] || CategoryType.All,
+      );
+      setDestinationCategories(destinationCategories);
+    }
+  }, [
+    fromToken,
+    toToken,
+    categoryFromToken,
+    categoryToToken,
+    parsedSourceCategories,
+    parsedDestinationCategories,
+  ]);
 
   useEffect(() => {
     if (hasMyntBalance && fromToken === MYNT_TOKEN) {
@@ -435,10 +534,51 @@ const ConvertPage: FC = () => {
       urlParams.delete('to');
     }
 
-    if (toToken !== destinationToken || fromToken !== sourceToken) {
+    if (sourceToken === destinationToken) {
+      urlParams.delete('to');
+    }
+
+    if (
+      sourceCategories.length > 0 &&
+      !sourceCategories.includes(CategoryType.All)
+    ) {
+      urlParams.set('categoryFrom', sourceCategories.join(','));
+    } else {
+      urlParams.delete('categoryFrom');
+    }
+
+    if (
+      destinationCategories.length > 0 &&
+      !destinationCategories.includes(CategoryType.All)
+    ) {
+      urlParams.set('categoryTo', destinationCategories.join(','));
+    } else {
+      urlParams.delete('categoryTo');
+    }
+
+    if (sourceToken === destinationToken) {
+      setDestinationToken('');
+    }
+
+    if (
+      toToken !== destinationToken ||
+      fromToken !== sourceToken ||
+      categoryToToken !== destinationCategories.join(',') ||
+      categoryFromToken !== sourceCategories.join(',')
+    ) {
       setSearchParams(new URLSearchParams(urlParams));
     }
-  }, [sourceToken, destinationToken, setSearchParams, toToken, fromToken]);
+  }, [
+    sourceToken,
+    destinationToken,
+    setSearchParams,
+    toToken,
+    fromToken,
+    sourceCategories,
+    destinationCategories,
+    categoryToToken,
+    categoryFromToken,
+  ]);
 
   useEffect(() => {
     if (!account) {
@@ -491,14 +631,14 @@ const ConvertPage: FC = () => {
                 dataAttribute="convert-from-amount"
                 placeholder="0"
               />
-
-              <Select
-                value={sourceToken}
-                onChange={onSourceTokenChange}
-                options={sourceTokenOptions}
-                labelRenderer={() => getAssetRenderer(sourceToken)}
-                className="min-w-[6.7rem]"
-                menuClassName="max-h-[10rem] sm:max-h-[12rem]"
+              <AssetDropdownWithFilters
+                token={sourceToken}
+                selectedCategories={sourceCategories}
+                tokenOptions={sourceTokenOptions}
+                onCategorySelect={category =>
+                  handleCategorySelect(category, setSourceCategories)
+                }
+                onTokenChange={onSourceTokenChange}
                 dataAttribute="convert-from-asset"
               />
             </div>
@@ -540,12 +680,14 @@ const ConvertPage: FC = () => {
                 className="w-full flex-grow-0 flex-shrink"
                 dataAttribute="convert-to-amount"
               />
-              <Select
-                value={destinationToken}
-                onChange={onDestinationTokenChange}
-                options={destinationTokenOptions}
-                className="min-w-[6.7rem]"
-                menuClassName="max-h-[10rem] sm:max-h-[12rem]"
+              <AssetDropdownWithFilters
+                token={destinationToken}
+                selectedCategories={destinationCategories}
+                tokenOptions={destinationTokenOptions}
+                onCategorySelect={category =>
+                  handleCategorySelect(category, setDestinationCategories)
+                }
+                onTokenChange={onDestinationTokenChange}
                 dataAttribute="convert-to-asset"
               />
             </div>

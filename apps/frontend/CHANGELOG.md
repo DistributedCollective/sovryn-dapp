@@ -1,5 +1,28 @@
 # frontend
 
+## 1.1.22
+
+### Patch Changes
+
+- ef2f1abe: SOV-4457: rebrand SAT token
+- c20bcb3b: SOV-4443: rune pool page update
+- b41a6af1: SOV-4461: Remove POWA page
+- 88463a86: SOV-4444: Rune pools convert updates
+- 97329130: SOV-4467: Spice Leaderboard adjustments for Season 3
+- Updated dependencies [ef2f1abe]
+- Updated dependencies [88463a86]
+  - @sovryn/contracts@1.2.1
+  - @sovryn/sdk@2.0.1
+  - @sovryn/ui@1.0.31
+
+## 1.1.21
+
+### Patch Changes
+
+- 5f000110: SOV-4453: Fixed issue with Portfolio page crashing on RSK chain
+- Updated dependencies [5f000110]
+  - @sovryn/sdex@0.3.14
+
 ## 1.1.20
 
 ### Patch Changes

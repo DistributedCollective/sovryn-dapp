@@ -1,5 +1,13 @@
 # @sovryn/sdk
 
+## 2.0.1
+
+### Patch Changes
+
+- ef2f1abe: SOV-4457: rebrand SAT token
+- Updated dependencies [ef2f1abe]
+  - @sovryn/contracts@1.2.1
+
 ## 2.0.0
 
 ### Patch Changes

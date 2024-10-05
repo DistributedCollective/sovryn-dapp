@@ -5,6 +5,7 @@ import { SmartRouter, smartRoutes } from '@sovryn/sdk';
 import { RSK_CHAIN_ID } from '../../../config/chains';
 
 import { COMMON_SYMBOLS } from '../../../utils/asset';
+import { CategoryType } from './ConvertPage.types';
 
 export const FIXED_RATE_ROUTES = ['MyntBasset', 'MyntFixedRate'];
 
@@ -47,4 +48,11 @@ export const DEFAULT_SWAP_ENTRIES: Partial<Record<ChainIds, string>> = {
   [ChainIds.BOB_MAINNET]: COMMON_SYMBOLS.ETH,
   [ChainIds.BOB_TESTNET]: COMMON_SYMBOLS.ETH,
   [ChainIds.SEPOLIA]: COMMON_SYMBOLS.ETH,
+};
+
+export const CATEGORY_TOKENS: Record<CategoryType, string[]> = {
+  [CategoryType.Stablecoins]: SMART_ROUTER_STABLECOINS,
+  [CategoryType.BTC]: [COMMON_SYMBOLS.BTC],
+  [CategoryType.Runes]: ['POWA'],
+  [CategoryType.All]: [],
 };

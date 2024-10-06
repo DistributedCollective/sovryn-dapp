@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.2.1
+
+### Patch Changes
+
+- ef2f1abe: SOV-4457: rebrand SAT token
+
 ## 1.2.0
 
 ### Minor Changes

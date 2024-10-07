@@ -7,7 +7,7 @@ import {
   IChartingLibraryWidget,
   ResolutionString,
   widget,
-} from '@sovryn/charting-library';
+} from '@sovryn/charting-library/src/charting_library';
 import { noop } from '@sovryn/ui';
 
 import { SeriesStyle, TradingChartProps } from './TradingChart.types';

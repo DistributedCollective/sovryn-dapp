@@ -1,6 +1,6 @@
 import { storageFactory } from 'storage-factory';
 
-import { ResolutionString } from '@sovryn/charting-library/charting_library';
+import { ResolutionString } from '@sovryn/charting-library/src/charting_library';
 
 import { CandleDuration } from './hooks/useGetCandles';
 

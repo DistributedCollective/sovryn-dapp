@@ -7,7 +7,7 @@ import {
   LibrarySymbolInfo,
   PeriodParams,
   ResolutionString,
-} from '@sovryn/charting-library/charting_library';
+} from '@sovryn/charting-library/src/charting_library';
 
 import {
   config,

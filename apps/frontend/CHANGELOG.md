@@ -1,5 +1,11 @@
 # frontend
 
+## 1.1.23
+
+### Patch Changes
+
+- 2028847d: SOV-4468: Show protocol data in BTC and USD only
+
 ## 1.1.22
 
 ### Patch Changes

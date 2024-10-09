@@ -938,7 +938,7 @@
             "title": "Spice Leaderboard - Sovryn"
         },
         "title": "Spice Leaderboard",
-        "description1": "Spice Points are rewards earned by providing liquidity and staking SOV on the Sovryn DEX on the BOB chain. These points track user contributions and engagement, helping determine future rewards allocated by the BOB team. This leaderboard displays only the rewards distributed by Sovryn (combined Season 1 &2) and allows you to check your accumulated points and current position.",
+        "description1": "Spice Points are rewards earned by providing liquidity and staking SOV on the Sovryn DEX on the BOB chain. These points track user contributions and engagement, helping determine future rewards allocated by the BOB team. This leaderboard displays only the rewards distributed by Sovryn and allows you to check your accumulated points and current position.",
         "description2": "If you want to earn your Spice points simply bridge your funds via <0>BOB Fusion and</0> start providing liquidity via our the <1>Market Making</1>  page or start <2>Staking SOV</2> tokens.",
         "claimDescription": "Users who participated in the Season 1 Liquidity Provisioning campaign can claim their LP tokens here:",
         "leaderboard": "Leaderboard",
@@ -955,7 +955,9 @@
             "participant": "Participant",
             "balance": "Balance",
             "points": "Points",
-            "spice": "Spice",
+            "spice": "Season 1 and 2 Spice",
+            "spice3": "Season 3 Spice",
+            "total": "Total",
             "extraSpice": "Extra Spice",
             "extraSpiceShot": "Extra Spice Shot",
             "runes": "Runes"

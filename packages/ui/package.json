@@ -1,6 +1,6 @@
 {
   "name": "@sovryn/ui",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/typings.d.ts",

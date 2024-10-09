@@ -30,6 +30,7 @@ export const MaxButton: FC<MaxButtonProps> = ({
   chainId,
 }) => (
   <button
+    type="button"
     onClick={onClick}
     className="text-xs font-medium underline whitespace-nowrap"
     {...applyDataAttr(dataAttribute)}

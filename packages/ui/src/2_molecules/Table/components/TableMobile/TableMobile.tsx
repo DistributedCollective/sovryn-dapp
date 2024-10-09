@@ -12,6 +12,7 @@ export const TableMobile = <RowType extends RowObject>({
   columns,
   rows,
   rowComponent,
+  accordionClassName,
   rowKey,
   rowTitle,
   onRowClick,
@@ -36,6 +37,7 @@ export const TableMobile = <RowType extends RowObject>({
               titleRenderer={rowTitle}
               columns={columns}
               row={row}
+              accordionClassName={accordionClassName}
               index={index}
               onRowClick={onRowClick}
               dataAttribute={dataAttribute}

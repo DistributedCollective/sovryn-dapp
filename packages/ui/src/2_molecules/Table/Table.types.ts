@@ -19,6 +19,7 @@ export type ColumnOptions<RowType extends RowObject> = {
 export type TableProps<RowType extends RowObject> = {
   className?: string;
   rowClassName?: string;
+  accordionClassName?: string;
   columns: ColumnOptions<RowType>[];
   rows?: RowType[];
   rowComponent?: FC<PropsWithChildren>;

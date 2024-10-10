@@ -19,11 +19,11 @@ import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { MINIMUM_HEALTH_FACTOR } from '../../../../../../../constants/aave';
 import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAaveUserReservesData';
 import { useAaveWithdraw } from '../../../../../../../hooks/aave/useAaveWithdraw';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
 import { translations } from '../../../../../../../locales/i18n';
-import { decimalic } from '../../../../../../../utils/math';
 import { TAB_ITEMS } from './WithdrawForm.constants';
 
 const pageTranslations = translations.aavePage;
@@ -84,9 +84,12 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
       return Decimal.from(0);
     }
 
+    if (summary.borrowBalance.eq(0)) {
+      return withdrawReserve.supplied;
+    }
+
     // min collateral at which we reach minimum collateral ratio
-    const minCollateralRatio = decimalic(1.1);
-    const minCollateralUsd = minCollateralRatio.mul(
+    const minCollateralUsd = MINIMUM_HEALTH_FACTOR.mul(
       summary.borrowBalance.div(summary.currentLiquidationThreshold),
     );
     const maxUsdWithdrawal = summary.supplyBalance.sub(minCollateralUsd);

@@ -19,7 +19,6 @@ import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE } from '../../../../../../../constants/aave';
 import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAaveUserReservesData';
 import { useAaveWithdraw } from '../../../../../../../hooks/aave/useAaveWithdraw';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
@@ -85,15 +84,20 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     }
 
     // min collateral at which we reach minimum collateral ratio
-    const minCollateralUsd = MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE.mul(
-      withdrawReserve.borrowedUsd,
+    const minCollateralUsd = summary.borrowBalance.div(
+      summary.currentLiquidationThreshold,
     );
     const maxUsdWithdrawal = summary.supplyBalance.sub(minCollateralUsd);
 
     return maxUsdWithdrawal.gt(withdrawReserve.suppliedUsd)
       ? withdrawReserve.supplied // we can withdraw all, we'll still have collateral on other asset
-      : maxUsdWithdrawal.div(withdrawReserve.reserve.priceInUSD); // only partial withdraw
-  }, [withdrawReserve, summary.supplyBalance]);
+      : maxUsdWithdrawal.div(withdrawReserve.reserve.priceInUSD).mul(0.99); // only partial withdraw
+  }, [
+    withdrawReserve,
+    summary.supplyBalance,
+    summary.borrowBalance,
+    summary.currentLiquidationThreshold,
+  ]);
 
   const withdrawAmountUsd = useMemo(
     () => withdrawSize.mul(withdrawReserve?.reserve.priceInUSD ?? 0),

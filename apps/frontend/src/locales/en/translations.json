@@ -33,7 +33,8 @@
                 "amount": "Amount",
                 "timestamp": "Timestamp",
                 "transactionType": "Transaction type",
-                "transactionID": "TXID"
+                "transactionID": "TXID",
+                "asset": "Asset"
             },
             "actions": {
                 "noDataToExport": "No data to export"

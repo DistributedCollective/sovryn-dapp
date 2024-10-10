@@ -23,6 +23,7 @@ import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAave
 import { useAaveWithdraw } from '../../../../../../../hooks/aave/useAaveWithdraw';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
 import { translations } from '../../../../../../../locales/i18n';
+import { decimalic } from '../../../../../../../utils/math';
 import { TAB_ITEMS } from './WithdrawForm.constants';
 
 const pageTranslations = translations.aavePage;
@@ -84,14 +85,15 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     }
 
     // min collateral at which we reach minimum collateral ratio
-    const minCollateralUsd = summary.borrowBalance.div(
-      summary.currentLiquidationThreshold,
+    const minCollateralRatio = decimalic(1.1);
+    const minCollateralUsd = minCollateralRatio.mul(
+      summary.borrowBalance.div(summary.currentLiquidationThreshold),
     );
     const maxUsdWithdrawal = summary.supplyBalance.sub(minCollateralUsd);
 
     return maxUsdWithdrawal.gt(withdrawReserve.suppliedUsd)
       ? withdrawReserve.supplied // we can withdraw all, we'll still have collateral on other asset
-      : maxUsdWithdrawal.div(withdrawReserve.reserve.priceInUSD).mul(0.99); // only partial withdraw
+      : maxUsdWithdrawal.div(withdrawReserve.reserve.priceInUSD); // only partial withdraw
   }, [
     withdrawReserve,
     summary.supplyBalance,

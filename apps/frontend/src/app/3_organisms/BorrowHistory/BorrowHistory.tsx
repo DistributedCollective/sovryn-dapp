@@ -9,6 +9,7 @@ import { BorrowHistoryType } from './BorrowHistory.types';
 import { AaveCloseWithDepositLoanFrame } from './components/AaveCloseWithDepositLoanFrame/AaveCloseWithDepositLoanFrame';
 import { AaveLiquidationLoanFrame } from './components/AaveLiquidationLoanFrame/AaveLiquidationLoanFrame';
 import { AaveNewLoanHistoryFrame } from './components/AaveNewLoanFrame/AaveNewLoanHistoryFrame';
+import { AaveSwapRateModeLoanFrame } from './components/AaveSwapRateModeLoanFrame/AaveSwapRateModeLoanFrame';
 import { CloseWithDepositLoanFrame } from './components/CloseWithDepositLoanFrame/CloseWithDepositLoanFrame';
 import { CloseWithSwapLoanFrame } from './components/CloseWithSwapLoanFrame/CloseWithSwapLoanFrame';
 import { CollateralSurplusHistoryFrame } from './components/CollateralSurplusFrame/CollateralSurplusHistoryFrame';
@@ -58,6 +59,12 @@ export const BorrowHistory: FC = () => {
             <AaveLiquidationLoanFrame>
               {selectComponent}
             </AaveLiquidationLoanFrame>
+          );
+        case BorrowHistoryType.swapBorrowRateMode:
+          return (
+            <AaveSwapRateModeLoanFrame>
+              {selectComponent}
+            </AaveSwapRateModeLoanFrame>
           );
         default:
           return null;

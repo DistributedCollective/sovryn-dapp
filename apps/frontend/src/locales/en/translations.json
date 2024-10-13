@@ -1752,9 +1752,11 @@
             "depositCollateralLoan": "Fixed-interest loan - Adjust - Deposit collateral",
             "closeWithSwapLoan": "Fixed-interest loan - Adjust - Close with swap",
             "closeWithDepositLoan": "Fixed-interest loan - Adjust - Close with deposit",
+            "swapBorrowRateMode": "Fixed-interest loan - Adjust - Swap borrow rate mode",
             "liquidationLoan": "Fixed-interest loan - Liquidation",
             "rolloversLoan": "Fixed-interest loan - Rollovers",
             "collateralSurplus": "Collateral surplus"
+            
         },
         "transactionTypes": {
             "createLoan": "Create / Increase loan",
@@ -1763,7 +1765,8 @@
             "closeDeposit": "Close with deposit",
             "liquidation": "Liquidation",
             "rollovers": "Rollovers",
-            "repay": "Repay / Close a loan"
+            "repay": "Repay / Close a loan",
+            "swapBorrowRateMode": "Swap borrow rate mode"
         }
     },
     "transactionHistory": {
@@ -1865,7 +1868,14 @@
             "interest": "Interest payment/refund",
             "newDebt": "New debt balance",
             "loanID": "Loan ID",
-            "TXID": "TXID"
+            "TXID": "TXID",
+            "from": "From",
+            "to": "To",
+            "reserve": "Reserve",
+            "variableBorrowRate": "Variable borrow rate",
+            "stableBorrowRate": "Stable borrow rate",
+            "stable":"Stable",
+            "variable":"Variable"
         }
     },
     "stabilityPoolHistory": {

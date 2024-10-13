@@ -25,24 +25,22 @@ export const COLUMNS_CONFIG = [
     cellRenderer: (item: LendingHistoryItem) => item.action,
   },
   {
-    id: 'asset',
-    title: t(translations.common.tables.columnTitles.asset),
-    cellRenderer: (item: LendingHistoryItem) => item.reserve.symbol,
-  },
-
-  {
     id: 'amount',
     title: t(translations.common.tables.columnTitles.amount),
-    cellRenderer: (item: LendingHistoryItem) =>
-      item.amount ? (
-        <AmountRenderer
-          value={formatUnits(item.amount, item.reserve.decimals)}
-          precision={2}
-          showRoundingPrefix
-        />
-      ) : (
-        <span>N/A</span>
-      ),
+    cellRenderer: (item: LendingHistoryItem) => (
+      <div>
+        {item.amount ? (
+          <AmountRenderer
+            value={formatUnits(item.amount, item.reserve.decimals)}
+            precision={2}
+            showRoundingPrefix
+          />
+        ) : (
+          <span>-</span>
+        )}
+        {item.reserve.symbol}
+      </div>
+    ),
   },
   {
     id: 'transactionId',

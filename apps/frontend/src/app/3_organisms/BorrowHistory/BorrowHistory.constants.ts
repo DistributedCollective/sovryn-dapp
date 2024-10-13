@@ -21,6 +21,10 @@ export const BORROW_HISTORY_OPTIONS = (chainId: ChainId) =>
           value: BorrowHistoryType.liquidationLoan,
           label: t(translations.borrowHistory.types.liquidationLoan),
         },
+        {
+          value: BorrowHistoryType.swapBorrowRateMode,
+          label: t(translations.borrowHistory.types.swapBorrowRateMode),
+        },
       ]
     : [
         {

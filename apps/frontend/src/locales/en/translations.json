@@ -1762,7 +1762,8 @@
             "closeSwap": "Close with swap",
             "closeDeposit": "Close with deposit",
             "liquidation": "Liquidation",
-            "rollovers": "Rollovers"
+            "rollovers": "Rollovers",
+            "repay": "Repay / Close a loan"
         }
     },
     "transactionHistory": {

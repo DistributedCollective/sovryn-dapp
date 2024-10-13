@@ -13,6 +13,10 @@ export const BORROW_HISTORY_OPTIONS = (chainId: ChainId) =>
           value: BorrowHistoryType.newLoan,
           label: t(translations.borrowHistory.types.newLoan),
         },
+        {
+          value: BorrowHistoryType.closeWithDepositLoan,
+          label: t(translations.borrowHistory.types.closeWithDepositLoan),
+        },
       ]
     : [
         {

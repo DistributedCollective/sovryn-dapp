@@ -35,16 +35,16 @@ import { translations } from '../../../../../locales/i18n';
 import { bobAaveClient } from '../../../../../utils/clients';
 import {
   UserTransaction_OrderBy,
-  useUserBorrowTransactionsLazyQuery,
+  useUserRepayTransactionsLazyQuery,
 } from '../../../../../utils/graphql/bobAave/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-import { COLUMNS } from './AaveNewLoanHistoryFrame.constants';
-import { normalizeUserBorrowTransactions } from './AaveNewLoanHistoryFrame.utils';
-import { useGetNewLoans } from './hooks/useGetNewLoans';
+import { COLUMNS } from './AaveCloseWithDepositLoanFrame.constants';
+import { normalizeUserRepayTransactions } from './AaveCloseWithDepositLoanFrame.utils';
+import { useGetCloseDepositLoans } from './hooks/useGetCloseDepositLoans';
 
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
-export const AaveNewLoanHistoryFrame: FC<PropsWithChildren> = ({
+export const AaveCloseWithDepositLoanFrame: FC<PropsWithChildren> = ({
   children,
 }) => {
   const { account } = useAccount();
@@ -58,7 +58,7 @@ export const AaveNewLoanHistoryFrame: FC<PropsWithChildren> = ({
     orderDirection: OrderDirection.Desc,
   });
 
-  const { data, loading, refetch } = useGetNewLoans(
+  const { data, loading, refetch } = useGetCloseDepositLoans(
     account,
     pageSize,
     page,
@@ -69,7 +69,7 @@ export const AaveNewLoanHistoryFrame: FC<PropsWithChildren> = ({
     refetch();
   }, [refetch, block]);
 
-  const [getBorrowHistory] = useUserBorrowTransactionsLazyQuery({
+  const [getBorrowHistory] = useUserRepayTransactionsLazyQuery({
     client: bobAaveClient,
   });
 
@@ -122,14 +122,12 @@ export const AaveNewLoanHistoryFrame: FC<PropsWithChildren> = ({
       return [];
     }
 
-    return normalizeUserBorrowTransactions(data).map(item => ({
+    return normalizeUserRepayTransactions(data).map(item => ({
       id: item.id,
       timestamp: item.timestamp,
       hash: item.hash,
       amount: item.amount,
       asset: item.reserve.symbol,
-      borrowRate: item.borrowRate,
-      borrowRateMode: item.borrowRateMode,
     }));
   }, [
     account,

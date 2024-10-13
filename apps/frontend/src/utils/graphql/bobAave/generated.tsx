@@ -8501,6 +8501,7 @@ export type UserBorrowTransactionsQuery = {
     | {
         __typename?: 'Borrow';
         amount: string;
+        borrowRate: string;
         borrowRateMode: number;
         assetPriceUSD: string;
         id: string;
@@ -8598,7 +8599,6 @@ export type UserLendTransactionsQuery = {
         timestamp: number;
         txHash: string;
         action: Action;
-        user: { __typename?: 'User'; id: string };
       }
     | {
         __typename?: 'ClaimRewardsCall';
@@ -8606,7 +8606,6 @@ export type UserLendTransactionsQuery = {
         timestamp: number;
         txHash: string;
         action: Action;
-        user: { __typename?: 'User'; id: string };
       }
     | {
         __typename?: 'LiquidationCall';
@@ -8614,7 +8613,6 @@ export type UserLendTransactionsQuery = {
         timestamp: number;
         txHash: string;
         action: Action;
-        user: { __typename?: 'User'; id: string };
       }
     | {
         __typename?: 'RebalanceStableBorrowRate';
@@ -8622,7 +8620,6 @@ export type UserLendTransactionsQuery = {
         timestamp: number;
         txHash: string;
         action: Action;
-        user: { __typename?: 'User'; id: string };
       }
     | {
         __typename?: 'RedeemUnderlying';
@@ -8639,7 +8636,6 @@ export type UserLendTransactionsQuery = {
           name: string;
           underlyingAsset: string;
         };
-        user: { __typename?: 'User'; id: string };
       }
     | {
         __typename?: 'Repay';
@@ -8647,7 +8643,6 @@ export type UserLendTransactionsQuery = {
         timestamp: number;
         txHash: string;
         action: Action;
-        user: { __typename?: 'User'; id: string };
       }
     | {
         __typename?: 'Supply';
@@ -8664,7 +8659,6 @@ export type UserLendTransactionsQuery = {
           name: string;
           underlyingAsset: string;
         };
-        user: { __typename?: 'User'; id: string };
       }
     | {
         __typename?: 'SwapBorrowRate';
@@ -8672,7 +8666,6 @@ export type UserLendTransactionsQuery = {
         timestamp: number;
         txHash: string;
         action: Action;
-        user: { __typename?: 'User'; id: string };
       }
     | {
         __typename?: 'UsageAsCollateral';
@@ -8686,9 +8679,9 @@ export type UserLendTransactionsQuery = {
           __typename?: 'Reserve';
           symbol: string;
           name: string;
+          decimals: number;
           underlyingAsset: string;
         };
-        user: { __typename?: 'User'; id: string };
       }
     | {
         __typename?: 'UserEModeSet';
@@ -8696,7 +8689,6 @@ export type UserLendTransactionsQuery = {
         timestamp: number;
         txHash: string;
         action: Action;
-        user: { __typename?: 'User'; id: string };
       }
   >;
 };
@@ -9012,14 +9004,15 @@ export const UserBorrowTransactionsDocument = gql`
       action
       ... on Borrow {
         amount
+        borrowRate
         borrowRateMode
+        assetPriceUSD
         reserve {
           symbol
           decimals
           name
           underlyingAsset
         }
-        assetPriceUSD
       }
     }
   }
@@ -9101,9 +9094,6 @@ export const UserLendTransactionsDocument = gql`
       timestamp
       txHash
       action
-      user {
-        id
-      }
       ... on RedeemUnderlying {
         amount
         reserve {
@@ -9130,6 +9120,7 @@ export const UserLendTransactionsDocument = gql`
         reserve {
           symbol
           name
+          decimals
           underlyingAsset
         }
       }

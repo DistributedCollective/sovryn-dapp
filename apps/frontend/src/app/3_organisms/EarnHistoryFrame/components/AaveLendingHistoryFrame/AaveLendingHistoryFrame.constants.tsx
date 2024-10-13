@@ -23,13 +23,11 @@ export const COLUMNS_CONFIG = [
     id: 'action',
     title: t(translations.common.tables.columnTitles.transactionType),
     cellRenderer: (item: LendingHistoryItem) => item.action,
-    sortable: true,
   },
   {
     id: 'asset',
     title: t(translations.common.tables.columnTitles.asset),
     cellRenderer: (item: LendingHistoryItem) => item.reserve.symbol,
-    sortable: true,
   },
 
   {
@@ -45,7 +43,6 @@ export const COLUMNS_CONFIG = [
       ) : (
         <span>N/A</span>
       ),
-    sortable: true,
   },
   {
     id: 'transactionId',

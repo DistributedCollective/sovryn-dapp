@@ -18,14 +18,15 @@ query UserBorrowTransactions(
     action
     ... on Borrow {
       amount
+      borrowRate
       borrowRateMode
+      assetPriceUSD
       reserve {
         symbol
         decimals
         name
         underlyingAsset
       }
-      assetPriceUSD
     }
   }
 }

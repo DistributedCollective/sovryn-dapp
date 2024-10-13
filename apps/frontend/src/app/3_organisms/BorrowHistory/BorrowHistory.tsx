@@ -7,6 +7,7 @@ import { isBobChain } from '../../../utils/chain';
 import { BORROW_HISTORY_OPTIONS } from './BorrowHistory.constants';
 import { BorrowHistoryType } from './BorrowHistory.types';
 import { AaveCloseWithDepositLoanFrame } from './components/AaveCloseWithDepositLoanFrame/AaveCloseWithDepositLoanFrame';
+import { AaveLiquidationLoanFrame } from './components/AaveLiquidationLoanFrame/AaveLiquidationLoanFrame';
 import { AaveNewLoanHistoryFrame } from './components/AaveNewLoanFrame/AaveNewLoanHistoryFrame';
 import { CloseWithDepositLoanFrame } from './components/CloseWithDepositLoanFrame/CloseWithDepositLoanFrame';
 import { CloseWithSwapLoanFrame } from './components/CloseWithSwapLoanFrame/CloseWithSwapLoanFrame';
@@ -51,6 +52,12 @@ export const BorrowHistory: FC = () => {
             <AaveCloseWithDepositLoanFrame>
               {selectComponent}
             </AaveCloseWithDepositLoanFrame>
+          );
+        case BorrowHistoryType.liquidationLoan:
+          return (
+            <AaveLiquidationLoanFrame>
+              {selectComponent}
+            </AaveLiquidationLoanFrame>
           );
         default:
           return null;

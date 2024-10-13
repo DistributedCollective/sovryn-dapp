@@ -1,8 +1,10 @@
 import { formatUnits } from 'ethers/lib/utils';
+import { t } from 'i18next';
 
 import { Decimal } from '@sovryn/utils';
 
 import { RAY } from '../../../../../constants/aave';
+import { translations } from '../../../../../locales/i18n';
 import { BorrowRateMode } from '../../../../../types/aave';
 import { UserBorrowTransactionsQuery } from '../../../../../utils/graphql/bobAave/generated';
 import { NewBorrowHistoryItem } from './AaveNewLoanHistoryFrame.types';
@@ -27,8 +29,11 @@ export const normalizeUserBorrowTransactions = (
           formatUnits(tx.amount, tx.reserve.decimals),
         ).toString(2),
         borrowRate: Decimal.from(tx.borrowRate).div(RAY).toString(2),
-        borrowRateMode:
-          tx.borrowRateMode === BorrowRateMode.STABLE ? 'Stable' : 'Variable', // TODO: translation
+        borrowRateMode: t(
+          translations.loanHistory.table[
+            tx.borrowRateMode === BorrowRateMode.STABLE ? 'stable' : 'variable'
+          ],
+        ),
         timestamp: tx.timestamp,
         hash: tx.txHash,
         reserve: {

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -67,6 +67,12 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
     () => summary.reserves.find(r => r.reserve.symbol === borrowAsset),
     [summary.reserves, borrowAsset],
   );
+
+  useEffect(() => {
+    if (borrowSize.gt(borrowReserve?.availableToBorrow ?? 0)) {
+      setBorrowAmount(borrowReserve?.availableToBorrow.toString() ?? '0');
+    }
+  }, [borrowReserve?.availableToBorrow, borrowSize, setBorrowAmount]);
 
   const borrowUsdAmount = useMemo(
     () => borrowSize.mul(borrowReserve?.reserve.priceInUSD ?? 0),

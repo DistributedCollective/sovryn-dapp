@@ -19,6 +19,11 @@ generates:
       - ${REACT_APP_GRAPH_BOB}
     plugins:
       - schema-ast
+  ./src/utils/graphql/bobAave/schema.graphql:
+    schema:
+      - ${REACT_APP_GRAPH_BOB_AAVE}
+    plugins:
+      - schema-ast
 hooks:
   afterAllFileWrite:
     - prettier ./src/utils/graphql/**/schema.graphql --write

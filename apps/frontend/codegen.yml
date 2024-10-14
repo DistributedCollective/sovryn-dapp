@@ -29,6 +29,21 @@ generates:
         Bytes: string
         BigInt: string
         BigDecimal: string
+  ./src/utils/graphql/bobAave/generated.tsx:
+    schema:
+      - './src/utils/graphql/bobAave/schema.graphql'
+    documents:
+      - './src/utils/graphql/bobAave/operations/*.graphql'
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      withHooks: true
+      scalars:
+        Bytes: string
+        BigInt: string
+        BigDecimal: string
   ./src/utils/graphql/zero/generated.tsx:
     schema:
       - './src/utils/graphql/zero/schema.graphql'

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -114,6 +114,14 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     [withdrawSize, withdrawReserve?.supplied],
   );
 
+  useEffect(() => {
+    // if withdraw size is greater than maximum, set withdraw amount to maximum possible
+    // this is to prevent users from trying to withdraw more than they can even if maximum gets updated
+    if (withdrawSize.gt(maximumWithdrawAmount)) {
+      setWithdrawAmount(maximumWithdrawAmount.toString());
+    }
+  }, [withdrawSize, maximumWithdrawAmount, setWithdrawAmount]);
+
   const [isValidWithdrawAmount, errorMessage] = useMemo(() => {
     if (withdrawSize.eq(0)) {
       return [true, ''];
@@ -144,19 +152,10 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
 
   const onConfirm = useCallback(
     () =>
-      handleWithdraw(
-        withdrawSize,
-        withdrawAsset,
-        withdrawSize.eq(maximumWithdrawAmount),
-        { onComplete },
-      ),
-    [
-      handleWithdraw,
-      withdrawSize,
-      withdrawAsset,
-      onComplete,
-      maximumWithdrawAmount,
-    ],
+      handleWithdraw(withdrawSize, withdrawAsset, remainingSupply.eq(0), {
+        onComplete,
+      }),
+    [handleWithdraw, withdrawSize, withdrawAsset, onComplete, remainingSupply],
   );
 
   return (

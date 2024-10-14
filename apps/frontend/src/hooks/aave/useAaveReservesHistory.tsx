@@ -143,6 +143,7 @@ export function useAaveReservesHistory(
   useEffect(() => {
     refetchData();
   }, [refetchData]);
+
   return {
     loading,
     data,

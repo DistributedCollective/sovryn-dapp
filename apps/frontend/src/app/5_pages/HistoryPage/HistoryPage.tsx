@@ -75,7 +75,7 @@ const HistoryPage: FC = () => {
         content: borrowHistory,
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'borrow',
-        chains: [Chains.RSK],
+        chains: [Chains.RSK, Chains.BOB],
       },
       {
         label: t(translations.historyPage.table.tabs.earn),

@@ -34,6 +34,13 @@ export const bobClient = new ApolloClient({
   }),
 });
 
+export const bobAaveClient = new ApolloClient({
+  uri: SUBGRAPH.BOB_AAVE,
+  cache: new InMemoryCache({
+    resultCaching: false,
+  }),
+});
+
 export const sepoliaSdexClient = new ApolloClient({
   uri: SEPOLIA.subgraph.testnet,
   cache: new InMemoryCache({

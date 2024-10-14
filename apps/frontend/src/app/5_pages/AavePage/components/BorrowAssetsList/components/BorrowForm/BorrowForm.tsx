@@ -71,7 +71,10 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
   useEffect(() => {
     // if borrow size is greater than available to borrow, set borrow amount to available to borrow
     // this is to prevent users from borrowing more than they can even if maximum gets updated
-    if (borrowSize.gt(borrowReserve?.availableToBorrow ?? 0)) {
+    const isBorrowBiggerThanAvailable = borrowSize.gt(
+      borrowReserve?.availableToBorrow ?? 0,
+    );
+    if (isBorrowBiggerThanAvailable) {
       setBorrowAmount(borrowReserve?.availableToBorrow.toString() ?? '0');
     }
   }, [borrowReserve?.availableToBorrow, borrowSize, setBorrowAmount]);

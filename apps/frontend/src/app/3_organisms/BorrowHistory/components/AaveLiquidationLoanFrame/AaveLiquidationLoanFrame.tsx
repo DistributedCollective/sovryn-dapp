@@ -127,9 +127,11 @@ export const AaveLiquidationLoanFrame: FC<PropsWithChildren> = ({
       timestamp: item.timestamp,
       hash: item.hash,
       collateralAmount: item.collateralAmount,
-      collateral: item.collateralReserve.symbol,
+      collateralReserveSymbol: item.collateralReserve.symbol,
+      collateralReserveUnderlyingAsset: item.collateralReserve.underlyingAsset,
       debtAmount: item.debtAmount,
-      debt: item.debtReserve.symbol,
+      debtReserveSymbol: item.debtReserve.symbol,
+      debtReserveUnderlyingAsset: item.collateralReserve.underlyingAsset,
     }));
   }, [
     account,

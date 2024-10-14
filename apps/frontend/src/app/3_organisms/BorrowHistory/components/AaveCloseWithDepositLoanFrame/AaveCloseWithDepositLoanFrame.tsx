@@ -127,7 +127,8 @@ export const AaveCloseWithDepositLoanFrame: FC<PropsWithChildren> = ({
       timestamp: item.timestamp,
       hash: item.hash,
       amount: item.amount,
-      asset: item.reserve.symbol,
+      reserveSymbol: item.reserve.symbol,
+      reserveUnderlyingAsset: item.reserve.underlyingAsset,
     }));
   }, [
     account,

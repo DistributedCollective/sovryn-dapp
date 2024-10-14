@@ -80,6 +80,8 @@ export const useGetAaveLendingHistory = (
       decimals: item.reserve.decimals,
       txHash: item.txHash,
       type: item.action,
+      fromState: String(item.fromState ?? true),
+      toState: String(item.toState ?? true),
       assetPriceUSD: item.assetPriceUSD ?? '-',
     }));
   }, [addNotification, config, getUserLendTransactions]);

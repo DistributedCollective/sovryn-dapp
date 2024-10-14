@@ -9,6 +9,7 @@ import { getCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat } from '../../../../../utils/helpers';
 import { LendingHistoryItem } from './AaveLendingHistoryFrame.types';
+import { getTransactionType } from './AaveLendingHistoryFrame.utils';
 
 export const COLUMNS_CONFIG = [
   {
@@ -22,7 +23,7 @@ export const COLUMNS_CONFIG = [
   {
     id: 'action',
     title: t(translations.common.tables.columnTitles.transactionType),
-    cellRenderer: (item: LendingHistoryItem) => item.action,
+    cellRenderer: (item: LendingHistoryItem) => getTransactionType(item),
   },
   {
     id: 'amount',
@@ -36,7 +37,7 @@ export const COLUMNS_CONFIG = [
             showRoundingPrefix
           />
         ) : (
-          <span>-</span>
+          <span>{t(translations.common.na)} </span>
         )}
         {item.reserve.symbol}
       </div>

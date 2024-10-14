@@ -1833,9 +1833,13 @@
     },
     "earnHistory": {
         "types": {
+            "supply": "Supply",
+            "withdrawal": "Withdrawal",
             "stabilityPool": "Stability pool",
             "lending": "Lending",
-            "marketMaking": "Market making"
+            "marketMaking": "Market making",
+            "useAsCollateral": "Use as collateral",
+            "removeAsCollateral": "Remove as collateral"
         },
         "lendingHistory": {
             "columns": {

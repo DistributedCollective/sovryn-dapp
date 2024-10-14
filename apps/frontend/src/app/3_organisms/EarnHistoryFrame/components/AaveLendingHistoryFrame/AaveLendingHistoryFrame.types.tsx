@@ -5,6 +5,8 @@ export type LendingHistoryItem = {
   timestamp: number;
   txHash: string;
   assetPriceUSD?: string;
+  fromState?: boolean;
+  toState?: boolean;
   reserve: {
     symbol: string;
     decimals: number;

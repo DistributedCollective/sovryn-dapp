@@ -886,7 +886,7 @@
         "lendPositionsList": {
             "title": "Your lending deposits",
             "usedAsCollateral": "Used as collateral",
-            "noData": "You don't have any deposits/loans yet"
+            "noData": "You don't have any deposits yet"
         },
         "lendAssetsList": {
             "title": "Assets to lend",

@@ -1,4 +1,4 @@
-export type NewBorrowHistoryItem = {
+export type RepayHistoryItem = {
   id: string;
   amount: string;
   timestamp: number;

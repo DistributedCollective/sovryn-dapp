@@ -69,14 +69,14 @@ export const AaveCloseWithDepositLoanFrame: FC<PropsWithChildren> = ({
     refetch();
   }, [refetch, block]);
 
-  const [getBorrowHistory] = useUserRepayTransactionsLazyQuery({
+  const [getRepayHistory] = useUserRepayTransactionsLazyQuery({
     client: bobAaveClient,
   });
 
   const generateRowTitle = useCallback(
     (row: any) => (
       <Paragraph size={ParagraphSize.small} className="text-left">
-        {t(translations.borrowHistory.transactionTypes.createLoan)}
+        {t(translations.borrowHistory.transactionTypes.repay)}
         {' - '}
         {dateFormat(row.timestamp)}
       </Paragraph>
@@ -100,7 +100,7 @@ export const AaveCloseWithDepositLoanFrame: FC<PropsWithChildren> = ({
   );
 
   const exportData = useCallback(async () => {
-    const { data } = await getBorrowHistory({
+    const { data } = await getRepayHistory({
       variables: {
         skip: 0,
         first: EXPORT_RECORD_LIMIT,
@@ -132,7 +132,7 @@ export const AaveCloseWithDepositLoanFrame: FC<PropsWithChildren> = ({
   }, [
     account,
     addNotification,
-    getBorrowHistory,
+    getRepayHistory,
     orderOptions.orderBy,
     orderOptions.orderDirection,
   ]);
@@ -151,7 +151,7 @@ export const AaveCloseWithDepositLoanFrame: FC<PropsWithChildren> = ({
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="New loans"
+            filename="Repay"
             disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (
@@ -173,7 +173,7 @@ export const AaveCloseWithDepositLoanFrame: FC<PropsWithChildren> = ({
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
           loadingData={t(translations.common.tables.loading)}
-          dataAttribute="new-loans-table"
+          dataAttribute="repay-table"
         />
         <Pagination
           page={page}
@@ -181,7 +181,7 @@ export const AaveCloseWithDepositLoanFrame: FC<PropsWithChildren> = ({
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="new-loans-pagination"
+          dataAttribute="repay-pagination"
         />
       </div>
     </>

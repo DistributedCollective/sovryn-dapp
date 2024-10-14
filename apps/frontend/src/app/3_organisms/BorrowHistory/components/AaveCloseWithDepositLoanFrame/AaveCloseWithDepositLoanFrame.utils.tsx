@@ -3,11 +3,11 @@ import { formatUnits } from 'ethers/lib/utils';
 import { Decimal } from '@sovryn/utils';
 
 import { UserRepayTransactionsQuery } from '../../../../../utils/graphql/bobAave/generated';
-import { NewBorrowHistoryItem } from './AaveCloseWithDepositLoanFrame.types';
+import { RepayHistoryItem } from './AaveCloseWithDepositLoanFrame.types';
 
 export const normalizeUserRepayTransactions = (
   data: UserRepayTransactionsQuery,
-): NewBorrowHistoryItem[] => {
+): RepayHistoryItem[] => {
   if (!data) {
     return [];
   }
@@ -33,7 +33,7 @@ export const normalizeUserRepayTransactions = (
           underlyingAsset: tx.reserve.underlyingAsset,
           assetPriceUSD: tx.assetPriceUSD,
         },
-      } as NewBorrowHistoryItem,
+      } as RepayHistoryItem,
     ];
-  }, [] as NewBorrowHistoryItem[]);
+  }, [] as RepayHistoryItem[]);
 };

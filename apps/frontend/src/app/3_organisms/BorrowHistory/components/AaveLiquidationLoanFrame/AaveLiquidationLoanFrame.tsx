@@ -76,7 +76,7 @@ export const AaveLiquidationLoanFrame: FC<PropsWithChildren> = ({
   const generateRowTitle = useCallback(
     (row: any) => (
       <Paragraph size={ParagraphSize.small} className="text-left">
-        {t(translations.borrowHistory.transactionTypes.createLoan)}
+        {t(translations.borrowHistory.transactionTypes.liquidation)}
         {' - '}
         {dateFormat(row.timestamp)}
       </Paragraph>
@@ -153,7 +153,7 @@ export const AaveLiquidationLoanFrame: FC<PropsWithChildren> = ({
         <div className="flex-row items-center ml-2 gap-4 hidden lg:inline-flex">
           <ExportCSV
             getData={exportData}
-            filename="New loans"
+            filename="Liquidations"
             disabled={!data || data.length === 0 || exportLocked}
           />
           {exportLocked && (
@@ -175,7 +175,7 @@ export const AaveLiquidationLoanFrame: FC<PropsWithChildren> = ({
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
           loadingData={t(translations.common.tables.loading)}
-          dataAttribute="loans-liquidations-table"
+          dataAttribute="liquidations-table"
         />
         <Pagination
           page={page}
@@ -183,7 +183,7 @@ export const AaveLiquidationLoanFrame: FC<PropsWithChildren> = ({
           onChange={onPageChange}
           itemsPerPage={pageSize}
           isNextButtonDisabled={isNextButtonDisabled}
-          dataAttribute="loans-liquidations-pagination"
+          dataAttribute="liquidations-pagination"
         />
       </div>
     </>

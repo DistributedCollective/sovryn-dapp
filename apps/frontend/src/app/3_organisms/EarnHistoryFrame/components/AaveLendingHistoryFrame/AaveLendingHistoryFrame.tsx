@@ -58,10 +58,6 @@ export const AaveLendingHistoryFrame: FC<PropsWithChildren> = ({
   );
 
   useEffect(() => {
-    console.log('orderOptions', orderOptions);
-  }, [orderOptions]);
-
-  useEffect(() => {
     refetch();
   }, [refetch, block]);
 

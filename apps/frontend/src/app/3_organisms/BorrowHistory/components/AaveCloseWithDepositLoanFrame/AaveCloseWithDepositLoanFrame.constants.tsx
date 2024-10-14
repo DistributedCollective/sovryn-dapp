@@ -7,13 +7,13 @@ import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRender
 import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { translations } from '../../../../../locales/i18n';
 import { dateFormat, getBobExplorerUrl } from '../../../../../utils/helpers';
-import { NewBorrowHistoryItem } from './AaveCloseWithDepositLoanFrame.types';
+import { RepayHistoryItem } from './AaveCloseWithDepositLoanFrame.types';
 
 export const COLUMNS = [
   {
     id: 'timestamp',
     title: t(translations.common.tables.columnTitles.timestamp),
-    cellRenderer: (tx: NewBorrowHistoryItem) => dateFormat(tx.timestamp),
+    cellRenderer: (tx: RepayHistoryItem) => dateFormat(tx.timestamp),
     sortable: true,
   },
   {
@@ -24,7 +24,7 @@ export const COLUMNS = [
   {
     id: 'debtAmount',
     title: t(translations.loanHistory.table.debtRepaid),
-    cellRenderer: (tx: NewBorrowHistoryItem) => (
+    cellRenderer: (tx: RepayHistoryItem) => (
       <div className="inline-flex gap-1 items-center">
         <AmountRenderer
           value={tx.amount}
@@ -38,7 +38,7 @@ export const COLUMNS = [
   {
     id: 'transactionID',
     title: t(translations.common.tables.columnTitles.transactionID),
-    cellRenderer: (tx: NewBorrowHistoryItem) => (
+    cellRenderer: (tx: RepayHistoryItem) => (
       <TxIdWithNotification
         href={`${getBobExplorerUrl()}/tx/${tx.hash}`}
         value={tx.hash}

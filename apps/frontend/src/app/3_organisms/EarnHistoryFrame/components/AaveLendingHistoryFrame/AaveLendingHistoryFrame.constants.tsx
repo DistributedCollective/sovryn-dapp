@@ -12,7 +12,7 @@ import { LendingHistoryItem } from './AaveLendingHistoryFrame.types';
 
 export const COLUMNS_CONFIG = [
   {
-    id: 'time',
+    id: 'timestamp',
     title: t(translations.common.tables.columnTitles.timestamp),
     cellRenderer: (item: LendingHistoryItem) => (
       <>{dateFormat(Number(item.timestamp))}</>

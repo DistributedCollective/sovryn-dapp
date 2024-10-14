@@ -3,10 +3,10 @@ import { t } from 'i18next';
 
 import { Decimal } from '@sovryn/utils';
 
-import { RAY } from '../../../../../constants/aave';
 import { translations } from '../../../../../locales/i18n';
 import { BorrowRateMode } from '../../../../../types/aave';
 import { UserBorrowTransactionsQuery } from '../../../../../utils/graphql/bobAave/generated';
+import { RAY } from '../../../../../utils/math';
 import { NewBorrowHistoryItem } from './AaveNewLoanHistoryFrame.types';
 
 export const normalizeUserBorrowTransactions = (

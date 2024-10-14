@@ -1,10 +1,6 @@
-import { Decimal } from '@sovryn/utils';
-
 import { IS_MAINNET } from '../config/chains';
 
 import { decimalic } from '../utils/math';
-
-export const RAY = Decimal.from(10).pow(27);
 
 export const EMODE_DISABLED_ID = 0;
 export const MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE = decimalic(1.5);

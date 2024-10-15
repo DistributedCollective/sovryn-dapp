@@ -11,7 +11,7 @@ import runesBenefitsIcon4 from './assets/l4.svg';
 
 export const AVAILABLE_RUNES = {
   POWA: 'POWA',
-  DOGS: 'DOGS',
+  DOGS: 'DOG',
   PUPS: 'PUPS',
 };
 

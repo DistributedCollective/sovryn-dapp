@@ -11,7 +11,7 @@ import {
   RUNES_BENEFITS,
   RUNES_USE_CASES,
 } from './RunesPage.constants';
-import { RUNES_USE_CASES_TYPES } from './RunesPage.types';
+import { RUNES_USE_CASE_ACTIONS } from './RunesPage.types';
 
 const pageTranslations = translations.runesPage;
 
@@ -42,7 +42,7 @@ export const renderRuneBenefits = () =>
   ));
 
 export const renderRunesUseCases = (
-  handleRuneAction: (action: RUNES_USE_CASES_TYPES) => void,
+  handleRuneAction: (action: RUNES_USE_CASE_ACTIONS) => void,
 ) =>
   RUNES_USE_CASES.map(({ title, icon, description, action }) => (
     <div key={title} className="bg-gray-70 rounded p-6 flex-1 min-w-28">

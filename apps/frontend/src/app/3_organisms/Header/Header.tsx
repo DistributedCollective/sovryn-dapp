@@ -70,12 +70,20 @@ export const Header: FC = () => {
             ))}
             <ProductLinks />
             {isBobChain(chainId) && (
-              <Button
-                text={t(translations.header.nav.spicePoints)}
-                style={ButtonStyle.primary}
-                className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D] lg:invisible xl:visible"
-                onClick={() => navigate('/bob-lp-points')}
-              />
+              <>
+                <Button
+                  text={t(translations.header.nav.runes)}
+                  style={ButtonStyle.primary}
+                  className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
+                  onClick={() => navigate('/runes')}
+                />
+                <Button
+                  text={t(translations.header.nav.spicePoints)}
+                  style={ButtonStyle.primary}
+                  className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D] lg:invisible xl:visible"
+                  onClick={() => navigate('/bob-lp-points')}
+                />
+              </>
             )}
           </ol>
         }

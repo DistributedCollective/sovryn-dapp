@@ -48,3 +48,5 @@ export const RUNES_USE_CASES = [
     action: RUNES_USE_CASES_TYPES.deposit,
   },
 ];
+
+export const RUNES_REQUEST_EMAIL = 'mailto:shir+newrunes@remake.money';

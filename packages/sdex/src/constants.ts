@@ -136,12 +136,58 @@ const LOCAL_FORK_CHAIN: ChainSpec = Object.assign({}, SEPOLIA_CHAIN, {
   displayName: 'Local Fork',
 });
 
+const RSK_MAINNET: ChainSpec = {
+  nodeUrl: 'https://public-node.rsk.co',
+  addrs: {
+    dex: '',
+    query: '',
+    impact: '',
+    router: '',
+    routerBypass: '',
+  },
+  poolIndex: 0,
+  isTestNet: false,
+  chainId: '0x1e', // 30 in decimal
+  gridSize: 0,
+  proxyPaths: {
+    cold: 0,
+    long: 0,
+    liq: 0,
+    dfltColdSwap: true,
+  },
+  displayName: 'RSK Mainnet',
+};
+
+const RSK_TESTNET: ChainSpec = {
+  nodeUrl: 'https://public-node.testnet.rsk.co',
+  addrs: {
+    dex: '',
+    query: '',
+    impact: '',
+    router: '',
+    routerBypass: '',
+  },
+  poolIndex: 0,
+  isTestNet: true,
+  chainId: '0x1f', // 31 in decimal
+  gridSize: 0,
+  proxyPaths: {
+    cold: 0,
+    long: 0,
+    liq: 0,
+  },
+  blockExplorer: 'https://explorer.testnet.rsk.co',
+  displayName: 'RSK Testnet',
+};
+
 export const CHAIN_SPECS: { [chainId: string]: ChainSpec } = {
   '0xed88': BOB_CHAIN,
   '0xc576d': BOB_TESTNET_CHAIN,
   '0x7a69': LOCAL_FORK_CHAIN,
   '0xaa36a7': SEPOLIA_CHAIN,
   '0x1b669': TENDERLY_FORK,
+  '0x1e': RSK_MAINNET,
+  '0x1f': RSK_TESTNET,
   sepolia: SEPOLIA_CHAIN,
   local: LOCAL_FORK_CHAIN,
   bob: BOB_CHAIN,

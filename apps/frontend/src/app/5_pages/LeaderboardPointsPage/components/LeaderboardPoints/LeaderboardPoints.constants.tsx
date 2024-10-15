@@ -11,6 +11,9 @@ import { translations } from '../../../../../locales/i18n';
 export const DATA_ENDPOINT_URL =
   'https://season2-spice-points-bucket.s3.us-east-2.amazonaws.com/Total_S1&S2_Spice_Leaderboard.json';
 
+export const S3_DATA_ENDPOINT_URL =
+  'https://season2-spice-points-bucket.s3.us-east-2.amazonaws.com/Total_S3_Spice_Leaderboard.json';
+
 export const PAGE_SIZE = 50;
 
 export const COLUMNS_CONFIG = (isSingleUser: boolean = false) => [
@@ -36,6 +39,18 @@ export const COLUMNS_CONFIG = (isSingleUser: boolean = false) => [
     id: '',
     title: t(translations.leaderboardPointsPage.table.spice),
     cellRenderer: user => <AmountRenderer value={user.points} />,
+    sampleData: '111,111,111.1111',
+  },
+  {
+    id: '',
+    title: t(translations.leaderboardPointsPage.table.spice3),
+    cellRenderer: user => <AmountRenderer value={user.s3Points} />,
+    sampleData: '111,111,111.1111',
+  },
+  {
+    id: '',
+    title: t(translations.leaderboardPointsPage.table.total),
+    cellRenderer: user => <AmountRenderer value={user.total} />,
     sampleData: '111,111,111.1111',
   },
 ];

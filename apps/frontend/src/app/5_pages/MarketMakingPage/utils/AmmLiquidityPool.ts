@@ -19,6 +19,7 @@ export class AmmLiquidityPool {
     public readonly converter: string,
     public readonly poolTokenA: string,
     public readonly poolTokenB?: string,
+    public readonly isHighlighted?: boolean,
   ) {
     if (converterVersion === 2 && !poolTokenB) {
       throw new Error(
@@ -32,6 +33,7 @@ export class AmmLiquidityPool {
     }
     this.converter = converter.toLowerCase();
     this.poolTokenA = poolTokenA.toLowerCase();
+    this.isHighlighted = Boolean(isHighlighted);
     if (poolTokenB) {
       this.poolTokenB = poolTokenB.toLowerCase();
     }

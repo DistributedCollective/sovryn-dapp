@@ -112,6 +112,7 @@
             "stake": "Stake",
             "bitocracy": "Bitocracy",
             "bob": "Go BoB",
+            "runes": "Runes",
             "spicePoints": "Spice Points",
             "bridges": {
                 "title": "Transfer Assets",
@@ -1942,5 +1943,42 @@
     "unclaimedVestings": {
         "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",
         "cta": "Open Rewards page"
+    },
+    "runesPage": {
+        "meta": {
+            "title": "Runes - Sovryn"
+        },
+        "title": "Runes on DeFi",
+        "subtitle": "Programmable runes are a new protocol layer that aims to support smart contract-style functionality, decentralized finance (DeFi), and the creation and management of native tokens on the Bitcoin network. More Runes are coming. <0>Learn more</0>",
+        "subtitleCTA": "Learn more",
+        "bridgeRunes": "Bridge Runes",
+        "benefits": {
+            "title": "Benefits",
+            "list": {
+                "l1": "Trade Runes in DeFi",
+                "l2": "Lower fees",
+                "l3": "Faster transactions",
+                "l4": "Swap to any asset"
+            }
+        },
+        "availableRunes": "Available Runes",
+        "availableSoon": "Available soon",
+        "availableRunesInfo": "Interested in adding more Runes?",
+        "runesUseCases":{
+            "title": "Use your Runes in DeFi",
+            "convert": "Convert to any token",
+            "convertDescription": "Swap Runes to BTC, stablecoins or any other asset.",
+            "earn": "Earn passive Yield",
+            "earnDescription": "Earn fees by providing liquidity in the Sovryn AMM.",
+            "actions": {
+                "convert": "Convert",
+                "deposit": "Deposit"
+            }
+        },
+        "startEarning": {
+            "title": "Start earning",
+            "subtitle": "In order to trade or deposit in AMM, you need to bridge Runes. Connect your web3 wallet and use Sovryn Runes Bridge as the easiest way to transfer assets.",
+            "howToUseBridge": "How to use bridge"
+        }
     }
 }

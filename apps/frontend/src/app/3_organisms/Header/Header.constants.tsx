@@ -69,4 +69,8 @@ export const menuItemsMapping: MenuItem[] = [
     text: t(translations.header.nav.bitocracy),
     url: '/bitocracy',
   },
+  {
+    text: t(translations.header.nav.runes),
+    url: '/runes',
+  },
 ];

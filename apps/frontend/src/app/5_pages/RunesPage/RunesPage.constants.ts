@@ -1,7 +1,7 @@
 import { t } from 'i18next';
 
 import { translations } from '../../../locales/i18n';
-import { RUNES_USE_CASES_TYPES } from './RunesPage.types';
+import { RUNES_USE_CASE_ACTIONS } from './RunesPage.types';
 import convertIcon from './assets/convert.svg';
 import earnIcon from './assets/earn.svg';
 import runesBenefitsIcon1 from './assets/l1.svg';
@@ -39,13 +39,13 @@ export const RUNES_USE_CASES = [
     title: t(translations.runesPage.runesUseCases.convert),
     description: t(translations.runesPage.runesUseCases.convertDescription),
     icon: convertIcon,
-    action: RUNES_USE_CASES_TYPES.convert,
+    action: RUNES_USE_CASE_ACTIONS.convert,
   },
   {
     title: t(translations.runesPage.runesUseCases.earn),
     description: t(translations.runesPage.runesUseCases.earnDescription),
     icon: earnIcon,
-    action: RUNES_USE_CASES_TYPES.deposit,
+    action: RUNES_USE_CASE_ACTIONS.deposit,
   },
 ];
 

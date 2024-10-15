@@ -14,7 +14,7 @@ import { WIKI_LINKS } from '../../../constants/links';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
 import { RUNES_REQUEST_EMAIL } from './RunesPage.constants';
-import { RUNES_USE_CASES_TYPES } from './RunesPage.types';
+import { RUNES_USE_CASE_ACTIONS } from './RunesPage.types';
 import {
   renderAvailableRunes,
   renderRuneBenefits,
@@ -30,11 +30,11 @@ export const RunesPage: FC = () => {
   }, []);
 
   const handleRuneAction = useCallback(
-    (action: RUNES_USE_CASES_TYPES) => {
+    (action: RUNES_USE_CASE_ACTIONS) => {
       switch (action) {
-        case RUNES_USE_CASES_TYPES.convert:
+        case RUNES_USE_CASE_ACTIONS.convert:
           return navigate('/convert');
-        case RUNES_USE_CASES_TYPES.deposit:
+        case RUNES_USE_CASE_ACTIONS.deposit:
           return navigate('/earn/market-making');
         default:
           console.error('Unexpected action:', action);

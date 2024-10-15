@@ -96,14 +96,14 @@ export const bobMainnet: AmbientLiquidityPool[] = [
   ),
   new AmbientLiquidityPool(
     'WBTC',
-    'SAT',
+    'satUSD',
     ChainIds.BOB_MAINNET,
     410,
     '0x9C82eF04eC7FEB9E07a9f2Be23cc180753CE4612',
   ),
   new AmbientLiquidityPool(
     'USDT',
-    'SAT',
+    'satUSD',
     ChainIds.BOB_MAINNET,
     400,
     '0x8C6a57d16B1ddAD730Fee27822284d085C106DbB',

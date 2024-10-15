@@ -1,5 +1,11 @@
 # @sovryn/sdex
 
+## 0.3.14
+
+### Patch Changes
+
+- 5f000110: SOV-4453: Fixed issue with Portfolio page crashing on RSK chain
+
 ## 0.3.13
 
 ### Patch Changes

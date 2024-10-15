@@ -4,7 +4,6 @@ import { decimalic } from '../utils/math';
 
 export const EMODE_DISABLED_ID = 0;
 export const MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE = decimalic(1.5);
-
 // Extra amount to repay all ETH surplus
 export const REPAY_ALL_ETH_SURPLUS_AAVE = '10000000000000000';
 

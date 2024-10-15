@@ -1,14 +1,19 @@
 import { ChainId } from '@sovryn/ethers-provider';
 
-import { AmbientLiquidityPool } from './AmbientLiquidityPool';
+import { AmbientLiquidityPool, PoolListGroup } from './AmbientLiquidityPool';
 import { bobMainnet } from './pools/bobMainnet';
 import { bobTestnet } from './pools/bobTestnet';
 
 export class AmbientLiquidityPoolDictionary {
   private static items: AmbientLiquidityPool[] = [...bobMainnet, ...bobTestnet];
 
-  public static list(chainId: ChainId): AmbientLiquidityPool[] {
-    return this.items.filter(item => item.chainId === chainId);
+  public static list(
+    chainId: ChainId,
+    group?: PoolListGroup,
+  ): AmbientLiquidityPool[] {
+    return this.items.filter(
+      item => item.chainId === chainId && (group ? item.group === group : true),
+    );
   }
 
   public static get(

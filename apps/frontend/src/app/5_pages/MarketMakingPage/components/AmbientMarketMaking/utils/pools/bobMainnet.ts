@@ -1,6 +1,6 @@
 import { ChainIds } from '@sovryn/ethers-provider';
 
-import { AmbientLiquidityPool } from '../AmbientLiquidityPool';
+import { AmbientLiquidityPool, PoolListGroup } from '../AmbientLiquidityPool';
 
 export const bobMainnet: AmbientLiquidityPool[] = [
   new AmbientLiquidityPool(
@@ -111,4 +111,37 @@ export const bobMainnet: AmbientLiquidityPool[] = [
   // new AmbientLiquidityPool('DAI', 'DLLR', ChainIds.BOB_MAINNET, 400),
   // new AmbientLiquidityPool('RETH', 'ETH', ChainIds.BOB_MAINNET, 400),
   // new AmbientLiquidityPool('WSTETH', 'ETH', ChainIds.BOB_MAINNET, 400),
+
+  new AmbientLiquidityPool(
+    'SolvBTC.BBN',
+    'UniBTC',
+    ChainIds.BOB_MAINNET,
+    0, // todo
+    '', // todo
+    PoolListGroup.new,
+  ),
+  new AmbientLiquidityPool(
+    'SolvBTC.BBN',
+    'wBTC',
+    ChainIds.BOB_MAINNET,
+    0, // todo
+    '', // todo
+    PoolListGroup.new,
+  ),
+  new AmbientLiquidityPool(
+    'UniBTC',
+    'wBTC',
+    ChainIds.BOB_MAINNET,
+    0, // todo
+    '', // todo
+    PoolListGroup.new,
+  ),
+  new AmbientLiquidityPool(
+    'SolvBTC',
+    'wBTC',
+    ChainIds.BOB_MAINNET,
+    0, // todo
+    '', // todo
+    PoolListGroup.new,
+  ),
 ];

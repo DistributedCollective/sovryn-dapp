@@ -69,12 +69,6 @@ export const RunesPage: FC = () => {
                   ]}
                 />
               </div>
-
-              <Button
-                text={t(pageTranslations.bridgeRunes)}
-                className="mt-6 sm:mt-8"
-                onClick={handleBridgeRunes}
-              />
             </div>
             <div className="flex flex-col bg-gray-80 rounded p-5 justify-between w-full">
               <Paragraph

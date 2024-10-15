@@ -1,18 +1,28 @@
 import { t } from 'i18next';
 
 import { translations } from '../../../locales/i18n';
-import { RUNES_USE_CASE_ACTIONS } from './RunesPage.types';
+import { RUNES_USE_CASE_ACTIONS, AvailableRunes } from './RunesPage.types';
 import convertIcon from './assets/convert.svg';
 import earnIcon from './assets/earn.svg';
+import iconDog from './assets/iconDog.svg';
+import iconPups from './assets/iconPups.svg';
 import runesBenefitsIcon1 from './assets/l1.svg';
 import runesBenefitsIcon2 from './assets/l2.svg';
 import runesBenefitsIcon3 from './assets/l3.svg';
 import runesBenefitsIcon4 from './assets/l4.svg';
 
-export const AVAILABLE_RUNES = {
-  POWA: 'POWA',
-  DOGS: 'DOG',
-  PUPS: 'PUPS',
+export const AVAILABLE_RUNES: AvailableRunes = {
+  POWA: {
+    name: 'POWA',
+  },
+  DOG: {
+    name: 'DOG',
+    icon: iconDog,
+  },
+  PUPS: {
+    name: 'PUPS',
+    icon: iconPups,
+  },
 };
 
 export const RUNES_BENEFITS = [

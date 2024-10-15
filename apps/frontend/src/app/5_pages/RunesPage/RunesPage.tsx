@@ -1,0 +1,154 @@
+import React, { FC, useCallback } from 'react';
+
+import { t } from 'i18next';
+import { Helmet } from 'react-helmet-async';
+import { Trans } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+
+import { Button, Heading, Link, Paragraph } from '@sovryn/ui';
+
+import { BOB_CHAIN_ID } from '../../../config/chains';
+
+import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
+import { WIKI_LINKS } from '../../../constants/links';
+import { translations } from '../../../locales/i18n';
+import { sharedState } from '../../../store/rxjs/shared-state';
+import { RUNES_USE_CASES_TYPES } from './RunesPage.types';
+import {
+  renderAvailableRunes,
+  renderRuneBenefits,
+  renderRunesUseCases,
+} from './RunesPage.utils';
+
+const pageTranslations = translations.runesPage;
+
+export const RunesPage: FC = () => {
+  const navigate = useNavigate();
+  const handleBridgeRunes = useCallback(() => {
+    sharedState.actions.openRuneBridgeDialog();
+  }, []);
+
+  const handleRuneAction = useCallback(
+    (action: RUNES_USE_CASES_TYPES) => {
+      switch (action) {
+        case RUNES_USE_CASES_TYPES.convert:
+          return navigate('/convert');
+        case RUNES_USE_CASES_TYPES.deposit:
+          return navigate('/earn/market-making');
+        default:
+          console.error('Unexpected action:', action);
+          return;
+      }
+    },
+    [navigate],
+  );
+
+  return (
+    <>
+      <Helmet>
+        <title>{t(pageTranslations.meta.title)}</title>
+      </Helmet>
+
+      <div className="container lg:max-w-[51rem] mx-auto my-9">
+        <NetworkBanner requiredChainId={BOB_CHAIN_ID}>
+          <div className="flex lg:flex-row flex-col gap-11 justify-between items-start">
+            <div className="lg:max-w-[25rem]">
+              <Heading className="text-2xl sm:text-3xl font-medium sm:mb-9 mb-4 text-center lg:text-left">
+                {t(pageTranslations.title)}
+              </Heading>
+              <div className="text-base sm:text-md text-gray-30 leading-5 font-semibold">
+                <Trans
+                  i18nKey={t(pageTranslations.subtitle)}
+                  className="text-gray-30"
+                  components={[
+                    <Link
+                      text={t(pageTranslations.subtitleCTA)}
+                      href={WIKI_LINKS.RUNES}
+                      className="no-underline text-base sm:text-md"
+                    />,
+                  ]}
+                />
+              </div>
+
+              <Button
+                text={t(pageTranslations.bridgeRunes)}
+                className="mt-6 sm:mt-8"
+                onClick={handleBridgeRunes}
+              />
+            </div>
+            <div className="flex flex-col bg-gray-80 rounded p-5 justify-between w-full">
+              <Paragraph
+                className="text-gray-30 text-center font-medium text-base"
+                children={t(pageTranslations.availableRunes)}
+              />
+              <div className="flex justify-center gap-4 my-6 flex-wrap px-6">
+                {renderAvailableRunes()}
+              </div>
+
+              <Button
+                text={t(pageTranslations.bridgeRunes)}
+                className="mb-4 mx-auto"
+                onClick={handleBridgeRunes}
+              />
+
+              <Link
+                text={t(pageTranslations.availableRunesInfo)}
+                href={WIKI_LINKS.CROSS_CHAIN_BRIDGE}
+                className="no-underline text-center"
+              />
+            </div>
+          </div>
+
+          <div className="mt-11">
+            <Paragraph
+              className="font-medium mb-6 text-2xl leading-6"
+              children={t(pageTranslations.benefits.title)}
+            />
+            <div className="text-base sm:text-md text-gray-30 leading-5 font-medium mt-4 flex flex-row gap-6 flex-wrap lg:flex-nowrap">
+              {renderRuneBenefits()}
+            </div>
+          </div>
+
+          <div className="mt-11">
+            <Paragraph
+              className="font-medium mb-6 text-2xl leading-6"
+              children={t(pageTranslations.runesUseCases.title)}
+            />
+            <div className="rounded bg-gray-80 text-base sm:text-md text-gray-30 leading-5 font-medium mt-4 flex sm:flex-row flex-col gap-6 p-6 flex-wrap lg:flex-nowrap">
+              {renderRunesUseCases(handleRuneAction)}
+            </div>
+          </div>
+
+          <div className="mt-11 bg-gray-90 rounded p-6">
+            <div className="flex lg:flex-row flex-col gap-11 justify-between items-center">
+              <div className="lg:max-w-[26rem]">
+                <Paragraph
+                  className="text-gray-10 font-medium mb-6 text-2xl"
+                  children={t(pageTranslations.startEarning.title)}
+                />
+                <Paragraph
+                  className="text-gray-30 leading-5 font-medium"
+                  children={t(pageTranslations.startEarning.subtitle)}
+                />
+              </div>
+              <div className="flex flex-col">
+                <Button
+                  text={t(pageTranslations.bridgeRunes)}
+                  className="mb-4"
+                  onClick={handleBridgeRunes}
+                />
+                <Link
+                  text={t(pageTranslations.startEarning.howToUseBridge)}
+                  href={WIKI_LINKS.BRIDGE_RUNES}
+                  className="no-underline text-center font-semibold text-sm"
+                />
+              </div>
+            </div>
+          </div>
+        </NetworkBanner>
+      </div>
+    </>
+  );
+};
+
+export default RunesPage;

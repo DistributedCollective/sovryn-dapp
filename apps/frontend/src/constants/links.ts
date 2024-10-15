@@ -54,7 +54,6 @@ export const WIKI_LINKS = {
   WALLET_SETUP: 'https://wiki.sovryn.com/en/getting-started/wallet-setup',
   RUNES: 'https://wiki.sovryn.com/en/sovryn-dapp/runes',
   BRIDGE_RUNES: 'https://wiki.sovryn.com/en/sovryn-dapp/runes#bridging-runes',
-  CROSS_CHAIN_BRIDGE: 'https://wiki.sovryn.com/en/sovryn-dapp/bridge',
 };
 
 export const HELPDESK_LINK = 'https://help.sovryn.app/';

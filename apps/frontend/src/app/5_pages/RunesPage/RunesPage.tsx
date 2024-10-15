@@ -13,6 +13,7 @@ import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import { WIKI_LINKS } from '../../../constants/links';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
+import { RUNES_REQUEST_EMAIL } from './RunesPage.constants';
 import { RUNES_USE_CASES_TYPES } from './RunesPage.types';
 import {
   renderAvailableRunes,
@@ -87,7 +88,7 @@ export const RunesPage: FC = () => {
 
               <Link
                 text={t(pageTranslations.availableRunesInfo)}
-                href={WIKI_LINKS.CROSS_CHAIN_BRIDGE}
+                href={RUNES_REQUEST_EMAIL}
                 className="no-underline text-center"
               />
             </div>

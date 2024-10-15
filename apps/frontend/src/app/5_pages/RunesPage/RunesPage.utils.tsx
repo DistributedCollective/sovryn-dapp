@@ -11,21 +11,28 @@ import {
   RUNES_BENEFITS,
   RUNES_USE_CASES,
 } from './RunesPage.constants';
-import { RUNES_USE_CASE_ACTIONS } from './RunesPage.types';
+import { RUNES_USE_CASE_ACTIONS, Rune } from './RunesPage.types';
 
 const pageTranslations = translations.runesPage;
 
 export const renderAvailableRunes = () =>
-  Object.values(AVAILABLE_RUNES).map(rune => (
-    <div key={rune}>
-      <div className="bg-gray-70 rounded p-2 min-h-9 flex items-center justify-center">
-        <AssetRenderer
-          asset={rune}
-          showAssetLogo
-          assetClassName="font-semibold text-gray-30"
-        />
+  Object.values(AVAILABLE_RUNES).map(({ name, icon }: Rune) => (
+    <div key={name}>
+      <div className="bg-gray-70 rounded p-2 min-h-9 min-w-20 flex items-center justify-start">
+        {icon ? (
+          <>
+            <img src={icon} alt={name} className="w-5 h-5 mr-2" />
+            <span className="font-semibold text-xs text-gray-30">{name}</span>
+          </>
+        ) : (
+          <AssetRenderer
+            asset={name}
+            showAssetLogo
+            assetClassName="font-semibold text-gray-30"
+          />
+        )}
       </div>
-      {rune === AVAILABLE_RUNES.PUPS && (
+      {name === AVAILABLE_RUNES.PUPS.name && (
         <div className="text-xs text-gray-30">
           {t(pageTranslations.availableSoon)}
         </div>

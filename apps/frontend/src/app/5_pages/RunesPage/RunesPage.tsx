@@ -76,7 +76,7 @@ export const RunesPage: FC = () => {
                 className="text-gray-30 text-center font-medium text-base"
                 children={t(pageTranslations.availableRunes)}
               />
-              <div className="flex justify-center gap-4 my-6 flex-wrap px-6">
+              <div className="flex justify-center gap-3 my-6 flex-wrap px-6">
                 {renderAvailableRunes()}
               </div>
 

@@ -1,6 +1,6 @@
 import { ChainIds } from '@sovryn/ethers-provider';
 
-import { AmbientLiquidityPool } from '../AmbientLiquidityPool';
+import { AmbientLiquidityPool, PoolListGroup } from '../AmbientLiquidityPool';
 
 export const bobMainnet: AmbientLiquidityPool[] = [
   new AmbientLiquidityPool(
@@ -111,4 +111,53 @@ export const bobMainnet: AmbientLiquidityPool[] = [
   // new AmbientLiquidityPool('DAI', 'DLLR', ChainIds.BOB_MAINNET, 400),
   // new AmbientLiquidityPool('RETH', 'ETH', ChainIds.BOB_MAINNET, 400),
   // new AmbientLiquidityPool('WSTETH', 'ETH', ChainIds.BOB_MAINNET, 400),
+
+  // new AmbientLiquidityPool(
+  //   'UniBTC',
+  //   'SolvBTC.BBN',
+  //   ChainIds.BOB_MAINNET,
+  //   400,
+  //   '0xEBE212e59c012Bd2f092489d98d11fCe17697cb2',
+  //   PoolListGroup.new,
+  // ),
+  // new AmbientLiquidityPool(
+  //   'UniBTC',
+  //   'wBTC',
+  //   ChainIds.BOB_MAINNET,
+  //   400, // todo
+  //   '0x6D1529a7b34D452488f577495Dd7574954339dD9',
+  //   PoolListGroup.new,
+  // ),
+  // new AmbientLiquidityPool(
+  //   'SolvBTC.BBN',
+  //   'wBTC',
+  //   ChainIds.BOB_MAINNET,
+  //   400,
+  //   '0x0F3dAef46d5631f4C335643e287314580135011E',
+  //   PoolListGroup.new,
+  // ),
+  // new AmbientLiquidityPool(
+  //   'wBTC',
+  //   'SolvBTC',
+  //   ChainIds.BOB_MAINNET,
+  //   400,
+  //   '0xF11aB627c41044f40B5C2587e77540e7fC7Af42a',
+  //   PoolListGroup.new,
+  // ),
+  new AmbientLiquidityPool(
+    'DOGGOTOTHEMOON',
+    'POWA',
+    ChainIds.BOB_MAINNET,
+    420,
+    '0xe26a75Cd1892600cB4935EeA701f1D1DaE1e8ab0',
+    PoolListGroup.new,
+  ),
+  new AmbientLiquidityPool(
+    'DOGGOTOTHEMOON',
+    'wBTC',
+    ChainIds.BOB_MAINNET,
+    420,
+    '0xDCB0Fb1113923aed92f82DBf5a114E64Ea55522d',
+    PoolListGroup.new,
+  ),
 ];

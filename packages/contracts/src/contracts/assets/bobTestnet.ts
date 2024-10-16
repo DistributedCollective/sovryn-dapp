@@ -76,6 +76,13 @@ export const bobTestnet: Array<AssetDetails> = [
     getIcon: async () => (await import('./icons/bob/powa')).default,
   },
   {
+    symbol: 'DOGGOTOTHEMOON',
+    address: '', //TODO add testnet address for DOG•GO•TO•THE•MOON
+    name: 'DOG•GO•TO•THE•MOON',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/dog')).default,
+  },
+  {
     symbol: 'WSTETH',
     address: '0xf83A152C0A526a45E93D91c95894a19A1258E30E',
     name: 'Wrapped Staked ETH',

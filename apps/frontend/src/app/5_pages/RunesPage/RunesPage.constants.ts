@@ -16,11 +16,11 @@ export const AVAILABLE_RUNES: AvailableRunes = {
     symbol: 'POWA',
   },
   DOG: {
-    symbol: 'DOG',
+    symbol: 'DOGGOTOTHEMOON',
     icon: iconDog,
   },
   PUPS: {
-    symbol: 'PUPS',
+    symbol: 'PUPSWORLDPEACE',
     icon: iconPups,
   },
 };

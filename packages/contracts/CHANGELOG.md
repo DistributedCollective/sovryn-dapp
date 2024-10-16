@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.2.2
+
+### Patch Changes
+
+- 750f7473: SOV-4496: add new pools
+
 ## 1.2.1
 
 ### Patch Changes

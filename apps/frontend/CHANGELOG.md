@@ -1,5 +1,16 @@
 # frontend
 
+## 1.1.23
+
+### Patch Changes
+
+- eedbb292: SOV-4445: Add Runes page
+- 2028847d: SOV-4468: Show protocol data in BTC and USD only
+- 750f7473: SOV-4496: add new pools
+- Updated dependencies [750f7473]
+  - @sovryn/contracts@1.2.2
+  - @sovryn/sdk@2.0.2
+
 ## 1.1.22
 
 ### Patch Changes

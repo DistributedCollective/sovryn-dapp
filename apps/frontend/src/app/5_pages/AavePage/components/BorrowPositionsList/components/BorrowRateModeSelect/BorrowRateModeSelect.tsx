@@ -25,10 +25,9 @@ export const BorrowRateModeSelect: FC<BorrowRateModeSelectProps> = ({
   const options = useMemo(() => {
     const borrowRateModeOptions = [
       {
-        label: t(
-          translations.aavePage.borrowPositionsList.selectVariableApy,
-          {},
-        ),
+        label: t(translations.aavePage.borrowPositionsList.selectVariableApy, {
+          apy: formatValue(position.variableApy, 2),
+        }),
         value: String(BorrowRateMode.VARIABLE),
       },
     ];

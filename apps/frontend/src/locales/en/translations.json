@@ -1976,8 +1976,8 @@
             }
         },
         "startEarning": {
-            "title": "Start earning",
-            "subtitle": "In order to trade or deposit in AMM, you need to bridge Runes. Connect your web3 wallet and use Sovryn Runes Bridge as the easiest way to transfer assets.",
+            "title": "Earn with Runes",
+            "subtitle": "Earn Trading fees and Spice with your Runes. Bridge in your rune, deposit into the trading pools and start earning from trades made on Sovryn. You can also trade your rune to any asset available on Sovryn.",
             "howToUseBridge": "How to use bridge"
         }
     }

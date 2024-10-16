@@ -16,23 +16,23 @@ import { RUNES_USE_CASE_ACTIONS, Rune } from './RunesPage.types';
 const pageTranslations = translations.runesPage;
 
 export const renderAvailableRunes = () =>
-  Object.values(AVAILABLE_RUNES).map(({ name, icon }: Rune) => (
-    <div key={name}>
+  Object.values(AVAILABLE_RUNES).map(({ symbol, icon }: Rune) => (
+    <div key={symbol}>
       <div className="bg-gray-70 rounded p-2 min-h-9 min-w-20 flex items-center justify-start">
         {icon ? (
           <>
-            <img src={icon} alt={name} className="w-5 h-5 mr-2" />
-            <span className="font-semibold text-xs text-gray-30">{name}</span>
+            <img src={icon} alt={symbol} className="w-5 h-5 mr-2" />
+            <span className="font-semibold text-xs text-gray-30">{symbol}</span>
           </>
         ) : (
           <AssetRenderer
-            asset={name}
+            asset={symbol}
             showAssetLogo
             assetClassName="font-semibold text-gray-30"
           />
         )}
       </div>
-      {name === AVAILABLE_RUNES.PUPS.name && (
+      {symbol === AVAILABLE_RUNES.PUPS.symbol && (
         <div className="text-xs text-gray-30">
           {t(pageTranslations.availableSoon)}
         </div>

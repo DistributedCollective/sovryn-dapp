@@ -124,23 +124,14 @@ export const RunesPage: FC = () => {
           </div>
 
           <div className="mt-11 bg-gray-90 rounded p-6">
-            <div className="flex lg:flex-row flex-col gap-11 justify-between items-center">
-              <div className="lg:max-w-[26rem]">
-                <Paragraph
-                  className="text-gray-10 font-medium mb-6 text-2xl"
-                  children={t(pageTranslations.startEarning.title)}
-                />
-                <Paragraph
-                  className="text-gray-30 leading-5 font-medium"
-                  children={t(pageTranslations.startEarning.subtitle)}
-                />
-              </div>
-              <Link
-                text={t(pageTranslations.startEarning.howToUseBridge)}
-                href={WIKI_LINKS.BRIDGE_RUNES}
-                className="no-underline text-center font-semibold text-sm"
-              />
-            </div>
+            <Paragraph
+              className="text-gray-10 font-medium mb-6 text-2xl"
+              children={t(pageTranslations.startEarning.title)}
+            />
+            <Paragraph
+              className="text-gray-30 leading-5 font-medium"
+              children={t(pageTranslations.startEarning.subtitle)}
+            />
           </div>
         </NetworkBanner>
       </div>

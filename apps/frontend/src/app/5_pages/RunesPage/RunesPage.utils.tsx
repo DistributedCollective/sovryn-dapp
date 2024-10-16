@@ -31,6 +31,7 @@ export const renderAvailableRunes = () =>
             asset={symbol}
             showAssetLogo
             assetClassName="font-semibold text-gray-30"
+            logoClassName="rounded-full w-5 h-5 mr-2"
             chainId={BOB_CHAIN_ID}
           />
         )}

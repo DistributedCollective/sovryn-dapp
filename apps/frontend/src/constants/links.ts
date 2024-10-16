@@ -52,7 +52,6 @@ export const WIKI_LINKS = {
   REWARDS: 'https://wiki.sovryn.app/en/sovryn-dapp/sovryn-rewards-explained',
   STAKING: 'https://wiki.sovryn.com/en/governance/staking-vesting-voting',
   WALLET_SETUP: 'https://wiki.sovryn.com/en/getting-started/wallet-setup',
-  RUNES: 'https://wiki.sovryn.com/en/sovryn-dapp/runes',
   BRIDGE_RUNES: 'https://wiki.sovryn.com/en/sovryn-dapp/runes#bridging-runes',
 };
 

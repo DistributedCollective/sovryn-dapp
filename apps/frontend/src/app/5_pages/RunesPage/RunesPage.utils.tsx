@@ -43,7 +43,7 @@ export const renderAvailableRunes = () =>
 export const renderRuneBenefits = () =>
   RUNES_BENEFITS.map(({ title, icon }) => (
     <div key={title} className="bg-gray-90 rounded p-6 flex-1 min-w-28">
-      <img src={icon} alt={title} className="mb-2" />
+      <img src={icon} alt={title} className="mb-2 w-8 h-8" />
       <span className="text-gray-10 font-normal text-sm">{title}</span>
     </div>
   ));

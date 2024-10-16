@@ -2,7 +2,6 @@ import React, { FC, useCallback } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
-import { Trans } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { Button, Heading, Icon, IconNames, Link, Paragraph } from '@sovryn/ui';
@@ -59,17 +58,10 @@ export const RunesPage: FC = () => {
               <Heading className="text-2xl sm:text-3xl font-medium sm:mb-9 mb-4 text-center lg:text-left">
                 {t(pageTranslations.title)}
               </Heading>
-              <div className="text-base sm:text-md text-gray-30 leading-5 font-semibold">
-                <Trans
-                  i18nKey={t(pageTranslations.subtitle)}
-                  className="text-gray-30"
-                  components={[
-                    <Link
-                      text={t(pageTranslations.subtitleCTA)}
-                      href={WIKI_LINKS.RUNES}
-                      className="no-underline text-base sm:text-md"
-                    />,
-                  ]}
+              <div className="text-gray-30">
+                <Paragraph
+                  children={t(pageTranslations.subtitle)}
+                  className="mb-4 text-base sm:text-md leading-5 font-semibold"
                 />
               </div>
             </div>
@@ -124,14 +116,22 @@ export const RunesPage: FC = () => {
           </div>
 
           <div className="mt-11 bg-gray-90 rounded p-6">
-            <Paragraph
-              className="text-gray-10 font-medium mb-6 text-2xl"
-              children={t(pageTranslations.startEarning.title)}
-            />
-            <Paragraph
-              className="text-gray-30 leading-5 font-medium"
-              children={t(pageTranslations.startEarning.subtitle)}
-            />
+            <div className="flex lg:flex-row flex-col gap-11 justify-between items-center">
+              <div className="lg:max-w-[26rem] w-full">
+                <Paragraph
+                  className="text-gray-10 font-medium mb-6 text-2xl"
+                  children={t(pageTranslations.startEarning.title)}
+                />
+                <Paragraph
+                  className="text-gray-30 leading-5 font-medium"
+                  children={t(pageTranslations.startEarning.subtitle)}
+                />
+              </div>
+              <Button
+                text={t(pageTranslations.bridgeRunes)}
+                onClick={handleBridgeRunes}
+              />
+            </div>
           </div>
         </NetworkBanner>
       </div>

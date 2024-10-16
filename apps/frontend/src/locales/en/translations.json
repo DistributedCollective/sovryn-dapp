@@ -1948,16 +1948,15 @@
         "meta": {
             "title": "Runes - Sovryn"
         },
-        "title": "Runes on DeFi",
-        "subtitle": "Programmable runes are a new protocol layer that aims to support smart contract-style functionality, decentralized finance (DeFi), and the creation and management of native tokens on the Bitcoin network. More Runes are coming. <0>Learn more</0>",
-        "subtitleCTA": "Learn more",
+        "title": "Earn with Runes!",
+        "subtitle": "Earn Trading fees and BOB’s Spice with your Runes. Bridge in your rune, deposit into the trading pools, and start earning from trades made on Sovryn. You can trade your rune to any asset available on Sovryn. Bridge in your runes to start earning.",
         "bridgeRunes": "Bridge Runes",
         "benefits": {
             "title": "Benefits",
             "list": {
                 "l1": "Trade Runes in DeFi",
                 "l2": "Lower fees",
-                "l3": "Faster transactions",
+                "l3": "Earn Spice",
                 "l4": "Swap to any asset"
             }
         },
@@ -1976,9 +1975,8 @@
             }
         },
         "startEarning": {
-            "title": "Earn with Runes",
-            "subtitle": "Earn Trading fees and Spice with your Runes. Bridge in your rune, deposit into the trading pools and start earning from trades made on Sovryn. You can also trade your rune to any asset available on Sovryn.",
-            "howToUseBridge": "How to use bridge"
+            "title": "Bridge your runes",
+            "subtitle": "Bridge your runes to start trading and earning with runes on Sovryn"
         }
     }
 }

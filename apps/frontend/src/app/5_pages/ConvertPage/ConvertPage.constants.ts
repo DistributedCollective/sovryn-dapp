@@ -53,6 +53,6 @@ export const DEFAULT_SWAP_ENTRIES: Partial<Record<ChainIds, string>> = {
 export const CATEGORY_TOKENS: Record<CategoryType, string[]> = {
   [CategoryType.Stablecoins]: SMART_ROUTER_STABLECOINS,
   [CategoryType.BTC]: [COMMON_SYMBOLS.BTC],
-  [CategoryType.Runes]: ['POWA'],
+  [CategoryType.Runes]: ['POWA', 'DOGGOTOTHEMOON'],
   [CategoryType.All]: [],
 };

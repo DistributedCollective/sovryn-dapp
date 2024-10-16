@@ -121,14 +121,6 @@ export const bobMainnet: AmbientLiquidityPool[] = [
     PoolListGroup.new,
   ),
   new AmbientLiquidityPool(
-    'SolvBTC.BBN',
-    'wBTC',
-    ChainIds.BOB_MAINNET,
-    0, // todo
-    '', // todo
-    PoolListGroup.new,
-  ),
-  new AmbientLiquidityPool(
     'UniBTC',
     'wBTC',
     ChainIds.BOB_MAINNET,
@@ -137,7 +129,31 @@ export const bobMainnet: AmbientLiquidityPool[] = [
     PoolListGroup.new,
   ),
   new AmbientLiquidityPool(
+    'SolvBTC.BBN',
+    'wBTC',
+    ChainIds.BOB_MAINNET,
+    0, // todo
+    '', // todo
+    PoolListGroup.new,
+  ),
+  new AmbientLiquidityPool(
     'SolvBTC',
+    'wBTC',
+    ChainIds.BOB_MAINNET,
+    0, // todo
+    '', // todo
+    PoolListGroup.new,
+  ),
+  new AmbientLiquidityPool(
+    'DOG',
+    'POWA',
+    ChainIds.BOB_MAINNET,
+    0, // todo
+    '', // todo
+    PoolListGroup.new,
+  ),
+  new AmbientLiquidityPool(
+    'DOG',
     'wBTC',
     ChainIds.BOB_MAINNET,
     0, // todo

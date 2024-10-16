@@ -110,4 +110,11 @@ export const bob: Array<AssetDetails> = [
     decimals: 8,
     getIcon: async () => (await import('./icons/bob/unibtc')).default,
   },
+  {
+    symbol: 'DOG',
+    address: '0xcE528Db0d9126FE940dcB9876E8C295df670D7c4',
+    name: 'DOG•GO•TO•THE•MOON',
+    decimals: 8,
+    getIcon: async () => (await import('./icons/bob/dog')).default,
+  },
 ];

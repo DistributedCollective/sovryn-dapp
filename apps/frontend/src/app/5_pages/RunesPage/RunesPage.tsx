@@ -135,18 +135,11 @@ export const RunesPage: FC = () => {
                   children={t(pageTranslations.startEarning.subtitle)}
                 />
               </div>
-              <div className="flex flex-col">
-                <Button
-                  text={t(pageTranslations.bridgeRunes)}
-                  className="mb-4"
-                  onClick={handleBridgeRunes}
-                />
-                <Link
-                  text={t(pageTranslations.startEarning.howToUseBridge)}
-                  href={WIKI_LINKS.BRIDGE_RUNES}
-                  className="no-underline text-center font-semibold text-sm"
-                />
-              </div>
+              <Link
+                text={t(pageTranslations.startEarning.howToUseBridge)}
+                href={WIKI_LINKS.BRIDGE_RUNES}
+                className="no-underline text-center font-semibold text-sm"
+              />
             </div>
           </div>
         </NetworkBanner>

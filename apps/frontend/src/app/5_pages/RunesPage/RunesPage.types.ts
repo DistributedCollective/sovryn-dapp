@@ -4,7 +4,7 @@ export enum RUNES_USE_CASE_ACTIONS {
 }
 
 export type Rune = {
-  name: string;
+  symbol: string;
   icon?: string;
 };
 

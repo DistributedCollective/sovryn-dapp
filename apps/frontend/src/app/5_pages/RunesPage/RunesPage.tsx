@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { Trans } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { Button, Heading, Link, Paragraph } from '@sovryn/ui';
+import { Button, Heading, Icon, IconNames, Link, Paragraph } from '@sovryn/ui';
 
 import { BOB_CHAIN_ID } from '../../../config/chains';
 
@@ -13,7 +13,7 @@ import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
 import { WIKI_LINKS } from '../../../constants/links';
 import { translations } from '../../../locales/i18n';
 import { sharedState } from '../../../store/rxjs/shared-state';
-import { RUNES_REQUEST_EMAIL } from './RunesPage.constants';
+import { AVAILABLE_RUNES, RUNES_REQUEST_EMAIL } from './RunesPage.constants';
 import { RUNES_USE_CASE_ACTIONS } from './RunesPage.types';
 import {
   renderAvailableRunes,
@@ -33,7 +33,9 @@ export const RunesPage: FC = () => {
     (action: RUNES_USE_CASE_ACTIONS) => {
       switch (action) {
         case RUNES_USE_CASE_ACTIONS.convert:
-          return navigate('/convert');
+          return navigate(
+            `/convert?from=${AVAILABLE_RUNES.POWA.symbol}&categoryFrom=Runes`,
+          );
         case RUNES_USE_CASE_ACTIONS.deposit:
           return navigate('/earn/market-making');
         default:
@@ -80,11 +82,18 @@ export const RunesPage: FC = () => {
                 {renderAvailableRunes()}
               </div>
 
-              <Button
-                text={t(pageTranslations.bridgeRunes)}
-                className="mb-4 mx-auto"
-                onClick={handleBridgeRunes}
-              />
+              <div className="flex items-start justify-center mb-4">
+                <Button
+                  text={t(pageTranslations.bridgeRunes)}
+                  onClick={handleBridgeRunes}
+                  className="mr-1"
+                />
+                <Link
+                  text={<Icon icon={IconNames.INFO} size={12} />}
+                  href={WIKI_LINKS.BRIDGE_RUNES}
+                  className="text-sov-white hover:text-gray-30"
+                />
+              </div>
 
               <Link
                 text={t(pageTranslations.availableRunesInfo)}

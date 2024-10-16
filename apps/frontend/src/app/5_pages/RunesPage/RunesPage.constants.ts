@@ -13,14 +13,14 @@ import runesBenefitsIcon4 from './assets/l4.svg';
 
 export const AVAILABLE_RUNES: AvailableRunes = {
   POWA: {
-    name: 'POWA',
+    symbol: 'POWA',
   },
   DOG: {
-    name: 'DOG',
+    symbol: 'DOG',
     icon: iconDog,
   },
   PUPS: {
-    name: 'PUPS',
+    symbol: 'PUPS',
     icon: iconPups,
   },
 };

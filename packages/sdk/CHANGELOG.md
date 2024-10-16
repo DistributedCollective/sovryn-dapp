@@ -1,5 +1,13 @@
 # @sovryn/sdk
 
+## 2.0.2
+
+### Patch Changes
+
+- 750f7473: SOV-4496: add new pools
+- Updated dependencies [750f7473]
+  - @sovryn/contracts@1.2.2
+
 ## 2.0.1
 
 ### Patch Changes

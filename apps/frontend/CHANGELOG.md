@@ -1,5 +1,16 @@
 # frontend
 
+## 1.1.24
+
+### Patch Changes
+
+- 0bc23cc0: chore: update rune symbols
+- 52b7c4fe: chore: add new pools
+- Updated dependencies [0bc23cc0]
+- Updated dependencies [52b7c4fe]
+  - @sovryn/contracts@1.2.3
+  - @sovryn/sdk@2.0.3
+
 ## 1.1.23
 
 ### Patch Changes

@@ -92,11 +92,7 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
     >
       {showAssetLogo && logo && (
         <div
-          className={classNames(
-            styles.assetLogo,
-            logoClassName,
-            'rounded-full overflow-hidden bg-gray-80',
-          )}
+          className={classNames(styles.assetLogo, logoClassName)}
           dangerouslySetInnerHTML={{ __html: logo }}
         />
       )}

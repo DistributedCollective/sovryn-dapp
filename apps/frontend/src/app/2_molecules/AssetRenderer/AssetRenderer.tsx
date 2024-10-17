@@ -95,7 +95,7 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
           className={classNames(
             styles.assetLogo,
             logoClassName,
-            'rounded-full overflow-hidden',
+            'rounded-full overflow-hidden bg-gray-80',
           )}
           dangerouslySetInnerHTML={{ __html: logo }}
         />

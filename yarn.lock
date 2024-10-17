@@ -4708,6 +4708,11 @@
   resolved "https://registry.yarnpkg.com/@sovryn-zero/lib-ethers/-/lib-ethers-0.2.5.tgz#a689b6b86686f7e54a6bbfac965a40f49a2fa4ea"
   integrity sha512-EflaS8gsnlnslo1ZgxFm4c6xBAGPW1dJJ/8ItSgKhYBTYy50zulGRZwln3c4QVt4Sq6dkasix5NsqGXkTQutOA==
 
+"@sovryn/charting-library@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@sovryn/charting-library/-/charting-library-2.0.0.tgz#78878af5b3b43d8a2c7c5c952abeef064cbc31fe"
+  integrity sha512-rjcp+XKBTWuCJFkU9O5B3LfRLSwgT44UzQshX0EhJ8b0PqIqHLXKhALVSJafr8gRXFLu3kPqDckYrAELFeQ66A==
+
 "@sovryn/onboard-bitget@1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@sovryn/onboard-bitget/-/onboard-bitget-1.0.1.tgz#aee1c3a1fc714e9232e84b54e7732f2191fd6e7d"
@@ -22467,6 +22472,11 @@ statuses@2.0.1:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.5.0.tgz#161c7dac177659fd9811f43771fa99381478628c"
   integrity sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==
+
+storage-factory@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/storage-factory/-/storage-factory-0.2.1.tgz#e484493a888cd2de6ffcb51ad2c95bad0964f950"
+  integrity sha512-zyhSqhFbK7q1ovq1Tf4WyshYwy8jLkKIUnWBPnakXarvFRljemhz9Zlg0rxwnZiqUdJQ3iox36VLtE/XHqQ4og==
 
 store2@^2.12.0:
   version "2.14.2"

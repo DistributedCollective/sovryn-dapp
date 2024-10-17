@@ -6,7 +6,7 @@ export const getCollateralRatioThresholds = (minimum: Decimal) => {
   return {
     START: 100,
     MIDDLE_START: minimumCollateralRatio.toNumber() - 0.1,
-    MIDDLE_END: minimumCollateralRatio.mul(1.2).toNumber(),
-    END: minimumCollateralRatio.mul(1.6).toNumber(),
+    MIDDLE_END: minimumCollateralRatio.mul(1.5).toNumber(),
+    END: minimumCollateralRatio.mul(2).toNumber(),
   };
 };

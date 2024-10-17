@@ -2,6 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const fsp = fs.promises;
 
+async function deleteDir(dir) {
+  if (fs.existsSync(dir)) {
+    await fsp.rmdir(dir, { recursive: true });
+    console.log(`Deleted directory: ${dir}`);
+  }
+}
+
 async function copyDir(src, dest) {
   await fsp.mkdir(dest, { recursive: true });
   const entries = await fsp.readdir(src, { withFileTypes: true });
@@ -35,19 +42,17 @@ async function copyLibs() {
   const datafeedsDest = path.resolve(__dirname, '../public/datafeeds');
 
   if (fs.existsSync(chartingLibrarySrc)) {
-    if (!fs.existsSync(chartingLibraryDest)) {
-      await copyDir(chartingLibrarySrc, chartingLibraryDest);
-      console.log('Charting Library copied.');
-    }
+    await deleteDir(chartingLibraryDest);
+    await copyDir(chartingLibrarySrc, chartingLibraryDest);
+    console.log('Charting Library copied.');
   } else {
     console.error('Charting Library source not found.');
   }
 
   if (fs.existsSync(datafeedsSrc)) {
-    if (!fs.existsSync(datafeedsDest)) {
-      await copyDir(datafeedsSrc, datafeedsDest);
-      console.log('Datafeeds copied.');
-    }
+    await deleteDir(datafeedsDest);
+    await copyDir(datafeedsSrc, datafeedsDest);
+    console.log('Datafeeds copied.');
   } else {
     console.error('Datafeeds source not found.');
   }

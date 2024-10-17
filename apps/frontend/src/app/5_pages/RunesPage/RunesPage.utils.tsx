@@ -4,6 +4,8 @@ import { t } from 'i18next';
 
 import { Button, ButtonSize, ButtonStyle, Paragraph } from '@sovryn/ui';
 
+import { BOB_CHAIN_ID } from '../../../config/chains';
+
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../locales/i18n';
 import {
@@ -29,11 +31,13 @@ export const renderAvailableRunes = () =>
             asset={symbol}
             showAssetLogo
             assetClassName="font-semibold text-gray-30"
+            logoClassName="rounded-full w-5 h-5 mr-2"
+            chainId={BOB_CHAIN_ID}
           />
         )}
       </div>
       {symbol === AVAILABLE_RUNES.PUPS.symbol && (
-        <div className="text-xs text-gray-30">
+        <div className="text-xs text-gray-30 text-center">
           {t(pageTranslations.availableSoon)}
         </div>
       )}

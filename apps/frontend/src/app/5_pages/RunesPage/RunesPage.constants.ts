@@ -4,7 +4,6 @@ import { translations } from '../../../locales/i18n';
 import { RUNES_USE_CASE_ACTIONS, AvailableRunes } from './RunesPage.types';
 import convertIcon from './assets/convert.svg';
 import earnIcon from './assets/earn.svg';
-import iconDog from './assets/iconDog.svg';
 import iconPups from './assets/iconPups.svg';
 import runesBenefitsIcon1 from './assets/l1.svg';
 import runesBenefitsIcon2 from './assets/l2.svg';
@@ -16,11 +15,10 @@ export const AVAILABLE_RUNES: AvailableRunes = {
     symbol: 'POWA',
   },
   DOG: {
-    symbol: 'DOG',
-    icon: iconDog,
+    symbol: 'DOGGOTOTHEMOON',
   },
   PUPS: {
-    symbol: 'PUPS',
+    symbol: 'PUPSWORLDPEACE',
     icon: iconPups,
   },
 };

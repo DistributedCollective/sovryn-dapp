@@ -2,8 +2,14 @@ import React, { FC, useCallback, useState, useMemo } from 'react';
 
 import { Select } from '@sovryn/ui';
 
+import { useCurrentChain } from '../../../hooks/useChainStore';
+import { isBobChain } from '../../../utils/chain';
+import { BORROW_HISTORY_OPTIONS } from './BorrowHistory.constants';
 import { BorrowHistoryType } from './BorrowHistory.types';
-import { borrowHistoryOptions } from './BorrowHistory.utils';
+import { AaveCloseWithDepositLoanFrame } from './components/AaveCloseWithDepositLoanFrame/AaveCloseWithDepositLoanFrame';
+import { AaveLiquidationLoanFrame } from './components/AaveLiquidationLoanFrame/AaveLiquidationLoanFrame';
+import { AaveNewLoanHistoryFrame } from './components/AaveNewLoanFrame/AaveNewLoanHistoryFrame';
+import { AaveSwapRateModeLoanFrame } from './components/AaveSwapRateModeLoanFrame/AaveSwapRateModeLoanFrame';
 import { CloseWithDepositLoanFrame } from './components/CloseWithDepositLoanFrame/CloseWithDepositLoanFrame';
 import { CloseWithSwapLoanFrame } from './components/CloseWithSwapLoanFrame/CloseWithSwapLoanFrame';
 import { CollateralSurplusHistoryFrame } from './components/CollateralSurplusFrame/CollateralSurplusHistoryFrame';
@@ -14,8 +20,9 @@ import { RolloverLoanHistoryFrame } from './components/RolloverLoanFrame/Rollove
 import { TransactionHistoryFrame } from './components/TransactionHistoryFrame';
 
 export const BorrowHistory: FC = () => {
+  const chainId = useCurrentChain();
   const [selectedHistoryType, setSelectedHistoryType] =
-    useState<BorrowHistoryType>(BorrowHistoryType.lineOfCredit);
+    useState<BorrowHistoryType>(BORROW_HISTORY_OPTIONS(chainId)[0].value);
 
   const onChangeRewardHistory = useCallback((value: BorrowHistoryType) => {
     setSelectedHistoryType(value);
@@ -27,14 +34,43 @@ export const BorrowHistory: FC = () => {
         dataAttribute={`borrow-history-${selectedHistoryType}`}
         value={selectedHistoryType}
         onChange={onChangeRewardHistory}
-        options={borrowHistoryOptions}
+        options={BORROW_HISTORY_OPTIONS(chainId)}
         className="min-w-36 w-full lg:w-auto"
       />
     ),
-    [selectedHistoryType, onChangeRewardHistory],
+    [selectedHistoryType, onChangeRewardHistory, chainId],
   );
 
   const renderHistoryFrame = useMemo(() => {
+    if (isBobChain(chainId)) {
+      switch (selectedHistoryType) {
+        case BorrowHistoryType.newLoan:
+          return (
+            <AaveNewLoanHistoryFrame>{selectComponent}</AaveNewLoanHistoryFrame>
+          );
+        case BorrowHistoryType.closeWithDepositLoan:
+          return (
+            <AaveCloseWithDepositLoanFrame>
+              {selectComponent}
+            </AaveCloseWithDepositLoanFrame>
+          );
+        case BorrowHistoryType.liquidationLoan:
+          return (
+            <AaveLiquidationLoanFrame>
+              {selectComponent}
+            </AaveLiquidationLoanFrame>
+          );
+        case BorrowHistoryType.swapBorrowRateMode:
+          return (
+            <AaveSwapRateModeLoanFrame>
+              {selectComponent}
+            </AaveSwapRateModeLoanFrame>
+          );
+        default:
+          return null;
+      }
+    }
+
     switch (selectedHistoryType) {
       case BorrowHistoryType.lineOfCredit:
         return (
@@ -73,7 +109,7 @@ export const BorrowHistory: FC = () => {
       default:
         return null;
     }
-  }, [selectedHistoryType, selectComponent]);
+  }, [selectedHistoryType, selectComponent, chainId]);
 
   return <>{renderHistoryFrame}</>;
 };

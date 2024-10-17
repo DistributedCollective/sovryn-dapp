@@ -70,7 +70,10 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
           setLogo(item.icon);
           setToken(item.symbol);
         })
-        .catch(() => setLogo(''));
+        .catch(() => {
+          setToken(asset);
+          setLogo('');
+        });
     }
   }, [address, asset, chainId, showAssetLogo]);
 
@@ -81,7 +84,10 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
           setLogo(item.icon);
           setToken(item.symbol);
         })
-        .catch(() => setLogo(''));
+        .catch(() => {
+          setToken(asset);
+          setLogo('');
+        });
     }
   }, [address, asset, chainId, showAssetLogo]);
 

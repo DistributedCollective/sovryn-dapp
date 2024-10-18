@@ -1,5 +1,11 @@
 # frontend
 
+## 1.1.25
+
+### Patch Changes
+
+- 952a673e: chore: fix asset icon styles
+
 ## 1.1.24
 
 ### Patch Changes

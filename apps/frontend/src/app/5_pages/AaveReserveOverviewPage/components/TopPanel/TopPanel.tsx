@@ -17,6 +17,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { BOB_CHAIN_ID } from '../../../../../config/chains';
 
+import { GoBackButton } from '../../../../1_atoms/GoBackButton/GoBackButton';
 import { WalletIcon } from '../../../../1_atoms/Icons/Icons';
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -57,6 +58,10 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
     window.open(`${explorer}/address/${tokenAddress}`, '_blank');
   }, []);
 
+  const goBack = useCallback(() => {
+    window.history.back();
+  }, []);
+
   const oracleLink = useMemo(
     () => getBobExplorerUrl() + '/address/' + reserve.priceOracle,
     [reserve.priceOracle],
@@ -80,6 +85,10 @@ export const TopPanel: FC<TopPanelProps> = ({ reserve, className }) => {
 
       <div className="gap-6 lg:gap-9 flex-shrink-0 grid grid-cols-2 lg:flex">
         <div className="col-span-2 flex items-center lg:items-start gap-3">
+          <div className="flex items-center gap-3 h-8">
+            <GoBackButton onClick={goBack} />
+          </div>
+
           <div className="flex items-center gap-1">
             <AssetRenderer
               asset={reserve.symbol}

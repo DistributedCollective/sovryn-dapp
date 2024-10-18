@@ -19,7 +19,7 @@ import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE } from '../../../../../../../constants/aave';
+import { MINIMUM_HEALTH_FACTOR } from '../../../../../../../constants/aave';
 import { useAaveBorrow } from '../../../../../../../hooks/aave/useAaveBorrow';
 import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAaveUserReservesData';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
@@ -91,11 +91,17 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
 
   const newCollateralRatio = useMemo(
     () =>
-      AaveCalculations.computeCollateralRatio(
+      AaveCalculations.computeHealthFactor(
         summary.collateralBalance,
+        summary.currentLiquidationThreshold,
         summary.borrowBalance.add(borrowUsdAmount),
       ),
-    [summary.collateralBalance, summary.borrowBalance, borrowUsdAmount],
+    [
+      summary.collateralBalance,
+      summary.currentLiquidationThreshold,
+      summary.borrowBalance,
+      borrowUsdAmount,
+    ],
   );
 
   const liquidationPrice = useMemo(
@@ -177,7 +183,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ asset, onComplete }) => {
 
       <CollateralRatioHealthBar
         ratio={Decimal.from(newCollateralRatio)}
-        minimum={MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE}
+        minimum={MINIMUM_HEALTH_FACTOR}
       />
 
       <SimpleTable>

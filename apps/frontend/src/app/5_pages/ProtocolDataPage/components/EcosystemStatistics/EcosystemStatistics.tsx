@@ -22,6 +22,7 @@ const currencies = [BITCOIN, USD];
 
 export const EcosystemStatistics: FC = () => {
   const lockedData = useGetLockedData();
+
   const chainId = useCurrentChain();
 
   const [selectedCurrency, setSelectedCurrency] = useState(USD);

@@ -32,10 +32,11 @@ export class AaveCalculations {
   }
 
   static computeBorrowPower(
-    minCollateralRatio: Decimal,
+    minHealthFactor: Decimal,
     collateralBalance: Decimal,
+    liquidationThreshold: Decimal,
   ) {
-    return Decimal.from(collateralBalance).div(minCollateralRatio);
+    return collateralBalance.mul(liquidationThreshold).div(minHealthFactor);
   }
 
   static computeBorrowPowerUsed(

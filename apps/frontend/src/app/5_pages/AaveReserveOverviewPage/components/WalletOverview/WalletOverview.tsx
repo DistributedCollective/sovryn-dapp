@@ -84,15 +84,17 @@ export const WalletOverview: FC<WalletOverviewProps> = ({ symbol }) => {
             />
 
             {/* Borrow */}
-            <BorrowAction
-              asset={asset?.symbol ?? ''}
-              availableToBorrow={Decimal.from(
-                reserveSummary?.availableToBorrow ?? 0,
-              )}
-              availableToBorrowUsd={Decimal.from(
-                reserveSummary?.availableToBorrowUsd ?? 0,
-              )}
-            />
+            {reserveSummary?.reserve.borrowingEnabled && (
+              <BorrowAction
+                asset={asset?.symbol ?? ''}
+                availableToBorrow={Decimal.from(
+                  reserveSummary?.availableToBorrow ?? 0,
+                )}
+                availableToBorrowUsd={Decimal.from(
+                  reserveSummary?.availableToBorrowUsd ?? 0,
+                )}
+              />
+            )}
           </div>
 
           {reserveSummary?.walletBalance.lte(0) && (

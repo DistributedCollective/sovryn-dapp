@@ -6,7 +6,6 @@ import 'chartjs-adapter-date-fns';
 import { theme } from '@sovryn/tailwindcss-config';
 
 import {
-  CHART_PERCENTAGES,
   CUSTOM_CANVAS_BACKGROUND_COLOR,
   GRID_COLOR,
   TICK_COLOR,
@@ -14,6 +13,7 @@ import {
 import { RatesData } from './Chart.types';
 import {
   calculateVariableInterestRateModel,
+  generatePercentages,
   htmlLegendPlugin,
 } from './Chart.utils';
 
@@ -31,7 +31,7 @@ export const Chart: FC<ChartProps> = ({ meta, rates }) => {
 
   const variableValues = useMemo(
     () =>
-      CHART_PERCENTAGES.map(x => ({
+      generatePercentages().map(x => ({
         x: x * 100,
         y: calculateVariableInterestRateModel(x, rates).mul(100).toNumber(),
       })),

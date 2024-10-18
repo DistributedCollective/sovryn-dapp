@@ -51,6 +51,10 @@ export const BorrowDetailsGraph: FC<BorrowDetailsGraphProps> = ({
     [history],
   );
 
+  if (!reserve.borrowingEnabled) {
+    return null;
+  }
+
   return (
     <Accordion
       label={

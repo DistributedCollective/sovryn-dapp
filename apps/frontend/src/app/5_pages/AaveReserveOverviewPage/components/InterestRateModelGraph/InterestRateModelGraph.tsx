@@ -49,7 +49,7 @@ export const InterestRateModelGraph: FC<InterestRateModelGraphProps> = ({
     [reserve.borrowUsageRatio],
   );
 
-  if (!rates) {
+  if (!rates || !reserve.borrowingEnabled) {
     return null;
   }
   return (

@@ -22,6 +22,10 @@ const getOrCreateLegendList = (id: string) => {
   return listContainer;
 };
 
+export const generatePercentages = (step: number = 0.05) => {
+  return Array.from({ length: Math.floor(1 / step) + 1 }, (_, i) => i * step);
+};
+
 export const htmlLegendPlugin = {
   id: 'htmlLegend',
   afterUpdate(chart, args, options) {

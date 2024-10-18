@@ -39,15 +39,15 @@ export class AaveWithdrawTransactionsFactory {
   async withdraw(
     token: AssetDetailsData,
     amount: BigNumber,
-    isMaxAmount: boolean,
+    withdrawAll: boolean,
     opts?: TransactionFactoryOptions,
   ): Promise<Transaction[]> {
     if (
       token.isNative ||
       token.address.toLowerCase() === AAVE_CONTRACT_ADDRESSES.WETH.toLowerCase()
     ) {
-      return this.withdrawNative(amount, isMaxAmount, opts);
-    } else return this.withdrawToken(token, amount, isMaxAmount, opts);
+      return this.withdrawNative(amount, withdrawAll, opts);
+    } else return this.withdrawToken(token, amount, withdrawAll, opts);
   }
 
   private async withdrawToken(

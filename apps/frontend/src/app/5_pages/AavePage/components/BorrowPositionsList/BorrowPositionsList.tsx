@@ -160,7 +160,7 @@ export const BorrowPositionsList: FC<BorrowPositionsListProps> = ({
         orderOptions={orderOptions}
         setOrderOptions={setOrderOptions}
         noData={
-          <span className="text-gray-30 text-sm lg:text-white">
+          <span className="text-gray-30 text-xs italic lg:text-white">
             {t(pageTranslations.borrowPositionsList.noData)}
           </span>
         }

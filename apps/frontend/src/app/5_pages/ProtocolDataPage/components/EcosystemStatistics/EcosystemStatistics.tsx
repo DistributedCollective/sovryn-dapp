@@ -5,32 +5,32 @@ import { t } from 'i18next';
 
 import { Button, ButtonStyle, Paragraph } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { NativeTokenAmount } from '../../../../2_molecules/NativeTokenAmount/NativeTokenAmount';
-import { BITCOIN, ETH, USD } from '../../../../../constants/currencies';
+import { BITCOIN, USD } from '../../../../../constants/currencies';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
-import { isBobChain, isRskChain } from '../../../../../utils/chain';
+import { isBobChain } from '../../../../../utils/chain';
 import { useGetLockedData } from '../../../LandingPage/components/ProtocolData/hooks/useGetLockedData';
 import { getCurrencyPrecision } from '../../../PortfolioPage/components/ProtocolSection/ProtocolSection.utils';
 import { pageTranslations } from '../../ProtocolDataPage.constants';
 import { ContractData } from './EcosystemStatistics.types';
 
+const currencies = [BITCOIN, USD];
+
 export const EcosystemStatistics: FC = () => {
   const lockedData = useGetLockedData();
   const chainId = useCurrentChain();
 
-  const currencies = useMemo(
-    () => (isRskChain(chainId) ? [BITCOIN, USD] : [ETH, USD]),
-    [chainId],
-  );
   const [selectedCurrency, setSelectedCurrency] = useState(USD);
 
   useEffect(() => {
     if (!currencies.includes(selectedCurrency)) {
       setSelectedCurrency(currencies[0]);
     }
-  }, [currencies, selectedCurrency]);
+  }, [selectedCurrency]);
 
   const totalValue = useMemo(() => {
     if (isBobChain(chainId)) {
@@ -59,13 +59,10 @@ export const EcosystemStatistics: FC = () => {
     lockedData.tvlZero?.totalUsd,
   ]);
 
-  const subTotalValue = useMemo(() => {
-    if (isBobChain(chainId)) {
-      return totalValue - Number(lockedData.tvlStaking?.totalUsd || 0);
-    } else {
-      return totalValue - Number(lockedData.tvlStaking?.totalUsd || 0);
-    }
-  }, [chainId, lockedData.tvlStaking?.totalUsd, totalValue]);
+  const subTotalValue = useMemo(
+    () => totalValue - Number(lockedData.tvlStaking?.totalUsd || 0),
+    [lockedData.tvlStaking?.totalUsd, totalValue],
+  );
 
   const list: ContractData[] = useMemo(() => {
     if (isBobChain(chainId)) {
@@ -83,6 +80,7 @@ export const EcosystemStatistics: FC = () => {
             ) : (
               <NativeTokenAmount
                 usdValue={lockedData.tvlSdex?.totalUsd}
+                chainId={RSK_CHAIN_ID}
                 precision={getCurrencyPrecision(selectedCurrency)}
                 dataAttribute="ecosystem-statistics-sdex-contract-value"
               />
@@ -103,6 +101,7 @@ export const EcosystemStatistics: FC = () => {
             ) : (
               <NativeTokenAmount
                 usdValue={lockedData.tvlStaking?.totalUsd}
+                chainId={RSK_CHAIN_ID}
                 precision={getCurrencyPrecision(selectedCurrency)}
                 dataAttribute="ecosystem-statistics-bitocracy-staking-value"
               />
@@ -121,6 +120,7 @@ export const EcosystemStatistics: FC = () => {
             ) : (
               <NativeTokenAmount
                 usdValue={totalValue}
+                chainId={RSK_CHAIN_ID}
                 precision={getCurrencyPrecision(selectedCurrency)}
                 dataAttribute="ecosystem-statistics-total-value"
               />

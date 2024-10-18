@@ -7,6 +7,7 @@ import { useCurrentChain } from '../../../hooks/useChainStore';
 import { isBobChain } from '../../../utils/chain';
 import { EARN_HISTORY_OPTIONS } from './EarnHistory.constants';
 import { EarnHistoryType } from './EarnHistory.types';
+import { AaveLendingHistoryFrame } from './components/AaveLendingHistoryFrame/AaveLendingHistoryFrame';
 import { AmbientMarketMakingHistoryFrame } from './components/AmbientMarketMakingHistoryFrame/AmbientMarketMakingHistoryFrame';
 import { LendingHistoryFrame } from './components/LendingHistoryFrame/LendingHistoryFrame';
 import { MarketMakingHistoryFrame } from './components/MarketMakingHistoryFrame/MarketMakingHistoryFrame';
@@ -15,7 +16,7 @@ import { StabilityPoolHistoryFrame } from './components/StabilityPoolHistoryFram
 export const EarnHistory: FC = () => {
   const chainId = useCurrentChain();
   const [selectedHistoryType, setSelectedHistoryType] = useState(
-    EarnHistoryType.stabilityPool,
+    EARN_HISTORY_OPTIONS(isBobChain(chainId))[0].value,
   );
 
   const SelectComponent = useMemo(
@@ -24,35 +25,37 @@ export const EarnHistory: FC = () => {
         dataAttribute={`earn-history-${selectedHistoryType}`}
         value={selectedHistoryType}
         onChange={setSelectedHistoryType}
-        options={EARN_HISTORY_OPTIONS}
+        options={EARN_HISTORY_OPTIONS(isBobChain(chainId))}
         className="min-w-36 w-full lg:w-auto"
       />
     ),
-    [selectedHistoryType],
+    [selectedHistoryType, chainId],
   );
 
   const HistoryFrame = useMemo(() => {
-    if (isBobChain(chainId) || chainId === ChainIds.SEPOLIA) {
+    if (chainId === ChainIds.SEPOLIA) {
       return <AmbientMarketMakingHistoryFrame />;
     }
+
     switch (selectedHistoryType) {
       case EarnHistoryType.stabilityPool:
-        return (
-          <>
-            <StabilityPoolHistoryFrame>
-              {SelectComponent}
-            </StabilityPoolHistoryFrame>
-          </>
+        return isBobChain(chainId) ? null : (
+          <StabilityPoolHistoryFrame>
+            {SelectComponent}
+          </StabilityPoolHistoryFrame>
         );
       case EarnHistoryType.lending:
-        return (
-          <>
-            <LendingHistoryFrame>{SelectComponent}</LendingHistoryFrame>
-          </>
+        return isBobChain(chainId) ? (
+          <AaveLendingHistoryFrame>{SelectComponent}</AaveLendingHistoryFrame>
+        ) : (
+          <LendingHistoryFrame>{SelectComponent}</LendingHistoryFrame>
         );
-
       case EarnHistoryType.marketMaking:
-        return (
+        return isBobChain(chainId) ? (
+          <AmbientMarketMakingHistoryFrame>
+            {SelectComponent}
+          </AmbientMarketMakingHistoryFrame>
+        ) : (
           <MarketMakingHistoryFrame>{SelectComponent}</MarketMakingHistoryFrame>
         );
     }

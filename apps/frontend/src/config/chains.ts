@@ -10,7 +10,8 @@ import { RSK } from '../constants/infrastructure/rsk';
 import { SEPOLIA } from '../constants/infrastructure/sepolia';
 import { Environments } from '../types/global';
 
-const IS_MAINNET = process.env.REACT_APP_NETWORK === Environments.Mainnet;
+export const IS_MAINNET =
+  process.env.REACT_APP_NETWORK === Environments.Mainnet;
 
 export enum Chains {
   RSK = 'rsk',

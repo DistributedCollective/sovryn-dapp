@@ -8,6 +8,7 @@ export const MINIMUM_HEALTH_FACTOR = decimalic(1.1);
 
 // Extra amount to repay all ETH surplus
 export const REPAY_ALL_ETH_SURPLUS_AAVE = '10000000000000000';
+export const SYMBOL_PREFIX = 'Eth';
 
 export const AAVE_CONTRACT_ADDRESSES = IS_MAINNET
   ? {

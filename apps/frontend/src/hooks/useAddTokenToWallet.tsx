@@ -5,12 +5,12 @@ import { useNotifyError } from './useNotifyError';
 export const useAddTokenToWallet = (
   chainId: string,
 ): {
-  addTokenToWallet: (tokenAddress: string) => void;
+  addTokenToWallet: (tokenAddress: string, symbol: string) => void;
 } => {
   const { notifyError } = useNotifyError();
 
   const addTokenToWallet = useCallback(
-    (tokenAddress: string) => {
+    (tokenAddress: string, symbol: string) => {
       try {
         if (!(window as any)?.ethereum) {
           throw new Error('Wallet not available');
@@ -22,7 +22,7 @@ export const useAddTokenToWallet = (
             type: 'ERC20',
             options: {
               chainId,
-              symbol: 'vBOB',
+              symbol: symbol,
               address: tokenAddress,
             },
           },

@@ -70,8 +70,6 @@ const tradingChartDataFeeds = (
     try {
       const { baseToken, quoteToken } = getTokensFromSymbol(symbolInfo.name);
 
-      console.log({ baseToken, quoteToken });
-
       let items = await queryCandles(
         candleDetails,
         await baseToken,

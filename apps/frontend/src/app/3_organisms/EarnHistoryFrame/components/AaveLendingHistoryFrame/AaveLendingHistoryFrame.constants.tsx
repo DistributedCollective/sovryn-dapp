@@ -37,7 +37,7 @@ export const COLUMNS_CONFIG = [
             showRoundingPrefix
           />
         ) : (
-          <span>{t(translations.common.na)} </span>
+          <span>{t(translations.common.na)}</span>
         )}
         {item.reserve.symbol}
       </div>

@@ -44,9 +44,6 @@ export const TradingChart: FC<TradingChartProps> = ({ pair }) => {
         fullscreen: false,
         autosize: true,
         studies_overrides: {},
-        //experiments
-        symbol_search_request_delay: 10000,
-        timeframe: '1M',
       };
 
       const myChart = new widget(widgetOptions);

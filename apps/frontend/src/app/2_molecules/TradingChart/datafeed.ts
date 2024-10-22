@@ -17,12 +17,10 @@ import {
 import { Bar } from './TradingChart.types';
 import {
   getTokensFromSymbol,
-  hasDirectFeed,
   queryPairByChunks,
   pushPrice,
 } from './TradingChart.utils';
-import { TradingCandleDictionary } from './dictionary';
-import { CandleDuration } from './hooks/useGetCandles';
+import { CandleDuration, TradingCandleDictionary } from './dictionary';
 import { stream } from './streaming';
 
 const newestBarsCache = new Map<string, Bar>();
@@ -66,6 +64,7 @@ const tradingChartDataFeeds = (
     onError: DatafeedErrorCallback,
   ) => {
     const { from, to, firstDataRequest } = periodParams;
+    console.log(`periodParams: ${JSON.stringify(periodParams, null, 2)}`);
     const candleDuration: CandleDuration = resolutionMap[resolution];
     const candleDetails = TradingCandleDictionary.get(candleDuration);
 
@@ -87,7 +86,6 @@ const tradingChartDataFeeds = (
       const { baseToken, quoteToken } = getTokensFromSymbol(symbolInfo.name);
 
       let items = await queryPairByChunks(
-        graphqlClient,
         candleDetails,
         await baseToken,
         await quoteToken,
@@ -95,7 +93,6 @@ const tradingChartDataFeeds = (
         Math.floor(
           Math.min(to + candleDetails.candleSeconds, Date.now() / 1e3),
         ),
-        hasDirectFeed(symbolInfo.name),
       );
 
       if (!items || items.length === 0) {

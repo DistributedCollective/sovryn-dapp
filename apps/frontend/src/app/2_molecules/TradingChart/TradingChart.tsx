@@ -22,54 +22,55 @@ export const TradingChart: FC<TradingChartProps> = ({ pair }) => {
   const client = useApolloClient();
 
   useEffect(() => {
-    const widgetOptions: ChartingLibraryWidgetOptions = {
-      symbol: pair,
-      datafeed: Datafeed(client),
-      interval: 'M' as ResolutionString,
-      container: chartContainerRef.current,
-      library_path: '/charting_library/',
-      theme: 'dark',
-      locale: 'en',
-      disabled_features: ['header_symbol_search', 'header_compare'],
-      enabled_features: ['study_templates', 'side_toolbar_in_fullscreen_mode'],
-      charts_storage_url: 'https://saveload.tradingview.com',
-      charts_storage_api_version: '1.1',
-      client_id: 'tradingview.com',
-      user_id: 'public_user_id',
-      fullscreen: false,
-      autosize: true,
-      studies_overrides: {},
-      time_frames: [
-        { text: '1d', resolution: '10' as ResolutionString, description: '1d' },
-        { text: '3d', resolution: '30' as ResolutionString, description: '3d' },
-        { text: '7d', resolution: '60' as ResolutionString, description: '7d' },
-        {
-          text: '3m',
-          resolution: '120' as ResolutionString,
-          description: '3m',
-        },
-        { text: '5y', resolution: '1W' as ResolutionString, description: '5y' },
-      ],
-    };
+    try {
+      const widgetOptions: ChartingLibraryWidgetOptions = {
+        symbol: pair,
+        datafeed: Datafeed(client),
+        interval: '1D' as ResolutionString,
+        container: chartContainerRef.current,
+        library_path: '/charting_library/',
+        load_last_chart: true, //last chart layout (if present)
+        theme: 'dark',
+        locale: 'en',
+        disabled_features: ['header_symbol_search', 'header_compare'],
+        enabled_features: [
+          'study_templates',
+          'side_toolbar_in_fullscreen_mode',
+        ],
+        charts_storage_url: 'https://saveload.tradingview.com',
+        charts_storage_api_version: '1.1',
+        client_id: 'tradingview.com',
+        user_id: 'public_user_id',
+        fullscreen: false,
+        autosize: true,
+        studies_overrides: {},
+        //experiments
+        symbol_search_request_delay: 10000,
+        timeframe: '1M',
+      };
 
-    const myChart = new widget(widgetOptions);
-    setChart(myChart);
-    myChart.onChartReady(() => {
-      setHasCharts(true);
-    });
+      const myChart = new widget(widgetOptions);
+      setChart(myChart);
+      myChart.onChartReady(() => {
+        setHasCharts(true);
+      });
 
-    return () => {
-      myChart.remove();
+      return () => {
+        myChart.remove();
+        setHasCharts(false);
+        setChart(null);
+      };
+    } catch (e) {
+      console.error(e);
       setHasCharts(false);
-      setChart(null);
-    };
-  }, [client, pair]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [client]);
 
   useLayoutEffect(() => {
     if (chart && hasCharts) {
       chart.chart().resetData();
 
-      // if quote asset is not BTC or XUSD, make it line chart, otherwise candle
       chart.chart().setChartType(SeriesStyle.Candles as number);
 
       chart.chart().setSymbol(pair, noop);

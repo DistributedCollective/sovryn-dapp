@@ -4,12 +4,10 @@ import { REFRESH_RATE, resolutionMap } from './TradingChart.constants';
 import { SubItem } from './TradingChart.types';
 import {
   getTokensFromSymbol,
-  hasDirectFeed,
   pushPrice,
   queryPairByChunks,
 } from './TradingChart.utils';
-import { TradingCandleDictionary } from './dictionary';
-import { CandleDuration } from './hooks/useGetCandles';
+import { CandleDuration, TradingCandleDictionary } from './dictionary';
 
 export class Streaming {
   private client: ApolloClient<any> | null = null;
@@ -30,15 +28,11 @@ export class Streaming {
     );
 
     queryPairByChunks(
-      this.client!,
       details,
       await baseToken,
       await quoteToken,
       subscriptionItem?.lastBar?.time / 1e3,
       Math.ceil(Date.now() / 1e3),
-      hasDirectFeed(subscriptionItem?.symbolInfo?.name),
-      1,
-      true,
     )
       .then(bars => {
         bars.reverse().forEach((item, index) => {

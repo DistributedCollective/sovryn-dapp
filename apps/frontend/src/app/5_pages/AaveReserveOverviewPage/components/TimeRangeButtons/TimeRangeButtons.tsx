@@ -24,7 +24,26 @@ export const TimeRangeButtons: FC<TimeRangeButtonsProps> = ({ onChange }) => {
 
   return (
     <div className="flex space-x-2 justify-end mb-4">
-      {' '}
+      <button
+        className={`py-1.5 px-4 rounded-md text-sm font-medium ${
+          activeRange === ESupportedTimeRanges.OneDay
+            ? 'bg-gray-50 text-white'
+            : 'bg-gray-70 text-gray-400'
+        }`}
+        onClick={() => handleClick(ESupportedTimeRanges.OneDay)}
+      >
+        {ESupportedTimeRanges.OneDay}
+      </button>
+      <button
+        className={`py-1.5 px-4 rounded-md text-sm font-medium ${
+          activeRange === ESupportedTimeRanges.OneWeek
+            ? 'bg-gray-50 text-white'
+            : 'bg-gray-70 text-gray-400'
+        }`}
+        onClick={() => handleClick(ESupportedTimeRanges.OneWeek)}
+      >
+        {ESupportedTimeRanges.OneWeek}
+      </button>
       <button
         className={`py-1.5 px-4 rounded-md text-sm font-medium ${
           activeRange === ESupportedTimeRanges.OneMonth

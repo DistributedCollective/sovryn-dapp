@@ -17,8 +17,8 @@ import {
 import { Bar } from './TradingChart.types';
 import {
   getTokensFromSymbol,
-  queryPairByChunks,
   pushPrice,
+  queryCandles,
 } from './TradingChart.utils';
 import { CandleDuration, TradingCandleDictionary } from './dictionary';
 import { stream } from './streaming';
@@ -64,35 +64,20 @@ const tradingChartDataFeeds = (
     onError: DatafeedErrorCallback,
   ) => {
     const { from, to, firstDataRequest } = periodParams;
-    console.log(`periodParams: ${JSON.stringify(periodParams, null, 2)}`);
     const candleDuration: CandleDuration = resolutionMap[resolution];
     const candleDetails = TradingCandleDictionary.get(candleDuration);
-
-    const fromTime = (): number => {
-      const oldestBarTime = oldestBarsCache.get(symbolInfo.name)?.time;
-      if (firstDataRequest) {
-        return from;
-      } else if (oldestBarTime !== undefined) {
-        if (from < oldestBarTime / 1e3) {
-          return from;
-        }
-        return oldestBarTime / 1e3 - candleDetails.candleSeconds;
-      } else {
-        return from;
-      }
-    };
 
     try {
       const { baseToken, quoteToken } = getTokensFromSymbol(symbolInfo.name);
 
-      let items = await queryPairByChunks(
+      console.log({ baseToken, quoteToken });
+
+      let items = await queryCandles(
         candleDetails,
         await baseToken,
         await quoteToken,
-        fromTime(),
-        Math.floor(
-          Math.min(to + candleDetails.candleSeconds, Date.now() / 1e3),
-        ),
+        from,
+        to,
       );
 
       if (!items || items.length === 0) {
@@ -128,7 +113,15 @@ const tradingChartDataFeeds = (
         oldestBarsCache.set(symbolInfo.name, currentOldest);
       }
 
-      onResult(items, { noData: false });
+      let bars: Bar[] = [];
+
+      items.forEach(bar => {
+        if (bar.time >= from * 1000 && bar.time < to * 1000) {
+          bars = [...bars, bar];
+        }
+      });
+
+      onResult(bars, { noData: false });
     } catch (error) {
       console.log('error', error);
       onError(error.message);

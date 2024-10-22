@@ -94,7 +94,7 @@
   },
   "scripts": {
     "predev": "yarn generate:graphql",
-    "dev": "craco start",
+    "dev": "yarn copy-libs && craco start",
     "prebuild": "yarn generate:graphql",
     "build": "yarn copy-libs && craco build",
     "test": "craco test --watchAll=false --passWithNoTests",

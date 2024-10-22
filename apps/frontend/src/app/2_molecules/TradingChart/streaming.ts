@@ -5,7 +5,7 @@ import { SubItem } from './TradingChart.types';
 import {
   getTokensFromSymbol,
   pushPrice,
-  queryPairByChunks,
+  queryCandles,
 } from './TradingChart.utils';
 import { CandleDuration, TradingCandleDictionary } from './dictionary';
 
@@ -27,7 +27,7 @@ export class Streaming {
       subscriptionItem.symbolInfo.name,
     );
 
-    queryPairByChunks(
+    queryCandles(
       details,
       await baseToken,
       await quoteToken,

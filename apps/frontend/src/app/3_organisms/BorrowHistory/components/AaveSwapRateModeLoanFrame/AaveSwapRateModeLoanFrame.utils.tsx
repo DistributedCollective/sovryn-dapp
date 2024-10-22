@@ -32,7 +32,7 @@ export const normalizeUserLiquidationTransactions = (
           ],
         ),
         to:
-          tx.borrowRateModeTo === BorrowRateMode.STABLE ? 'Stable' : 'Variable',
+          tx.borrowRateModeTo === BorrowRateMode.STABLE ? 'stable' : 'variable',
         timestamp: tx.timestamp,
         hash: tx.txHash,
         variableBorrowRate: Decimal.from(tx.variableBorrowRate)

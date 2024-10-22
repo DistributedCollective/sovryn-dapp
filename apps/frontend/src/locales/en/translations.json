@@ -1789,6 +1789,8 @@
             "interestPayment": "Interest payment",
             "originationFee": "Origination fee",
             "interest": "Interest payment/refund",
+            "interestRate": "Interest Rate",
+            "interestRateMode": "Interest Rate Mode",
             "newDebt": "New debt balance",
             "loanID": "Loan ID",
             "TXID": "TXID",

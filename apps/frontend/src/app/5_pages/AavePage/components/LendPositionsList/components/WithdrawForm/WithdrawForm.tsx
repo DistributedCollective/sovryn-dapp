@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
@@ -19,7 +19,7 @@ import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetAmountInput } from '../../../../../../2_molecules/AssetAmountInput/AssetAmountInput';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE } from '../../../../../../../constants/aave';
+import { MINIMUM_HEALTH_FACTOR } from '../../../../../../../constants/aave';
 import { useAaveUserReservesData } from '../../../../../../../hooks/aave/useAaveUserReservesData';
 import { useAaveWithdraw } from '../../../../../../../hooks/aave/useAaveWithdraw';
 import { useDecimalAmountInput } from '../../../../../../../hooks/useDecimalAmountInput';
@@ -84,16 +84,25 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
       return Decimal.from(0);
     }
 
+    if (summary.borrowBalance.eq(0)) {
+      return withdrawReserve.supplied;
+    }
+
     // min collateral at which we reach minimum collateral ratio
-    const minCollateralUsd = MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE.mul(
-      withdrawReserve.borrowedUsd,
+    const minCollateralUsd = MINIMUM_HEALTH_FACTOR.mul(
+      summary.borrowBalance.div(summary.currentLiquidationThreshold),
     );
     const maxUsdWithdrawal = summary.supplyBalance.sub(minCollateralUsd);
 
     return maxUsdWithdrawal.gt(withdrawReserve.suppliedUsd)
       ? withdrawReserve.supplied // we can withdraw all, we'll still have collateral on other asset
       : maxUsdWithdrawal.div(withdrawReserve.reserve.priceInUSD); // only partial withdraw
-  }, [withdrawReserve, summary.supplyBalance]);
+  }, [
+    withdrawReserve,
+    summary.supplyBalance,
+    summary.borrowBalance,
+    summary.currentLiquidationThreshold,
+  ]);
 
   const withdrawAmountUsd = useMemo(
     () => withdrawSize.mul(withdrawReserve?.reserve.priceInUSD ?? 0),
@@ -104,6 +113,14 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     () => withdrawReserve?.supplied.sub(withdrawSize) ?? Decimal.from(0),
     [withdrawSize, withdrawReserve?.supplied],
   );
+
+  useEffect(() => {
+    // if withdraw size is greater than maximum, set withdraw amount to maximum possible
+    // this is to prevent users from trying to withdraw more than they can even if maximum gets updated
+    if (withdrawSize.gt(maximumWithdrawAmount)) {
+      setWithdrawAmount(maximumWithdrawAmount.toString());
+    }
+  }, [withdrawSize, maximumWithdrawAmount, setWithdrawAmount]);
 
   const [isValidWithdrawAmount, errorMessage] = useMemo(() => {
     if (withdrawSize.eq(0)) {
@@ -135,19 +152,10 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
 
   const onConfirm = useCallback(
     () =>
-      handleWithdraw(
-        withdrawSize,
-        withdrawAsset,
-        withdrawSize.eq(maximumWithdrawAmount),
-        { onComplete },
-      ),
-    [
-      handleWithdraw,
-      withdrawSize,
-      withdrawAsset,
-      onComplete,
-      maximumWithdrawAmount,
-    ],
+      handleWithdraw(withdrawSize, withdrawAsset, remainingSupply.eq(0), {
+        onComplete,
+      }),
+    [handleWithdraw, withdrawSize, withdrawAsset, onComplete, remainingSupply],
   );
 
   return (

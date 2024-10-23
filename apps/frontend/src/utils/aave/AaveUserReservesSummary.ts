@@ -17,7 +17,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { BOB_CHAIN_ID } from '../../config/chains';
 
-import { MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE } from '../../constants/aave';
+import { MINIMUM_HEALTH_FACTOR } from '../../constants/aave';
 import { Reserve } from '../../hooks/aave/useAaveReservesData';
 import { BorrowRateMode, UserReservesData } from '../../types/aave';
 import { decimalic, fromWei } from '../math';
@@ -162,8 +162,9 @@ export class AaveUserReservesSummaryFactory {
       userSummary.currentLiquidationThreshold,
     );
     const borrowPower = AaveCalculations.computeBorrowPower(
-      MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_AAVE,
+      MINIMUM_HEALTH_FACTOR,
       collateralBalance,
+      currentLiquidationThreshold,
     );
     const borrowPowerUsed = AaveCalculations.computeBorrowPowerUsed(
       borrowBalance,

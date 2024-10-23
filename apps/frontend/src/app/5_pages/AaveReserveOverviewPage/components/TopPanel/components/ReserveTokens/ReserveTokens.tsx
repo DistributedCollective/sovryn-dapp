@@ -6,6 +6,7 @@ import { t } from 'i18next';
 import { BOB_CHAIN_ID } from '../../../../../../../config/chains';
 
 import { AssetIcon } from '../../../../../../2_molecules/AssetIcon/AssetIcon';
+import { SYMBOL_PREFIX } from '../../../../../../../constants/aave';
 import { translations } from '../../../../../../../locales/i18n';
 import { TokenButton } from './components/TokenButton/TokenButton';
 
@@ -15,7 +16,7 @@ type ReserveTokensProps = {
   aTokenAddress: string;
   variableDebtTokenAddress: string;
   stableDebtTokenAddress: string;
-  onTokenClick: (tokenAddress: string) => void;
+  onTokenClick: (tokenAddress: string, symbol: string) => void;
   className?: string;
 };
 
@@ -33,14 +34,14 @@ export const ReserveTokens: FC<ReserveTokensProps> = ({
       title={t(translations.aaveReserveOverviewPage.topPanel.underlyingToken)}
       label={symbol}
       logo={<AssetIcon chainId={BOB_CHAIN_ID} symbol={symbol} />}
-      onClick={() => onTokenClick(underlyingTokenAddress)}
+      onClick={() => onTokenClick(underlyingTokenAddress, symbol)}
     />
 
     <TokenButton
       title={t(translations.aaveReserveOverviewPage.topPanel.aToken)}
       label={`a${symbol}`}
       logo={<AssetIcon chainId={BOB_CHAIN_ID} symbol={symbol} />}
-      onClick={() => onTokenClick(aTokenAddress)}
+      onClick={() => onTokenClick(aTokenAddress, `a${SYMBOL_PREFIX}${symbol}`)}
     />
 
     <TokenButton
@@ -50,7 +51,12 @@ export const ReserveTokens: FC<ReserveTokensProps> = ({
         { symbol },
       )}
       logo={<AssetIcon chainId={BOB_CHAIN_ID} symbol={symbol} />}
-      onClick={() => onTokenClick(variableDebtTokenAddress)}
+      onClick={() =>
+        onTokenClick(
+          variableDebtTokenAddress,
+          `variableDebt${SYMBOL_PREFIX}${symbol}`,
+        )
+      }
     />
 
     <TokenButton
@@ -60,7 +66,12 @@ export const ReserveTokens: FC<ReserveTokensProps> = ({
         { symbol },
       )}
       logo={<AssetIcon chainId={BOB_CHAIN_ID} symbol={symbol} />}
-      onClick={() => onTokenClick(stableDebtTokenAddress)}
+      onClick={() =>
+        onTokenClick(
+          stableDebtTokenAddress,
+          `stableDebt${SYMBOL_PREFIX}${symbol}`,
+        )
+      }
     />
   </div>
 );

@@ -38,14 +38,14 @@ export const COLUMNS = [
   },
   {
     id: 'interestRate',
-    title: 'Interest Rate',
+    title: t(translations.loanHistory.table.interestRate),
     cellRenderer: (tx: NewBorrowHistoryItem) => (
       <AmountRenderer value={tx.borrowRate} precision={2} suffix="%" />
     ),
   },
   {
     id: 'interestRateMode',
-    title: 'Interest Rate Mode',
+    title: t(translations.loanHistory.table.interestRateMode),
     cellRenderer: (tx: NewBorrowHistoryItem) => (
       <span>{tx.borrowRateMode}</span>
     ),

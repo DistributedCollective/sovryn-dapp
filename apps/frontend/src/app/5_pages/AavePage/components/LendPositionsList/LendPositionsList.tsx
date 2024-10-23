@@ -148,7 +148,7 @@ export const LendPositionsList: FC<LendPositionsListProps> = ({
         orderOptions={orderOptions}
         setOrderOptions={setOrderOptions}
         noData={
-          <span className="text-gray-30 text-sm lg:text-white">
+          <span className="text-gray-30 text-xs italic lg:text-white">
             {t(pageTranslations.lendPositionsList.noData)}
           </span>
         }

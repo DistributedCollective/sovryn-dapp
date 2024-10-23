@@ -6,6 +6,8 @@ import dayjs from 'dayjs';
 import { AAVE_CONTRACT_ADDRESSES } from '../../constants/aave';
 
 export enum ESupportedTimeRanges {
+  OneDay = '1d',
+  OneWeek = '1w',
   OneMonth = '1m',
   ThreeMonths = '3m',
   SixMonths = '6m',
@@ -64,6 +66,16 @@ const resolutionForTimeRange = (
   timeRange: ReserveRateTimeRange,
 ): RatesHistoryParams => {
   switch (timeRange) {
+    case ESupportedTimeRanges.OneDay:
+      return {
+        from: dayjs().subtract(1, 'day').unix(),
+        resolutionInHours: 6,
+      };
+    case ESupportedTimeRanges.OneWeek:
+      return {
+        from: dayjs().subtract(1, 'week').unix(),
+        resolutionInHours: 6,
+      };
     case ESupportedTimeRanges.OneMonth:
       return {
         from: dayjs().subtract(1, 'month').unix(),

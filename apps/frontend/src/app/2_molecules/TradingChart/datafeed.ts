@@ -32,6 +32,7 @@ const tradingChartDataFeeds = (
   onReady: callback => setTimeout(() => callback(config)),
   searchSymbols: () => {},
   resolveSymbol: async (symbolName, onSymbolResolvedCallback) => {
+    const [base, quote] = symbolName.split('/');
     const symbolInfo: LibrarySymbolInfo = {
       name: symbolName,
       description: '',
@@ -42,7 +43,7 @@ const tradingChartDataFeeds = (
       volume_precision: 6,
       session: '24x7',
       timezone: 'Etc/UTC',
-      ticker: symbolName,
+      ticker: `${base}/${quote}`,
       minmov: 1,
       pricescale: 10 ** 8,
       has_intraday: true,
@@ -68,9 +69,12 @@ const tradingChartDataFeeds = (
     const candleDetails = TradingCandleDictionary.get(candleDuration);
 
     try {
-      const { baseToken, quoteToken } = getTokensFromSymbol(symbolInfo.name);
+      const { baseToken, quoteToken, chainId } = getTokensFromSymbol(
+        symbolInfo.name,
+      );
 
       let items = await queryCandles(
+        chainId,
         candleDetails,
         await baseToken,
         await quoteToken,

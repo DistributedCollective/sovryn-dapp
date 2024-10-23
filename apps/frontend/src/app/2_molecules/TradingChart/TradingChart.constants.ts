@@ -10,6 +10,8 @@ export const REFRESH_RATE = 15 * 1e3;
 export const MAXIMUM_CHUNK_SIZE = 1e3;
 export const endTimeCache = new Map<string, number>();
 export const supportedResolutions = [
+  '1',
+  '5',
   '10',
   '15',
   '30',
@@ -55,8 +57,8 @@ export const config = {
 
 export const SOVRYN_INDEXER_MAINNET = `${
   INDEXER_SERVICE[Environments.Mainnet]
-}chart?chainId=30&`;
+}chart`;
 
 export const SOVRYN_INDEXER_TESTNET = `${
   INDEXER_SERVICE[Environments.Testnet]
-}chart?chainId=31&`;
+}chart`;

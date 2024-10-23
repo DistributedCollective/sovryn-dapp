@@ -53,6 +53,7 @@ import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei } from '../../../utils/math';
 import {
   CATEGORY_TOKENS,
+  DEFAULT_SWAP_DESTINATIONS,
   FIXED_MYNT_RATE,
   FIXED_RATE_ROUTES,
 } from './ConvertPage.constants';
@@ -189,6 +190,19 @@ const ConvertPage: FC = () => {
     return DEFAULT_SWAP_ENTRIES[currentChainId] ?? COMMON_SYMBOLS.ETH;
   }, [currentChainId, fromToken]);
 
+  const defaultDestinationToken = useMemo(() => {
+    if (toToken) {
+      const item = listAssetsOfChain(currentChainId).find(
+        item => item.symbol.toLowerCase() === toToken.toLowerCase(),
+      );
+
+      if (item) {
+        return item.symbol;
+      }
+    }
+    return DEFAULT_SWAP_DESTINATIONS[currentChainId] ?? COMMON_SYMBOLS.SOV;
+  }, [currentChainId, toToken]);
+
   const [sourceToken, setSourceToken] = useState<string>(defaultSourceToken);
 
   const handleCategorySelect = useCallback(
@@ -279,7 +293,9 @@ const ConvertPage: FC = () => {
     [hasMyntBalance, tokenOptions],
   );
 
-  const [destinationToken, setDestinationToken] = useState<string | ''>('');
+  const [destinationToken, setDestinationToken] = useState<string>(
+    defaultDestinationToken,
+  );
 
   const onTransactionSuccess = useCallback(() => setAmount(''), [setAmount]);
 
@@ -480,8 +496,8 @@ const ConvertPage: FC = () => {
   }, [price, priceToken]);
 
   const renderPair = useMemo(
-    () => `${sourceToken}/${destinationToken}`,
-    [sourceToken, destinationToken],
+    () => `${sourceToken}/${destinationToken}/${currentChainId}`,
+    [sourceToken, destinationToken, currentChainId],
   );
 
   const togglePriceQuote = useCallback(

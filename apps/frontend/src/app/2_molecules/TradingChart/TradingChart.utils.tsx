@@ -24,6 +24,7 @@ const indexerBaseUrl = isMainnet()
   : SOVRYN_INDEXER_TESTNET;
 
 export const queryCandles = async (
+  chainId: number,
   candleDetails: CandleDetails,
   baseToken: string,
   quoteToken: string,
@@ -31,7 +32,7 @@ export const queryCandles = async (
   endTime: number,
 ) => {
   try {
-    const fullIndexerUrl = `${indexerBaseUrl}base=${baseToken}&quote=${quoteToken}&start=${startTime}&end=${endTime}&timeframe=${candleDetails.candleSymbol}`;
+    const fullIndexerUrl = `${indexerBaseUrl}?chainId=${chainId}&base=${baseToken}&quote=${quoteToken}&start=${startTime}&end=${endTime}&timeframe=${candleDetails.candleSymbol}`;
 
     const result = await (await fetch(fullIndexerUrl)).json();
 
@@ -56,9 +57,10 @@ const getTokenAddress = async (asset: string) => {
 };
 
 export const getTokensFromSymbol = (symbol: string) => {
-  let [base, quote] = symbol.split('/');
+  let [base, quote, chainId] = symbol.split('/');
   return {
     baseToken: getTokenAddress(base),
     quoteToken: getTokenAddress(quote),
+    chainId: Number(chainId),
   };
 };

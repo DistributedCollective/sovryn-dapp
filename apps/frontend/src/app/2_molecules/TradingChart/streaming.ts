@@ -23,11 +23,12 @@ export class Streaming {
 
     const details = TradingCandleDictionary.get(candleDuration);
 
-    const { baseToken, quoteToken } = getTokensFromSymbol(
+    const { baseToken, quoteToken, chainId } = getTokensFromSymbol(
       subscriptionItem.symbolInfo.name,
     );
 
     queryCandles(
+      chainId,
       details,
       await baseToken,
       await quoteToken,

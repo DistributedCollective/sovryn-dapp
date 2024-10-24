@@ -132,14 +132,16 @@ export const SupplyDetailsGraph: FC<SupplyDetailsGraphProps> = ({
           />
         </div>
 
-        <Chart
-          input={{
-            data: supplyChartData,
-            label: t(pageTranslations.chart.suppApr),
-            lineColor: theme.colors['primary-30'],
-          }}
-          onTimeRangeChange={setTimeRange}
-        />
+        {reserve.borrowingEnabled && (
+          <Chart
+            input={{
+              data: supplyChartData,
+              label: t(pageTranslations.chart.suppApr),
+              lineColor: theme.colors['primary-30'],
+            }}
+            onTimeRangeChange={setTimeRange}
+          />
+        )}
 
         <div className="space-y-6">
           {/* collateral usage */}

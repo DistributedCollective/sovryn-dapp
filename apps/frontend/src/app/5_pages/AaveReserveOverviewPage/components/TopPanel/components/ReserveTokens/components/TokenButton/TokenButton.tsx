@@ -27,7 +27,7 @@ export const TokenButton: FC<TokenButtonProps> = ({
     <button
       type="button"
       onClick={onClick}
-      className="flex items-center gap-3 px-4 py-3 w-full hover:bg-gray-20"
+      className="flex items-center gap-3 px-4 py-3 w-full hover:bg-gray-70"
     >
       {logo}
       <Paragraph className="font-medium">{label}</Paragraph>

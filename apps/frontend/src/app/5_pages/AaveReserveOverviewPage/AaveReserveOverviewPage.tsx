@@ -47,7 +47,10 @@ const AaveReserveOverviewPage: FC = () => {
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
 
-      <TopPanel reserve={reserve} className="lg:mb-[110px] lg:mt-[52px]" />
+      <TopPanel
+        reserve={reserve}
+        className="lg:mb-[6.875rem] lg:mt-[3.25rem]"
+      />
 
       <Paragraph className="text-base mb-4 hidden lg:block">
         {t(pageTranslations.reserveStatusTab.fullTitle)}
@@ -64,11 +67,11 @@ const AaveReserveOverviewPage: FC = () => {
         />
 
         {/* reserve graphics columns */}
-        <div className="flex gap-5">
+        <div className="flex gap-5 xl:flex-row flex-col w-full">
           <div
             className={classNames(
               { hidden: activeOverviewTab !== OverviewTab.RESERVE },
-              'lg:block space-y-4 flex-grow w-min',
+              'lg:block space-y-4 flex-grow min-w-[28rem]',
             )}
           >
             <SupplyDetailsGraph reserve={reserve} />
@@ -84,7 +87,7 @@ const AaveReserveOverviewPage: FC = () => {
           <div
             className={classNames(
               { hidden: activeOverviewTab !== OverviewTab.WALLET },
-              'lg:block space-y-4 w-full lg:w-[450px] shrink-0',
+              'lg:block space-y-4 w-full xl:w-[28rem] shrink-0',
             )}
           >
             <WalletOverview symbol={symbol} />

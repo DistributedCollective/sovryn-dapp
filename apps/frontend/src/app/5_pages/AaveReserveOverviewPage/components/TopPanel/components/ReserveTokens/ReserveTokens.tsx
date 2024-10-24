@@ -29,7 +29,7 @@ export const ReserveTokens: FC<ReserveTokensProps> = ({
   stableDebtTokenAddress,
   className,
 }) => (
-  <div className={classNames('divide-y divide-gray-20', className)}>
+  <div className={classNames('divide-y divide-gray-70', className)}>
     <TokenButton
       title={t(translations.aaveReserveOverviewPage.topPanel.underlyingToken)}
       label={symbol}

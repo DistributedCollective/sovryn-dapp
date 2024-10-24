@@ -1,0 +1,32 @@
+query UserSwapBorrowRateTransactions(
+  $userAddress: String!
+  $first: Int!
+  $skip: Int!
+  $orderBy: UserTransaction_orderBy!
+  $orderDirection: OrderDirection!
+) {
+  userTransactions(
+    where: { user: $userAddress, action: SwapBorrowRate }
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    first: $first
+    skip: $skip
+  ) {
+    id
+    timestamp
+    txHash
+    action
+    ... on SwapBorrowRate {
+      borrowRateModeFrom
+      borrowRateModeTo
+      variableBorrowRate
+      stableBorrowRate
+      reserve {
+        symbol
+        decimals
+        name
+        underlyingAsset
+      }
+    }
+  }
+}

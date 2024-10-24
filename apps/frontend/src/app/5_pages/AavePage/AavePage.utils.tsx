@@ -102,7 +102,6 @@ export const normalizeBorrowPoolDetails = (
     if (!r.borrowingEnabled) {
       return acc;
     }
-
     // skip borrow pools that are not enabled for the user
     if (
       userReservesSummary.eModeCategoryId !== r.eModeCategoryId &&

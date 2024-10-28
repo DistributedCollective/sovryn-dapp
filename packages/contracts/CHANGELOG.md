@@ -1,5 +1,12 @@
 # @sovryn/contracts
 
+## 1.2.3
+
+### Patch Changes
+
+- 0bc23cc0: chore: update rune symbols
+- 52b7c4fe: chore: add new pools
+
 ## 1.2.2
 
 ### Patch Changes

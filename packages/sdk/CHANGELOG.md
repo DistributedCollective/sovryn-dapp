@@ -1,5 +1,14 @@
 # @sovryn/sdk
 
+## 2.0.3
+
+### Patch Changes
+
+- 52b7c4fe: chore: add new pools
+- Updated dependencies [0bc23cc0]
+- Updated dependencies [52b7c4fe]
+  - @sovryn/contracts@1.2.3
+
 ## 2.0.2
 
 ### Patch Changes

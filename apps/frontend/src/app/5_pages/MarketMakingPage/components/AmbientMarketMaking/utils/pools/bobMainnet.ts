@@ -165,7 +165,7 @@ export const bobMainnet: AmbientLiquidityPool[] = [
     'POWA',
     ChainIds.BOB_MAINNET,
     420,
-    '0x0', // todo
+    '0x0DF5951E5f838faF95eC903cB4bE9CE516A6CCE2',
     PoolListGroup.new,
   ),
   new AmbientLiquidityPool(
@@ -173,7 +173,7 @@ export const bobMainnet: AmbientLiquidityPool[] = [
     'wBTC',
     ChainIds.BOB_MAINNET,
     420,
-    '0x0', // todo
+    '0x3FF9f5c6b94C1C7C3e48edd92bCd19D95979a14B',
     PoolListGroup.new,
   ),
 ];

@@ -123,12 +123,10 @@ export const AaveCloseWithDepositLoanFrame: FC<PropsWithChildren> = ({
     }
 
     return normalizeUserRepayTransactions(data).map(item => ({
-      id: item.id,
-      timestamp: item.timestamp,
-      hash: item.hash,
-      amount: item.amount,
-      reserveSymbol: item.reserve.symbol,
-      reserveUnderlyingAsset: item.reserve.underlyingAsset,
+      timestamp: dateFormat(item.timestamp),
+      type: t(translations.borrowHistory.transactionTypes.repay),
+      debtRepay: item.amount + item.reserve.symbol,
+      txId: item.hash,
     }));
   }, [
     account,

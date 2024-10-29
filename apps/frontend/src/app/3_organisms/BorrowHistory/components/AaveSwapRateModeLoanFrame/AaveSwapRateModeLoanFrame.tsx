@@ -125,12 +125,14 @@ export const AaveSwapRateModeLoanFrame: FC<PropsWithChildren> = ({
     }
 
     return normalizeUserLiquidationTransactions(data).map(item => ({
-      id: item.id,
-      timestamp: item.timestamp,
-      hash: item.hash,
+      timestamp: dateFormat(item.timestamp),
+      type: t(translations.borrowHistory.transactionTypes.swapBorrowRateMode),
       reserve: item.reserve.symbol,
       from: item.from,
       to: item.to,
+      variableBorrowRate: item.variableBorrowRate,
+      stableBorrowRate: item.stableBorrowRate,
+      txId: item.hash,
     }));
   }, [
     account,

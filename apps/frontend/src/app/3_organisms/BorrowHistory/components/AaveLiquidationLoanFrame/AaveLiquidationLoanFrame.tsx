@@ -123,15 +123,13 @@ export const AaveLiquidationLoanFrame: FC<PropsWithChildren> = ({
     }
 
     return normalizeUserLiquidationTransactions(data).map(item => ({
-      id: item.id,
-      timestamp: item.timestamp,
-      hash: item.hash,
-      collateralAmount: item.collateralAmount,
-      collateralReserveSymbol: item.collateralReserve.symbol,
-      collateralReserveUnderlyingAsset: item.collateralReserve.underlyingAsset,
-      debtAmount: item.debtAmount,
-      debtReserveSymbol: item.debtReserve.symbol,
-      debtReserveUnderlyingAsset: item.collateralReserve.underlyingAsset,
+      timestamp: dateFormat(item.timestamp),
+      type: t(translations.borrowHistory.transactionTypes.liquidation),
+      collateralLiquidated: item.collateralReserve.symbol,
+      collateralAmount:
+        item.collateralAmount + ' ' + item.collateralReserve.symbol,
+      debtRepaid: item.debtAmount + ' ' + item.debtReserve.symbol,
+      txId: item.hash,
     }));
   }, [
     account,

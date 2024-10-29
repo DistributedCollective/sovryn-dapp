@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
+import { formatUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 
@@ -16,6 +17,7 @@ import {
   useUserLendTransactionsLazyQuery,
   useUserLendTransactionsQuery,
 } from '../../../../../../utils/graphql/bobAave/generated';
+import { dateFormat } from '../../../../../../utils/helpers';
 import { LendingHistoryItem } from '../AaveLendingHistoryFrame.types';
 
 export const useGetAaveLendingHistory = (
@@ -60,7 +62,9 @@ export const useGetAaveLendingHistory = (
         first: EXPORT_RECORD_LIMIT,
       },
     });
-    const list = (data?.userTransactions || []) as LendingHistoryItem[];
+    const list = (
+      (data?.userTransactions || []) as LendingHistoryItem[]
+    ).filter(item => item.action !== 'UsageAsCollateral');
 
     if (list.length < 1) {
       addNotification({
@@ -73,21 +77,18 @@ export const useGetAaveLendingHistory = (
     }
 
     return list.map(item => ({
-      id: item.id,
-      timestamp: item.timestamp,
-      symbol: item.reserve.symbol,
-      amount: item.amount,
-      decimals: item.reserve.decimals,
-      txHash: item.txHash,
+      timestamp: dateFormat(Number(item.timestamp)),
       type: item.action,
-      fromState: String(item.fromState ?? true),
-      toState: String(item.toState ?? true),
-      assetPriceUSD: item.assetPriceUSD ?? '-',
+      amount:
+        formatUnits(item.amount, item.reserve.decimals) +
+        ' ' +
+        item.reserve.symbol,
+      txHash: item.txHash,
     }));
   }, [addNotification, config, getUserLendTransactions]);
 
   return {
-    data,
+    data: data,
     loading,
     refetch,
     exportData,

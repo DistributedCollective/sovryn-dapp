@@ -53,7 +53,10 @@ export const AaveLendingHistoryFrame: FC<PropsWithChildren> = ({
   );
 
   const transactions = useMemo(
-    () => (data?.userTransactions as LendingHistoryItem[]) || [],
+    () =>
+      (data?.userTransactions as LendingHistoryItem[])?.filter(
+        tx => tx.action !== 'UsageAsCollateral',
+      ) || [],
     [data?.userTransactions],
   );
 

@@ -123,13 +123,12 @@ export const AaveNewLoanHistoryFrame: FC<PropsWithChildren> = ({
     }
 
     return normalizeUserBorrowTransactions(data).map(item => ({
-      id: item.id,
-      timestamp: item.timestamp,
-      hash: item.hash,
-      amount: item.amount,
-      asset: item.reserve.symbol,
-      borrowRate: item.borrowRate,
-      borrowRateMode: item.borrowRateMode,
+      timestamp: dateFormat(item.timestamp),
+      type: t(translations.borrowHistory.transactionTypes.createLoan),
+      amount: item.amount + ' ' + item.reserve.symbol,
+      interestRate: item.borrowRate,
+      interestRateMode: item.borrowRateMode,
+      txId: item.hash,
     }));
   }, [
     account,

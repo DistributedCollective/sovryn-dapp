@@ -18,6 +18,7 @@ import {
   useUserLendTransactionsQuery,
 } from '../../../../../../utils/graphql/bobAave/generated';
 import { dateFormat } from '../../../../../../utils/helpers';
+import { TX_FILTERED } from '../AaveLendingHistoryFrame.constants';
 import { LendingHistoryItem } from '../AaveLendingHistoryFrame.types';
 
 export const useGetAaveLendingHistory = (
@@ -64,7 +65,7 @@ export const useGetAaveLendingHistory = (
     });
     const list = (
       (data?.userTransactions || []) as LendingHistoryItem[]
-    ).filter(item => item.action !== 'UsageAsCollateral');
+    ).filter(tx => !TX_FILTERED.find(i => i === tx.action));
 
     if (list.length < 1) {
       addNotification({

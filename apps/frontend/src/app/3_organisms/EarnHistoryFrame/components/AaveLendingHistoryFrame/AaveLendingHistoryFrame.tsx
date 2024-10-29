@@ -24,7 +24,10 @@ import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { UserTransaction_OrderBy } from '../../../../../utils/graphql/bobAave/generated';
-import { COLUMNS_CONFIG } from './AaveLendingHistoryFrame.constants';
+import {
+  COLUMNS_CONFIG,
+  TX_FILTERED,
+} from './AaveLendingHistoryFrame.constants';
 import { LendingHistoryItem } from './AaveLendingHistoryFrame.types';
 import { generateRowTitle } from './AaveLendingHistoryFrame.utils';
 import { useGetAaveLendingHistory } from './hooks/useGetAaveLendingHistory';
@@ -55,7 +58,7 @@ export const AaveLendingHistoryFrame: FC<PropsWithChildren> = ({
   const transactions = useMemo(
     () =>
       (data?.userTransactions as LendingHistoryItem[])?.filter(
-        tx => tx.action !== 'UsageAsCollateral',
+        tx => !TX_FILTERED.find(i => i === tx.action),
       ) || [],
     [data?.userTransactions],
   );

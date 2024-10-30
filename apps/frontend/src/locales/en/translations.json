@@ -1004,7 +1004,7 @@
             "of": "of",
             "apy": "APY",
             "chart": {
-                "suppApr": "Supply APR"
+                "supplyApy": "Supply APY"
             }
         },
         "borrowDetails": {

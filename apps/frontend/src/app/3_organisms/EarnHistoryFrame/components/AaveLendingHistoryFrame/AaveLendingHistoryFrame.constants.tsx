@@ -11,6 +11,8 @@ import { dateFormat } from '../../../../../utils/helpers';
 import { LendingHistoryItem } from './AaveLendingHistoryFrame.types';
 import { getTransactionType } from './AaveLendingHistoryFrame.utils';
 
+export const TX_FILTERED = ['UsageAsCollateral', 'RemoveAsCollateral'] as const;
+
 export const COLUMNS_CONFIG = [
   {
     id: 'timestamp',

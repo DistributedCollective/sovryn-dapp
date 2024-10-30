@@ -37,7 +37,7 @@ export const AssetDropdownWithFilters: FC<AssetDropdownWithFiltersProps> = ({
 
   const getAssetRenderer = useCallback(
     (token: string) =>
-      token ? (
+      token && tokenOptions.find(item => item.value === token) ? (
         <AssetRenderer
           showAssetLogo
           asset={token}
@@ -47,7 +47,7 @@ export const AssetDropdownWithFilters: FC<AssetDropdownWithFiltersProps> = ({
       ) : (
         t(translations.common.select)
       ),
-    [currentChainId],
+    [currentChainId, tokenOptions],
   );
 
   const handleCategoryClick = useCallback(

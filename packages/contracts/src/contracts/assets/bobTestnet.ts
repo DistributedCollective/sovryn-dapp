@@ -93,7 +93,7 @@ export const bobTestnet: Array<AssetDetails> = [
   },
   {
     symbol: 'aWETH',
-    address: '0xF32A8Cd16B00705Bc28F08645304019CA9565022',
+    address: '0x63719589aC40057556a791FAa701264567b5b627',
     name: 'Aave Wrapped ETH',
     decimals: 18,
     getIcon: async () => (await import('./icons/bob/eth')).default,

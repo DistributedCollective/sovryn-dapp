@@ -15,6 +15,7 @@ type AssetAmountInputProps = {
   amountLabel?: string;
   amountValue?: string | number;
   onAmountChange?: (value: string) => void;
+  onMaxClicked?: (value: boolean) => void;
   assetValue: string;
   assetUsdValue?: Decimalish;
   assetOptions: SelectOption<string>[];
@@ -28,6 +29,7 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
   amountLabel,
   amountValue,
   onAmountChange,
+  onMaxClicked,
   invalid,
   assetValue,
   assetUsdValue,
@@ -46,6 +48,21 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
     [chainId],
   );
 
+  const handleMaxClick = useCallback(() => {
+    if (maxAmount) {
+      onMaxClicked?.(true);
+      onAmountChange?.(Decimal.from(maxAmount).toString());
+    }
+  }, [maxAmount, onAmountChange, onMaxClicked]);
+
+  const handleChangeAmount = useCallback(
+    (value: string) => {
+      onAmountChange?.(value);
+      onMaxClicked?.(false);
+    },
+    [onAmountChange, onMaxClicked],
+  );
+
   return (
     <div>
       {label && (
@@ -61,10 +78,7 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
               token={assetValue}
               value={maxAmount}
               precision={2}
-              onClick={() =>
-                onAmountChange &&
-                onAmountChange(Decimal.from(maxAmount).toString())
-              }
+              onClick={handleMaxClick}
             />
           </span>
         )}
@@ -74,7 +88,7 @@ export const AssetAmountInput: FC<AssetAmountInputProps> = ({
             <AmountInput
               label={amountLabel}
               value={amountValue}
-              onChangeText={onAmountChange}
+              onChangeText={handleChangeAmount}
               placeholder="0"
               invalid={invalid}
             />

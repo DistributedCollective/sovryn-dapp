@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.2.4
+
+### Patch Changes
+
+- d3d711eb: SOV-4532: add PUPS pools
+
 ## 1.2.3
 
 ### Patch Changes

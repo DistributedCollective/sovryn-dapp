@@ -75,7 +75,7 @@ export const TradingChart: FC<TradingChartProps> = ({ pair }) => {
   }, [chart, hasCharts, pair]);
 
   return (
-    <div className="lg:mt-12 mt-6 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:p-6 sm:bg-gray-90">
+    <div className="w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:p-6 sm:bg-gray-90">
       <div ref={chartContainerRef} className="h-full min-h-96" />
     </div>
   );

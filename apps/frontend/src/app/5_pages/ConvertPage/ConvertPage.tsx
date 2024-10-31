@@ -625,10 +625,10 @@ const ConvertPage: FC = () => {
           {t(pageTranslations.subtitle)}
         </Paragraph>
 
-        <div className="flex flex-col-reverse lg:flex-row lg:space-x-6 xl:w-9/12 w-full">
+        <div className="flex flex-col-reverse lg:flex-row lg:space-x-6 xl:w-9/12 w-full h-full mt-6 lg:mt-12">
           <TradingChart pair={renderPair} />
 
-          <div className="lg:mt-12 mt-6 p-0 sm:border sm:border-gray-50 sm:rounded lg:min-w-[28rem] sm:p-6 sm:bg-gray-90">
+          <div className="p-0 sm:border sm:border-gray-50 sm:rounded lg:min-w-[28rem] sm:p-6 sm:bg-gray-90 self-start h-full">
             <div className="bg-gray-80 rounded p-6">
               <div className="w-full flex flex-row justify-between items-center">
                 <Paragraph size={ParagraphSize.base} className="font-medium">

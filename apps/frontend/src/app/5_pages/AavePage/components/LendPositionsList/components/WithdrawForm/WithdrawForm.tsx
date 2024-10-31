@@ -35,7 +35,6 @@ type WithdrawFormProps = {
 
 export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
   const [isMaxAmount, setIsMaxAmount] = useState<boolean>(false);
-
   const { handleWithdraw } = useAaveWithdraw();
   const { summary } = useAaveUserReservesData();
   const [withdrawAsset, setWithdrawAsset] = useState(asset);
@@ -140,7 +139,7 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
       return [
         false,
         t(pageTranslations.withdrawForm.notLiquidityEnoughError, {
-          maxLiquidity: availableLiquidity.toString(2),
+          maxLiquidity: availableLiquidity.toString(),
         }),
       ];
     }
@@ -156,25 +155,25 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     [isValidWithdrawAmount, withdrawSize],
   );
 
-  const onConfirm = useCallback(
-    () =>
-      handleWithdraw(
-        withdrawSize,
-        withdrawAsset,
-        isMaxAmount || remainingSupply.eq(0),
-        {
-          onComplete,
-        },
-      ),
-    [
-      handleWithdraw,
+  const onConfirm = useCallback(() => {
+    const withdrawAll = isMaxAmount && summary.borrowPowerUsed.eq(0);
+    handleWithdraw(
       withdrawSize,
       withdrawAsset,
-      onComplete,
-      remainingSupply,
-      isMaxAmount,
-    ],
-  );
+      withdrawAll || remainingSupply.eq(0),
+      {
+        onComplete,
+      },
+    );
+  }, [
+    handleWithdraw,
+    withdrawSize,
+    withdrawAsset,
+    onComplete,
+    remainingSupply,
+    isMaxAmount,
+    summary.borrowPowerUsed,
+  ]);
 
   return (
     <form className="flex flex-col gap-6">

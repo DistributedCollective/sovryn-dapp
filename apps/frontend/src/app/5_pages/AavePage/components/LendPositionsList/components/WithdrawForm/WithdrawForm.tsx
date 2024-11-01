@@ -34,6 +34,7 @@ type WithdrawFormProps = {
 };
 
 export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
+  const [isMaxAmount, setIsMaxAmount] = useState<boolean>(false);
   const { handleWithdraw } = useAaveWithdraw();
   const { summary } = useAaveUserReservesData();
   const [withdrawAsset, setWithdrawAsset] = useState(asset);
@@ -94,6 +95,10 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     );
     const maxUsdWithdrawal = summary.supplyBalance.sub(minCollateralUsd);
 
+    if (maxUsdWithdrawal.lte(0)) {
+      return Decimal.from(0);
+    }
+
     return maxUsdWithdrawal.gt(withdrawReserve.suppliedUsd)
       ? withdrawReserve.supplied // we can withdraw all, we'll still have collateral on other asset
       : maxUsdWithdrawal.div(withdrawReserve.reserve.priceInUSD); // only partial withdraw
@@ -134,7 +139,7 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
       return [
         false,
         t(pageTranslations.withdrawForm.notLiquidityEnoughError, {
-          maxLiquidity: availableLiquidity.toString(2),
+          maxLiquidity: availableLiquidity.toString(),
         }),
       ];
     }
@@ -150,13 +155,25 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
     [isValidWithdrawAmount, withdrawSize],
   );
 
-  const onConfirm = useCallback(
-    () =>
-      handleWithdraw(withdrawSize, withdrawAsset, remainingSupply.eq(0), {
+  const onConfirm = useCallback(() => {
+    const withdrawAll = isMaxAmount && summary.borrowPowerUsed.eq(0);
+    handleWithdraw(
+      withdrawSize,
+      withdrawAsset,
+      withdrawAll || remainingSupply.eq(0),
+      {
         onComplete,
-      }),
-    [handleWithdraw, withdrawSize, withdrawAsset, onComplete, remainingSupply],
-  );
+      },
+    );
+  }, [
+    handleWithdraw,
+    withdrawSize,
+    withdrawAsset,
+    onComplete,
+    remainingSupply,
+    isMaxAmount,
+    summary.borrowPowerUsed,
+  ]);
 
   return (
     <form className="flex flex-col gap-6">
@@ -169,6 +186,7 @@ export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
             amountValue={withdrawAmount}
             assetUsdValue={withdrawAmountUsd}
             onAmountChange={setWithdrawAmount}
+            onMaxClicked={setIsMaxAmount}
             invalid={!isValidWithdrawAmount}
             maxAmount={maximumWithdrawAmount}
             assetOptions={withdrawableAssetsOptions}

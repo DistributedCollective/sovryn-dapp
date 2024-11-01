@@ -36,10 +36,12 @@ type RepayWithWalletBalanceFormProps = {
 export const RepayWithWalletBalanceForm: FC<
   RepayWithWalletBalanceFormProps
 > = ({ asset, onComplete }) => {
+  const [repayAsset, setRepayAsset] = useState<string>(asset);
+  const [isMaxAmount, setIsMaxAmount] = useState<boolean>(false);
+
   const { account } = useAccount();
   const { handleRepay } = useAaveRepay();
   const { summary } = useAaveUserReservesData();
-  const [repayAsset, setRepayAsset] = useState<string>(asset);
   const [repayAmount, setRepayAmount, repaySize] = useDecimalAmountInput('');
   const { balance: repayAssetBalance } = useAssetBalance(
     repayAsset,
@@ -118,7 +120,7 @@ export const RepayWithWalletBalanceForm: FC<
       handleRepay(
         repayAsset,
         repaySize,
-        repaySize.gte(maximumRepayAmount),
+        isMaxAmount || repaySize.gte(maximumRepayAmount),
         repayReserve!.borrowRateMode,
         { onComplete },
       ),
@@ -129,6 +131,7 @@ export const RepayWithWalletBalanceForm: FC<
       onComplete,
       repayReserve,
       maximumRepayAmount,
+      isMaxAmount,
     ],
   );
 
@@ -141,6 +144,7 @@ export const RepayWithWalletBalanceForm: FC<
           amountLabel={t(translations.common.amount)}
           amountValue={repayAmount}
           onAmountChange={setRepayAmount}
+          onMaxClicked={setIsMaxAmount}
           invalid={!isValidRepayAmount}
           assetValue={repayAsset}
           assetUsdValue={repayUsdAmount}

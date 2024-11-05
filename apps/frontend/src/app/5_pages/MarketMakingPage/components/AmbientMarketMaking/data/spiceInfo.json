@@ -1,138 +1,161 @@
 [
   {
     "lpTokenAddress": "0x4E686Dff59A51A948ea9Cc8C44FF0b32cba6e62a",
+    "displayName": "USDC/USDT",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0x2E41CD9805592b3A536EeE6286CC8FCFb3DFd9F2",
+    "displayName": "USDT/DLLR",
     "label1": "Capped",
     "label2": "Capped",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0x0034a1EaCDa61619Bd9D1CEDA101189A0EF871F9",
+    "displayName": "DLLR/SOV",
     "label1": "20x",
     "label2": "Capped",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0xdC1f62679a25bB9d568463ce007a3b91D01448FD",
+    "displayName": "USDT/SOV",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0xf59720432AA266D4B077efE659EEb36923f41Da2",
+    "displayName": "USDC/SOV",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0xEb92Ae0ce520D099b0FB51Ef297f581c5AB57dbf",
+    "displayName": "DAI/SOV",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0x594726E3B10bb5402279cBf745fC597041a6f1cF",
+    "displayName": "ETH/SOV",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0xBd696d1a6E09D051dDce2d7DcDDD6B6Bf082f8AA",
+    "displayName": "WSTETH/SOV",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0xE668D03C31f78713952953cE6f345b1D0137B754",
+    "displayName": "RETH/SOV",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0x165b73022AE5601494c3a200f92114736BD3Cfca",
+    "displayName": "WBTC/SOV",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0xB4e9fAaF39d95E396E588A0CdD70f3a9E79286be",
+    "displayName": "TBTC/SOV",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0x02eB05fa5A5da14B54d6b7d5044e5343c01126EB",
+    "displayName": "TBTC/WBTC",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0xbFB1bF6dCc02baCeB8C4c336457798c9b4ED1225",
+    "displayName": "POWA/SOV",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0x9C82eF04eC7FEB9E07a9f2Be23cc180753CE4612",
+    "displayName": "WBTC/satUSD",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0x8C6a57d16B1ddAD730Fee27822284d085C106DbB",
+    "displayName": "USDT/satUSD",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0xEBE212e59c012Bd2f092489d98d11fCe17697cb2",
+    "displayName": "UniBTC/SolvBTC.BBN",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0x6D1529a7b34D452488f577495Dd7574954339dD9",
+    "displayName": "UniBTC/wBTC",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0x0F3dAef46d5631f4C335643e287314580135011E",
+    "displayName": "SolvBTC.BBN/wBTC",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0xF11aB627c41044f40B5C2587e77540e7fC7Af42a",
+    "displayName": "wBTC/SolvBTC",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0xe26a75Cd1892600cB4935EeA701f1D1DaE1e8ab0",
+    "displayName": "DOGGOTOTHEMOON/POWA",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0xDCB0Fb1113923aed92f82DBf5a114E64Ea55522d",
+    "displayName": "DOGGOTOTHEMOON/wBTC",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0x0DF5951E5f838faF95eC903cB4bE9CE516A6CCE2",
+    "displayName": "PUPSWORLDPEACE/POWA",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."
   },
   {
     "lpTokenAddress": "0x3FF9f5c6b94C1C7C3e48edd92bCd19D95979a14B",
+    "displayName": "PUPSWORLDPEACE/wBTC",
     "label1": "12x",
     "label2": "10x",
     "content": "Earn this ..."

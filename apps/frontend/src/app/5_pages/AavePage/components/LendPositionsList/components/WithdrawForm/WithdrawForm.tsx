@@ -34,7 +34,7 @@ type WithdrawFormProps = {
 };
 
 export const WithdrawForm: FC<WithdrawFormProps> = ({ asset, onComplete }) => {
-  const [isMaxAmount, setIsMaxAmount] = useState<boolean>(false);
+  const [isMaxAmount, setIsMaxAmount] = useState(false);
   const { handleWithdraw } = useAaveWithdraw();
   const { summary } = useAaveUserReservesData();
   const [withdrawAsset, setWithdrawAsset] = useState(asset);

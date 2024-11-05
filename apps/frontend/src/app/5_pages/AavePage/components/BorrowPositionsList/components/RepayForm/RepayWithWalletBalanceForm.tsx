@@ -37,7 +37,7 @@ export const RepayWithWalletBalanceForm: FC<
   RepayWithWalletBalanceFormProps
 > = ({ asset, onComplete }) => {
   const [repayAsset, setRepayAsset] = useState<string>(asset);
-  const [isMaxAmount, setIsMaxAmount] = useState<boolean>(false);
+  const [isMaxAmount, setIsMaxAmount] = useState(false);
 
   const { account } = useAccount();
   const { handleRepay } = useAaveRepay();

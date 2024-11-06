@@ -37,12 +37,12 @@ export const Incentives: FC<IncentivesProps> = ({ pool }) => {
       placement={TooltipPlacement.right}
     >
       <div>
-        <div className="flex">
+        <div className="flex justify-end">
           <div>{poolData?.label1}</div>
           <Spice />
         </div>
 
-        <div className="flex">
+        <div className="flex justify-end mt-0.5">
           <div>{poolData?.label2}</div>
           <Spice />
         </div>

@@ -33,7 +33,7 @@ export const Incentives: FC<IncentivesProps> = ({ pool }) => {
   return poolData?.content || poolData?.label1 ? (
     <Tooltip
       content={<div>{poolData?.content}</div>}
-      trigger={TooltipTrigger.click}
+      trigger={TooltipTrigger.hover}
       placement={TooltipPlacement.right}
     >
       <div>

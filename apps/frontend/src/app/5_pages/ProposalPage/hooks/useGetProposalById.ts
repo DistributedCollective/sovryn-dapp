@@ -14,10 +14,12 @@ export const useGetProposalById = (id: string) => {
     },
   });
 
-  const proposal = useMemo(
-    () => data?.proposal as Proposal | undefined,
-    [data],
-  );
+  const proposal = useMemo(() => {
+    const item = data?.proposal as Proposal | undefined;
+    return item && item.id !== '0x6496df39d000478a7a7352c01e0e713835051ccd-47'
+      ? item
+      : undefined;
+  }, [data]);
 
   return { loading, proposal, refetch };
 };

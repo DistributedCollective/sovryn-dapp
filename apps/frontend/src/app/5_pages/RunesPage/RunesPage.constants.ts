@@ -4,7 +4,6 @@ import { translations } from '../../../locales/i18n';
 import { RUNES_USE_CASE_ACTIONS, AvailableRunes } from './RunesPage.types';
 import convertIcon from './assets/convert.svg';
 import earnIcon from './assets/earn.svg';
-import iconPups from './assets/iconPups.svg';
 import runesBenefitsIcon1 from './assets/l1.svg';
 import runesBenefitsIcon2 from './assets/l2.svg';
 import runesBenefitsIcon3 from './assets/l3.svg';
@@ -19,7 +18,6 @@ export const AVAILABLE_RUNES: AvailableRunes = {
   },
   PUPS: {
     symbol: 'PUPSWORLDPEACE',
-    icon: iconPups,
   },
 };
 

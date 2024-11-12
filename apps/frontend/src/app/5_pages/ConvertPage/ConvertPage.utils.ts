@@ -6,7 +6,7 @@ import { getContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { SmartRouter, SwapRoute } from '@sovryn/sdk';
 
-import { getRskChainId } from '../../../utils/chain';
+import { getCurrentChain } from '../../../hooks/useChainStore';
 import { SWAP_ROUTES } from './ConvertPage.constants';
 
 export const getRouteContract = async (
@@ -26,7 +26,7 @@ export const getRouteContract = async (
   const { address, abi } = await getContract(
     contractName,
     contractGroup,
-    getRskChainId(),
+    getCurrentChain(),
   );
 
   return new Contract(address, abi, signer);

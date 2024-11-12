@@ -90,6 +90,13 @@ export const bob: Array<AssetDetails> = [
     getIcon: async () => (await import('./icons/bob/dog')).default,
   },
   {
+    symbol: 'PUPSWORLDPEACE',
+    address: '0x5E36c0C344A29DE1DE2517845Fe2289B18Feea25',
+    name: 'PUPS•WORLD•PEACE',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/bob/pups')).default,
+  },
+  {
     symbol: 'satUSD',
     address: '0x78fea795cbfcc5ffd6fb5b845a4f53d25c283bdb',
     name: 'Satoshi Stablecoin',

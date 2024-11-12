@@ -203,6 +203,9 @@ const POOLS: Partial<Record<ChainIds, PoolWithIndex[]>> = {
     ['SolvBTC', 'wBTC', 400],
     ['DOGGOTOTHEMOON', 'POWA', 420],
     ['DOGGOTOTHEMOON', 'wBTC', 420],
+
+    ['PUPSWORLDPEACE', 'POWA', 420],
+    ['PUPSWORLDPEACE', 'wBTC', 420],
   ],
   [ChainIds.BOB_TESTNET]: [
     ['USDC', 'USDT', 36000],

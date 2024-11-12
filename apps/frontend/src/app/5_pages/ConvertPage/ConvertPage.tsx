@@ -6,8 +6,8 @@ import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 
 import { getAssetData } from '@sovryn/contracts';
-import { ChainId } from '@sovryn/ethers-provider';
 import { getProvider } from '@sovryn/ethers-provider';
+import { ChainId } from '@sovryn/onboard-common';
 import { SwapRoute } from '@sovryn/sdk';
 import { SmartRouter } from '@sovryn/sdk';
 import {
@@ -36,6 +36,7 @@ import { RSK_CHAIN_ID } from '../../../config/chains';
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
+import { TradingChart } from '../../2_molecules/TradingChart/TradingChart';
 import { TOKEN_RENDER_PRECISION, USD } from '../../../constants/currencies';
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { useAccount } from '../../../hooks/useAccount';
@@ -53,6 +54,7 @@ import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei, toWei } from '../../../utils/math';
 import {
   CATEGORY_TOKENS,
+  DEFAULT_SWAP_DESTINATIONS,
   FIXED_MYNT_RATE,
   FIXED_RATE_ROUTES,
 } from './ConvertPage.constants';
@@ -189,6 +191,19 @@ const ConvertPage: FC = () => {
     return DEFAULT_SWAP_ENTRIES[currentChainId] ?? COMMON_SYMBOLS.ETH;
   }, [currentChainId, fromToken]);
 
+  const defaultDestinationToken = useMemo(() => {
+    if (toToken) {
+      const item = listAssetsOfChain(currentChainId).find(
+        item => item.symbol.toLowerCase() === toToken.toLowerCase(),
+      );
+
+      if (item) {
+        return item.symbol;
+      }
+    }
+    return DEFAULT_SWAP_DESTINATIONS[currentChainId] ?? COMMON_SYMBOLS.SOV;
+  }, [currentChainId, toToken]);
+
   const [sourceToken, setSourceToken] = useState<string>(defaultSourceToken);
 
   const handleCategorySelect = useCallback(
@@ -279,7 +294,9 @@ const ConvertPage: FC = () => {
     [hasMyntBalance, tokenOptions],
   );
 
-  const [destinationToken, setDestinationToken] = useState<string | ''>('');
+  const [destinationToken, setDestinationToken] = useState<string>(
+    defaultDestinationToken,
+  );
 
   const onTransactionSuccess = useCallback(() => setAmount(''), [setAmount]);
 
@@ -524,6 +541,11 @@ const ConvertPage: FC = () => {
     return t(commonTranslations.na);
   }, [price, priceToken, priceUsdValue]);
 
+  const renderPair = useMemo(
+    () => `${sourceToken}/${destinationToken}/${currentChainId}`,
+    [sourceToken, destinationToken, currentChainId],
+  );
+
   const togglePriceQuote = useCallback(
     () => setPriceQuote(value => !value),
     [],
@@ -659,173 +681,177 @@ const ConvertPage: FC = () => {
           {t(pageTranslations.subtitle)}
         </Paragraph>
 
-        <div className="mt-12 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
-          <div className="bg-gray-80 rounded p-6">
-            <div className="w-full flex flex-row justify-between items-center">
-              <Paragraph size={ParagraphSize.base} className="font-medium">
-                {t(pageTranslations.form.convertFrom)}
-              </Paragraph>
+        <div className="flex flex-col-reverse lg:flex-row lg:space-x-6 xl:w-9/12 w-full h-full mt-6 lg:mt-12">
+          <TradingChart pair={renderPair} />
 
-              <MaxButton
-                onClick={onMaximumAmountClick}
-                value={maximumAmountToConvert}
-                token={sourceToken}
-                dataAttribute="convert-from-max"
-                chainId={currentChainId}
-              />
-            </div>
+          <div className="p-0 sm:border sm:border-gray-50 sm:rounded lg:min-w-[28rem] sm:p-6 sm:bg-gray-90 self-start h-full">
+            <div className="bg-gray-80 rounded p-6">
+              <div className="w-full flex flex-row justify-between items-center">
+                <Paragraph size={ParagraphSize.base} className="font-medium">
+                  {t(pageTranslations.form.convertFrom)}
+                </Paragraph>
 
-            <div className="w-full flex flex-row justify-between items-start gap-3 mt-3.5">
-              <div>
-                <AmountInput
-                  value={amount}
-                  onChangeText={setAmount}
-                  label={t(commonTranslations.amount)}
-                  min={0}
-                  invalid={!isValidAmount}
-                  disabled={!account}
-                  className="w-full flex-grow-0 flex-shrink"
-                  dataAttribute="convert-from-amount"
-                  placeholder="0"
+                <MaxButton
+                  onClick={onMaximumAmountClick}
+                  value={maximumAmountToConvert}
+                  token={sourceToken}
+                  dataAttribute="convert-from-max"
+                  chainId={currentChainId}
                 />
-
-                <div className="flex justify-end text-tiny text-gray-30 mt-1">
-                  <AmountRenderer value={sourceUsdValue} suffix={USD} />
-                </div>
               </div>
 
-              <AssetDropdownWithFilters
-                token={sourceToken}
-                selectedCategories={sourceCategories}
-                tokenOptions={sourceTokenOptions}
-                onCategorySelect={category =>
-                  handleCategorySelect(category, setSourceCategories)
-                }
-                onTokenChange={onSourceTokenChange}
-                dataAttribute="convert-from-asset"
-              />
+              <div className="w-full flex flex-row justify-between items-start gap-3 mt-3.5">
+                <div>
+                  <AmountInput
+                    value={amount}
+                    onChangeText={setAmount}
+                    label={t(commonTranslations.amount)}
+                    min={0}
+                    invalid={!isValidAmount}
+                    disabled={!account}
+                    className="w-full flex-grow-0 flex-shrink"
+                    dataAttribute="convert-from-amount"
+                    placeholder="0"
+                  />
+
+                  <div className="flex justify-end text-tiny text-gray-30 mt-1">
+                    <AmountRenderer value={sourceUsdValue} suffix={USD} />
+                  </div>
+                </div>
+
+                <AssetDropdownWithFilters
+                  token={sourceToken}
+                  selectedCategories={sourceCategories}
+                  tokenOptions={sourceTokenOptions}
+                  onCategorySelect={category =>
+                    handleCategorySelect(category, setSourceCategories)
+                  }
+                  onTokenChange={onSourceTokenChange}
+                  dataAttribute="convert-from-asset"
+                />
+              </div>
+
+              {!isValidAmount && (
+                <ErrorBadge
+                  level={ErrorLevel.Critical}
+                  message={t(pageTranslations.form.invalidAmountError)}
+                  dataAttribute="convert-from-amount-error"
+                />
+              )}
             </div>
 
-            {!isValidAmount && (
+            <div className="flex justify-center rounded-full -mt-3.5">
+              <button
+                className="w-11 h-11 rounded-full bg-gray-90 flex justify-center items-center"
+                onClick={onSwitchClick}
+                {...applyDataAttr('convert-swap-asset')}
+              >
+                <Icon
+                  icon={IconNames.PENDING}
+                  className="text-gray-50 rotate-90"
+                  size={24}
+                />
+              </button>
+            </div>
+
+            <div className="bg-gray-80 rounded p-6 -mt-3.5">
+              <Paragraph size={ParagraphSize.base} className="font-medium">
+                {t(pageTranslations.form.convertTo)}
+              </Paragraph>
+
+              <div className="w-full flex flex-row justify-between items-start gap-3 mt-3.5">
+                <div>
+                  <AmountInput
+                    value={renderDestinationAmount}
+                    label={t(commonTranslations.amount)}
+                    readOnly
+                    placeholder={t(commonTranslations.na)}
+                    className="w-full flex-grow-0 flex-shrink"
+                    dataAttribute="convert-to-amount"
+                  />
+
+                  <div className="flex justify-end text-tiny text-gray-30 mt-1">
+                    <AmountRenderer value={destinationUsdValue} suffix={USD} />
+                  </div>
+                </div>
+
+                <AssetDropdownWithFilters
+                  token={destinationToken}
+                  selectedCategories={destinationCategories}
+                  tokenOptions={destinationTokenOptions}
+                  onCategorySelect={category =>
+                    handleCategorySelect(category, setDestinationCategories)
+                  }
+                  onTokenChange={onDestinationTokenChange}
+                  dataAttribute="convert-to-asset"
+                />
+              </div>
+            </div>
+
+            <Accordion
+              className="mt-4 mb-3 text-xs"
+              label={t(translations.common.advancedSettings)}
+              open={showAdvancedSettings}
+              onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
+              dataAttribute="convert-settings"
+            >
+              <div className="mt-2 mb-4">
+                <AmountInput
+                  value={slippageTolerance}
+                  onChange={e => setSlippageTolerance(e.target.value)}
+                  label={t(pageTranslations.slippageTolerance)}
+                  className="max-w-none w-full"
+                  unit="%"
+                  step="0.01"
+                  decimalPrecision={2}
+                  placeholder="0"
+                  max="100"
+                />
+              </div>
+            </Accordion>
+
+            {sourceToken && destinationToken && quote ? (
+              <SimpleTable className="mt-3">
+                <SimpleTableRow
+                  label={t(pageTranslations.minimumReceived)}
+                  valueClassName="text-primary-10"
+                  value={renderMinimumReceived}
+                />
+                <SimpleTableRow
+                  label={t(pageTranslations.maximumPrice)}
+                  valueClassName="text-primary-10"
+                  className="cursor-pointer"
+                  onClick={togglePriceQuote}
+                  value={renderPriceAmount}
+                />
+              </SimpleTable>
+            ) : null}
+
+            {hasQuoteError && (
               <ErrorBadge
                 level={ErrorLevel.Critical}
-                message={t(pageTranslations.form.invalidAmountError)}
-                dataAttribute="convert-from-amount-error"
+                message={t(pageTranslations.form.quoteError)}
+                dataAttribute="convert-quote-error"
+              />
+            )}
+
+            <Button
+              type={ButtonType.reset}
+              style={ButtonStyle.primary}
+              text={t(commonTranslations.buttons.confirm)}
+              className="w-full mt-8"
+              disabled={isSubmitDisabled}
+              onClick={handleSubmit}
+              dataAttribute="convert-confirm"
+            />
+
+            {isInMaintenance && (
+              <ErrorBadge
+                level={ErrorLevel.Warning}
+                message={t(translations.maintenanceMode.featureDisabled)}
               />
             )}
           </div>
-
-          <div className="flex justify-center rounded-full -mt-3.5">
-            <button
-              className="w-11 h-11 rounded-full bg-gray-90 flex justify-center items-center"
-              onClick={onSwitchClick}
-              {...applyDataAttr('convert-swap-asset')}
-            >
-              <Icon
-                icon={IconNames.PENDING}
-                className="text-gray-50 rotate-90"
-                size={24}
-              />
-            </button>
-          </div>
-
-          <div className="bg-gray-80 rounded p-6 -mt-3.5">
-            <Paragraph size={ParagraphSize.base} className="font-medium">
-              {t(pageTranslations.form.convertTo)}
-            </Paragraph>
-
-            <div className="w-full flex flex-row justify-between items-start gap-3 mt-3.5">
-              <div>
-                <AmountInput
-                  value={renderDestinationAmount}
-                  label={t(commonTranslations.amount)}
-                  readOnly
-                  placeholder={t(commonTranslations.na)}
-                  className="w-full flex-grow-0 flex-shrink"
-                  dataAttribute="convert-to-amount"
-                />
-
-                <div className="flex justify-end text-tiny text-gray-30 mt-1">
-                  <AmountRenderer value={destinationUsdValue} suffix={USD} />
-                </div>
-              </div>
-
-              <AssetDropdownWithFilters
-                token={destinationToken}
-                selectedCategories={destinationCategories}
-                tokenOptions={destinationTokenOptions}
-                onCategorySelect={category =>
-                  handleCategorySelect(category, setDestinationCategories)
-                }
-                onTokenChange={onDestinationTokenChange}
-                dataAttribute="convert-to-asset"
-              />
-            </div>
-          </div>
-
-          <Accordion
-            className="mt-4 mb-3 text-xs"
-            label={t(translations.common.advancedSettings)}
-            open={showAdvancedSettings}
-            onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
-            dataAttribute="convert-settings"
-          >
-            <div className="mt-2 mb-4">
-              <AmountInput
-                value={slippageTolerance}
-                onChange={e => setSlippageTolerance(e.target.value)}
-                label={t(pageTranslations.slippageTolerance)}
-                className="max-w-none w-full"
-                unit="%"
-                step="0.01"
-                decimalPrecision={2}
-                placeholder="0"
-                max="100"
-              />
-            </div>
-          </Accordion>
-
-          {sourceToken && destinationToken && quote ? (
-            <SimpleTable className="mt-3">
-              <SimpleTableRow
-                label={t(pageTranslations.minimumReceived)}
-                valueClassName="text-primary-10"
-                value={renderMinimumReceived}
-              />
-              <SimpleTableRow
-                label={t(pageTranslations.maximumPrice)}
-                valueClassName="text-primary-10"
-                className="cursor-pointer"
-                onClick={togglePriceQuote}
-                value={renderPriceAmount}
-              />
-            </SimpleTable>
-          ) : null}
-
-          {hasQuoteError && (
-            <ErrorBadge
-              level={ErrorLevel.Critical}
-              message={t(pageTranslations.form.quoteError)}
-              dataAttribute="convert-quote-error"
-            />
-          )}
-
-          <Button
-            type={ButtonType.reset}
-            style={ButtonStyle.primary}
-            text={t(commonTranslations.buttons.confirm)}
-            className="w-full mt-8"
-            disabled={isSubmitDisabled}
-            onClick={handleSubmit}
-            dataAttribute="convert-confirm"
-          />
-
-          {isInMaintenance && (
-            <ErrorBadge
-              level={ErrorLevel.Warning}
-              message={t(translations.maintenanceMode.featureDisabled)}
-            />
-          )}
         </div>
       </div>
     </>

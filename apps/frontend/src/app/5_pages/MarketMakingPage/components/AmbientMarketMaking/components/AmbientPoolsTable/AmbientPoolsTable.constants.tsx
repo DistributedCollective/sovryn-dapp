@@ -12,6 +12,7 @@ import { AmbientPoolDeposit } from './components/AmbientPoolDeposit/AmbientPoolD
 import { AmbientPoolFeeRate } from './components/AmbientPoolFeeRate/AmbientPoolFeeRate';
 import { AmbientPoolLiquidity } from './components/AmbientPoolLiquidity/AmbientPoolLiquidity';
 import { AmbientPoolTotalBalance } from './components/AmbientPoolTotalBalance/AmbientPoolTotalBalance';
+import { Incentives } from './components/Incentives/Incentives';
 import { LastPrice } from './components/LastPrice/LastPrice';
 
 export const COLUMNS_CONFIG = [
@@ -34,6 +35,11 @@ export const COLUMNS_CONFIG = [
     cellRenderer: (pool: AmbientLiquidityPool) => (
       <AmbientPoolLiquidity pool={pool} />
     ),
+  },
+  {
+    id: 'incentives',
+    title: t(translations.ambientMarketMaking.poolsTable.incentives),
+    cellRenderer: (pool: AmbientLiquidityPool) => <Incentives pool={pool} />,
   },
   {
     id: 'lpFeeRate',

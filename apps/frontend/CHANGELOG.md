@@ -1,5 +1,19 @@
 # frontend
 
+## 1.1.25
+
+### Patch Changes
+
+- d953df39: fix: custom messages on convert page dropdown
+- ae74555b: chore: fix asset icon styles
+- c426bb82: SOV-4493: Show ecosystem statistics only in BTC and USD
+- d3d711eb: SOV-4532: add PUPS pools
+- d5079dae: SOV-4462: D2 charts on Convert page
+- a5b4f389: Make charts bigger on larger screens
+- Updated dependencies [d3d711eb]
+  - @sovryn/contracts@1.2.4
+  - @sovryn/sdk@2.0.4
+
 ## 1.1.24
 
 ### Patch Changes

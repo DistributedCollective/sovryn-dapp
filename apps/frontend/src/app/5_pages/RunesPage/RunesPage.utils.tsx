@@ -36,11 +36,6 @@ export const renderAvailableRunes = () =>
           />
         )}
       </div>
-      {symbol === AVAILABLE_RUNES.PUPS.symbol && (
-        <div className="text-xs text-gray-30 text-center">
-          {t(pageTranslations.availableSoon)}
-        </div>
-      )}
     </div>
   ));
 

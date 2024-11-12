@@ -1,5 +1,11 @@
 # frontend
 
+## 1.1.27
+
+### Patch Changes
+
+- 58350fd0: Adjust homepage banners
+
 ## 1.1.26
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # frontend
 
+## 1.1.26
+
+### Patch Changes
+
+- 5dcc907d: chore: fix asset icon styles
+- 29852f48: [SOV-4525] - Display LP Fee Rate Without Wallet Connection
+- 5dcc907d: SOV-4524: Show USD values on Convert page
+- 9579578f: SOV-4537: Add incentives column to market making
+
 ## 1.1.25
 
 ### Patch Changes

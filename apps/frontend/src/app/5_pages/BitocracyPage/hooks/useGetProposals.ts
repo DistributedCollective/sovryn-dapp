@@ -15,9 +15,8 @@ export const useGetProposals = () => {
     if (!data) {
       return [];
     }
-    return data.proposals.filter(
-      item => item.id !== '0x6496df39d000478a7a7352c01e0e713835051ccd-47',
-    );
+
+    return data.proposals;
   }, [data]);
 
   return { loading, data: list as Proposal[] };

@@ -561,6 +561,11 @@
                 "title": "Hello, BOB!",
                 "description": "The Sovryn DEX is now live on BOB. Enjoy passive yield, Spice, runes trading & more on the new chain.",
                 "cta": "Deposit in AMM"
+            },
+            "bosLaunch": {
+                "title": "Launching BOS!",
+                "description": "Sovryn to lead BitcoinOS launch & retain 10% of $BOS. $SOV stakers decide allocation.",
+                "cta": "Stake SOV"
             }
         },
         "titleSection": {

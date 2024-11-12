@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 import Carousel from 'react-multi-carousel';
@@ -13,17 +13,12 @@ import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard
 
 export const Banner: FC = () => {
   const navigate = useNavigate();
-  const handleRunesClick = useCallback(() => {
-    window.open(
-      'https://sovryn.com/all-things-sovryn/bitcoin-runes-tokens',
-      '_blank',
-    );
-  }, []);
+
   return (
     <div className="w-full relative pb-16">
       <Carousel
         arrows={false}
-        draggable={true} // Needs to be true when we have more than 1 promo
+        draggable={false} // Needs to be true when we have more than 1 promo
         partialVisible={false}
         focusOnSelect={false}
         responsive={{
@@ -37,51 +32,29 @@ export const Banner: FC = () => {
         swipeable
         className="static"
         renderDotsOutside
-        showDots={true} // Needs to be true when we have more than 1 promo
-        autoPlay={true} // Needs to be true when we have more than 1 promo
+        showDots={false} // Needs to be true when we have more than 1 promo
+        autoPlay={false} // Needs to be true when we have more than 1 promo
         dotListClass={styles.dot}
         autoPlaySpeed={15000}
         infinite
       >
         <LandingPromoCard
-          heading={t(
-            translations.landingPage.promotions.sovrynIsLiveOnBob.title,
-          )}
+          heading={t(translations.landingPage.promotions.bosLaunch.title)}
           description={t(
-            translations.landingPage.promotions.sovrynIsLiveOnBob.description,
+            translations.landingPage.promotions.bosLaunch.description,
           )}
           actions={
             <>
               <Button
                 style={ButtonStyle.secondary}
                 size={ButtonSize.large}
-                text={t(
-                  translations.landingPage.promotions.sovrynIsLiveOnBob.cta,
-                )}
-                onClick={() => navigate('/earn/market-making')}
+                text={t(translations.landingPage.promotions.bosLaunch.cta)}
+                onClick={() => navigate('/earn/staking')}
                 hrefExternal
               />
             </>
           }
           className="border-primary"
-        />
-        <LandingPromoCard
-          heading={t(translations.landingPage.promotions.runesBridge.title)}
-          description={t(
-            translations.landingPage.promotions.runesBridge.description,
-          )}
-          actions={
-            <>
-              <Button
-                style={ButtonStyle.secondary}
-                size={ButtonSize.large}
-                text={t(translations.landingPage.promotions.runesBridge.cta)}
-                onClick={handleRunesClick}
-                hrefExternal
-              />
-            </>
-          }
-          className="border-sovryn-blue"
         />
       </Carousel>
     </div>

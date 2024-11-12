@@ -37,11 +37,12 @@ import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer'
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { TradingChart } from '../../2_molecules/TradingChart/TradingChart';
-import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
+import { TOKEN_RENDER_PRECISION, USD } from '../../../constants/currencies';
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useCurrentChain } from '../../../hooks/useChainStore';
+import { useDollarValue } from '../../../hooks/useDollarValue';
 import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
 import {
@@ -50,7 +51,7 @@ import {
   listAssetsOfChain,
 } from '../../../utils/asset';
 import { removeTrailingZerosFromString } from '../../../utils/helpers';
-import { decimalic, fromWei } from '../../../utils/math';
+import { decimalic, fromWei, toWei } from '../../../utils/math';
 import {
   CATEGORY_TOKENS,
   DEFAULT_SWAP_DESTINATIONS,
@@ -329,6 +330,36 @@ const ConvertPage: FC = () => {
       .toString();
   }, [quote, route, slippageTolerance]);
 
+  const { usdValue: minimumReceivedUsdValue } = useDollarValue(
+    destinationToken,
+    minimumReceived !== ''
+      ? toWei(minimumReceived).toString()
+      : Decimal.ZERO.toString(),
+  );
+
+  const renderMinimumReceived = useMemo(
+    () => (
+      <>
+        <AmountRenderer
+          value={minimumReceived}
+          suffix={getTokenDisplayName(destinationToken)}
+          precision={TOKEN_RENDER_PRECISION}
+        />
+
+        <span className="opacity-75">
+          {' ('}
+          <AmountRenderer
+            value={minimumReceivedUsdValue}
+            suffix={USD}
+            showRoundingPrefix={false}
+          />
+          {')'}
+        </span>
+      </>
+    ),
+    [destinationToken, minimumReceived, minimumReceivedUsdValue],
+  );
+
   const priceToken = useMemo<string>(() => {
     if (!destinationToken) {
       return sourceToken;
@@ -479,6 +510,11 @@ const ConvertPage: FC = () => {
     [quote],
   );
 
+  const { usdValue: priceUsdValue } = useDollarValue(
+    priceToken,
+    price !== '' ? toWei(price).toString() : Decimal.ZERO.toString(),
+  );
+
   const renderPriceAmount = useMemo(() => {
     if (price) {
       return (
@@ -489,11 +525,21 @@ const ConvertPage: FC = () => {
             precision={TOKEN_RENDER_PRECISION}
             trigger={TooltipTrigger.hover}
           />
+
+          <span className="opacity-75">
+            {' ('}
+            <AmountRenderer
+              value={priceUsdValue}
+              suffix={USD}
+              showRoundingPrefix={false}
+            />
+            {')'}
+          </span>
         </>
       );
     }
     return t(commonTranslations.na);
-  }, [price, priceToken]);
+  }, [price, priceToken, priceUsdValue]);
 
   const renderPair = useMemo(
     () => `${sourceToken}/${destinationToken}/${currentChainId}`,
@@ -609,6 +655,16 @@ const ConvertPage: FC = () => {
     }
   }, [account, setAmount]);
 
+  const { usdValue: sourceUsdValue } = useDollarValue(
+    sourceToken,
+    weiAmount.toString(),
+  );
+
+  const { usdValue: destinationUsdValue } = useDollarValue(
+    destinationToken,
+    quote !== '' ? toWei(renderDestinationAmount).toString() : '0',
+  );
+
   return (
     <>
       <Helmet>
@@ -625,10 +681,10 @@ const ConvertPage: FC = () => {
           {t(pageTranslations.subtitle)}
         </Paragraph>
 
-        <div className="flex flex-col-reverse lg:flex-row lg:space-x-6 xl:w-9/12 w-full h-full mt-6 lg:mt-12">
+        <div className="flex flex-col-reverse items-center lg:items-stretch gap-y-12 lg:flex-row lg:space-x-6 xl:w-9/12 w-full h-full mt-6 lg:mt-12">
           <TradingChart pair={renderPair} />
 
-          <div className="p-0 sm:border sm:border-gray-50 sm:rounded lg:min-w-[28rem] sm:p-6 sm:bg-gray-90 self-start h-full">
+          <div className="p-0 sm:border sm:border-gray-50 sm:rounded lg:min-w-[28rem] sm:p-6 sm:bg-gray-90 lg:self-start h-full w-full sm:w-auto">
             <div className="bg-gray-80 rounded p-6">
               <div className="w-full flex flex-row justify-between items-center">
                 <Paragraph size={ParagraphSize.base} className="font-medium">
@@ -644,18 +700,25 @@ const ConvertPage: FC = () => {
                 />
               </div>
 
-              <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
-                <AmountInput
-                  value={amount}
-                  onChangeText={setAmount}
-                  label={t(commonTranslations.amount)}
-                  min={0}
-                  invalid={!isValidAmount}
-                  disabled={!account}
-                  className="w-full flex-grow-0 flex-shrink"
-                  dataAttribute="convert-from-amount"
-                  placeholder="0"
-                />
+              <div className="w-full flex flex-row justify-between items-start gap-3 mt-3.5">
+                <div>
+                  <AmountInput
+                    value={amount}
+                    onChangeText={setAmount}
+                    label={t(commonTranslations.amount)}
+                    min={0}
+                    invalid={!isValidAmount}
+                    disabled={!account}
+                    className="w-full flex-grow-0 flex-shrink"
+                    dataAttribute="convert-from-amount"
+                    placeholder="0"
+                  />
+
+                  <div className="flex justify-end text-tiny text-gray-30 mt-1">
+                    <AmountRenderer value={sourceUsdValue} suffix={USD} />
+                  </div>
+                </div>
+
                 <AssetDropdownWithFilters
                   token={sourceToken}
                   selectedCategories={sourceCategories}
@@ -696,15 +759,22 @@ const ConvertPage: FC = () => {
                 {t(pageTranslations.form.convertTo)}
               </Paragraph>
 
-              <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
-                <AmountInput
-                  value={renderDestinationAmount}
-                  label={t(commonTranslations.amount)}
-                  readOnly
-                  placeholder={t(commonTranslations.na)}
-                  className="w-full flex-grow-0 flex-shrink"
-                  dataAttribute="convert-to-amount"
-                />
+              <div className="w-full flex flex-row justify-between items-start gap-3 mt-3.5">
+                <div>
+                  <AmountInput
+                    value={renderDestinationAmount}
+                    label={t(commonTranslations.amount)}
+                    readOnly
+                    placeholder={t(commonTranslations.na)}
+                    className="w-full flex-grow-0 flex-shrink"
+                    dataAttribute="convert-to-amount"
+                  />
+
+                  <div className="flex justify-end text-tiny text-gray-30 mt-1">
+                    <AmountRenderer value={destinationUsdValue} suffix={USD} />
+                  </div>
+                </div>
+
                 <AssetDropdownWithFilters
                   token={destinationToken}
                   selectedCategories={destinationCategories}
@@ -745,13 +815,7 @@ const ConvertPage: FC = () => {
                 <SimpleTableRow
                   label={t(pageTranslations.minimumReceived)}
                   valueClassName="text-primary-10"
-                  value={
-                    <AmountRenderer
-                      value={minimumReceived}
-                      suffix={getTokenDisplayName(destinationToken)}
-                      precision={TOKEN_RENDER_PRECISION}
-                    />
-                  }
+                  value={renderMinimumReceived}
                 />
                 <SimpleTableRow
                   label={t(pageTranslations.maximumPrice)}

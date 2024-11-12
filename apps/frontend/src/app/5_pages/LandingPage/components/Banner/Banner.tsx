@@ -44,21 +44,17 @@ export const Banner: FC = () => {
         infinite
       >
         <LandingPromoCard
-          heading={t(
-            translations.landingPage.promotions.sovrynIsLiveOnBob.title,
-          )}
+          heading={t(translations.landingPage.promotions.bosLaunch.title)}
           description={t(
-            translations.landingPage.promotions.sovrynIsLiveOnBob.description,
+            translations.landingPage.promotions.bosLaunch.description,
           )}
           actions={
             <>
               <Button
                 style={ButtonStyle.secondary}
                 size={ButtonSize.large}
-                text={t(
-                  translations.landingPage.promotions.sovrynIsLiveOnBob.cta,
-                )}
-                onClick={() => navigate('/earn/market-making')}
+                text={t(translations.landingPage.promotions.bosLaunch.cta)}
+                onClick={() => navigate('/earn/staking')}
                 hrefExternal
               />
             </>

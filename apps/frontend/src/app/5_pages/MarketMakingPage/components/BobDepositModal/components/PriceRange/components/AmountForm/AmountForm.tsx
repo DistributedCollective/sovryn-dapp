@@ -3,6 +3,7 @@ import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import { t } from 'i18next';
 
 import { concDepositSkew } from '@sovryn/sdex';
+import { Pool } from '@sovryn/sdk';
 import { FormGroup, AmountInput, ErrorBadge, ErrorLevel } from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../../../../../2_molecules/AssetRenderer/AssetRenderer';
@@ -11,7 +12,6 @@ import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useIsMounted } from '../../../../../../../../../hooks/useIsMounted';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { calculateSecondaryDepositQty } from '../../../../../../../BobAmmPage/ambient-utils';
-import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { DEFAULT_RANGE_WIDTH } from '../../../../BobDepositModal.constants';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { useGetMaxDeposit } from '../../../../hooks/useGetMaxDeposit';
@@ -19,17 +19,17 @@ import { useGetPoolInfo } from '../../../../hooks/useGetPoolInfo';
 import { useValidateDepositAmounts } from '../../../../hooks/useValidateDepositAmounts';
 
 type AmountFormProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
 };
 
 export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
   const isMounted = useIsMounted();
   const { account } = useAccount();
   const { base, quote } = useMemo(() => pool, [pool]);
-  const { price, spotPrice, poolTokens } = useGetPoolInfo(base, quote);
+  const { price, spotPrice, poolTokens } = useGetPoolInfo(pool);
 
   const { isFirstAssetValueInvalid, isSecondAssetValueInvalid } =
-    useValidateDepositAmounts(base, quote);
+    useValidateDepositAmounts(base.symbol, quote.symbol);
 
   const {
     firstAssetValue,
@@ -89,7 +89,10 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
     ],
   );
 
-  const { balanceTokenA, balanceTokenB } = useGetMaxDeposit(base, quote);
+  const { balanceTokenA, balanceTokenB } = useGetMaxDeposit(
+    base.symbol,
+    quote.symbol,
+  );
 
   const handleFirstAssetMaxClick = useCallback(async () => {
     setFirstAssetValue(balanceTokenA.toString());
@@ -288,7 +291,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
           <div className="flex justify-end w-full">
             <MaxButton
               value={balanceTokenA}
-              token={base}
+              token={base.symbol}
               onClick={handleFirstAssetMaxClick}
             />
           </div>
@@ -303,7 +306,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
           maxAmount={balanceTokenA.toNumber()}
           label={t(translations.common.amount)}
           className="max-w-none"
-          unit={<AssetRenderer asset={base} />}
+          unit={<AssetRenderer asset={base.symbol} />}
           disabled={isFirstValueDisabled}
           invalid={isFirstAssetValueInvalid}
           placeholder="0"
@@ -332,7 +335,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
           <div className="flex justify-end w-full">
             <MaxButton
               value={balanceTokenB}
-              token={quote}
+              token={quote.symbol}
               onClick={handleSecondAssetMaxClick}
             />
           </div>
@@ -347,7 +350,7 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
           maxAmount={balanceTokenB.toNumber()}
           label={t(translations.common.amount)}
           className="max-w-none"
-          unit={<AssetRenderer asset={quote} />}
+          unit={<AssetRenderer asset={quote.symbol} />}
           disabled={isSecondValueDisabled}
           invalid={isSecondAssetValueInvalid}
           placeholder="0"

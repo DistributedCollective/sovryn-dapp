@@ -1,29 +1,37 @@
 import { useMemo } from 'react';
 
+import { numberToChainId } from '@sovryn/ethers-provider';
+import { Pool } from '@sovryn/sdk';
+
 import { useCurrentChain } from '../../../../../../../../hooks/useChainStore';
 import { useDollarValue } from '../../../../../../../../hooks/useDollarValue';
 import { useTokenDetailsByAsset } from '../../../../../../../../hooks/useTokenDetailsByAsset';
 import { decimalic, toWei } from '../../../../../../../../utils/math';
 import { AmbientPosition } from '../../../AmbientMarketMaking.types';
-import { AmbientLiquidityPool } from '../../../utils/AmbientLiquidityPool';
 import { useAmbientPositionBalance } from './useAmbientPositionBalance';
 
 export const useAmbientPositionValue = (
-  pool: AmbientLiquidityPool,
+  pool: Pool,
   position: AmbientPosition,
 ) => {
   const chainId = useCurrentChain();
   const result = useAmbientPositionBalance(pool, position);
-  const baseToken = useTokenDetailsByAsset(pool.base, pool.chainId);
-  const quoteToken = useTokenDetailsByAsset(pool.quote, pool.chainId);
+  const baseToken = useTokenDetailsByAsset(
+    pool.base.symbol,
+    numberToChainId(pool.chainId),
+  );
+  const quoteToken = useTokenDetailsByAsset(
+    pool.quote.symbol,
+    numberToChainId(pool.chainId),
+  );
 
   const { usdPrice: baseUsdPrice } = useDollarValue(
-    pool.base,
+    pool.base.symbol,
     toWei(1).toString(),
     chainId,
   );
   const { usdPrice: quoteUsdPrice } = useDollarValue(
-    pool.quote,
+    pool.quote.symbol,
     toWei(1).toString(),
     chainId,
   );

@@ -3,19 +3,20 @@ import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
 import { t } from 'i18next';
 import { Link } from 'react-router-dom';
 
+import { numberToChainId } from '@sovryn/ethers-provider';
+import { Pool } from '@sovryn/sdk';
 import { Table } from '@sovryn/ui';
 
 import { AssetPairRenderer } from '../../../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { AssetPairSize } from '../../../../../../2_molecules/AssetPairRenderer/AssetPairRenderer.types';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
-import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { AmbientPoolPositions } from '../AmbientPoolPositions/AmbientPoolPositions';
 import { COLUMNS_CONFIG } from './AmbientPoolsTable.constants';
 import styles from './AmbientPoolsTable.module.css';
 
 type AmbientPoolsProps = {
-  items: AmbientLiquidityPool[];
+  items: Pool[];
 };
 
 export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items }) => {
@@ -23,20 +24,20 @@ export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items }) => {
   const [activePool, setActivePool] = useState('');
   const tableRef = useRef<HTMLDivElement>(null);
   const expandedIndex = useMemo(
-    () => items.findIndex(pool => pool.key === activePool),
+    () => items.findIndex(pool => pool.identifier === activePool),
     [activePool, items],
   );
 
   const generateRowTitle = useCallback(
-    (pool: AmbientLiquidityPool) => (
+    (pool: Pool) => (
       <div
         className="flex items-center justify-between w-full"
-        data-pool-key={pool.key}
+        data-pool-key={pool.identifier}
       >
         <AssetPairRenderer
-          asset1={pool.quote}
-          asset2={pool.base}
-          chainId={pool.chainId}
+          asset1={pool.quote.symbol}
+          asset2={pool.base.symbol}
+          chainId={numberToChainId(pool.chainId)}
           size={AssetPairSize.small}
         />
       </div>
@@ -45,13 +46,15 @@ export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items }) => {
   );
 
   const generateExpandedContent = useCallback(
-    (pool: AmbientLiquidityPool) => <AmbientPoolPositions pool={pool} />,
+    (pool: Pool) => <AmbientPoolPositions pool={pool} />,
     [],
   );
 
   const onPoolClick = useCallback(
-    (pool: AmbientLiquidityPool) =>
-      setActivePool(activePool => (activePool === pool.key ? '' : pool.key)),
+    (pool: Pool) =>
+      setActivePool(activePool =>
+        activePool === pool.identifier ? '' : pool.identifier,
+      ),
     [setActivePool],
   );
 
@@ -70,7 +73,7 @@ export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items }) => {
         rows={items}
         noData={t(translations.common.tables.noData)}
         loadingData={t(translations.common.tables.loading)}
-        rowKey={row => row.key}
+        rowKey={row => row.identifier}
         dataAttribute="ambient-pool-table"
         expandedClassNames="border border-gray-70 border-t-0"
         preventExpandOnClickClass="prevent-row-click"

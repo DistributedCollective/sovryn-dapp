@@ -4,16 +4,16 @@ import { ethers } from 'ethers';
 
 import { getProvider } from '@sovryn/ethers-provider';
 import { ERC20_ABI } from '@sovryn/sdex';
+import { Pool } from '@sovryn/sdk';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
-import { AmbientLiquidityPool } from '../utils/AmbientLiquidityPool';
 
-export const useGetLpTokenBalance = (pool: AmbientLiquidityPool) => {
+export const useGetLpTokenBalance = (pool: Pool) => {
   const chainId = useCurrentChain();
   const [lpTokenBalance, setLpTokenBalance] = useState('0');
   const { account } = useAccount();
-  const { lpTokenAddress } = pool;
+  const { lpToken: lpTokenAddress } = pool.extra;
 
   useEffect(() => {
     if (!lpTokenAddress || !account) {

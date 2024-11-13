@@ -2,16 +2,16 @@ import React, { FC, useState } from 'react';
 
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
 import { Accordion, Toggle, ToggleAlignment } from '@sovryn/ui';
 
 import { translations } from '../../../../../../../locales/i18n';
-import { AmbientLiquidityPool } from '../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useDepositContext } from '../../contexts/BobDepositModalContext';
 import { BalancedRange } from './components/BalancedRange/BalancedRange';
 import { UnbalancedRange } from './components/UnbalancedRange/UnbalancedRange';
 
 type PriceRangeProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
 };
 
 export const PriceRange: FC<PriceRangeProps> = ({ pool }) => {

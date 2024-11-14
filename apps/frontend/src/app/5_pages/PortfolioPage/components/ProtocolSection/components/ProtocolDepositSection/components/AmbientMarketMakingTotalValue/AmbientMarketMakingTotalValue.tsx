@@ -3,11 +3,12 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
+import { useCacheCall } from '../../../../../../../../../hooks';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../../../hooks/useBlockNumber';
 import { useCurrentChain } from '../../../../../../../../../hooks/useChainStore';
+import { loadIndexer } from '../../../../../../../../../lib/indexer';
 import { AmbientPosition } from '../../../../../../../MarketMakingPage/components/AmbientMarketMaking/AmbientMarketMaking.types';
-import { AmbientLiquidityPoolDictionary } from '../../../../../../../MarketMakingPage/components/AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 import {
   ProtocolTypes,
   ProtocolSectionProps,
@@ -26,10 +27,15 @@ export const AmbientMarketMakingTotalValue: FC<ProtocolSectionProps> = ({
 }) => {
   const { value: block } = useBlockNumber();
   const chainId = useCurrentChain();
-  const ammPools = useMemo(
-    () => AmbientLiquidityPoolDictionary.list(chainId),
+
+  const { value: ammPools } = useCacheCall(
+    'mm',
+    chainId,
+    () => loadIndexer(chainId).pools.list(),
     [chainId],
+    [],
   );
+
   const { account } = useAccount();
   const [positionValues, setPositionValues] = useState<PositionValues>({});
 
@@ -91,7 +97,7 @@ export const AmbientMarketMakingTotalValue: FC<ProtocolSectionProps> = ({
     <>
       {ammPools.map(pool => (
         <AmbientMarketMakingPositions
-          key={`${pool.baseAddress}-${pool.quoteAddress}`}
+          key={`${pool.base.address}-${pool.quote.address}`}
           pool={pool}
           onBalanceChange={handleBalanceUpdate}
         />

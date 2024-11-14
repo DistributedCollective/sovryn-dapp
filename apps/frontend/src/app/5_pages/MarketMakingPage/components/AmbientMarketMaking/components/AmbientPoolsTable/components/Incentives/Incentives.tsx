@@ -1,13 +1,13 @@
 import React, { FC, useMemo } from 'react';
 
+import { Pool } from '@sovryn/sdk';
 import { Tooltip, TooltipPlacement, TooltipTrigger } from '@sovryn/ui';
 
 import spiceInfo from '../../../../data/spiceInfo.json';
-import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
 import { Spice } from './components/Spice/Spice';
 
 type IncentivesProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
 };
 
 type PoolSpiceInfo = {
@@ -25,9 +25,9 @@ export const Incentives: FC<IncentivesProps> = ({ pool }) => {
       poolsData.find(
         item =>
           item.lpTokenAddress.toLowerCase() ===
-          pool.lpTokenAddress?.toLowerCase(),
+          pool.extra.lpToken?.toLowerCase(),
       ),
-    [pool.lpTokenAddress],
+    [pool.extra.lpToken],
   );
 
   return poolData?.content || poolData?.label1 ? (

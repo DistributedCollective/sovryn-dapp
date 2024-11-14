@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
 
+import { Pool } from '@sovryn/sdk';
 import { Decimal } from '@sovryn/utils';
 
 import { AmbientPosition } from '../../../../../../../../MarketMakingPage/components/AmbientMarketMaking/AmbientMarketMaking.types';
 import { useGetAmbientPositions } from '../../../../../../../../MarketMakingPage/components/AmbientMarketMaking/hooks/useGetAmbientPositions';
-import { AmbientLiquidityPool } from '../../../../../../../../MarketMakingPage/components/AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { PositionBalance } from './PositionBalance';
 
 type AmbientMarketMakingPositionsProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
   onBalanceChange: (balanceToAdd: Decimal, position: AmbientPosition) => void;
 };
 

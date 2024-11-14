@@ -1,16 +1,16 @@
 import { useState, useEffect, useMemo } from 'react';
 
 import { CrocReposition, priceToTick } from '@sovryn/sdex';
+import { Pool } from '@sovryn/sdk';
 
 import { decimalic } from '../../../../../../utils/math';
 import { AmbientPosition } from '../../AmbientMarketMaking/AmbientMarketMaking.types';
-import { AmbientLiquidityPool } from '../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useDepositContext } from '../../BobDepositModal/contexts/BobDepositModalContext';
 import { useGetPoolInfo } from '../../BobDepositModal/hooks/useGetPoolInfo';
 import { mintArgsForReposition } from '../BobRepositionModal.utils';
 
 export const useGetBalances = (
-  pool: AmbientLiquidityPool,
+  pool: Pool,
   position: AmbientPosition,
   rangeWidth: number,
 ) => {
@@ -18,9 +18,8 @@ export const useGetBalances = (
 
   const [baseValue, setBaseValue] = useState('');
   const [quoteValue, setQuoteValue] = useState('');
-  const { base, quote } = useMemo(() => pool, [pool]);
 
-  const { pool: crocPool } = useGetPoolInfo(base, quote);
+  const { pool: crocPool } = useGetPoolInfo(pool);
 
   const lowTick = useMemo(() => priceToTick(minimumPrice), [minimumPrice]);
   const highTick = useMemo(() => priceToTick(maximumPrice), [maximumPrice]);

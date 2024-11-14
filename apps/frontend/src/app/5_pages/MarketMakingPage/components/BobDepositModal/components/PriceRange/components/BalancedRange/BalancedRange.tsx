@@ -3,6 +3,7 @@ import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import { t } from 'i18next';
 
 import { toDisplayPrice } from '@sovryn/sdex';
+import { Pool } from '@sovryn/sdk';
 import {
   Button,
   ButtonStyle,
@@ -14,7 +15,6 @@ import {
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { calculateBoundedPrice } from '../../../../../AmbientMarketMaking/components/AmbientPoolPositions/AmbientPoolPositions.utils';
-import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useGetTokenDecimals } from '../../../../../BobWIthdrawModal/hooks/useGetTokenDecimals';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from '../../../../hooks/useGetPoolInfo';
@@ -22,7 +22,7 @@ import { BUTTON_OPTIONS, INFINITE } from './BalancedRange.constants';
 import { renderRangeWidthClassName } from './BalancedRange.utils';
 
 type BalancedRangeProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
 };
 
 export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
@@ -37,10 +37,7 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
 
   const isInfiniteRange = useMemo(() => rangeWidth === 100, [rangeWidth]);
 
-  const { spotPrice: currentPrice, poolTokens } = useGetPoolInfo(
-    pool.base,
-    pool.quote,
-  );
+  const { spotPrice: currentPrice, poolTokens } = useGetPoolInfo(pool);
 
   const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
     poolTokens?.tokenA,
@@ -109,7 +106,7 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
             isInfiniteRange ? (
               <span className="text-xs font-medium">0</span>
             ) : (
-              <AmountRenderer value={renderMin} suffix={pool.quote} />
+              <AmountRenderer value={renderMin} suffix={pool.quote.symbol} />
             )
           }
         />
@@ -119,7 +116,7 @@ export const BalancedRange: FC<BalancedRangeProps> = ({ pool }) => {
             isInfiniteRange ? (
               <span className="text-xs font-medium">∞</span>
             ) : (
-              <AmountRenderer value={renderMax} suffix={pool.quote} />
+              <AmountRenderer value={renderMax} suffix={pool.quote.symbol} />
             )
           }
         />

@@ -9,22 +9,28 @@ import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { MarketMakingNetworkBanner } from '../../../../2_molecules/MarketMakingNetworkBanner/MarketMakingNetworkBanner';
 import { BOB_STORAGE_KEY } from '../../../../2_molecules/MarketMakingNetworkBanner/MarketMakingNetworkBanner.constants';
+import { useCacheCall } from '../../../../../hooks';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
+import { loadIndexer } from '../../../../../lib/indexer';
 import { translations } from '../../../../../locales/i18n';
 import { AmbientPoolsTable } from './components/AmbientPoolsTable/AmbientPoolsTable';
-import { PoolListGroup } from './utils/AmbientLiquidityPool';
-import { AmbientLiquidityPoolDictionary } from './utils/AmbientLiquidityPoolDictionary';
 
 export const AmbientMarketMaking: FC = () => {
   const chainId = useCurrentChain();
+  const { value } = useCacheCall(
+    'mm',
+    chainId,
+    () => loadIndexer(chainId).pools.list(),
+    [chainId],
+    [],
+  );
+
   const newPools = useMemo(
-    () => AmbientLiquidityPoolDictionary.list(chainId, PoolListGroup.new),
-    [chainId],
+    () => (value ?? []).filter(pool => pool.featured),
+    [value],
   );
-  const allPools = useMemo(
-    () => AmbientLiquidityPoolDictionary.list(chainId),
-    [chainId],
-  );
+
+  const allPools = useMemo(() => value ?? [], [value]);
 
   return (
     <>

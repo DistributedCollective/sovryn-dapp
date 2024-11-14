@@ -4,6 +4,7 @@ import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
 import { priceToTick } from '@sovryn/sdex';
+import { Pool } from '@sovryn/sdk';
 import { Decimal } from '@sovryn/utils';
 
 import {
@@ -22,19 +23,14 @@ import {
   roundUpTick,
 } from '../../../../BobAmmPage/ambient-utils';
 import { checkAndPrepareApproveTransaction } from '../../AmbientMarketMaking/components/AmbientPoolPositions/AmbientPoolPositions.utils';
-import { AmbientLiquidityPoolDictionary } from '../../AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 import { useDepositContext } from '../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from './useGetPoolInfo';
 
-export const useHandleSubmit = (
-  assetA: string,
-  assetB: string,
-  onComplete: () => void,
-) => {
+export const useHandleSubmit = (pool: Pool, onComplete: () => void) => {
   const chainId = useCurrentChain();
   const { account, signer } = useAccount();
   const { croc } = useCrocContext();
-  const { poolTokens } = useGetPoolInfo(assetA, assetB);
+  const { poolTokens } = useGetPoolInfo(pool);
   const {
     minimumPrice,
     maximumPrice,
@@ -93,7 +89,6 @@ export const useHandleSubmit = (
       transactions.push(approveB);
     }
 
-    const pool = AmbientLiquidityPoolDictionary.get(assetA, assetB, chainId);
     const gridSize = (await croc.context).chain.gridSize;
 
     const tick = {
@@ -117,8 +112,8 @@ export const useHandleSubmit = (
       },
       isTokenAPrimaryRange: usesBaseToken,
       tick,
-      lpConduit: pool?.lpTokenAddress,
-      poolIndex: pool?.poolIndex,
+      lpConduit: pool.extra.lpToken,
+      poolIndex: pool.extra.poolIdx,
     });
 
     transactions.push({
@@ -140,27 +135,27 @@ export const useHandleSubmit = (
     setTitle(t(translations.bobMarketMakingPage.depositModal.title));
     setIsOpen(true);
   }, [
-    account,
-    assetA,
-    assetB,
-    chainId,
     croc,
+    poolTokens,
+    signer,
+    isFirstAssetOutOfRange,
     firstAssetValue,
-    isBalancedRange,
+    isSecondAssetOutOfRange,
+    secondAssetValue,
+    account,
+    chainId,
     minimumPrice,
     maximumPrice,
-    maximumSlippage,
-    poolTokens,
+    isBalancedRange,
     rangeWidth,
-    secondAssetValue,
-    setIsOpen,
-    setTitle,
-    setTransactions,
-    signer,
-    onComplete,
+    maximumSlippage,
     usesBaseToken,
-    isFirstAssetOutOfRange,
-    isSecondAssetOutOfRange,
+    pool.extra.lpToken,
+    pool.extra.poolIdx,
+    onComplete,
+    setTransactions,
+    setTitle,
+    setIsOpen,
   ]);
 
   return onSubmit;

@@ -2,6 +2,7 @@ import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
 import { FormGroup, AmountInput, Button, ButtonStyle } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -9,7 +10,6 @@ import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/Asset
 import { MaxButton } from '../../../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
-import { AmbientLiquidityPool } from '../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { PERCENTAGE_OPTIONS } from './AmountForm.constants';
 import { renderPercentageClassName } from './AmountForm.utils';
 
@@ -20,7 +20,7 @@ type AmountFormProps = {
   setWithdrawAmount: (value: Decimal) => void;
   secondaryWithdrawAmount: Decimal;
   setSecondaryWithdrawAmount: (value: Decimal) => void;
-  pool: AmbientLiquidityPool;
+  pool: Pool;
 };
 
 export const AmountForm: FC<AmountFormProps> = ({
@@ -112,7 +112,7 @@ export const AmountForm: FC<AmountFormProps> = ({
             <div className="flex justify-end w-full">
               <MaxButton
                 value={primaryTokenBalance}
-                token={pool.base}
+                token={pool.base.symbol}
                 onClick={onMaxClick}
               />
             </div>
@@ -128,7 +128,7 @@ export const AmountForm: FC<AmountFormProps> = ({
           maxAmount={primaryTokenBalance.toNumber()}
           label={t(translations.common.amount)}
           className="max-w-none"
-          unit={<AssetRenderer asset={pool.base} />}
+          unit={<AssetRenderer asset={pool.base.symbol} />}
           disabled={!account || Number(primaryTokenBalance) === 0}
           placeholder="0"
         />
@@ -141,7 +141,7 @@ export const AmountForm: FC<AmountFormProps> = ({
             <div className="flex justify-end w-full">
               <MaxButton
                 value={secondaryTokenBalance}
-                token={pool.quote}
+                token={pool.quote.symbol}
                 onClick={onMaxClick}
               />
             </div>
@@ -157,7 +157,7 @@ export const AmountForm: FC<AmountFormProps> = ({
           maxAmount={secondaryTokenBalance.toNumber()}
           label={t(translations.common.amount)}
           className="max-w-none"
-          unit={<AssetRenderer asset={pool.quote} />}
+          unit={<AssetRenderer asset={pool.quote.symbol} />}
           disabled={!account || Number(secondaryTokenBalance) === 0}
           placeholder="0"
           readOnly={Number(primaryTokenBalance) > 0}

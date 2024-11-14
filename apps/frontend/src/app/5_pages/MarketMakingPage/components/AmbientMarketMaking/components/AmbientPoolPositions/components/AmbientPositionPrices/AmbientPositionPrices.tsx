@@ -1,16 +1,14 @@
 import React, { FC, useCallback, useMemo } from 'react';
 
 import { MIN_TICK, MAX_TICK, tickToPrice, toDisplayPrice } from '@sovryn/sdex';
+import { Pool } from '@sovryn/sdk';
 
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { PoolPositionType } from '../../../../../../MarketMakingPage.types';
-import { useGetPoolInfo } from '../../../../../BobDepositModal/hooks/useGetPoolInfo';
-import { useGetTokenDecimals } from '../../../../../BobWIthdrawModal/hooks/useGetTokenDecimals';
 import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
-import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
 
 type AmbientPositionPricesProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
   position: AmbientPosition;
 };
 
@@ -25,25 +23,19 @@ export const AmbientPositionPrices: FC<AmbientPositionPricesProps> = ({
     [position],
   );
 
-  const { poolTokens } = useGetPoolInfo(pool.base, pool.quote);
-  const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
-    poolTokens?.tokenA,
-    poolTokens?.tokenB,
-  );
-
   const renderAmountRenderer = useCallback(
     (tick: number) => (
       <AmountRenderer
         value={toDisplayPrice(
           tickToPrice(tick),
-          baseTokenDecimals,
-          quoteTokenDecimals,
+          pool.base.decimals,
+          pool.quote.decimals,
           true,
         )}
-        suffix={pool.quote}
+        suffix={pool.quote.symbol}
       />
     ),
-    [baseTokenDecimals, quoteTokenDecimals, pool.quote],
+    [pool.base.decimals, pool.quote.decimals, pool.quote.symbol],
   );
 
   if (isAmbient) {

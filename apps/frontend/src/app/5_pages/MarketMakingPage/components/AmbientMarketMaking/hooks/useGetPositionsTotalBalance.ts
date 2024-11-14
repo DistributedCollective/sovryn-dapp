@@ -1,13 +1,14 @@
 import { useMemo } from 'react';
 
+import { Pool } from '@sovryn/sdk';
+
 import { getPositionBalance } from '../components/AmbientPoolPositions/AmbientPoolPositions.utils';
 import { usePoolSpotPrice } from '../components/AmbientPoolPositions/hooks/usePoolSpotPrice';
-import { AmbientLiquidityPool } from '../utils/AmbientLiquidityPool';
 import { useGetAmbientPositions } from './useGetAmbientPositions';
 
-export const useGetPositionsTotalBalance = (pool: AmbientLiquidityPool) => {
+export const useGetPositionsTotalBalance = (pool: Pool) => {
   const { positions } = useGetAmbientPositions(pool);
-  const { value: price } = usePoolSpotPrice(pool.base, pool.quote);
+  const { value: price } = usePoolSpotPrice(pool);
 
   return useMemo(() => {
     if (!price) {

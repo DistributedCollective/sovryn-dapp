@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
 
+import { Pool } from '@sovryn/sdk';
+
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
-import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
 import { useAmbientPositionValue } from '../../hooks/useAmbientPositionValue';
 
 type AmbientPositionValueProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
   position: AmbientPosition;
 };
 

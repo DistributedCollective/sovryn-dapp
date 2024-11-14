@@ -1,20 +1,14 @@
 import { useMemo } from 'react';
 
 import { priceToTick } from '@sovryn/sdex';
+import { Pool } from '@sovryn/sdk';
 
 import { PoolPositionType } from '../../../../../MarketMakingPage.types';
 import { useGetPoolInfo } from '../../../../BobDepositModal/hooks/useGetPoolInfo';
 import { AmbientPosition } from '../../../AmbientMarketMaking.types';
-import { AmbientLiquidityPool } from '../../../utils/AmbientLiquidityPool';
 
-export const usePositionStatus = (
-  pool: AmbientLiquidityPool,
-  position?: AmbientPosition,
-) => {
-  const { spotPrice: currentPrice, loading } = useGetPoolInfo(
-    pool.base,
-    pool.quote,
-  );
+export const usePositionStatus = (pool: Pool, position?: AmbientPosition) => {
+  const { spotPrice: currentPrice, loading } = useGetPoolInfo(pool);
 
   const isAmbient = useMemo(
     () => position?.positionType === PoolPositionType.ambient,

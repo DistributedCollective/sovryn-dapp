@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
 
+import { Pool } from '@sovryn/sdk';
+
 import { AmountRenderer } from '../../../../../../../../2_molecules/AmountRenderer/AmountRenderer';
-import { useGetPoolInfo } from '../../../../../BobDepositModal/hooks/useGetPoolInfo';
-import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
+import { decimalic } from '../../../../../../../../../utils/math';
 
 type AmbientPoolFeeRateProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
 };
 
 export const AmbientPoolFeeRate: FC<AmbientPoolFeeRateProps> = ({ pool }) => {
-  const { feeRate } = useGetPoolInfo(pool.base, pool.quote);
-  return <AmountRenderer value={feeRate} suffix="%" />;
+  return <AmountRenderer value={decimalic(pool.fee)} suffix="%" />;
 };

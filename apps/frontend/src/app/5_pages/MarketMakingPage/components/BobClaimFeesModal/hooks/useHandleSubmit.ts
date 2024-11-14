@@ -2,6 +2,8 @@ import { useCallback } from 'react';
 
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
+
 import {
   Transaction,
   TransactionType,
@@ -11,20 +13,15 @@ import { useTransactionContext } from '../../../../../../contexts/TransactionCon
 import { translations } from '../../../../../../locales/i18n';
 import { PoolPositionType } from '../../../MarketMakingPage.types';
 import { AmbientPosition } from '../../AmbientMarketMaking/AmbientMarketMaking.types';
-import { AmbientLiquidityPool } from '../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { DEFAULT_SLIPPAGE } from '../../BobDepositModal/BobDepositModal.constants';
 import { useGetPoolInfo } from '../../BobDepositModal/hooks/useGetPoolInfo';
 
 export const useHandleSubmit = (
-  pool: AmbientLiquidityPool,
+  pool: Pool,
   position: AmbientPosition,
   onComplete: () => void,
 ) => {
-  const {
-    poolTokens,
-    pool: crocPool,
-    price: poolPrice,
-  } = useGetPoolInfo(pool.base, pool.quote);
+  const { poolTokens, pool: crocPool, price: poolPrice } = useGetPoolInfo(pool);
 
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 

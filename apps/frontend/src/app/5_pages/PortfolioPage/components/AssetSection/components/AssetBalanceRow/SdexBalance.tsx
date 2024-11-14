@@ -27,7 +27,6 @@ export const SdexBalance: FC<AssetBalanceRowProps> = ({ token }) => {
       .token(findAsset(token, BOB_CHAIN_ID)?.address)
       .balanceDisplay(account)
       .then(amount => {
-        console.log(token, amount.toString());
         setBalance(decimalic(amount));
       });
   }, [account, signer, token]);

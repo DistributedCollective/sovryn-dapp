@@ -2,6 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
 import { ButtonSize, ButtonStyle, Button } from '@sovryn/ui';
 
 import { useMaintenance } from '../../../../../../../../../hooks/useMaintenance';
@@ -9,11 +10,10 @@ import { translations } from '../../../../../../../../../locales/i18n';
 import { DepositContextProvider } from '../../../../../BobDepositModal/contexts/BobDepositModalContext';
 import { BobRepositionModal } from '../../../../../BobRepositionModal/BobRepositionModal';
 import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
-import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
 import { usePositionStatus } from '../../hooks/usePositionStatus';
 
 type AmbientPoolRepositionProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
   position: AmbientPosition;
   className?: string;
 };

@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { Pool } from '@sovryn/sdk';
+
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { getIndexerUri } from '../../../../../../utils/indexer';
 import { useGetPool } from '../../../hooks/useGetPool';
 
-export const useGetPoolInfo = (assetA: string, assetB: string) => {
+export const useGetPoolInfo = (p: Pool) => {
   const chainId = useCurrentChain();
-  const { pool, poolTokens } = useGetPool(assetA, assetB);
+  const { pool, poolTokens } = useGetPool(p);
 
   const [price, setPrice] = useState(0);
   const [spotPrice, setSpotPrice] = useState(0);

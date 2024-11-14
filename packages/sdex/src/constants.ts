@@ -64,8 +64,7 @@ const BOB_CHAIN: ChainSpec = {
 };
 
 const BOB_TESTNET_CHAIN: ChainSpec = {
-  nodeUrl: 'https://bob-sepolia.rpc.gobob.xyz/',
-  // wsUrl: 'wss://bob-sepolia.rpc.gobob.xyz',
+  nodeUrl: 'https://bob-rpc.test.sovryn.app',
   addrs: {
     dex: '0x6E47BC2BC7CF8383369BbA36F520323C5F16dC1C',
     query: '0x28A6328B0e167035F33a4C58374F2524Ae9c8dC1',

@@ -4,6 +4,7 @@ import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
 import { CrocReposition, priceToTick } from '@sovryn/sdex';
+import { Pool } from '@sovryn/sdk';
 import { Decimal } from '@sovryn/utils';
 
 import {
@@ -29,15 +30,14 @@ import { mintArgsForReposition } from '../BobRepositionModal.utils';
 import { useGetLiquidity } from './useGetLiquidity';
 
 export const useHandleSubmit = (
-  assetA: string,
-  assetB: string,
+  pool: Pool,
   position: AmbientPosition,
   onComplete: () => void,
 ) => {
   const chainId = useCurrentChain();
   const { account, signer } = useAccount();
   const { croc } = useCrocContext();
-  const { poolTokens, pool: crocPool } = useGetPoolInfo(assetA, assetB);
+  const { poolTokens, pool: crocPool } = useGetPoolInfo(pool);
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const {
@@ -50,7 +50,7 @@ export const useHandleSubmit = (
     rangeWidth,
   } = useDepositContext();
 
-  const { liquidity } = useGetLiquidity(position, crocPool?.poolIndex || 0);
+  const { liquidity } = useGetLiquidity(position, pool.extra.poolIdx);
 
   const onSubmit = useCallback(async () => {
     if (!croc || !poolTokens || !signer || !crocPool || !liquidity) {

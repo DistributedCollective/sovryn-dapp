@@ -3,7 +3,7 @@ import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
 import { t } from 'i18next';
 import { Link } from 'react-router-dom';
 
-import { Table } from '@sovryn/ui';
+import { Table, TableBreakpoint } from '@sovryn/ui';
 
 import { AssetPairRenderer } from '../../../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { AssetPairSize } from '../../../../../../2_molecules/AssetPairRenderer/AssetPairRenderer.types';
@@ -79,6 +79,7 @@ export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items }) => {
         expandedIndex={expandedIndex}
         className={styles.table}
         rowTitle={generateRowTitle}
+        breakpoint={TableBreakpoint.xl}
       />
     </div>
   );

@@ -1381,6 +1381,7 @@
             "priceRange": "Price range",
             "balanced": "Balanced",
             "infinite": "Infinite",
+            "allowSurplus": "Allow Personal Reserve Vault Balances",
             "newPoolStatistics": {
                 "newPoolBalance": "New pool balance",
                 "currentPrice": "Current {{token}} price",
@@ -1942,5 +1943,11 @@
     "unclaimedVestings": {
         "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",
         "cta": "Open Rewards page"
+    },
+    "bobGatewayPage": {
+        "meta": {
+            "title": "BOB Gateway"
+        },
+        "description": "New way earning in AMM"
     }
 }

@@ -137,12 +137,10 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
               className="flex justify-between"
             />
           </div>
-
           <AmountForm pool={pool} />
           <PriceRange pool={pool} />
           <SlippageSettings />
           <NewPoolStatistics pool={pool} />
-
           <div className="mt-8">
             <Checkbox
               checked={hasDisclaimerBeenChecked}
@@ -150,7 +148,6 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
               label={t(pageTranslations.depositDisclaimer)}
             />
           </div>
-
           <Button
             type={ButtonType.submit}
             style={ButtonStyle.primary}

@@ -6,6 +6,7 @@
   "dependencies": {
     "@apollo/client": "3.7.1",
     "@apollo/react-hooks": "4.0.0",
+    "@fireblocks/fireblocks-web3-provider": "^1.3.12",
     "@loadable/component": "5.15.2",
     "@sovryn-zero/lib-base": "0.2.1",
     "@sovryn-zero/lib-ethers": "0.2.5",

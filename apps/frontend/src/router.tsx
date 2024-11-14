@@ -72,6 +72,10 @@ const ClaimLpPage = loadable(
 
 const RunesPage = loadable(() => import('./app/5_pages/RunesPage/RunesPage'));
 
+const FireblocksPage = loadable(
+  () => import('./app/5_pages/FireblocksPage/FireblocksPage'),
+);
+
 const routes = [
   {
     path: '/',
@@ -166,6 +170,10 @@ const routes = [
       {
         path: '/runes',
         element: <RunesPage />,
+      },
+      {
+        path: '/fireblocks',
+        element: <FireblocksPage />,
       },
     ],
   },

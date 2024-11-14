@@ -1,5 +1,11 @@
 # frontend
 
+## 1.1.28
+
+### Patch Changes
+
+- c760d5c0: Fix Spice multipliers
+
 ## 1.1.27
 
 ### Patch Changes

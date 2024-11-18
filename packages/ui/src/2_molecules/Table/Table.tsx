@@ -17,7 +17,7 @@ export const Table = <RowType extends RowObject>(
       <div className={classNames(styles[breakpoint], styles.desktop)}>
         <TableDesktop {...props} />
       </div>
-      <div className={classNames(styles[breakpoint], styles.moblie)}>
+      <div className={classNames(styles[breakpoint], styles.mobile)}>
         <TableMobile {...props} />
       </div>
     </>

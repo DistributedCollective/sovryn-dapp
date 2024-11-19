@@ -7,7 +7,7 @@ import {
 import { Pool } from './pool';
 
 export class PoolList {
-  #quered = false;
+  #queried = false;
   #pools = new Map<string, Pool>();
   #context: Indexer;
 
@@ -35,7 +35,7 @@ export class PoolList {
   }
 
   public async list() {
-    if (!this.#quered) {
+    if (!this.#queried) {
       await this.query({ limit: 1000 }).catch(console.error);
     }
     return Array.from(this.#pools.values());
@@ -59,7 +59,7 @@ export class PoolList {
         };
       })
       .finally(() => {
-        this.#quered = true;
+        this.#queried = true;
       });
   }
 }

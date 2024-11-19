@@ -4,21 +4,21 @@ import { useCacheCall } from '../../../../../../../../hooks';
 import { useCurrentChain } from '../../../../../../../../hooks/useChainStore';
 import { useGetPool } from '../../../../../hooks/useGetPool';
 
-export const usePoolSpotPrice = (p: Pool) => {
+export const usePoolSpotPrice = (pool: Pool) => {
   const chainId = useCurrentChain();
-  const { pool } = useGetPool(p);
+  const { pool: crocPool } = useGetPool(pool);
 
   return useCacheCall(
-    `pool/${p.base.address}/${p.quote.address}/spotPrice`,
+    `pool/${pool.base.address}/${pool.quote.address}/spotPrice`,
     chainId,
     async () => {
-      if (!pool) {
+      if (!crocPool) {
         return;
       }
 
-      return await pool.spotPrice();
+      return await crocPool.spotPrice();
     },
-    [pool],
+    [crocPool],
     0,
   );
 };

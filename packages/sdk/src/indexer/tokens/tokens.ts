@@ -9,7 +9,7 @@ import { Token } from './token';
 
 export class TokenList {
   #context: Indexer;
-  #quered = false;
+  #queried = false;
   #tokens = new Map<string, Token>();
 
   constructor(context: Indexer) {
@@ -36,7 +36,7 @@ export class TokenList {
   }
 
   public async list() {
-    if (!this.#quered) {
+    if (!this.#queried) {
       await this.queryAll({ limit: 1000 }).catch(console.error);
     }
     return Array.from(this.#tokens.values());
@@ -77,7 +77,7 @@ export class TokenList {
         };
       })
       .finally(() => {
-        this.#quered = true;
+        this.#queried = true;
       });
   }
 }

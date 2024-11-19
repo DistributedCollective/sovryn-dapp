@@ -14,26 +14,23 @@ type AmbientPoolLiquidityProps = {
 
 export const AmbientPoolLiquidity: FC<AmbientPoolLiquidityProps> = ({
   pool,
-}) => {
-  // const { stats, baseToken, quoteToken } = useGetAmbientPoolStats(pool);
-  return (
-    <div className="inline-flex flex-col gap-0.5">
-      <AmountRenderer
-        value={decimalic(pool.baseLiquidity)}
-        suffix={getTokenDisplayName(
-          pool.base.symbol,
-          numberToChainId(pool.chainId),
-        )}
-        precision={TOKEN_RENDER_PRECISION}
-      />
-      <AmountRenderer
-        value={decimalic(pool.quoteLiquidity)}
-        suffix={getTokenDisplayName(
-          pool.quote.symbol,
-          numberToChainId(pool.chainId),
-        )}
-        precision={TOKEN_RENDER_PRECISION}
-      />
-    </div>
-  );
-};
+}) => (
+  <div className="inline-flex flex-col gap-0.5">
+    <AmountRenderer
+      value={decimalic(pool.baseLiquidity)}
+      suffix={getTokenDisplayName(
+        pool.base.symbol,
+        numberToChainId(pool.chainId),
+      )}
+      precision={TOKEN_RENDER_PRECISION}
+    />
+    <AmountRenderer
+      value={decimalic(pool.quoteLiquidity)}
+      suffix={getTokenDisplayName(
+        pool.quote.symbol,
+        numberToChainId(pool.chainId),
+      )}
+      precision={TOKEN_RENDER_PRECISION}
+    />
+  </div>
+);

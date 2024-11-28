@@ -60,7 +60,8 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
 
           if (ambientIndex !== -1) {
             const ambientPosition = positions[ambientIndex];
-            ambientPosition.ambientLiq = liqBalance;
+            ambientPosition.ambientLiq =
+              ambientPosition.ambientLiq || liqBalance; // Update the ambient position with the latest balance
           } else if (parseFloat(liqBalance) > 0) {
             positions.push({
               ambientLiq: liqBalance,

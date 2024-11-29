@@ -1,5 +1,12 @@
 # frontend
 
+## 1.1.29
+
+### Patch Changes
+
+- 08fa89a4: Update spiceInfo.json
+- e3c19dae: SOV-4609: fix display ambient liq balance
+
 ## 1.1.28
 
 ### Patch Changes

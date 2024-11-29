@@ -149,15 +149,15 @@
   {
     "lpTokenAddress": "0x0DF5951E5f838faF95eC903cB4bE9CE516A6CCE2",
     "displayName": "PUPSWORLDPEACE/POWA",
-    "label1": "Capped",
-    "label2": "Capped",
-    "content": "Earn 1 Spice Point daily per $1 deposited on BOB (Build on Bitcoin). This Rune Liquidity Pool has 15M Spice Points allocated until November 25, 2024. Start providing liquidity early to maximize your share!"
+    "label1": "7x",
+    "label2": "7x",
+    "content": "Earn 1 Spice Point daily per $1 deposited on BOB (Build on Bitcoin). Sovryn Spice multiplier boosts your points by a set value."
   },
   {
     "lpTokenAddress": "0x3FF9f5c6b94C1C7C3e48edd92bCd19D95979a14B",
     "displayName": "wBTC/PUPSWORLDPEACE",
-    "label1": "Capped",
-    "label2": "Capped",
-    "content": "Earn 1 Spice Point daily per $1 deposited on BOB (Build on Bitcoin). This Rune Liquidity Pool has 15M Spice Points allocated until November 25, 2024. Start providing liquidity early to maximize your share!"
+    "label1": "7x",
+    "label2": "7x",
+    "content": "Earn 1 Spice Point daily per $1 deposited on BOB (Build on Bitcoin). Sovryn Spice multiplier boosts your points by a set value."
   }
 ]

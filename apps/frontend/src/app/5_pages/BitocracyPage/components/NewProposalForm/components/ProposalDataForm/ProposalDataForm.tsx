@@ -148,7 +148,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
 
   useEffect(() => {
     if (proposalType === ProposalCreationType.Proclamation && !governorOwner) {
-      getProtocolContract(Governor.Owner, RSK_CHAIN_ID).then(owner => {
+      getProtocolContract(Governor.Admin, RSK_CHAIN_ID).then(owner => {
         setGovernorOwner(owner.address);
         setGovernor(owner.address);
       });

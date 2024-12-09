@@ -1,5 +1,30 @@
 # @sovryn/sdk
 
+## 2.0.4
+
+### Patch Changes
+
+- d3d711eb: SOV-4532: add PUPS pools
+- Updated dependencies [d3d711eb]
+  - @sovryn/contracts@1.2.4
+
+## 2.0.3
+
+### Patch Changes
+
+- 52b7c4fe: chore: add new pools
+- Updated dependencies [0bc23cc0]
+- Updated dependencies [52b7c4fe]
+  - @sovryn/contracts@1.2.3
+
+## 2.0.2
+
+### Patch Changes
+
+- 750f7473: SOV-4496: add new pools
+- Updated dependencies [750f7473]
+  - @sovryn/contracts@1.2.2
+
 ## 2.0.1
 
 ### Patch Changes

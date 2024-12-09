@@ -3,4 +3,5 @@ export enum CategoryType {
   Stablecoins = 'Stablecoins',
   BTC = 'BTC',
   Runes = 'Runes',
+  LST = 'LST',
 }

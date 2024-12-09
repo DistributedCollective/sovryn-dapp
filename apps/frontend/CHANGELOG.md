@@ -1,5 +1,69 @@
 # frontend
 
+## 1.1.29
+
+### Patch Changes
+
+- 08fa89a4: Update spiceInfo.json
+- e3c19dae: SOV-4609: fix display ambient liq balance
+
+## 1.1.28
+
+### Patch Changes
+
+- c760d5c0: Fix Spice multipliers
+
+## 1.1.27
+
+### Patch Changes
+
+- 58350fd0: Adjust homepage banners
+
+## 1.1.26
+
+### Patch Changes
+
+- 5dcc907d: chore: fix asset icon styles
+- 29852f48: [SOV-4525] - Display LP Fee Rate Without Wallet Connection
+- 5dcc907d: SOV-4524: Show USD values on Convert page
+- 9579578f: SOV-4537: Add incentives column to market making
+
+## 1.1.25
+
+### Patch Changes
+
+- d953df39: fix: custom messages on convert page dropdown
+- ae74555b: chore: fix asset icon styles
+- c426bb82: SOV-4493: Show ecosystem statistics only in BTC and USD
+- d3d711eb: SOV-4532: add PUPS pools
+- d5079dae: SOV-4462: D2 charts on Convert page
+- a5b4f389: Make charts bigger on larger screens
+- Updated dependencies [d3d711eb]
+  - @sovryn/contracts@1.2.4
+  - @sovryn/sdk@2.0.4
+
+## 1.1.24
+
+### Patch Changes
+
+- 0bc23cc0: chore: update rune symbols
+- 52b7c4fe: chore: add new pools
+- Updated dependencies [0bc23cc0]
+- Updated dependencies [52b7c4fe]
+  - @sovryn/contracts@1.2.3
+  - @sovryn/sdk@2.0.3
+
+## 1.1.23
+
+### Patch Changes
+
+- eedbb292: SOV-4445: Add Runes page
+- 2028847d: SOV-4468: Show protocol data in BTC and USD only
+- 750f7473: SOV-4496: add new pools
+- Updated dependencies [750f7473]
+  - @sovryn/contracts@1.2.2
+  - @sovryn/sdk@2.0.2
+
 ## 1.1.22
 
 ### Patch Changes

@@ -2,6 +2,11 @@ import { ChainId } from '@sovryn/ethers-provider';
 
 import { findAsset } from '../../../../../../utils/asset';
 
+export enum PoolListGroup {
+  new = 'new',
+  default = 'default',
+}
+
 export class AmbientLiquidityPool {
   public readonly baseAddress: string;
   public readonly quoteAddress: string;
@@ -15,6 +20,7 @@ export class AmbientLiquidityPool {
     public readonly chainId: ChainId,
     public readonly poolIndex: number,
     public readonly lpTokenAddress?: string,
+    public readonly group: PoolListGroup = PoolListGroup.default,
   ) {
     try {
       this.lpTokenAddress = lpTokenAddress

@@ -73,6 +73,8 @@ const ClaimLpPage = loadable(
   () => import('./app/5_pages/ClaimLpPage/ClaimLpPage'),
 );
 
+const RunesPage = loadable(() => import('./app/5_pages/RunesPage/RunesPage'));
+
 const routes = [
   {
     path: '/',
@@ -167,6 +169,10 @@ const routes = [
       {
         path: '/claim-lp',
         element: <ClaimLpPage />,
+      },
+      {
+        path: '/runes',
+        element: <RunesPage />,
       },
     ],
   },

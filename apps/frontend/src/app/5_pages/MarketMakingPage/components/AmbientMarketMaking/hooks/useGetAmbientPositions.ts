@@ -59,8 +59,10 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
           const liqBalance = wallet.gt(0) ? wallet.toString() : lpTokenBalance;
 
           if (ambientIndex !== -1) {
-            const ambientPosition = positions[ambientIndex];
-            ambientPosition.ambientLiq = liqBalance;
+            if (parseFloat(liqBalance) > 0) {
+              const ambientPosition = positions[ambientIndex];
+              ambientPosition.ambientLiq = liqBalance;
+            }
           } else if (parseFloat(liqBalance) > 0) {
             positions.push({
               ambientLiq: liqBalance,

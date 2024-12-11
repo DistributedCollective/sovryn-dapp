@@ -125,7 +125,10 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
             <MenuItem
               key={t('header.nav.bridges.subMenu.btcBridge')}
               text={t('header.nav.bridges.subMenu.btcBridge')}
-              label={t('header.nav.bridges.subMenu.btcBridgeDescription')}
+              label={
+                !isMobile &&
+                t('header.nav.bridges.subMenu.btcBridgeDescription')
+              }
               dataAttribute={`dapp-menu-btcBridge`}
               className={classNames('no-underline', {
                 hidden: !isRskChain(chainId),

@@ -116,7 +116,7 @@
             "spicePoints": "Spice Points",
             "bridges": {
                 "title": "Bridges",
-                "connectWallet": "Connect the wallet to use the bridges.",
+                "connectWallet": "Connect a wallet to use the bridges.",
                 "subMenu": {
                     "runeBridge": "Runes",
                     "runeBridgeDescription": "Transfer between Bitcoin and Sovryn",

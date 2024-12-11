@@ -109,29 +109,23 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
           dataAttribute={dataAttribute}
         >
           <Menu className="rounded-t-none rounded-b px-2 py-3 lg:rounded lg:p-1">
-            {isRskChain(chainId) && (
-              <MenuItem
-                key={t('header.nav.bridges.subMenu.ethBridge')}
-                text={t('header.nav.bridges.subMenu.ethBridge')}
-                label={
-                  !isMobile &&
-                  t('header.nav.bridges.subMenu.ethBridgeDescription')
-                }
-                dataAttribute={`dapp-menu-ethBridge`}
-                className={classNames('no-underline', {
-                  hidden: isRskChain(chainId),
-                })}
-                onClick={handleEthClicked}
-              />
-            )}
+            <MenuItem
+              key={t('header.nav.bridges.subMenu.ethBridge')}
+              text={t('header.nav.bridges.subMenu.ethBridge')}
+              label={
+                !isMobile &&
+                t('header.nav.bridges.subMenu.ethBridgeDescription')
+              }
+              dataAttribute={`dapp-menu-ethBridge`}
+              className={classNames('no-underline', {
+                hidden: isRskChain(chainId),
+              })}
+              onClick={handleEthClicked}
+            />
             <MenuItem
               key={t('header.nav.bridges.subMenu.btcBridge')}
               text={t('header.nav.bridges.subMenu.btcBridge')}
-              label={
-                !isMobile && isRskChain(chainId)
-                  ? t('header.nav.bridges.subMenu.btcBridgeDescription')
-                  : t('header.nav.bridges.subMenu.ethBridgeDescription')
-              }
+              label={t('header.nav.bridges.subMenu.btcBridgeDescription')}
               dataAttribute={`dapp-menu-btcBridge`}
               className={classNames('no-underline', {
                 hidden: !isRskChain(chainId),

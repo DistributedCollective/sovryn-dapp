@@ -75,6 +75,7 @@
     },
     "connectWalletButton": {
         "connect": "Get started",
+        "connectBTC": "Connect BTC wallet",
         "rewards": "Rewards",
         "notifications": "Notifications",
         "history": "History",
@@ -1955,7 +1956,9 @@
         "meta": {
             "title": "BOB Gateway"
         },
-        "description": "New way earning in AMM"
+        "description": "New way earning in AMM",
+        "deposit": "Deposit",
+        "withdraw": "Withdraw"
     },
     "runesPage": {
         "meta": {

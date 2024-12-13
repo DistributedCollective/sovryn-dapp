@@ -7,4 +7,5 @@ export enum BorrowHistoryType {
   liquidationLoan = 'liquidationLoan',
   rolloversLoan = 'rolloversLoan',
   collateralSurplus = 'collateralSurplus',
+  swapBorrowRateMode = 'swapBorrowRateMode',
 }

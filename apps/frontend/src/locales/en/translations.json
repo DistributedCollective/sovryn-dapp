@@ -22,7 +22,10 @@
             "close": "Close",
             "retry": "Retry",
             "skip": "Skip",
-            "back": "Back"
+            "back": "Back",
+            "enable": "Enable",
+            "disable": "Disable",
+            "repay": "Repay"
         },
         "na": "N/A",
         "select": "Select",
@@ -31,7 +34,8 @@
                 "amount": "Amount",
                 "timestamp": "Timestamp",
                 "transactionType": "Transaction type",
-                "transactionID": "TXID"
+                "transactionID": "TXID",
+                "asset": "Asset"
             },
             "actions": {
                 "noDataToExport": "No data to export"
@@ -50,6 +54,7 @@
         "btc": "BTC",
         "eth": "ETH",
         "usd": "USD",
+        "enabled": "Enabled",
         "tx": {
             "signPermitTitle": "Permit {{symbol}}",
             "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
@@ -71,7 +76,8 @@
             "withdrawal": "Withdrawal"
         },
         "learnMore": "Learn more",
-        "invalidAmountError": "Exceeds maximum amount"
+        "invalidAmountError": "Exceeds maximum amount",
+        "somethingWentWrong": "Something went wrong, please try again"
     },
     "connectWalletButton": {
         "connect": "Get started",
@@ -186,7 +192,6 @@
         "resetValues": "Reset values",
         "notEnoughBalance": "Estimated gas fee exceeds {{asset}} balance"
     },
-
     "zeroPage": {
         "meta": {
             "title": "Zero line of credit - Sovryn",
@@ -386,7 +391,6 @@
         "inputLabel": "Maximum origination fee rate",
         "errorMessage": "Value entered must be between {{min}} and {{max}}"
     },
-
     "earnPage": {
         "meta": {
             "title": "Stability pool - Sovryn",
@@ -412,7 +416,6 @@
         },
         "apr": "APR"
     },
-
     "convertPage": {
         "meta": {
             "title": "Sovryn - DeFi for bitcoin",
@@ -438,7 +441,6 @@
         "minimumReceived": "Minimum received",
         "maximumPrice": "Maximum price"
     },
-
     "landingPage": {
         "meta": {
             "title": "Welcome to Sovryn",
@@ -586,7 +588,6 @@
             "dataComingSoon": "Data coming soon"
         }
     },
-
     "stakePage": {
         "meta": {
             "title": "Staking - Sovryn"
@@ -681,7 +682,6 @@
             "signUp": "Sign up"
         }
     },
-
     "fixedInterestPage": {
         "meta": {
             "title": "Fixed-interest loans - Sovryn",
@@ -797,7 +797,251 @@
         },
         "collateralRatio": "collateral ratio"
     },
-
+    "aavePage": {
+        "meta": {
+            "title": "Lend and borrow"
+        },
+        "common": {
+            "connectWallet": "Connect wallet to see the available data",
+            "asset": "Asset",
+            "collateral": "Collateral",
+            "collateralInfo": "The total amount of your assets denominated in USD that can be used as collateral for borrowing assets.",
+            "collateralRatio": "Collateral ratio",
+            "balance": "Balance",
+            "apy": "APY",
+            "apyInfo": "Compounding interest accrued by deposit or borrowing on the lending pool",
+            "apyType": "APY type",
+            "apyTypeInfo": "Variable interest rate will fluctuate based on the market conditions. Recommended for short-term positions.",
+            "apr": "APR",
+            "aprInfo": "APR is estimated based on previous fees earned at the defined price range, if no trades were made previously or you have recently claimed fees/withdrawn liquidity, you may see 0 value",
+            "details": "Details",
+            "borrow": "Borrow",
+            "lend": "Lend",
+            "variable": "Variable",
+            "stable": "Stable",
+            "fixed": "Fixed",
+            "withdraw": "Withdraw",
+            "healthFactor": "Health factor"
+        },
+        "tx": {
+            "supplyTitle": "Deposit {{symbol}} to the pool",
+            "supplySubtitle": "Transfers {{amount}} {{symbol}} to the pool",
+            "withdrawTitle": "Withdraw {{symbol}} from the pool",
+            "withdrawSubtitle": "Transfer {{amount}} {{symbol}} from the pool",
+            "repayTitle":"Repay loan",
+            "repaySubtitle": "Repay {{amount}} {{symbol}} to the pool",
+            "borrowTitle": "Borrow {{symbol}} from the pool",
+            "borrowSubtitle": "Borrows {{amount}} {{symbol}} from the pool",
+            "approveBorrowDelegationTitle": "Approve borrow delegation",
+            "approveBorrowDelegationSubtitle": "Approve borrow delegation of {{amount}} {{symbol}} to the WETH gateway",
+            "toggleAssetAsCollateral": "Switch asset use as collateral",
+            "enableAssetAsCollateral": "Enable {{symbol}} as collateral",
+            "enableAssetAsCollateralSubtitle": "Enabling {{symbol}} as collateral will increase your borrowing power",
+            "disableAssetAsCollateral": "Disable {{symbol}} as collateral",
+            "disableAssetAsCollateralSubtitle": "Disabling {{symbol}} as collateral will decrease your borrowing power and potentially risk you to liquidation",
+            "setUserEModeTitle": "Set E-Mode to {{category}}",
+            "setUserEModeSubtitle": "Set E-Mode to {{category}} category",
+            "disableEModeTitle": "Disable E-Mode",
+            "disableEModeSubtitle": "Disable E-Mode",
+            "swapBorrowRateModeTitle": "Swap borrow rate mode",
+            "swapBorrowRateModeSubtitle": "Swap borrow rate mode for {{symbol}} to {{mode}}",
+            "somethingWentWrong": "Something went wrong, please try again"
+        },
+        "eMode": {
+            "availableAssets": "Available assets",
+            "selectCategory": "Select category",
+            "maxLoanToValue": "Max loan to value",
+            "positionsMustBeClosed": "To enable E-mode for the {{category}} category, all borrow positions outside of this category must be closed.",
+            "limitationsWarning": "Enabling E-Mode only allows you to borrow assets belonging to the selected category.",
+            "enableEMode": "Enable E-mode",
+            "disableEMode": "Disable E-mode",
+            "liquidationRiskWarning": "Liquidation risk. This action will reduce your health factor. Please be mindful of the increased risk of collateral liquidation.",
+            "eModeCategory": "E-mode category",
+            "switchCategory": "Switch E-mode",
+            "assetCategory": "Asset category",
+            "eModeActivatedWarning": "In E-Mode some assets are not borrowable. Exit E-Mode to get access to all assets.",
+            "allAssets": "All assets",
+            "none": "None"
+        },
+        "topPanel": {
+            "title": "Lend and borrow",
+            "subtitle": "Borrow and earn interest by providing liquidity",
+            "netWorth": "Net worth",
+            "netApy": "Net APY",
+            "netApyInfo": "Net APY is the combined effect of all supply and borrow positions on net worth, including incentives. It is possible to have a negative net APY if debt APY is higher than supply APY.",
+            "healthFactor": "Health factor",
+            "collateralRatio": "Collateral ratio",
+            "collateralRatioInfo": "The collateral ratio defines the maximum amount of assets that can be borrowed with a specific collateral",
+            "viewTransactions": "View transactions"
+        },
+        "borrowPositionsList": {
+            "title": "Your loans",
+            "repay": "Repay",
+            "borrowPowerUsed": "Borrow power used",
+            "borrowPowerUsedInfo": "The % of your total borrowing power used. This is based on the amount of your collateral supplied and the total amount that you can borrow.",
+            "eMode": "E-Mode",
+            "selectVariableApy": "APY, variable {{apy}} %",
+            "selectStableApy": "APY, stable {{apy}} %",
+            "apyInfo": "The weighted average of APY for all borrowed assets, including incentives.",
+            "noData": "You don't have any loans yet"
+        },
+        "borrowAssetsList": {
+            "title": "Assets to borrow",
+            "available": "Available",
+            "availableInfo": "This is the total amount available for you to borrow. You can borrow based on your collateral and until the borrow cap is reached."
+        },
+        "lendPositionsList": {
+            "title": "Your lending deposits",
+            "usedAsCollateral": "Used as collateral",
+            "noData": "You don't have any deposits/loans yet"
+        },
+        "lendAssetsList": {
+            "title": "Assets to supply",
+            "showZeroBalances": "Show assets with 0 balance",
+            "walletBalance": "Wallet balance",
+            "canBeCollateral": "Can be collateral"
+        },
+        "repayModal": {
+            "title": "Repay",
+            "repayWith": "Repay with",
+            "borrowApr": "Borrow APR",
+            "collateralRatio": "Collateral ratio",
+            "remainingDebt": "Remaining debt",
+            "newCollateralBalance": "New collateral balance",
+            "invalidAmountError": "Exceeds maximum amount",
+            "tokenPrice": "{{token}} price",
+            "walletBalance": "Wallet balance",
+            "priceImpact": "Price impact",
+            "priceImpactInfo": "The impact your trade has on the market price of this pool.",
+            "expectedAmountToRepay": "Expected amount to repay",
+            "collateralToRepayWith": "Collateral to repay with"
+        },
+        "borrowForm": {
+            "borrowApy": "Borrow APY",
+            "learnMore":"Learn more",
+            "collateralRatio": "Collateral ratio",
+            "liquidationPrice": "Liquidation price",
+            "acknowledge": "I understand that my collateral may be liquidated or used to pay rollover fees if applicable.",
+            "invalidAmountError": "Exceeds maximum amount",
+            "tokenPrice": "{{token}} price"
+        },
+        "withdrawForm": {
+            "remainingSupply": "Remaining supply",
+            "notLiquidityEnoughError": "Max liquidity available: {{maxLiquidity}}",
+            "invalidAmountError": "Exceeds maximum amount"
+        },
+        "lendModal": {
+            "title": "Deposit",
+            "exceedsMaxAmount": "Exceeds maximum amount",
+            "collateralization": "Collateralization",
+            "lendApy": "Lend APY",
+            "deposit": "Deposit",
+            "enabled": "Enabled",
+            "disabled": "Disabled"
+        },
+        "eModeCard": {
+            "title": "Efficiency mode (E-Mode)",
+            "description": "E-Mode increases your LTV for a selected category of assets up to 97%.",
+            "enabled": "Enabled",
+            "disabled": "Disabled"
+        }
+    },
+    "aaveReserveOverviewPage": {
+        "meta": {
+            "title": "Pool details"
+        },
+        "topPanel": {
+            "title": "Lend and borrow",
+            "subtitle": "Borrow and earn interest by providing liquidity",
+            "reserveSize": "Reserve size",
+            "availableLiquidity": "Available liquidity",
+            "utilizationRate": "Utilization rate",
+            "oraclePrice": "Oracle price",
+            "underlyingToken": "Underlying token",
+            "aToken": "aToken",
+            "variableDebtToken": "Variable debt token",
+            "variableDebtTokenName": "Variable debt {{symbol}}",
+            "stableDebtToken": "Stable debt token",
+            "stableDebtTokenName": "Stable debt {{symbol}}"
+        },
+        "reserveStatusTab": {
+            "title": "Reserve status",
+            "fullTitle": "Reserve status & configuration"
+        },
+        "yourWalletTab": {
+            "title": "Your wallet",
+            "walletBalance": "Wallet balance",
+            "availableToSupply": "Available to supply",
+            "availableToSupplyInfo": "This is the total amount that you are able to supply to this reserve. You are able to supply your wallet balance up until the supply cap is reached",
+            "availableToBorrow": "Available to borrow",
+            "availableToBorrowInfo": "This is the total amount available for you to borrow. You can borrow based on your collateral and until the borrow cap is reached.",
+            "supply": "Supply",
+            "borrow": "Borrow",
+            "yourWalletIsEmpty": "Your wallet is empty. Purchase or transfer assets",
+            "noSupply": "Protocol supply cap is at 100% for this asset. Further supply unavailable. Learn more",
+            "connectWalletToSeeData": "Connect wallet to see available data",
+            "connectWallet": "Connect Wallet"
+        },
+        "eModeDetails": {
+            "title": "E-Mode details",
+            "category": "E-Mode category",
+            "maxLtv": "Max LTV",
+            "maxLtvInfo": "The Maximum LTV ratio represents the maximum borrowing power of a specific collateral. For example, if a collateral has an LTV of 75%, the user can borrow up to 0.75 worth of ETH in the principal currency for every 1 ETH worth of collateral.",
+            "liquidationThreshold": "Liquidation threshold",
+            "liquidationThresholdInfo": "This represents the threshold at which a borrow position will be considered undercollateralized and subject to liquidation for each collateral. For example, if a collateral has a liquidation threshold of 80%, it means that the position will be liquidated when the debt value is worth 80% of the collateral value.",
+            "liquidationPenalty": "Liquidation penalty",
+            "liquidationPenaltyInfo": "When a liquidation occurs, liquidators repay up to 50% of the outstanding borrowed amount on behalf of the borrower. In return, they can buy the collateral at a discount and keep the difference (liquidation penalty) as a bonus.",
+            "body": "E-Mode increases your LTV for a selected category of assets, meaning that when E-mode is enabled, you will have higher borrowing power over assets of the same E-mode category which are defined by Aave Governance. You can enter E-Mode from your Dashboard.",
+            "learnMore": "Learn more"
+        },
+        "supplyDetails": {
+            "title": "Supply details",
+            "maxLtv": "Max LTV",
+            "maxLtvInfo": "The Maximum LTV ratio represents the maximum borrowing power of a specific collateral. For example, if a collateral has an LTV of 75%, the user can borrow up to 0.75 worth of ETH in the principal currency for every 1 ETH worth of collateral.",
+            "liquidationThreshold": "Liquidation threshold",
+            "liquidationThresholdInfo": "This represents the threshold at which a borrow position will be considered undercollateralized and subject to liquidation for each collateral. For example, if a collateral has a liquidation threshold of 80%, it means that the position will be liquidated when the debt value is worth 80% of the collateral value.",
+            "liquidationPenalty": "Liquidation penalty",
+            "liquidationPenaltyInfo": "When a liquidation occurs, liquidators repay up to 50% of the outstanding borrowed amount on behalf of the borrower. In return, they can buy the collateral at a discount and keep the difference (liquidation penalty) as a bonus.",
+            "collateralUsage": "Collateral usage",
+            "canBeCollateral": "Can be collateral",
+            "cannotBeCollateral": "Can't be collateral",
+            "totalSupplied": "Total supplied",
+            "totalSuppliedInfo": "Asset supply is limited to a certain amount to reduce protocol exposure to the asset and to help manage risks involved.",
+            "of": "of",
+            "apy": "APY",
+            "chart": {
+                "supplyApy": "Supply APY"
+            }
+        },
+        "borrowDetails": {
+            "title": "Borrow details",
+            "totalBorrowed": "Total borrowed",
+            "totalBorrowedInfo": "Borrowing of this asset is limited to a certain amount to minimize liquidity pool insolvency.",
+            "of": "of",
+            "apr": "APR",
+            "borrowCap": "Borrow cap",
+            "collectorInfo": "Collector info",
+            "reserveFactor": "Reserve factor",
+            "reserveFactorInfo": "Reserve factor is a percentage of interest which goes to a collector contract controlled by Sovryn governance to promote ecosystem growth.",
+            "collectorContract": "Collector contract",
+            "viewContract": "View contract",
+            "chart": {
+                "aprVarLabel": "Borrow APR, variable"
+            }
+        },
+        "interestRateModel": {
+            "title": "Interest rate model",
+            "utilizationRate": "Utilization rate",
+            "interestRateStrategy": "Interest rate strategy",
+            "reserveFactor": "Reserve factor",
+            "reserveFactorInfo": "Reserve factor is a percentage of interest which goes to a collector contract controlled by Sovryn governance to promote ecosystem growth.",
+            "collectorContract": "Collector contract",
+            "viewContract": "View contract",
+            "chart": {
+                "aprVarLabel": "Borrow APR, variable"
+            }
+        }
+    },
     "bitocracyPage": {
         "meta": {
             "title": "Bitocracy - Sovryn",
@@ -872,7 +1116,6 @@
             "accountBalance": "Account balance:"
         }
     },
-
     "proposalPage": {
         "meta": {
             "title": "Bitocracy - Sovryn"
@@ -938,7 +1181,6 @@
             "calldata": "Calldata"
         }
     },
-
     "leaderboardPointsPage": {
         "meta": {
             "title": "Spice Leaderboard - Sovryn"
@@ -1060,7 +1302,6 @@
             }
         }
     },
-
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -1144,7 +1385,6 @@
             }
         }
     },
-
     "rewardPage": {
         "meta": {
             "title": "Rewards - Sovryn",
@@ -1257,7 +1497,6 @@
             }
         }
     },
-
     "historyPage": {
         "meta": {
             "title": "History - Sovryn",
@@ -1305,7 +1544,6 @@
         },
         "apr": "APR"
     },
-
     "marketMakingPage": {
         "meta": {
             "title": "Market Making - Sovryn"
@@ -1376,7 +1614,6 @@
             "24hVolume": "24h volume (BTC)"
         }
     },
-
     "bobMarketMakingPage": {
         "depositModal": {
             "title": "Deposit liquidity",
@@ -1433,7 +1670,6 @@
         },
         "loading": "Loading..."
     },
-
     "borrowHistory": {
         "types": {
             "lineOfCredit": "Line of credit",
@@ -1441,9 +1677,11 @@
             "depositCollateralLoan": "Fixed-interest loan - Adjust - Deposit collateral",
             "closeWithSwapLoan": "Fixed-interest loan - Adjust - Close with swap",
             "closeWithDepositLoan": "Fixed-interest loan - Adjust - Close with deposit",
+            "swapBorrowRateMode": "Fixed-interest loan - Adjust - Swap borrow rate mode",
             "liquidationLoan": "Fixed-interest loan - Liquidation",
             "rolloversLoan": "Fixed-interest loan - Rollovers",
             "collateralSurplus": "Collateral surplus"
+            
         },
         "transactionTypes": {
             "createLoan": "Create / Increase loan",
@@ -1451,7 +1689,9 @@
             "closeSwap": "Close with swap",
             "closeDeposit": "Close with deposit",
             "liquidation": "Liquidation",
-            "rollovers": "Rollovers"
+            "rollovers": "Rollovers",
+            "repay": "Repay / Close a loan",
+            "swapBorrowRateMode": "Swap borrow rate mode"
         }
     },
     "transactionHistory": {
@@ -1518,9 +1758,13 @@
     },
     "earnHistory": {
         "types": {
+            "supply": "Supply",
+            "withdrawal": "Withdrawal",
             "stabilityPool": "Stability pool",
             "lending": "Lending",
-            "marketMaking": "Market making"
+            "marketMaking": "Market making",
+            "useAsCollateral": "Use as collateral",
+            "removeAsCollateral": "Remove as collateral"
         },
         "lendingHistory": {
             "columns": {
@@ -1551,9 +1795,18 @@
             "interestPayment": "Interest payment",
             "originationFee": "Origination fee",
             "interest": "Interest payment/refund",
+            "interestRate": "Interest Rate",
+            "interestRateMode": "Interest Rate Mode",
             "newDebt": "New debt balance",
             "loanID": "Loan ID",
-            "TXID": "TXID"
+            "TXID": "TXID",
+            "from": "From",
+            "to": "To",
+            "reserve": "Reserve",
+            "variableBorrowRate": "Variable borrow rate",
+            "stableBorrowRate": "Stable borrow rate",
+            "stable":"Stable",
+            "variable":"Variable"
         }
     },
     "stabilityPoolHistory": {

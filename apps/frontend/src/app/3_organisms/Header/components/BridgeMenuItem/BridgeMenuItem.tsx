@@ -118,7 +118,7 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
               }
               dataAttribute={`dapp-menu-ethBridge`}
               className={classNames('no-underline', {
-                hidden: isRskChain(chainId),
+                hidden: isRskChain(chainId) || isBobChain(chainId),
               })}
               onClick={handleEthClicked}
             />

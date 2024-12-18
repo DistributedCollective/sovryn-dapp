@@ -1,9 +1,5 @@
 import { Token } from '@gobob/bob-sdk/dist/gateway/types';
-import {
-  useAccount,
-  useBalance,
-  useSendGatewayTransaction,
-} from '@gobob/sats-wagmi';
+import { useAccount, useBalance } from '@gobob/sats-wagmi';
 
 import React, { FC, useEffect, useState } from 'react';
 
@@ -16,6 +12,7 @@ import { BOB_CHAIN_ID } from '../../../../../config/chains';
 import { useCacheCall } from '../../../../../hooks';
 import { useAccount as useEvmAccount } from '../../../../../hooks/useAccount';
 import { bobGateway } from '../../BobGateway.utils';
+import { useSendGatewayTransaction } from '../../hooks/useSendGatewayTransaction';
 
 export const BobGatewayDeposit: FC = () => {
   const [amount, setAmount] = useState('');
@@ -31,7 +28,6 @@ export const BobGatewayDeposit: FC = () => {
     sendGatewayTransaction,
   } = useSendGatewayTransaction({
     toChain: 'bob',
-    strategyAddress: '0xBA67A0a0C2dd790182D1954B4C9788f9Ae43e604',
   });
 
   useEffect(() => {
@@ -51,9 +47,10 @@ export const BobGatewayDeposit: FC = () => {
     }
 
     const params = {
-      toToken: 'uniBTC',
+      toToken: 'wBTC',
       evmAddress: account,
       value: BigInt(parseUnits(amount, 8).toString()),
+      strategyAddress: '0xBA67A0a0C2dd790182D1954B4C9788f9Ae43e604',
     };
 
     console.log(params);

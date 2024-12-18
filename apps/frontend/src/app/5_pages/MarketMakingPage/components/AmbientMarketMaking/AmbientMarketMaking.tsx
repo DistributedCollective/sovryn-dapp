@@ -43,6 +43,7 @@ export const AmbientMarketMaking: FC = () => {
           requiredChainId={RSK_CHAIN_ID}
           storageKey={BOB_STORAGE_KEY}
         />
+
         <div className="text-gray-10 mt-6 mb-4 sm:mt-9">
           <Heading className="text-center mb-1 lg:mb-3 text-base lg:text-2xl">
             {t(translations.ambientMarketMaking.title)}

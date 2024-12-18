@@ -16,6 +16,12 @@ export type ColumnOptions<RowType extends RowObject> = {
   sampleData?: ReactNode;
 };
 
+export enum TableBreakpoint {
+  md = 'md',
+  lg = 'lg',
+  xl = 'xl',
+}
+
 export type TableProps<RowType extends RowObject> = {
   className?: string;
   rowClassName?: string;
@@ -40,6 +46,7 @@ export type TableProps<RowType extends RowObject> = {
   subtitleRenderer?: (row: RowType) => ReactNode;
   expandedIndex?: number;
   flatMode?: boolean;
+  breakpoint?: TableBreakpoint;
 };
 
 export enum OrderDirection {

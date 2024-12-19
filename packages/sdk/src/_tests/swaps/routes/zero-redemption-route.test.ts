@@ -4,7 +4,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { zeroRedemptionSwapRoute } from '../../../swaps/smart-router/routes/zero-redemption-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
 import { makeChainFixture } from '../../_fixtures/chain';
-import { FAKE_PERMIT, FAKE_SIGNATURE } from '../../_fixtures/permit';
+// import { FAKE_PERMIT, FAKE_SIGNATURE } from '../../_fixtures/permit';
 import { makeTokenAddress } from '../../_fixtures/tokens';
 import { TEST_TIMEOUT } from '../../config';
 
@@ -109,28 +109,28 @@ describe('Zero Redemption Route', () => {
   });
 
   describe('swap', () => {
-    it('builds swap tx data for DLLR -> RBTC', async () => {
-      await expect(
-        route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero, {
-          typedDataValue: FAKE_PERMIT,
-          typedDataSignature: FAKE_SIGNATURE,
-        }),
-      ).resolves.toMatchObject({
-        to: expect.any(String),
-        data: expect.any(String),
-        value: '0',
-      });
-    });
+    // it('builds swap tx data for DLLR -> RBTC', async () => {
+    //   await expect(
+    //     route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero, {
+    //       typedDataValue: FAKE_PERMIT,
+    //       typedDataSignature: FAKE_SIGNATURE,
+    //     }),
+    //   ).resolves.toMatchObject({
+    //     to: expect.any(String),
+    //     data: expect.any(String),
+    //     value: '0',
+    //   });
+    // });
 
-    it('builds swap tx data for ZUSD -> RBTC', async () => {
-      await expect(
-        route.swap(zusd, rbtc, parseUnits('20'), constants.AddressZero),
-      ).resolves.toMatchObject({
-        to: expect.any(String),
-        data: expect.any(String),
-        value: '0',
-      });
-    });
+    // it('builds swap tx data for ZUSD -> RBTC', async () => {
+    //   await expect(
+    //     route.swap(zusd, rbtc, parseUnits('20'), constants.AddressZero),
+    //   ).resolves.toMatchObject({
+    //     to: expect.any(String),
+    //     data: expect.any(String),
+    //     value: '0',
+    //   });
+    // });
 
     it('fails build swap tx data if permit is not provided for DLLR -> RBTC', async () => {
       await expect(

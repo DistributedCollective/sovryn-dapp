@@ -101,11 +101,9 @@ export const Header: FC = () => {
         }
         extraContent={
           <div className="flex lg:space-x-4 items-center flex-wrap lg:flex-nowrap flex-col-reverse lg:flex-row lg:justify-start">
-            {account && (
-              <div className="w-full lg:w-auto mt-2 lg:mt-0">
-                <BridgeMenuItem dataAttribute="dapp-header-bridges" />
-              </div>
-            )}
+            <div className="w-full lg:w-auto mt-2 lg:mt-0">
+              <BridgeMenuItem dataAttribute="dapp-header-bridges" />
+            </div>
           </div>
         }
       />

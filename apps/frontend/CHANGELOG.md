@@ -1,5 +1,11 @@
 # frontend
 
+## 1.1.31
+
+### Patch Changes
+
+- 881d4164: SOV-4514: Changes for "Transfer Assets" Button
+
 ## 1.1.30
 
 ### Patch Changes

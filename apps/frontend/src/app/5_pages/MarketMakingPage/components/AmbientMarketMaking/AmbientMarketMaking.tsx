@@ -22,7 +22,7 @@ export const AmbientMarketMaking: FC = () => {
     [chainId],
   );
   const allPools = useMemo(
-    () => AmbientLiquidityPoolDictionary.list(chainId),
+    () => AmbientLiquidityPoolDictionary.list(chainId, PoolListGroup.default),
     [chainId],
   );
 

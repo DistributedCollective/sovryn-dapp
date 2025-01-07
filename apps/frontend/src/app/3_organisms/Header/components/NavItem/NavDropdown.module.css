@@ -1,7 +1,8 @@
 .button[type='button'] {
   @apply flex items-center bg-gray-60 border-gray-60 justify-between relative h-full min-w-20 whitespace-nowrap font-body text-gray-10 text-xs font-semibold leading-none cursor-pointer select-none transition-colors border rounded;
 
-  &.isOpen, &.isActive {
+  &.isOpen,
+  &.isActive {
     @apply bg-gray-80 border-gray-80;
   }
 
@@ -15,6 +16,10 @@
 
   &.large {
     @apply h-10 px-2.5;
+  }
+
+  &.disabled {
+    @apply cursor-not-allowed;
   }
 }
 

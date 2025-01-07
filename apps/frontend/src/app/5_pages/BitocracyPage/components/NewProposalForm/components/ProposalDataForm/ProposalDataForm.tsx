@@ -62,7 +62,6 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
     details: form,
     setDetails: setForm,
   } = useProposalContext();
-  const [governorOwner, setGovernorOwner] = useState('');
   const [index, setIndex] = useState(0);
   const handleInputChangeInput = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -147,13 +146,12 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   );
 
   useEffect(() => {
-    if (proposalType === ProposalCreationType.Proclamation && !governorOwner) {
-      getProtocolContract(Governor.Admin, RSK_CHAIN_ID).then(owner => {
-        setGovernorOwner(owner.address);
-        setGovernor(owner.address);
+    if (proposalType === ProposalCreationType.Proclamation) {
+      getProtocolContract(Governor.Admin, RSK_CHAIN_ID).then(admin => {
+        setGovernor(admin.address);
       });
     }
-  }, [governorOwner, proposalType, setGovernor, setGovernorOwner]);
+  }, [proposalType, setGovernor]);
 
   return (
     <div className="flex flex-col gap-8 relative pb-4">

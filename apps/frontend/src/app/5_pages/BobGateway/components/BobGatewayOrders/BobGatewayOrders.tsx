@@ -1,0 +1,44 @@
+import React, { FC } from 'react';
+
+import { t } from 'i18next';
+
+import { Table } from '@sovryn/ui';
+
+import { BOB_CHAIN_ID } from '../../../../../config/chains';
+
+import { useCacheCall } from '../../../../../hooks';
+import { useAccount } from '../../../../../hooks/useAccount';
+import { translations } from '../../../../../locales/i18n';
+import { bobGateway } from '../../BobGateway.utils';
+import { COLUMNS_CONFIG } from './BobGatewayOrders.constants';
+
+export const BobGatewayOrders: FC = () => {
+  const { account } = useAccount();
+
+  const { value: orders, loading } = useCacheCall(
+    `bob-orders/${account}`,
+    BOB_CHAIN_ID,
+    async () => {
+      if (!account) {
+        return [];
+      }
+      const result = await bobGateway.getOrders(account);
+      return result.sort((a, b) => (b.timestamp < a.timestamp ? -1 : 1));
+    },
+    [account],
+    [],
+  );
+
+  return (
+    <div className="bg-gray-80 py-4 px-4 rounded mt-6">
+      <Table
+        columns={COLUMNS_CONFIG}
+        rows={orders}
+        isLoading={loading}
+        className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
+        noData={t(translations.common.tables.noData)}
+        loadingData={t(translations.common.tables.loading)}
+      />
+    </div>
+  );
+};

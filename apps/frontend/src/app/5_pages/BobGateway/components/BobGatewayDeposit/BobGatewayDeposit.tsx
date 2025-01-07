@@ -1,56 +1,63 @@
-import { Token } from '@gobob/bob-sdk/dist/gateway/types';
 import { useAccount, useBalance } from '@gobob/sats-wagmi';
 
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
+import { t } from 'i18next';
 
-import { Button, Input, Paragraph, Select } from '@sovryn/ui';
+import { ChainIds } from '@sovryn/ethers-provider';
+import { AmountInput, Button, ButtonSize, Select } from '@sovryn/ui';
+import { Decimal } from '@sovryn/utils';
 
 import { BOB_CHAIN_ID } from '../../../../../config/chains';
 
+import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { useCacheCall } from '../../../../../hooks';
 import { useAccount as useEvmAccount } from '../../../../../hooks/useAccount';
-import { bobGateway } from '../../BobGateway.utils';
+import { useDollarValue } from '../../../../../hooks/useDollarValue';
+import { translations } from '../../../../../locales/i18n';
+import { toWei } from '../../../../../utils/math';
+import { bobGateway, strategies } from '../../BobGateway.utils';
 import { useSendGatewayTransaction } from '../../hooks/useSendGatewayTransaction';
 
-export const BobGatewayDeposit: FC = () => {
+const commonTranslations = translations.common;
+
+type BobGatewayDepositProps = {
+  setStrategyAddress: (strategy: string) => void;
+  strategyAddress: string;
+};
+
+export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
+  strategyAddress,
+  setStrategyAddress,
+}) => {
   const [amount, setAmount] = useState('');
-  const [token, setToken] = useState<string>('');
-  const [tokens, setTokens] = useState<Token[]>([]);
   const { address: btcAddress } = useAccount();
   const { account } = useEvmAccount();
   const { data } = useBalance();
-  const {
-    data: hash,
-    error,
-    isPending,
-    sendGatewayTransaction,
-  } = useSendGatewayTransaction({
+  const btcPrice = useDollarValue(
+    'BTC',
+    toWei(1).toString(),
+    ChainIds.RSK_MAINNET,
+  );
+  const { isPending, sendGatewayTransaction } = useSendGatewayTransaction({
     toChain: 'bob',
   });
 
-  useEffect(() => {
-    if (!tokens.length) {
-      bobGateway.getTokens().then(list => {
-        console.log(list);
-        setTokens(list);
-      });
-    }
-  }, [tokens.length]);
+  const onSubmit = async () => {
+    const strategy = strategies.find(
+      t => t.strategyAddress === strategyAddress,
+    );
 
-  const onSbumit = async () => {
-    const toToken = tokens.find(t => t.address === token);
-
-    if (!account || !amount || !toToken) {
+    if (!account || !amount || !strategy) {
       return;
     }
 
     const params = {
-      toToken: 'wBTC',
+      toToken: strategy.toToken,
       evmAddress: account,
       value: BigInt(parseUnits(amount, 8).toString()),
-      strategyAddress: '0xBA67A0a0C2dd790182D1954B4C9788f9Ae43e604',
+      strategyAddress: strategy.strategyAddress,
     };
 
     console.log(params);
@@ -72,14 +79,6 @@ export const BobGatewayDeposit: FC = () => {
   );
 
   useEffect(() => {
-    console.log({
-      error,
-      hash,
-      isPending,
-    });
-  }, [error, hash, isPending]);
-
-  useEffect(() => {
     if (orders.length) {
       console.log({
         orders,
@@ -87,38 +86,71 @@ export const BobGatewayDeposit: FC = () => {
     }
   }, [orders]);
 
+  const isDisabled = useMemo(() => {
+    return (
+      !btcAddress ||
+      !amount ||
+      !strategyAddress ||
+      Number(formatUnits(data?.confirmed.toString() || '0', 8)) < Number(amount)
+    );
+  }, [amount, btcAddress, data?.confirmed, strategyAddress]);
+
   return (
-    <div>
-      <Paragraph>BTC Wallet: {btcAddress}</Paragraph>
-      Amount: (Balance: {formatUnits(data?.total.toString() || '0', 8)} BTC)
-      <Input
-        placeholder="Amount (BTC)"
-        step="0.00000001"
-        value={amount}
-        onChangeText={setAmount}
-        className="mb-4"
-        type="number"
+    <div className="flex flex-col">
+      <div
+        onClick={() =>
+          setAmount(formatUnits(data?.confirmed.toString() || '0', 8))
+        }
+        className="cursor-pointer self-end text-gray-20 text-xs mt-5 mb-1"
+      >
+        (max: {formatUnits(data?.confirmed.toString() || '0', 8)} wBTC)
+      </div>
+
+      <div className="flex items-center gap-3 mb-4">
+        <div className="flex-1 relative">
+          <AmountInput
+            placeholder="Amount (BTC)"
+            step="0.00000001"
+            value={amount}
+            onChangeText={setAmount}
+            label={t(commonTranslations.amount)}
+          />
+          <div className="absolute right-0 text-gray-40 text-xs mt-0.5 mr-2">
+            $
+            {Decimal.from(btcPrice.usdPrice || '0')
+              .mul(amount || '0')
+              .toString()}
+          </div>
+        </div>
+
+        <div className="bg-gray-70 p-2.5 rounded">
+          <AssetRenderer asset="wBTC" showAssetLogo />
+        </div>
+      </div>
+      <div className="mb-6">
+        <div className="text-gray-30 text-xs mb-2 font-medium">
+          Select strategy
+        </div>
+        <Select
+          value={strategyAddress}
+          onChange={setStrategyAddress}
+          options={strategies.map(strategy => ({
+            value: strategy.strategyAddress,
+            label: (
+              <div className="flex items-center gap-2">{strategy.name}</div>
+            ),
+          }))}
+          className="min-w-36 w-full"
+        />
+      </div>
+
+      <Button
+        size={ButtonSize.large}
+        loading={isPending}
+        disabled={isDisabled}
+        text={btcAddress ? 'Deposit' : 'Connect Wallet'}
+        onClick={onSubmit}
       />
-      <br />
-      <Select
-        value={token}
-        onChange={setToken}
-        options={tokens.map(token => ({
-          value: token.address,
-          label: (
-            <div className="flex items-center gap-2">
-              <img
-                className="w-8 h-8 rounded-full"
-                src={token.logoURI}
-                alt={token.symbol}
-              />{' '}
-              {token.name} ({token.symbol})
-            </div>
-          ),
-        }))}
-        className="min-w-36 w-full lg:w-auto"
-      />
-      <Button loading={isPending} text="submit" onClick={onSbumit} />
     </div>
   );
 };

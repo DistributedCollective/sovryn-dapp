@@ -2,17 +2,19 @@ import React, { FC, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
+import { ChainIds } from '@sovryn/ethers-provider';
 import {
   Heading,
-  prettyTx,
   SimpleTable,
   SimpleTableRow,
   Tabs,
   TabType,
 } from '@sovryn/ui';
 
+import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
+import { TxIdWithNotification } from '../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { translations } from '../../../../../locales/i18n';
-import { strategies } from '../../BobGateway.utils';
+import { strategies } from '../../BobGateway.constants';
 import { BobGatewayDeposit } from '../BobGatewayDeposit/BobGatewayDeposit';
 import { BobGatewayWithdraw } from '../BobGatewayWithdraw/BobGatewayWithdraw';
 
@@ -40,6 +42,7 @@ export const BobGatewayForm: FC = () => {
         label: t(translations.bobGatewayPage.withdraw),
         content: <BobGatewayWithdraw strategyAddress={strategyAddress} />,
         dataAttribute: 'bob-gateway-withdraw',
+        disabled: true,
       },
     ],
     [strategyAddress],
@@ -58,15 +61,42 @@ export const BobGatewayForm: FC = () => {
         />
       </div>
       <SimpleTable className="flex-1 lg:max-w-[25rem]">
-        <Heading className="text-lg font-medium mb-3">Strategy details</Heading>
-        <SimpleTableRow label="Name" value={strategy?.name} />
-        <SimpleTableRow label="Category" value={strategy?.category} />
-        <SimpleTableRow label="Incentives" value={strategy?.incentives} />
+        <Heading className="text-lg font-medium mb-3">
+          {t(translations.bobGatewayPage.strategyDetails.title)}
+        </Heading>
         <SimpleTableRow
-          label="Token"
-          value={prettyTx(strategy?.strategyAddress || '', 4, 4)}
+          label={t(translations.bobGatewayPage.strategyDetails.name)}
+          value={
+            strategy && (
+              <AssetPairRenderer
+                chainId={ChainIds.BOB_MAINNET}
+                asset1={strategy.tokenA}
+                asset2={strategy.tokenB}
+              />
+            )
+          }
         />
-        <SimpleTableRow label="About" value={strategy?.about} />
+        <SimpleTableRow
+          label={t(translations.bobGatewayPage.strategyDetails.category)}
+          value={strategy?.category}
+        />
+        <SimpleTableRow
+          label={t(translations.bobGatewayPage.strategyDetails.incentives)}
+          value={strategy?.incentives}
+        />
+        <SimpleTableRow
+          label={t(translations.bobGatewayPage.strategyDetails.token)}
+          value={
+            <TxIdWithNotification
+              href=""
+              value={strategy?.strategyAddress || ''}
+            />
+          }
+        />
+        <SimpleTableRow
+          label={t(translations.bobGatewayPage.strategyDetails.about)}
+          value={strategy?.about}
+        />
       </SimpleTable>
     </div>
   );

@@ -7,6 +7,8 @@ import { nanoid } from 'nanoid';
 
 import {
   Button,
+  ButtonSize,
+  ButtonStyle,
   Dialog,
   DialogBody,
   DialogHeader,
@@ -16,6 +18,7 @@ import {
 
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { translations } from '../../../../../locales/i18n';
+import { getBitcoinWalletIcon } from './BitcoinWallet.utils';
 
 export const BitcoinWallet: FC = () => {
   const { addNotification } = useNotificationContext();
@@ -53,11 +56,25 @@ export const BitcoinWallet: FC = () => {
             title={t(translations.connectWalletButton.connectBTC)}
           />
           <DialogBody className="p-6">
-            <div className="flex gap-2 my-4 flex-wrap">
+            <div className="flex flex-col gap-4 mx-8">
               {connectors.map(connector => (
                 <Button
-                  key={connector.name}
-                  text={connector.name}
+                  className="w-full flex items-center gap-2"
+                  size={ButtonSize.large}
+                  key={connector.id}
+                  style={ButtonStyle.secondary}
+                  text={
+                    <>
+                      {getBitcoinWalletIcon(connector) && (
+                        <img
+                          alt={connector.name}
+                          src={getBitcoinWalletIcon(connector)}
+                          width={24}
+                        />
+                      )}
+                      {connector.name}
+                    </>
+                  }
                   onClick={() => connect({ connector })}
                 />
               ))}

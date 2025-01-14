@@ -7,11 +7,10 @@ export const bobGateway = new GatewaySDK('bob');
 
 export const strategies = [
   {
-    strategyAddress: '0xBA67A0a0C2dd790182D1954B4C9788f9Ae43e604',
+    strategyAddress: '0x0A0A0F6d572488093763C13AF7aB55597477aBDB',
     toToken: 'wBTC',
-    name: 'solvBTCBBN/uniBTC',
-    tokenA: 'solvBTCBBN',
-    tokenB: 'uniBTC',
+    tokenA: 'SolvBTC.BBN',
+    tokenB: 'UniBTC',
     category: 'Liquidity providing',
     incentives: (
       <div className="flex flex-col">
@@ -28,9 +27,8 @@ export const strategies = [
   {
     strategyAddress: '0x15b6ce34A89769AdEa427FD3CCf76cdf32CE4d2B',
     toToken: 'wBTC',
-    name: 'wbtc/solvBTCBBN',
-    tokenA: 'wbtc',
-    tokenB: 'solvBTCBBN',
+    tokenA: 'WBTC',
+    tokenB: 'SolvBTC.BBN',
     category: 'Liquidity providing',
     incentives: (
       <div className="flex flex-col">
@@ -47,9 +45,8 @@ export const strategies = [
   {
     strategyAddress: '0x9FaF18725Ab3dE1F1bF94c74d40888AF4690EFc9',
     toToken: 'wBTC',
-    name: 'wBTC/uniBTC',
-    tokenA: 'wBTC',
-    tokenB: 'uniBTC',
+    tokenA: 'WBTC',
+    tokenB: 'UniBTC',
     category: 'Liquidity providing',
     incentives: (
       <div className="flex flex-col">

@@ -88,13 +88,13 @@ export const BobClaimFeesModal: FC<BobClaimFeesModalProps> = ({
           <SimpleTable className="mt-6">
             <SimpleTableRow
               label={t(pageTranslations.earnedToken, {
-                token: base,
+                token: base.symbol,
               })}
               value={<AmountRenderer value={feesBase} />}
             />
             <SimpleTableRow
               label={t(pageTranslations.earnedToken, {
-                token: quote,
+                token: quote.symbol,
               })}
               value={<AmountRenderer value={feesQuote} />}
             />

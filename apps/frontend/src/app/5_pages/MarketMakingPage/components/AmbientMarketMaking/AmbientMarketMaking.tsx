@@ -20,7 +20,11 @@ export const AmbientMarketMaking: FC = () => {
   const { value } = useCacheCall(
     'mm',
     chainId,
-    () => loadIndexer(chainId).pools.list(),
+    async () => {
+      return (await loadIndexer(chainId).pools.list()).sort((a, b) =>
+        a.base.symbol < b.base.symbol ? -1 : 1,
+      );
+    },
     [chainId],
     [],
   );

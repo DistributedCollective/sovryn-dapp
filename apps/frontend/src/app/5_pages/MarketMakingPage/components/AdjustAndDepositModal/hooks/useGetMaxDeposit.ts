@@ -8,11 +8,11 @@ import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useAssetBalance } from '../../../../../../hooks/useAssetBalance';
 import { useGasPrice } from '../../../../../../hooks/useGasPrice';
 import { useGetTokenContract } from '../../../../../../hooks/useGetContract';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 import { composeGas } from '../../../../../../utils/helpers';
 import { useGetTokenPrice } from '../../../../BorrowPage/hooks/useGetTokenPrice';
 import { AmmLiquidityPool } from '../../../utils/AmmLiquidityPool';
 import { useGetPoolsBalance } from './useGetPoolsBalance';
-import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 
 export const useGetMaxDeposit = (
   pool: AmmLiquidityPool,
@@ -71,13 +71,17 @@ export const useGetMaxDeposit = (
       : balanceTokenA;
   }, [balanceTokenA, balanceTokenB, priceTokenA, gasLimit]);
 
-  const maximumV1Deposit = useMemo(
-    () =>
-      maxDepositValue.lte(maxAllowedTokenAmount)
-        ? maxDepositValue
-        : maxAllowedTokenAmount,
-    [maxAllowedTokenAmount, maxDepositValue],
-  );
+  const maximumV1Deposit = useMemo(() => {
+    const maximumDeposit = maxDepositValue.lte(maxAllowedTokenAmount)
+      ? maxDepositValue
+      : maxAllowedTokenAmount;
+
+    if (maximumDeposit.lt(Decimal.ZERO)) {
+      return Decimal.ZERO;
+    }
+
+    return maximumDeposit;
+  }, [maxAllowedTokenAmount, maxDepositValue]);
 
   return { maximumV1Deposit, balanceTokenA, balanceTokenB };
 };

@@ -52,6 +52,7 @@ export const ClaimableItem: FC<ClaimableItemProps> = ({ item }) => {
             (Number(item.amount) * Math.sqrt(spotPrice)).toFixed(0),
           ).toUnits(baseDecimals),
         );
+
         setLiqQuote(
           decimalic(
             (Number(item.amount) / Math.sqrt(spotPrice)).toFixed(0),

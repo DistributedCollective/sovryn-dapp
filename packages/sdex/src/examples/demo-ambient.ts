@@ -15,6 +15,21 @@ import { CrocEnv } from '../croc';
 let configPath = '';
 let requiredConfig = true;
 
+interface PoolConfig {
+  poolIdx: number;
+  baseToken: {
+    tokenSymbol: string;
+    tokenAddress: string;
+  };
+  quoteToken: {
+    tokenSymbol: string;
+    tokenAddress: string;
+  };
+  lpTokenAmount: number;
+  lpConduit: string;
+  price: number;
+}
+
 // Iterate over the command-line arguments
 process.argv.forEach((arg, index) => {
   if (arg === '--path' && index + 1 < process.argv.length) {
@@ -24,12 +39,13 @@ process.argv.forEach((arg, index) => {
     requiredConfig = false;
   }
 });
-let config = '';
+let config: PoolConfig[] | null = null;
 let fullPath = '';
 if (configPath) {
   fullPath = path.resolve(configPath);
   try {
-    config = require(fullPath);
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    config = require(fullPath) as PoolConfig[];
   } catch (err) {
     console.error('Error requiring config:', err);
   }
@@ -42,6 +58,12 @@ if (config) {
 //console.log(config);
 
 // const { bobMainnetAmbientPoolConfigs } = config;
+
+const {
+  bobMainnetAmbientPoolConfigs,
+}: { bobMainnetAmbientPoolConfigs: PoolConfig[] } = config as unknown as {
+  bobMainnetAmbientPoolConfigs: PoolConfig[];
+};
 
 // import { priceToTick } from '../utils/price';
 
@@ -151,9 +173,9 @@ async function demo() {
 
   // DEPLOY (INITIALIZE) AMBIENT POOLS
 
-  const pool = croc.pool(WBTC, SAT, 410);
-  const { fn, args } = await pool.initPool(64550);
-  console.log({ fn, args });
+  // const pool = croc.pool(WBTC, SAT, 410);
+  // const { fn, args } = await pool.initPool(64550);
+  // console.log({ fn, args });
   // const poolPrice = await pool.displayPrice();
   // console.log(`Pool Price: ${poolPrice.toString()}`);
 
@@ -181,7 +203,48 @@ async function demo() {
       price: price, // price
       slippageTolerancePercentage,
     });
-  }*/
+    }*/
+  for (const poolConfig of bobMainnetAmbientPoolConfigs) {
+    console.log(
+      `Processing ambient pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
+    );
+    const SLIPPAGE_TORELANCE = 1; // 0.05%
+    type PriceRange = [number, number];
+    const pool = croc.pool(
+      bobMainnetTokens[
+        poolConfig.quoteToken.tokenSymbol as keyof typeof bobMainnetTokens
+      ],
+      bobMainnetTokens[
+        poolConfig.baseToken.tokenSymbol as keyof typeof bobMainnetTokens
+      ],
+      poolConfig.poolIdx,
+    );
+    const poolPrice = await pool.displayPrice();
+    const limits: PriceRange = [
+      poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
+      poolPrice * (1 + SLIPPAGE_TORELANCE / 100),
+    ];
+    console.log(
+      `burning from ${poolConfig.baseToken.tokenSymbol} (${poolConfig.baseToken.tokenAddress}) - ${poolConfig.quoteToken.tokenSymbol} (${poolConfig.quoteToken.tokenAddress}) ${poolConfig.lpTokenAmount} LP token amount`,
+    );
+    console.log('pool price:', poolPrice);
+    console.log('LP conduit:', poolConfig.lpConduit);
+    console.log(
+      'encoded_data: ',
+      // await pool.burnAmbientAll(limits, {
+      //   lpConduit: poolConfig.lpConduit,
+      // }),
+      //await pool.burnAmbientLiq(ethers.utils.parseEther('0.0193363'), limits, {
+      await pool.burnAmbientLiq(
+        ethers.utils.parseEther(poolConfig.lpTokenAmount.toString()), //909.944828342431797637
+        limits,
+        {
+          lpConduit: poolConfig.lpConduit,
+        },
+      ),
+      console.log('-'.repeat(50)),
+    );
+  }
 
   // CONCENTRATED LIQUIDITY
   // for (const poolConfig of bobMainnetConcentratedPoolConfigs) {

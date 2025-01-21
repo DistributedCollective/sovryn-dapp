@@ -29,8 +29,9 @@ export interface IBurnConcentratedLiquidity {
   base: string;
   quote: string;
   poolIndex: number;
-  amountInBase: number;
-  range: TickRange;
+  amountSqrtXY: number;
+  rangeMultipliers: PriceRange;
+  tickRange?: TickRange;
   price: number;
   slippageTolerancePercentage: number;
 }
@@ -354,12 +355,14 @@ export async function createPositionConcentratedLiquidity(
 
 export async function burnConcentratedLiquidity(
   croc: CrocEnv,
+  user: string,
   {
     base,
     quote,
-    amountInBase,
+    amountSqrtXY,
     poolIndex,
-    range,
+    rangeMultipliers,
+    tickRange,
     price,
     slippageTolerancePercentage,
   }: IBurnConcentratedLiquidity,
@@ -379,20 +382,48 @@ export async function burnConcentratedLiquidity(
     );
   }
 
-  const expectedBase =
-    pool.baseToken.tokenAddr.toLowerCase() === base.toLowerCase();
+  const gridSize = (await croc.context).chain.gridSize;
 
-  const decimals = await (expectedBase
-    ? pool.baseToken.decimals
-    : pool.quoteToken.decimals);
+  // const minimumPrice = spotPrice * rangeMultipliers[0];
+  // const maximumPrice = spotPrice * rangeMultipliers[1];
+  const minimumPrice = price * rangeMultipliers[0];
+  const maximumPrice = price * rangeMultipliers[1];
 
-  const amount = parseUnits(amountInBase.toString(), decimals);
+  const ticks: TickRange =
+    tickRange !== undefined
+      ? tickRange
+      : [
+          roundDownTick(priceToTick(minimumPrice), gridSize),
+          roundUpTick(priceToTick(maximumPrice), gridSize),
+        ];
 
+  // const expectedBase =
+  //   pool.baseToken.tokenAddr.toLowerCase() === base.toLowerCase();
+
+  // const decimals = await (expectedBase
+  //   ? pool.baseToken.decimals
+  //   : pool.quoteToken.decimals);
+
+  // const amount = parseUnits(amountInBase.toString(), decimals);
+
+  const pos = croc.positions(
+    pool.baseToken.tokenAddr,
+    pool.quoteToken.tokenAddr,
+    user,
+    pool.poolIndex,
+  );
+
+  const amount =
+    amountSqrtXY > 0
+      ? amountSqrtXY
+      : (await pos.queryRangePos(ticks[0], ticks[1])).liq;
+
+  console.log('amount to burn in sqrt(X*Y):', amount);
   const limits: PriceRange = [
     poolPrice * (1 - SLIPPAGE_TORELANCE / 100),
     poolPrice * (1 + SLIPPAGE_TORELANCE / 100),
   ];
-  const encodedData = await pool.burnRangeLiq(amount, range, limits, {});
+  const encodedData = await pool.burnRangeLiq(amount, ticks, limits, {});
   console.log('encoded_data: ', encodedData);
   const cntx = await croc.context;
   if (process.argv.includes('--tx')) {

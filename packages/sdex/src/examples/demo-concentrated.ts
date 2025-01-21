@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import path from 'path';
 
 //import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
+//import { CrocPositionView } from '../position';
 import {
-  createPositionConcentratedLiquidity,
+  //createPositionConcentratedLiquidity,
   burnConcentratedLiquidity, //createPositionAmbientLiquidity, //, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
 } from './helper';
 
@@ -134,7 +135,7 @@ async function demo() {
   //   .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
   // console.log('Encoded data to deposit', amountParam, ' USDT:', encodedData);
 
-  const slippageTolerancePercentage = 10; // 10%
+  const slippageTolerancePercentage = 500000; // 10%
 
   // for (const poolConfig of bobMainnetConcentratedPoolConfigs) {
   //   console.log(
@@ -153,30 +154,38 @@ async function demo() {
   // }
 
   // CONCENTRATED LIQUIDITY
+  const user = '0x4ff3D7a244fE5094b38baFA49290E0CC5fCbc172'; // Treasury Multisig on BOB
+  console.log('WITHDRAW CONCENTRATED');
   for (const poolConfig of bobMainnetConcentratedPoolConfigs) {
-    console.log(
-      `Processing concentrated pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
-    );
-    const price = poolConfig.price;
-    console.log('DEPOSIT CONCENTRATED');
-    await createPositionConcentratedLiquidity(croc, {
-      base: poolConfig.baseToken.tokenAddress,
-      quote: poolConfig.quoteToken.tokenAddress,
-      poolIndex: poolConfig.poolIdx,
-      amountInBase: poolConfig.amountInBase, // decimal not yet considered here
-      price: price, // price
-      slippageTolerancePercentage,
-      rangeMultipliers: poolConfig.rangeMultipliers,
-    });
+    // console.log(
+    //   `Processing concentrated pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
+    // );
+    // const price = poolConfig.price;
+    // console.log('DEPOSIT CONCENTRATED');
+    // await createPositionConcentratedLiquidity(croc, {
+    //   base: poolConfig.baseToken.tokenAddress,
+    //   quote: poolConfig.quoteToken.tokenAddress,
+    //   poolIndex: poolConfig.poolIdx,
+    //   amountInBase: poolConfig.amountInBase, // decimal not yet considered here
+    //   price: price, // price
+    //   slippageTolerancePercentage,
+    //   rangeMultipliers: poolConfig.rangeMultipliers,
+    // });
 
-    console.log('WITHDRAW CONCENTRATED');
-    await burnConcentratedLiquidity(croc, {
+    //await pos.queryRangePos()
+    //const price = await pool.displayPrice();
+    BigNumber.from('0');
+    console.log(
+      `##### ${poolConfig.baseToken.tokenSymbol}/${poolConfig.quoteToken.tokenSymbol} #####`,
+    );
+    await burnConcentratedLiquidity(croc, user, {
       base: poolConfig.baseToken.tokenAddress,
       quote: poolConfig.quoteToken.tokenAddress,
-      amountInBase: poolConfig.amountInBase,
+      amountSqrtXY: poolConfig.amountSqrtXY,
       poolIndex: poolConfig.poolIdx,
-      range: [115004, 115008],
-      price,
+      rangeMultipliers: poolConfig.rangeMultipliers,
+      tickRange: poolConfig.tickRange,
+      price: poolConfig.price,
       slippageTolerancePercentage,
     });
   }

@@ -44,10 +44,15 @@ export const PoolsTable: FC<PoolsTableProps> = ({
       return ammPools;
     }
 
-    return ammPools.filter(
-      pool =>
-        pool.assetA.toLowerCase().includes(filter.toLowerCase()) ||
-        pool.assetB.toLowerCase().includes(filter.toLowerCase()),
+    // split by comma, slash and space
+    const symbols = filter.toLowerCase().split(/,| |\//);
+
+    return ammPools.filter(pool =>
+      symbols.find(
+        symbol =>
+          pool.assetA.toLowerCase().includes(symbol) ||
+          pool.assetB.toLowerCase().includes(symbol),
+      ),
     );
   }, [filter]);
 

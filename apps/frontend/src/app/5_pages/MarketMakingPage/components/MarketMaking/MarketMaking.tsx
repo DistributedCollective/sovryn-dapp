@@ -3,7 +3,13 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
-import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
+import {
+  Heading,
+  Input,
+  InputSize,
+  Paragraph,
+  ParagraphSize,
+} from '@sovryn/ui';
 
 import { BOB_CHAIN_ID } from '../../../../../config/chains';
 
@@ -18,6 +24,7 @@ export const MarketMaking: FC = () => {
   const { isMobile } = useIsMobile();
   const [activePool, setActivePool] = useState('');
   const [isPromoCardClicked, setIsPromoCardClicked] = useState(false);
+  const [searchInputValue, setSearchInputValue] = useState('');
 
   const setActivePoolKey = useCallback(
     (poolKey: string) => setActivePool(activePool === poolKey ? '' : poolKey),
@@ -78,10 +85,23 @@ export const MarketMaking: FC = () => {
           >
             {t(translations.marketMakingPage.allPairs)}
           </Paragraph> */}
+
+          <div className="w-full my-4">
+            <Input
+              value={searchInputValue}
+              className="w-full"
+              onChangeText={setSearchInputValue}
+              size={InputSize.large}
+              placeholder={t(
+                translations.marketMakingPage.searchInputPlaceholder,
+              )}
+            />
+          </div>
           <PoolsTable
             setActivePool={setActivePoolKey}
             shouldScroll={isPromoCardClicked}
             activePool={activePool}
+            filter={searchInputValue}
           />
         </div>
       </div>

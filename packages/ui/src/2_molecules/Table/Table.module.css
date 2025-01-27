@@ -1,7 +1,24 @@
-.desktop {
-  @apply hidden lg:block;
+.md {
+  &.desktop {
+    @apply hidden md:block;
+  }
+  &.mobile {
+    @apply block md:hidden;
+  }
 }
-
-.mobile {
-  @apply block lg:hidden;
+.lg {
+  &.desktop {
+    @apply hidden lg:block;
+  }
+  &.mobile {
+    @apply block lg:hidden;
+  }
+}
+.xl {
+  &.desktop {
+    @apply hidden xl:block;
+  }
+  &.mobile {
+    @apply block xl:hidden;
+  }
 }

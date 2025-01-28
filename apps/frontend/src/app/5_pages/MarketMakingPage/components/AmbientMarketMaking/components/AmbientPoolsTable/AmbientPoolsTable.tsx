@@ -40,8 +40,10 @@ export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items, filter }) => {
     return items.filter(pool =>
       symbols.find(
         symbol =>
-          pool.base.toLowerCase().includes(symbol) ||
-          pool.quote.toLowerCase().includes(symbol),
+          pool.base.symbol.toLowerCase().includes(symbol) ||
+          pool.quote.symbol.toLowerCase().includes(symbol) ||
+          pool.base.name.toLowerCase().includes(symbol) ||
+          pool.quote.name.toLowerCase().includes(symbol),
       ),
     );
   }, [filter, items]);

@@ -1,47 +1,49 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { Pool } from '@sovryn/sdk';
+
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { getIndexerUri } from '../../../../../../utils/indexer';
 import { useGetPool } from '../../../hooks/useGetPool';
 
-export const useGetPoolInfo = (assetA: string, assetB: string) => {
+export const useGetPoolInfo = (pool: Pool) => {
   const chainId = useCurrentChain();
-  const { pool, poolTokens } = useGetPool(assetA, assetB);
+  const { pool: crocPool, poolTokens } = useGetPool(pool);
 
   const [price, setPrice] = useState(0);
   const [spotPrice, setSpotPrice] = useState(0);
   const [feeRate, setFeeRate] = useState('0');
   const [loading, setLoading] = useState(true);
   const getPoolPrice = useCallback(async () => {
-    if (!pool) {
+    if (!crocPool) {
       return;
     }
 
-    return pool.displayPrice().then(result => {
+    return crocPool.displayPrice().then(result => {
       if (isFinite(result)) {
         setPrice(result);
       } else {
         setPrice(0.000001); // fake price for non existing pools, to prevent ui crashes.
       }
     });
-  }, [pool]);
+  }, [crocPool]);
 
   const getSpotPrice = useCallback(async () => {
-    if (!pool) {
+    if (!crocPool) {
       return;
     }
 
-    return pool.spotPrice().then(result => {
+    return crocPool.spotPrice().then(result => {
       if (isFinite(result)) {
         setSpotPrice(result);
       } else {
         setSpotPrice(0.000001); // fake price for non existing pools, to prevent ui crashes.
       }
     });
-  }, [pool]);
+  }, [crocPool]);
 
   const getLiquidityFee = useCallback(async () => {
-    if (!pool || !poolTokens) {
+    if (!crocPool || !poolTokens) {
       return;
     }
 
@@ -69,7 +71,7 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
       .catch(error => {
         return undefined;
       });
-  }, [chainId, pool, poolTokens]);
+  }, [chainId, crocPool, poolTokens]);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -81,5 +83,5 @@ export const useGetPoolInfo = (assetA: string, assetB: string) => {
     fetchData();
   }, [fetchData]);
 
-  return { poolTokens, price, feeRate, pool, spotPrice, loading };
+  return { poolTokens, price, feeRate, pool: crocPool, spotPrice, loading };
 };

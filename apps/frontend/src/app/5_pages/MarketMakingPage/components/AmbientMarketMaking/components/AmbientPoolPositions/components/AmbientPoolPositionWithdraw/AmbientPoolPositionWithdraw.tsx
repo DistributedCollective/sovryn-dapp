@@ -2,16 +2,16 @@ import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
 import { ButtonSize, ButtonStyle, Button } from '@sovryn/ui';
 
 import { useMaintenance } from '../../../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../../../locales/i18n';
 import { BobWithdrawModal } from '../../../../../BobWIthdrawModal/BobWithdrawModal';
 import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
-import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
 
 type AmbientPoolPositionWithdrawProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
   position: AmbientPosition;
 };
 

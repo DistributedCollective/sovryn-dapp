@@ -2,6 +2,8 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
+import { numberToChainId } from '@sovryn/ethers-provider';
+import { Pool } from '@sovryn/sdk';
 import { HelperButton, SimpleTableRow, Table } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -9,7 +11,6 @@ import { TransactionIdRenderer } from '../../../../../../2_molecules/Transaction
 import { useIsMobile } from '../../../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../../../locales/i18n';
 import { useGetAmbientPositions } from '../../hooks/useGetAmbientPositions';
-import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { COLUMNS_CONFIG } from './AmbientPoolPositions.constants';
 import styles from './AmbientPoolPositions.module.css';
 import { AmbientPoolPositionClaimFees } from './components/AmbientPoolPositionClaimFees/AmbientPoolPositionClaimFees';
@@ -20,7 +21,7 @@ import { AmbientPositionStatus } from './components/AmbientPositionStatus/Ambien
 import { AmbientPositionValue } from './components/AmbientPositionValue/AmbientPositionValue';
 
 type AmbientPoolPositionsProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
 };
 
 export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
@@ -41,7 +42,7 @@ export const AmbientPoolPositions: FC<AmbientPoolPositionsProps> = ({
               value={
                 <TransactionIdRenderer
                   hash={position.transactionHash}
-                  chainId={pool.chainId}
+                  chainId={numberToChainId(pool.chainId)}
                 />
               }
             />

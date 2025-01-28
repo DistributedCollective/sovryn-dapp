@@ -49,8 +49,8 @@ export const BobGatewayForm: FC = () => {
   );
 
   return (
-    <div className="flex items-start py-8 justify-center gap-6">
-      <div className="p-0 sm:border sm:border-gray-50 sm:rounded lg:min-w-[28rem] sm:p-6 sm:bg-gray-90">
+    <div className="flex flex-col md:flex-row items-start py-8 justify-center gap-6">
+      <div className="p-0 sm:border sm:border-gray-50 sm:rounded w-full md:w-auto lg:min-w-[28rem] sm:p-6 sm:bg-gray-90">
         <Tabs
           items={items}
           onChange={setIndex}
@@ -75,6 +75,7 @@ export const BobGatewayForm: FC = () => {
               />
             )
           }
+          valueClassName="flex justify-end"
         />
         <SimpleTableRow
           label={t(translations.bobGatewayPage.strategyDetails.category)}
@@ -94,8 +95,10 @@ export const BobGatewayForm: FC = () => {
           }
         />
         <SimpleTableRow
+          className="grid-cols-3"
           label={t(translations.bobGatewayPage.strategyDetails.about)}
           value={strategy?.about}
+          valueClassName="col-span-2"
         />
       </SimpleTable>
     </div>

@@ -1,5 +1,13 @@
 # @sovryn/sdk
 
+## 2.0.5
+
+### Patch Changes
+
+- 36b941bf: SOV-4539: fetch pools from indexer
+- Updated dependencies [36b941bf]
+  - @sovryn/sdex@0.3.15
+
 ## 2.0.4
 
 ### Patch Changes

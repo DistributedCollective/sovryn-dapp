@@ -66,11 +66,14 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
   const isDisabled = useMemo(() => {
     return (
       !btcAddress ||
+      !account ||
       !amount ||
       !strategyAddress ||
-      Number(formatUnits(data?.confirmed.toString() || '0', 8)) < Number(amount)
+      Number(formatUnits(data?.confirmed.toString() || '0', 8)) <
+        Number(amount) ||
+      Number(amount) <= 0
     );
-  }, [amount, btcAddress, data?.confirmed, strategyAddress]);
+  }, [account, amount, btcAddress, data?.confirmed, strategyAddress]);
 
   return (
     <div className="flex flex-col">

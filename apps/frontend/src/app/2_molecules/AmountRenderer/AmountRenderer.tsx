@@ -29,7 +29,7 @@ import {
 
 const { decimal, thousand } = getLocaleSeparators();
 
-type AmountRendererProps = {
+export type AmountRendererProps = {
   value: Decimalish;
   precision?: number;
   className?: string;
@@ -42,6 +42,7 @@ type AmountRendererProps = {
   trigger?: TooltipTrigger;
   decimals?: number;
   asIf?: boolean;
+  infiniteFrom?: Decimalish;
 };
 
 export const AmountRenderer: FC<AmountRendererProps> = ({
@@ -57,6 +58,7 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
   trigger = TooltipTrigger.click,
   decimals = 18,
   asIf,
+  infiniteFrom,
 }) => {
   const adjustedValue = useMemo(
     () =>
@@ -129,6 +131,11 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
     [adjustedValue, calculatedPrecision, precision],
   );
 
+  const isInfinite = useMemo(
+    () => !!(infiniteFrom && Decimal.from(value).gt(infiniteFrom)),
+    [infiniteFrom, value],
+  );
+
   return (
     <Tooltip
       content={
@@ -142,33 +149,31 @@ export const AmountRenderer: FC<AmountRendererProps> = ({
           </span>
         </span>
       }
-      className={classNames({
-        'cursor-pointer': shouldShowTooltip,
-      })}
-      disabled={!shouldShowTooltip}
+      className={classNames({ 'cursor-pointer': shouldShowTooltip }, className)}
+      disabled={!shouldShowTooltip || isInfinite}
       trigger={trigger}
       dataAttribute={dataAttribute}
     >
-      <span className={className}>
-        {isAnimated ? (
-          <CountUp
-            start={0}
-            end={countUpValues.end}
-            decimals={calculatedPrecision}
-            duration={1} //do not set lower than 1 overwise it can cause a bug
-            separator={thousand}
-            decimal={decimal}
-            prefix={shouldShowRoundingPrefix ? `~ ${prefix}` : `${prefix}`}
-            suffix={` ${suffix}`}
-          />
-        ) : (
-          <>
-            {shouldShowRoundingPrefix ? '~ ' : ''}
-            {prefix}
-            {localeFormattedValue} {suffix}
-          </>
-        )}
-      </span>
+      {isAnimated ? (
+        <CountUp
+          start={0}
+          end={countUpValues.end}
+          decimals={calculatedPrecision}
+          duration={1} //do not set lower than 1 overwise it can cause a bug
+          separator={thousand}
+          decimal={decimal}
+          prefix={shouldShowRoundingPrefix ? `~ ${prefix}` : `${prefix}`}
+          suffix={` ${suffix}`}
+        />
+      ) : isInfinite ? (
+        <span>∞</span>
+      ) : (
+        <span>
+          {shouldShowRoundingPrefix ? '~ ' : ''}
+          {prefix}
+          {localeFormattedValue} {suffix}
+        </span>
+      )}
     </Tooltip>
   );
 };

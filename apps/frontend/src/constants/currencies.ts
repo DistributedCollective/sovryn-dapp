@@ -2,6 +2,7 @@ export const USD = 'USD';
 
 export const BITCOIN = 'BTC';
 export const ETH = 'ETH';
+export const WETH = 'WETH';
 export const SOV = 'SOV';
 
 export const BTC_RENDER_PRECISION = 8;

@@ -1,8 +1,6 @@
 import { Token } from '@gobob/bob-sdk/dist/gateway/types';
 import {
   useAccount,
-  useConnect,
-  useDisconnect,
   useBalance,
   useSendGatewayTransaction,
 } from '@gobob/sats-wagmi';
@@ -13,18 +11,16 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 import { Button, Input, Paragraph, Select } from '@sovryn/ui';
 
-import { BOB_CHAIN_ID } from '../../../config/chains';
+import { BOB_CHAIN_ID } from '../../../../../config/chains';
 
-import { useCacheCall } from '../../../hooks';
-import { useAccount as useEvmAccount } from '../../../hooks/useAccount';
-import { bobGateway } from './BobGateway.utils';
+import { useCacheCall } from '../../../../../hooks';
+import { useAccount as useEvmAccount } from '../../../../../hooks/useAccount';
+import { bobGateway } from '../../BobGateway.utils';
 
-export const BobGatewayForm: FC = () => {
+export const BobGatewayDeposit: FC = () => {
   const [amount, setAmount] = useState('');
   const [token, setToken] = useState<string>('');
   const [tokens, setTokens] = useState<Token[]>([]);
-  const { connectors, connect } = useConnect();
-  const { disconnect } = useDisconnect();
   const { address: btcAddress } = useAccount();
   const { account } = useEvmAccount();
   const { data } = useBalance();
@@ -35,11 +31,17 @@ export const BobGatewayForm: FC = () => {
     sendGatewayTransaction,
   } = useSendGatewayTransaction({
     toChain: 'bob',
+    strategyAddress: '0xBA67A0a0C2dd790182D1954B4C9788f9Ae43e604',
   });
 
   useEffect(() => {
-    bobGateway.getTokens().then(setTokens);
-  }, []);
+    if (!tokens.length) {
+      bobGateway.getTokens().then(list => {
+        console.log(list);
+        setTokens(list);
+      });
+    }
+  }, [tokens.length]);
 
   const onSbumit = async () => {
     const toToken = tokens.find(t => t.address === token);
@@ -49,7 +51,7 @@ export const BobGatewayForm: FC = () => {
     }
 
     const params = {
-      toToken: toToken.symbol,
+      toToken: 'uniBTC',
       evmAddress: account,
       value: BigInt(parseUnits(amount, 8).toString()),
     };
@@ -88,29 +90,10 @@ export const BobGatewayForm: FC = () => {
     }
   }, [orders]);
 
-  if (!btcAddress) {
-    return (
-      <div className="flex gap-2 my-4">
-        {connectors.map(connector => (
-          <Button
-            key={connector.name}
-            text={connector.name}
-            onClick={() => connect({ connector })}
-          />
-        ))}
-      </div>
-    );
-  }
-
   return (
-    <div className="px-0 container md:mx-9 mx-0 md:mb-2 mb-7">
-      <br />
+    <div>
       <Paragraph>BTC Wallet: {btcAddress}</Paragraph>
-      <br />
-      <Button onClick={() => disconnect()} text="Disconnect" />
-      <br />
-      <br />
-      Amount: (Balance: {formatUnits(data?.value.toString() || '0', 8)} BTC)
+      Amount: (Balance: {formatUnits(data?.total.toString() || '0', 8)} BTC)
       <Input
         placeholder="Amount (BTC)"
         step="0.00000001"
@@ -138,7 +121,6 @@ export const BobGatewayForm: FC = () => {
         }))}
         className="min-w-36 w-full lg:w-auto"
       />
-      <br />
       <Button loading={isPending} text="submit" onClick={onSbumit} />
     </div>
   );

@@ -16,9 +16,10 @@ import styles from './AmbientPoolsTable.module.css';
 
 type AmbientPoolsProps = {
   items: AmbientLiquidityPool[];
+  filter?: string;
 };
 
-export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items }) => {
+export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items, filter }) => {
   const { account } = useAccount();
   const [activePool, setActivePool] = useState('');
   const tableRef = useRef<HTMLDivElement>(null);
@@ -26,6 +27,23 @@ export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items }) => {
     () => items.findIndex(pool => pool.key === activePool),
     [activePool, items],
   );
+
+  const filteredPools = useMemo(() => {
+    if (!filter || filter === '') {
+      return items;
+    }
+
+    // split by comma, slash and space
+    const symbols = filter.toLowerCase().split(/,| |\//);
+
+    return items.filter(pool =>
+      symbols.find(
+        symbol =>
+          pool.base.toLowerCase().includes(symbol) ||
+          pool.quote.toLowerCase().includes(symbol),
+      ),
+    );
+  }, [filter, items]);
 
   const generateRowTitle = useCallback(
     (pool: AmbientLiquidityPool) => (
@@ -67,7 +85,7 @@ export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items }) => {
       </div>
       <Table
         columns={COLUMNS_CONFIG}
-        rows={items}
+        rows={filteredPools}
         noData={t(translations.common.tables.noData)}
         loadingData={t(translations.common.tables.loading)}
         rowKey={row => row.key}

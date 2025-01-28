@@ -1318,6 +1318,7 @@
             "p2": "Next rewards recalibration on {{recalibrationDate}}.",
             "learnMoreLink": "Learn more"
         },
+        "searchInputPlaceholder": "Filter pools by a symbol or symbols",
         "newPairs": "New Pairs",
         "allPairs": "All Pairs",
         "rewards": "Rewards",

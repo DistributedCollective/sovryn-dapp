@@ -1,9 +1,15 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
-import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
+import {
+  Heading,
+  Input,
+  InputSize,
+  Paragraph,
+  ParagraphSize,
+} from '@sovryn/ui';
 
 import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
@@ -26,6 +32,8 @@ export const AmbientMarketMaking: FC = () => {
     [chainId],
   );
 
+  const [searchInputValue, setSearchInputValue] = useState('');
+
   return (
     <>
       <Helmet>
@@ -42,6 +50,18 @@ export const AmbientMarketMaking: FC = () => {
             {t(translations.ambientMarketMaking.title)}
           </Heading>
 
+          <div className="w-full my-4">
+            <Input
+              value={searchInputValue}
+              className="w-full"
+              onChangeText={setSearchInputValue}
+              size={InputSize.large}
+              placeholder={t(
+                translations.marketMakingPage.searchInputPlaceholder,
+              )}
+            />
+          </div>
+
           {newPools.length > 0 && (
             <>
               <Paragraph
@@ -51,7 +71,7 @@ export const AmbientMarketMaking: FC = () => {
                 {t(translations.marketMakingPage.newPairs)}
               </Paragraph>
 
-              <AmbientPoolsTable items={newPools} />
+              <AmbientPoolsTable items={newPools} filter={searchInputValue} />
 
               <Paragraph
                 className="pl-2 w-full text-base font-medium text-left mb-4 mt-8"
@@ -62,7 +82,7 @@ export const AmbientMarketMaking: FC = () => {
             </>
           )}
 
-          <AmbientPoolsTable items={allPools} />
+          <AmbientPoolsTable items={allPools} filter={searchInputValue} />
         </div>
       </div>
     </>

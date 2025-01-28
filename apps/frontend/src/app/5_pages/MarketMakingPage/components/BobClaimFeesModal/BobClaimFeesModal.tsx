@@ -2,6 +2,7 @@ import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
 import {
   Button,
   ButtonStyle,
@@ -18,7 +19,6 @@ import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/Cur
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.types';
-import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { DEFAULT_SLIPPAGE } from '../BobDepositModal/BobDepositModal.constants';
 import { useGetPoolInfo } from '../BobDepositModal/hooks/useGetPoolInfo';
 import { useGetTokenDecimals } from '../BobWIthdrawModal/hooks/useGetTokenDecimals';
@@ -27,7 +27,7 @@ import { useHandleSubmit } from './hooks/useHandleSubmit';
 type BobClaimFeesModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  pool: AmbientLiquidityPool;
+  pool: Pool;
   position: AmbientPosition;
 };
 
@@ -40,7 +40,7 @@ export const BobClaimFeesModal: FC<BobClaimFeesModalProps> = ({
   position,
 }) => {
   const { base, quote } = useMemo(() => pool, [pool]);
-  const { spotPrice, poolTokens } = useGetPoolInfo(pool.base, pool.quote);
+  const { spotPrice, poolTokens } = useGetPoolInfo(pool);
 
   const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
     poolTokens?.tokenA,
@@ -79,8 +79,8 @@ export const BobClaimFeesModal: FC<BobClaimFeesModalProps> = ({
         <DialogBody>
           <div className="bg-gray-90 p-4 rounded">
             <CurrentStatistics
-              symbol={base}
-              symbol2={quote}
+              symbol={base.symbol}
+              symbol2={quote.symbol}
               className="flex justify-between"
             />
           </div>

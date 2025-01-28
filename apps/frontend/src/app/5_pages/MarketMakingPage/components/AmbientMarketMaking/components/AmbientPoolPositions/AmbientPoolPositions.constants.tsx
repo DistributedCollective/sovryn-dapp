@@ -2,13 +2,14 @@ import React from 'react';
 
 import { t } from 'i18next';
 
+import { numberToChainId } from '@sovryn/ethers-provider';
+import { Pool } from '@sovryn/sdk';
 import { HelperButton } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { translations } from '../../../../../../../locales/i18n';
 import { AmbientPosition } from '../../AmbientMarketMaking.types';
-import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { AmbientPoolPositionClaimFees } from './components/AmbientPoolPositionClaimFees/AmbientPoolPositionClaimFees';
 import { AmbientPoolPositionWithdraw } from './components/AmbientPoolPositionWithdraw/AmbientPoolPositionWithdraw';
 import { AmbientPoolReposition } from './components/AmbientPoolReposition/AmbientPoolReposition';
@@ -17,14 +18,14 @@ import { AmbientPositionPrices } from './components/AmbientPositionPrices/Ambien
 import { AmbientPositionStatus } from './components/AmbientPositionStatus/AmbientPositionStatus';
 import { AmbientPositionValue } from './components/AmbientPositionValue/AmbientPositionValue';
 
-export const COLUMNS_CONFIG = (pool: AmbientLiquidityPool) => [
+export const COLUMNS_CONFIG = (pool: Pool) => [
   {
     id: 'positionID',
     title: t(translations.ambientMarketMaking.positionsTable.positionID),
     cellRenderer: (position: AmbientPosition) => (
       <TransactionIdRenderer
         hash={position.transactionHash}
-        chainId={pool.chainId}
+        chainId={numberToChainId(pool.chainId)}
       />
     ),
   },

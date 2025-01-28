@@ -1389,6 +1389,7 @@
             "priceRange": "Price range",
             "balanced": "Balanced",
             "infinite": "Infinite",
+            "allowSurplus": "Allow Personal Reserve Vault Balances",
             "newPoolStatistics": {
                 "newPoolBalance": "New pool balance",
                 "currentPrice": "Current {{token}} price",
@@ -1986,5 +1987,11 @@
             "title": "Bridge your runes",
             "subtitle": "Bridge your runes to start trading and earning with runes on Sovryn"
         }
+    },
+    "bobGatewayPage": {
+        "meta": {
+            "title": "BOB Gateway"
+        },
+        "description": "New way earning in AMM"
     }
 }

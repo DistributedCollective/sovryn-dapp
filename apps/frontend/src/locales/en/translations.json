@@ -115,6 +115,7 @@
             "bob": "Go BoB",
             "runes": "Runes",
             "spicePoints": "Spice Points",
+            "bobGateway": "Bob Gateway",
             "bridges": {
                 "title": "Bridges",
                 "connectWallet": "Connect a wallet to use the bridges.",
@@ -1969,6 +1970,17 @@
             "strategyAddress": "Strategy Address",
             "txHash": "Tx Hash",
             "amount": "Amount"
+        },
+        "amountInput": "Amount (BTC)",
+        "lst": "LST",
+        "selectStrategy": "Select strategy",
+        "strategyDetails": {
+            "title": "Strategy details",
+            "name": "Name",
+            "category": "Category",
+            "incentives": "Incentives",
+            "token": "Token",
+            "about": "About"
         }
     },
     "runesPage": {

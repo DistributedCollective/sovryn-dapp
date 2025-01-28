@@ -41,33 +41,24 @@ export const BobGatewayForm: FC = () => {
     bobGateway.getTokens().then(setTokens);
   }, []);
 
-  console.log({
-    error,
-    hash,
-    isPending,
-  });
   const onSbumit = async () => {
     const toToken = tokens.find(t => t.address === token);
 
     if (!account || !amount || !toToken) {
       return;
     }
-    console.log({
+
+    const params = {
       toToken: toToken.symbol,
       evmAddress: account,
       value: BigInt(parseUnits(amount, 8).toString()),
-    });
+    };
 
-    sendGatewayTransaction(
-      {
-        toToken: toToken.symbol,
-        evmAddress: account,
-        value: BigInt(parseUnits(amount, 8).toString()),
-      },
-      {
-        onError: error => console.log({ error }),
-      },
-    );
+    console.log(params);
+
+    sendGatewayTransaction(params, {
+      onError: error => console.log({ error }),
+    });
   };
 
   const { value: orders } = useCacheCall(
@@ -81,19 +72,33 @@ export const BobGatewayForm: FC = () => {
     [],
   );
 
-  console.log({
-    orders,
-  });
+  useEffect(() => {
+    console.log({
+      error,
+      hash,
+      isPending,
+    });
+  }, [error, hash, isPending]);
+
+  useEffect(() => {
+    if (orders.length) {
+      console.log({
+        orders,
+      });
+    }
+  }, [orders]);
 
   if (!btcAddress) {
     return (
-      <>
+      <div className="flex gap-2 my-4">
         {connectors.map(connector => (
-          <button key={connector.name} onClick={() => connect({ connector })}>
-            {connector.name}
-          </button>
+          <Button
+            key={connector.name}
+            text={connector.name}
+            onClick={() => connect({ connector })}
+          />
         ))}
-      </>
+      </div>
     );
   }
 
@@ -134,7 +139,7 @@ export const BobGatewayForm: FC = () => {
         className="min-w-36 w-full lg:w-auto"
       />
       <br />
-      <Button text="submit" onClick={onSbumit} />
+      <Button loading={isPending} text="submit" onClick={onSbumit} />
     </div>
   );
 };

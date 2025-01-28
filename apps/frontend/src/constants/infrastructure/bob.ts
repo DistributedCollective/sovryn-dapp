@@ -2,7 +2,7 @@ import { Environments } from '../../types/global';
 
 const rpc = {
   [Environments.Mainnet]: 'https://rpc.gobob.xyz',
-  [Environments.Testnet]: 'https://bob-sepolia.rpc.gobob.xyz/',
+  [Environments.Testnet]: 'https://bob-rpc.test.sovryn.app',
 };
 
 export const BOB = {

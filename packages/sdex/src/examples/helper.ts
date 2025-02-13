@@ -265,7 +265,6 @@ export async function createPositionConcentratedLiquidity(
   console.log('Pool Price:', poolPrice);
   // const amountAdjusted =
   //   baseToken !== base ? amountInBase : amountInBase * poolPrice;
-
   checkWithinSlippageTolerancePercentage(
     poolPrice,
     price,

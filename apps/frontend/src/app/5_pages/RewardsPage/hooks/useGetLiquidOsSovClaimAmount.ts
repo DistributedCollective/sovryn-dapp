@@ -23,61 +23,40 @@ export const useGetLiquidOsSovClaimAmount = () => {
 
   const getRewards = useCallback(async () => {
     if (!account || !stakingRewardsOs) {
-      return {
-        amount: Decimal.ZERO,
-        nextWithdrawTimestamp: 0,
-        loading: false,
-      };
+      return { amount: Decimal.ZERO, nextWithdrawTimestamp: 0, loading: false };
     }
 
-    let result = await stakingRewardsOs.getStakerCurrentReward(true, 0);
     let nextWithdrawTimestamp = 0;
+    let amount = Decimal.ZERO;
     let checkpointCount = 15;
 
-    // Calls getStakerCurrentReward(true, 0) until either:
-    // a) The user's reward amount is non-zero or nextWithdrawTimestamp is outside the locked period
-    // b) The maximum checkpoint count is reached
-
     try {
-      while (
-        result.amount.isZero() &&
-        result.nextWithdrawTimestamp >= 0 &&
-        result.nextWithdrawTimestamp < lockDate &&
-        checkpointCount > 0
-      ) {
-        nextWithdrawTimestamp = result.nextWithdrawTimestamp.toNumber();
+      while (checkpointCount > 0) {
+        const result = await stakingRewardsOs.getArbitraryStakerCurrentReward(
+          true,
+          nextWithdrawTimestamp,
+          account,
+        );
 
-        if (nextWithdrawTimestamp === 0 || nextWithdrawTimestamp >= lockDate) {
+        nextWithdrawTimestamp = result.nextWithdrawTimestamp?.toNumber() || 0;
+
+        if (!result.amount.isZero()) {
+          amount = Decimal.fromBigNumberString(result.amount);
           break;
         }
 
-        result = await stakingRewardsOs.getStakerCurrentReward(true, 0);
-
-        if (
-          !result.amount.isZero() ||
-          nextWithdrawTimestamp === 0 ||
-          nextWithdrawTimestamp >= lockDate
-        ) {
+        if (nextWithdrawTimestamp === 0 || nextWithdrawTimestamp >= lockDate) {
+          console.log('Breaking loop, no rewards or past lock date');
           break;
         }
 
         checkpointCount--;
       }
 
-      return {
-        amount: result.amount.isZero()
-          ? Decimal.ZERO
-          : Decimal.fromBigNumberString(result.amount),
-        nextWithdrawTimestamp,
-        loading: false,
-      };
+      return { amount, nextWithdrawTimestamp, loading: false };
     } catch (error) {
       console.error('Error fetching rewards:', error);
-      return {
-        amount: Decimal.ZERO,
-        nextWithdrawTimestamp: 0,
-        loading: false,
-      };
+      return { amount: Decimal.ZERO, nextWithdrawTimestamp: 0, loading: false };
     }
   }, [account, stakingRewardsOs, lockDate]);
 

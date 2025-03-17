@@ -40,3 +40,8 @@ export const SOVRYN_INDEXER = {
   [Environments.Mainnet]: 'https://indexer.sovryn.app',
   [Environments.Testnet]: 'https://indexer.test.sovryn.app',
 };
+
+export const ORIGINS_URL = {
+  [Environments.Mainnet]: 'https://origins.sovryn.app',
+  [Environments.Testnet]: 'https://develop--crowdforge.netlify.app',
+};

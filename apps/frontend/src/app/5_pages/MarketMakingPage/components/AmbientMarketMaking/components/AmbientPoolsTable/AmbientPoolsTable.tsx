@@ -24,10 +24,6 @@ export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items, filter }) => {
   const { account } = useAccount();
   const [activePool, setActivePool] = useState('');
   const tableRef = useRef<HTMLDivElement>(null);
-  const expandedIndex = useMemo(
-    () => items.findIndex(pool => pool.identifier === activePool),
-    [activePool, items],
-  );
 
   const filteredPools = useMemo(() => {
     if (!filter || filter === '') {
@@ -47,6 +43,11 @@ export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items, filter }) => {
       ),
     );
   }, [filter, items]);
+
+  const expandedIndex = useMemo(
+    () => filteredPools.findIndex(pool => pool.identifier === activePool),
+    [activePool, filteredPools],
+  );
 
   const generateRowTitle = useCallback(
     (pool: Pool) => (

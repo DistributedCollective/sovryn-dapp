@@ -11,7 +11,8 @@ import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 import { translations } from '../../../locales/i18n';
 import { Promotions } from '../MarketMakingPage/components/Promotions/Promotions';
 import { queryClient } from './BobGateway.utils';
-import { BobGatewayForm } from './BobGatewayForm';
+import { BitcoinWallet } from './components/BitcoinWallet/BitcoinWallet';
+import { BobGatewayForm } from './components/BobGatewayForm/BobGatewayForm';
 
 const BobGateway: FC = () => {
   return (
@@ -31,11 +32,13 @@ const BobGateway: FC = () => {
           {t(translations.bobGatewayPage.description)}
         </Paragraph>
 
-        <Promotions setActivePool={() => {}} onClick={() => {}} />
-
         <QueryClientProvider client={queryClient}>
           <SatsWagmiConfig network={Network.mainnet} queryClient={queryClient}>
-            <div className="px-0 container md:mx-9 mx-0 md:mb-2 mb-7">
+            <div className="px-0 md:mx-9 mx-0 md:mb-2 mb-7">
+              <div className="flex justify-end m-4">
+                <BitcoinWallet />
+              </div>
+              <Promotions setActivePool={() => {}} onClick={() => {}} />
               <BobGatewayForm />
             </div>
           </SatsWagmiConfig>

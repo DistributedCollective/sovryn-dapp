@@ -75,6 +75,7 @@
     },
     "connectWalletButton": {
         "connect": "Get started",
+        "connectBTC": "Connect BTC wallet",
         "rewards": "Rewards",
         "notifications": "Notifications",
         "history": "History",
@@ -1952,6 +1953,14 @@
     "unclaimedVestings": {
         "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",
         "cta": "Open Rewards page"
+    },
+    "bobGatewayPage": {
+        "meta": {
+            "title": "BOB Gateway"
+        },
+        "description": "New way earning in AMM",
+        "deposit": "Deposit",
+        "withdraw": "Withdraw"
     },
     "runesPage": {
         "meta": {

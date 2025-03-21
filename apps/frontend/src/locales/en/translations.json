@@ -2020,11 +2020,5 @@
             "title": "Bridge your runes",
             "subtitle": "Bridge your runes to start trading and earning with runes on Sovryn"
         }
-    },
-    "bobGatewayPage": {
-        "meta": {
-            "title": "BOB Gateway"
-        },
-        "description": "New way earning in AMM"
     }
 }

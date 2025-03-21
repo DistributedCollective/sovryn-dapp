@@ -13,6 +13,9 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 import { Button, Input, Paragraph, Select } from '@sovryn/ui';
 
+import { BOB_CHAIN_ID } from '../../../config/chains';
+
+import { useCacheCall } from '../../../hooks';
 import { useAccount as useEvmAccount } from '../../../hooks/useAccount';
 import { bobGateway } from './BobGateway.utils';
 
@@ -26,9 +29,9 @@ export const BobGatewayForm: FC = () => {
   const { account } = useEvmAccount();
   const { data } = useBalance();
   const {
-    // data: hash,
-    // error,
-    // isPending,
+    data: hash,
+    error,
+    isPending,
     sendGatewayTransaction,
   } = useSendGatewayTransaction({
     toChain: 'bob-sepolia',
@@ -38,6 +41,11 @@ export const BobGatewayForm: FC = () => {
     bobGateway.getTokens().then(setTokens);
   }, []);
 
+  console.log({
+    error,
+    hash,
+    isPending,
+  });
   const onSbumit = async () => {
     const toToken = tokens.find(t => t.address === token);
 
@@ -45,14 +53,14 @@ export const BobGatewayForm: FC = () => {
       return;
     }
     console.log({
-      account,
-      amount,
-      toToken,
+      toToken: toToken.symbol,
+      evmAddress: account,
+      value: BigInt(parseUnits(amount, 8).toString()),
     });
 
     sendGatewayTransaction(
       {
-        toToken: 'tBTC',
+        toToken: toToken.symbol,
         evmAddress: account,
         value: BigInt(parseUnits(amount, 8).toString()),
       },
@@ -61,40 +69,22 @@ export const BobGatewayForm: FC = () => {
       },
     );
   };
-  // const onSbumit1 = async () => {
-  //   const quoteParams: GatewayQuoteParams = {
-  //     fromToken: '',
-  //     fromChain: 'Bitcoin',
-  //     fromUserAddress: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
-  //     toChain: 'bob-sepolia',
-  //     toUserAddress: '',
-  //     toToken: '', // or "tBTC"
-  //     amount: 10000000, // 0.1 BTC
-  //     gasRefill: 10000, // 0.0001 BTC
-  //   };
-  //   // const quoteParams: GatewayQuoteParams = {
-  //   //   fromToken: "BTC",
-  //   //   fromChain: "Bitcoin",
-  //   //   fromUserAddress: "bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d",
-  //   //   toChain: "BOB",
-  //   //   toUserAddress: "0x2D2E86236a5bC1c8a5e5499C517E17Fb88Dbc18c",
-  //   //   toToken: "tBTC", // or e.g. "SolvBTC"
-  //   //   amount: 10000000, // 0.1 BTC
-  //   //   gasRefill: 10000, // 0.0001 BTC. The amount of BTC to swap for ETH for tx fees.
-  //   // };
 
-  //   const quote = await bobGateway.getQuote(quoteParams);
+  const { value: orders } = useCacheCall(
+    `bob-orders/${account}`,
+    BOB_CHAIN_ID,
+    async () => {
+      const result = await bobGateway.getOrders(account);
+      return result;
+    },
+    [account],
+    [],
+  );
 
-  //   const { uuid, psbtBase64 } = await bobGateway.startOrder(
-  //     quote,
-  //     quoteParams,
-  //   );
+  console.log({
+    orders,
+  });
 
-  //   // NOTE: up to implementation to sign PSBT here!
-  //   const tx = Transaction.fromPSBT(base64.decode(psbtBase64!));
-  //   // NOTE: relayer broadcasts the tx
-  //   await bobGateway.finalizeOrder(uuid, tx.hex);
-  // };
   if (!btcAddress) {
     return (
       <>

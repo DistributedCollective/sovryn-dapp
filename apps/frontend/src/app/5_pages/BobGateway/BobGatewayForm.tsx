@@ -34,7 +34,7 @@ export const BobGatewayForm: FC = () => {
     isPending,
     sendGatewayTransaction,
   } = useSendGatewayTransaction({
-    toChain: 'bob-sepolia',
+    toChain: 'bob',
   });
 
   useEffect(() => {

@@ -1,10 +1,16 @@
-import React, { FC, useCallback, useEffect, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
 import { concDepositSkew } from '@sovryn/sdex';
 import { Pool } from '@sovryn/sdk';
-import { FormGroup, AmountInput, ErrorBadge, ErrorLevel } from '@sovryn/ui';
+import {
+  FormGroup,
+  AmountInput,
+  ErrorBadge,
+  ErrorLevel,
+  Toggle,
+} from '@sovryn/ui';
 
 import { AssetRenderer } from '../../../../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../../../../../../../2_molecules/MaxButton/MaxButton';
@@ -16,6 +22,7 @@ import { DEFAULT_RANGE_WIDTH } from '../../../../BobDepositModal.constants';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { useGetMaxDeposit } from '../../../../hooks/useGetMaxDeposit';
 import { useGetPoolInfo } from '../../../../hooks/useGetPoolInfo';
+import { useSurplusCollateralBalance } from '../../../../hooks/useSurplusCollateralBalance';
 import { useValidateDepositAmounts } from '../../../../hooks/useValidateDepositAmounts';
 
 type AmountFormProps = {
@@ -30,6 +37,19 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
 
   const { isFirstAssetValueInvalid, isSecondAssetValueInvalid } =
     useValidateDepositAmounts(base.symbol, quote.symbol);
+
+  const tokenASurplus = useSurplusCollateralBalance(
+    poolTokens?.tokenA.tokenAddr,
+  );
+  const tokenBSurplus = useSurplusCollateralBalance(
+    poolTokens?.tokenB.tokenAddr,
+  );
+  console.log({
+    tokenASurplus,
+    tokenBSurplus,
+  });
+  const [useSurplusA, setUseSurplusA] = useState(false);
+  const [useSurplusB, setUseSurplusB] = useState(false);
 
   const {
     firstAssetValue,
@@ -311,6 +331,12 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
           invalid={isFirstAssetValueInvalid}
           placeholder="0"
         />
+        <Toggle
+          checked={useSurplusA}
+          onChange={() => setUseSurplusA(!useSurplusA)}
+          className="mt-2"
+          label={t(translations.bobMarketMakingPage.depositModal.allowSurplus)}
+        />
         {isFirstAssetValueInvalid && (
           <ErrorBadge
             level={ErrorLevel.Critical}
@@ -354,6 +380,12 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
           disabled={isSecondValueDisabled}
           invalid={isSecondAssetValueInvalid}
           placeholder="0"
+        />
+        <Toggle
+          checked={useSurplusB}
+          onChange={() => setUseSurplusB(!useSurplusB)}
+          className="mt-2"
+          label={t(translations.bobMarketMakingPage.depositModal.allowSurplus)}
         />
         {isSecondAssetValueInvalid && (
           <ErrorBadge

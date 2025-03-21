@@ -53,8 +53,9 @@ const useSendGatewayTransaction = ({
       value,
       strategyAddress,
     }: SendGatewayTransactionParams) => {
-      if (!connector) return undefined;
-      if (!btcAddress) return undefined;
+      if (!connector || !btcAddress) {
+        return undefined;
+      }
 
       const gatewayClient = gatewaySDK || new GatewaySDK(toChain);
 
@@ -75,16 +76,15 @@ const useSendGatewayTransaction = ({
       if (strategyAddress) {
         quote.strategyAddress = strategyAddress;
       }
-      console.log({
-        quote,
-      });
 
       const { uuid, psbtBase64 } = await gatewayClient.startOrder(
         quote,
         params,
       );
 
-      if (!psbtBase64) throw new Error('No psbt');
+      if (!psbtBase64) {
+        throw new Error('No psbt');
+      }
 
       const bitcoinTxHex = await connector.signAllInputs(psbtBase64);
 

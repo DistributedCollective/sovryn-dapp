@@ -1,6 +1,6 @@
 import { useAccount, useBalance } from '@gobob/sats-wagmi';
 
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
@@ -9,15 +9,13 @@ import { ChainIds } from '@sovryn/ethers-provider';
 import { AmountInput, Button, ButtonSize, Select } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
-import { BOB_CHAIN_ID } from '../../../../../config/chains';
-
+import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
-import { useCacheCall } from '../../../../../hooks';
 import { useAccount as useEvmAccount } from '../../../../../hooks/useAccount';
 import { useDollarValue } from '../../../../../hooks/useDollarValue';
 import { translations } from '../../../../../locales/i18n';
 import { toWei } from '../../../../../utils/math';
-import { bobGateway, strategies } from '../../BobGateway.utils';
+import { strategies } from '../../BobGateway.constants';
 import { useSendGatewayTransaction } from '../../hooks/useSendGatewayTransaction';
 
 const commonTranslations = translations.common;
@@ -60,31 +58,10 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
       strategyAddress: strategy.strategyAddress,
     };
 
-    console.log(params);
-
     sendGatewayTransaction(params, {
       onError: error => console.log({ error }),
     });
   };
-
-  const { value: orders } = useCacheCall(
-    `bob-orders/${account}`,
-    BOB_CHAIN_ID,
-    async () => {
-      const result = await bobGateway.getOrders(account);
-      return result;
-    },
-    [account],
-    [],
-  );
-
-  useEffect(() => {
-    if (orders.length) {
-      console.log({
-        orders,
-      });
-    }
-  }, [orders]);
 
   const isDisabled = useMemo(() => {
     return (
@@ -109,7 +86,7 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
       <div className="flex items-center gap-3 mb-4">
         <div className="flex-1 relative">
           <AmountInput
-            placeholder="Amount (BTC)"
+            placeholder={t(translations.bobGatewayPage.amountInput)}
             step="0.00000001"
             value={amount}
             onChangeText={setAmount}
@@ -129,7 +106,7 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
       </div>
       <div className="mb-6">
         <div className="text-gray-30 text-xs mb-2 font-medium">
-          Select strategy
+          {t(translations.bobGatewayPage.selectStrategy)}
         </div>
         <Select
           value={strategyAddress}
@@ -137,7 +114,11 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
           options={strategies.map(strategy => ({
             value: strategy.strategyAddress,
             label: (
-              <div className="flex items-center gap-2">{strategy.name}</div>
+              <AssetPairRenderer
+                chainId={ChainIds.BOB_MAINNET}
+                asset1={strategy.tokenA}
+                asset2={strategy.tokenB}
+              />
             ),
           }))}
           className="min-w-36 w-full"

@@ -9,7 +9,7 @@ import { BOB_CHAIN_ID } from '../../../../../config/chains';
 import { useCacheCall } from '../../../../../hooks';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
-import { bobGateway } from '../../BobGateway.utils';
+import { bobGateway } from '../../BobGateway.constants';
 import { COLUMNS_CONFIG } from './BobGatewayOrders.constants';
 
 export const BobGatewayOrders: FC = () => {

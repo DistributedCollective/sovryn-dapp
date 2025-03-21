@@ -22,7 +22,6 @@ import { DEFAULT_RANGE_WIDTH } from '../../../../BobDepositModal.constants';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { useGetMaxDeposit } from '../../../../hooks/useGetMaxDeposit';
 import { useGetPoolInfo } from '../../../../hooks/useGetPoolInfo';
-import { useSurplusCollateralBalance } from '../../../../hooks/useSurplusCollateralBalance';
 import { useValidateDepositAmounts } from '../../../../hooks/useValidateDepositAmounts';
 
 type AmountFormProps = {
@@ -38,16 +37,6 @@ export const AmountForm: FC<AmountFormProps> = ({ pool }) => {
   const { isFirstAssetValueInvalid, isSecondAssetValueInvalid } =
     useValidateDepositAmounts(base.symbol, quote.symbol);
 
-  const tokenASurplus = useSurplusCollateralBalance(
-    poolTokens?.tokenA.tokenAddr,
-  );
-  const tokenBSurplus = useSurplusCollateralBalance(
-    poolTokens?.tokenB.tokenAddr,
-  );
-  console.log({
-    tokenASurplus,
-    tokenBSurplus,
-  });
   const [useSurplusA, setUseSurplusA] = useState(false);
   const [useSurplusB, setUseSurplusB] = useState(false);
 

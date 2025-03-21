@@ -13,9 +13,8 @@ import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/Ass
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { useWalletConnect } from '../../../../../hooks';
 import { useAccount as useEvmAccount } from '../../../../../hooks/useAccount';
-import { useDollarValue } from '../../../../../hooks/useDollarValue';
+import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
 import { translations } from '../../../../../locales/i18n';
-import { toWei } from '../../../../../utils/math';
 import { strategies } from '../../BobGateway.constants';
 import { useSendGatewayTransaction } from '../../hooks/useSendGatewayTransaction';
 
@@ -38,11 +37,8 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
   const { data } = useBalance();
   const { connectWallet } = useWalletConnect();
 
-  const btcPrice = useDollarValue(
-    'BTC',
-    toWei(1).toString(),
-    ChainIds.RSK_MAINNET,
-  );
+  const { price: rbtcPrice } = useGetRBTCPrice();
+
   const { isPending, sendGatewayTransaction } = useSendGatewayTransaction({
     toChain: 'bob',
   });
@@ -110,7 +106,7 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
           />
           <div className="absolute right-0 text-gray-40 text-xs mt-0.5 mr-2">
             $
-            {Decimal.from(btcPrice.usdPrice || '0')
+            {Decimal.from(rbtcPrice || '0')
               .mul(amount || '0')
               .toString()}
           </div>

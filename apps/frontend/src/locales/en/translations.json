@@ -1960,7 +1960,16 @@
         },
         "description": "New way earning in AMM",
         "deposit": "Deposit",
-        "withdraw": "Withdraw"
+        "withdraw": "Withdraw",
+        "orderTable": {
+            "baseToken": "Base Token",
+            "outputToken": "Output Token",
+            "status": "Status",
+            "gatewayAddress": "Gateway Address",
+            "strategyAddress": "Strategy Address",
+            "txHash": "Tx Hash",
+            "amount": "Amount"
+        }
     },
     "runesPage": {
         "meta": {

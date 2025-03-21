@@ -13,6 +13,7 @@ import { Promotions } from '../MarketMakingPage/components/Promotions/Promotions
 import { queryClient } from './BobGateway.utils';
 import { BitcoinWallet } from './components/BitcoinWallet/BitcoinWallet';
 import { BobGatewayForm } from './components/BobGatewayForm/BobGatewayForm';
+import { BobGatewayOrders } from './components/BobGatewayOrders/BobGatewayOrders';
 
 const BobGateway: FC = () => {
   return (
@@ -39,6 +40,7 @@ const BobGateway: FC = () => {
                 <BitcoinWallet />
               </div>
               <Promotions setActivePool={() => {}} onClick={() => {}} />
+              <BobGatewayOrders />
               <BobGatewayForm />
             </div>
           </SatsWagmiConfig>

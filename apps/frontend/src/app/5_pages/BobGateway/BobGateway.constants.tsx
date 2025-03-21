@@ -25,7 +25,7 @@ export const strategies = [
       'Lorem bitcoinae dollar situs ametus, consensusium adipiscing elitum, sed  do proofus-of-workium tempor incididunt ut blockchainus ',
   },
   {
-    strategyAddress: '0x15b6ce34A89769AdEa427FD3CCf76cdf32CE4d2B',
+    strategyAddress: '0x2a4F027cb568F2F3f7b2F7008b92C3B0eFc8DCfD',
     toToken: 'wBTC',
     tokenA: 'WBTC',
     tokenB: 'SolvBTC.BBN',
@@ -43,7 +43,7 @@ export const strategies = [
       'Lorem bitcoinae dollar situs ametus, consensusium adipiscing elitum, sed  do proofus-of-workium tempor incididunt ut blockchainus ',
   },
   {
-    strategyAddress: '0x9FaF18725Ab3dE1F1bF94c74d40888AF4690EFc9',
+    strategyAddress: '0x9509e42a304b408A17403a0a439692DBe8b68F6c',
     toToken: 'wBTC',
     tokenA: 'WBTC',
     tokenB: 'UniBTC',

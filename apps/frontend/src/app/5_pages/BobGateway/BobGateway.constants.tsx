@@ -9,8 +9,8 @@ export const strategies = [
   {
     strategyAddress: '0x0A0A0F6d572488093763C13AF7aB55597477aBDB',
     toToken: 'wBTC',
-    tokenA: 'SolvBTC.BBN',
-    tokenB: 'UniBTC',
+    tokenA: 'UniBTC',
+    tokenB: 'SolvBTC.BBN',
     category: 'Liquidity providing',
     incentives: (
       <div className="flex flex-col">

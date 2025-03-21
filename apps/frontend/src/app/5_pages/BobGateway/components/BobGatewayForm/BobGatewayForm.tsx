@@ -9,6 +9,7 @@ import {
   SimpleTableRow,
   Tabs,
   TabType,
+  Tooltip,
 } from '@sovryn/ui';
 
 import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
@@ -42,7 +43,11 @@ export const BobGatewayForm: FC = () => {
         dataAttribute: 'bob-gateway-deposit',
       },
       {
-        label: t(translations.bobGatewayPage.withdraw),
+        label: (
+          <Tooltip content={'Not supported by BOB Gateaway yet'}>
+            <span>{t(translations.bobGatewayPage.withdraw)}</span>
+          </Tooltip>
+        ),
         content: <BobGatewayWithdraw strategyAddress={strategyAddress} />,
         dataAttribute: 'bob-gateway-withdraw',
         disabled: true,

@@ -14,15 +14,15 @@ export const strategies = [
     category: 'Liquidity providing',
     incentives: (
       <div className="flex flex-col">
-        <span>Spice</span>
-        <span>+ Segment Points</span>
-        <span>+ Supply APR</span>
-        <span>+ Solv XP</span>
+        <span>20x/20x Spice </span>
+        <span>+ Supply APR </span>
+        <span>+ SolvXP</span>
         <span>+ Babylon Points</span>
+        <span>+ Diamond</span>
       </div>
     ),
     about:
-      'Lorem bitcoinae dollar situs ametus, consensusium adipiscing elitum, sed  do proofus-of-workium tempor incididunt ut blockchainus ',
+      'Maximize your rewards with liquid Bitcoin staking. This pool facilitates seamless swaps between SolvBTC.BBN and UniBTC, two Liquid Staking Tokens (LSTs) representing BTC. With a 20x Spice multiplier, it offers high incentives for liquidity providers looking to optimize yield while staying fully exposed to BTC derivatives.',
   },
   {
     strategyAddress: '0x2a4F027cb568F2F3f7b2F7008b92C3B0eFc8DCfD',
@@ -32,15 +32,14 @@ export const strategies = [
     category: 'Liquidity providing',
     incentives: (
       <div className="flex flex-col">
-        <span>Spice</span>
-        <span>+ Segment Points</span>
+        <span>7x/20x Spice</span>
         <span>+ Supply APR</span>
-        <span>+ Solv XP</span>
+        <span>+ SolvXP</span>
         <span>+ Babylon Points</span>
       </div>
     ),
     about:
-      'Lorem bitcoinae dollar situs ametus, consensusium adipiscing elitum, sed  do proofus-of-workium tempor incididunt ut blockchainus ',
+      'Combine wrapped BTC liquidity with staking rewards. This pool pairs wBTC with SolvBTC.BBN, allowing users to move between a widely-used BTC wrapper and an interest-bearing LST. Liquidity providers earn a 7x Spice multiplier on wBTC and a 20x multiplier on SolvBTC.BBN, making it an attractive option for BTC holders looking to gain exposure to liquid staking rewards.',
   },
   {
     strategyAddress: '0x9509e42a304b408A17403a0a439692DBe8b68F6c',
@@ -50,15 +49,13 @@ export const strategies = [
     category: 'Liquidity providing',
     incentives: (
       <div className="flex flex-col">
-        <span>Spice</span>
-        <span>+ Segment Points</span>
+        <span>7x/20x Spice</span>
         <span>+ Supply APR</span>
-        <span>+ Solv XP</span>
-        <span>+ Babylon Points</span>
+        <span>+ Diamond</span>
       </div>
     ),
     about:
-      'Lorem bitcoinae dollar situs ametus, consensusium adipiscing elitum, sed  do proofus-of-workium tempor incididunt ut blockchainus ',
+      'Combine wrapped BTC liquidity with staking rewards. This pool pairs wBTC with UniBTC, allowing users to move between a widely-used BTC wrapper and an interest-bearing LST. Liquidity providers earn a 7x Spice multiplier on wBTC and a 20x multiplier on UniBTC, making it an attractive option for BTC holders looking to gain exposure to liquid staking rewards.',
   },
 ];
 

@@ -1,37 +1,35 @@
 import axios from 'axios';
 
+import { Pool } from '@sovryn/sdk';
+
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCachedData } from '../../../../../../hooks/useCachedData';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
-import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { getSovrynIndexerUri } from '../../../../../../utils/indexer';
 import { PoolPositionType } from '../../../MarketMakingPage.types';
 import { AmbientPosition } from '../AmbientMarketMaking.types';
-import { AmbientLiquidityPool } from '../utils/AmbientLiquidityPool';
 import { useGetLpTokenBalance } from './useGetLpTokenBalance';
 
-export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
+export const useGetAmbientPositions = (pool: Pool) => {
   const { croc } = useCrocContext();
   const chainId = useCurrentChain();
   const { account } = useAccount();
-  const baseToken = useTokenDetailsByAsset(pool.base, pool.chainId);
-  const quoteToken = useTokenDetailsByAsset(pool.quote, pool.chainId);
 
   const lpTokenBalance = useGetLpTokenBalance(pool);
 
   const { value: positions, loading } = useCachedData(
-    `user-pools-balance/${baseToken?.address}/${quoteToken?.address}/${
-      pool.poolIndex
+    `user-pools-balance/${pool.base.address}/${pool.quote.address}/${
+      pool.extra.poolIdx
     }/${account}/${croc ? '' : 'croc'}`,
     chainId,
     async () => {
       if (
-        !baseToken?.address ||
-        !quoteToken?.address ||
+        !pool.base.address ||
+        !pool.quote.address ||
         !account ||
         !croc ||
-        !pool.poolIndex ||
+        !pool.extra.poolIdx ||
         !pool.chainId
       ) {
         return [];
@@ -42,16 +40,16 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
           `${getSovrynIndexerUri(
             chainId,
           )}/sdex/user_pool_positions?user=${account}&base=${
-            pool.baseAddress
-          }&quote=${pool.quoteAddress}&poolIdx=${
-            pool.poolIndex
+            pool.base.address
+          }&quote=${pool.quote.address}&poolIdx=${
+            pool.extra.poolIdx
           }&chainId=${chainId}`,
         );
 
         const positions = data.data as AmbientPosition[];
 
-        if (pool.lpTokenAddress) {
-          const wallet = await croc.token(pool.lpTokenAddress).wallet(account);
+        if (pool.extra.lpToken) {
+          const wallet = await croc.token(pool.extra.lpToken).wallet(account);
           const ambientIndex = positions.findIndex(
             position => position.positionType === PoolPositionType.ambient,
           );
@@ -59,8 +57,10 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
           const liqBalance = wallet.gt(0) ? wallet.toString() : lpTokenBalance;
 
           if (ambientIndex !== -1) {
-            const ambientPosition = positions[ambientIndex];
-            ambientPosition.ambientLiq = liqBalance;
+            if (parseFloat(liqBalance) > 0) {
+              const ambientPosition = positions[ambientIndex];
+              ambientPosition.ambientLiq = liqBalance;
+            }
           } else if (parseFloat(liqBalance) > 0) {
             positions.push({
               ambientLiq: liqBalance,
@@ -98,9 +98,9 @@ export const useGetAmbientPositions = (pool: AmbientLiquidityPool) => {
       }
     },
     [
-      baseToken?.address,
-      quoteToken?.address,
-      pool.poolIndex,
+      pool.base.address,
+      pool.quote.address,
+      pool.extra.poolIdx,
       account,
       chainId,
       lpTokenBalance,

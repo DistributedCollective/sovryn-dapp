@@ -2,6 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
 import { ButtonSize, ButtonStyle, Button } from '@sovryn/ui';
 
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
@@ -9,10 +10,9 @@ import { useMaintenance } from '../../../../../../../../../hooks/useMaintenance'
 import { translations } from '../../../../../../../../../locales/i18n';
 import { BobDepositModal } from '../../../../../BobDepositModal/BobDepositModal';
 import { DepositContextProvider } from '../../../../../BobDepositModal/contexts/BobDepositModalContext';
-import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
 
 type AmbientPoolDepositProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
 };
 
 export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {

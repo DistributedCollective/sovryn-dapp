@@ -28,6 +28,21 @@ import { router } from './router';
 import './styles/tailwindcss/index.css';
 import { rskClient } from './utils/clients';
 
+const checkAndRemoveQueryParam = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  if (urlParams.has('trezor-connect-src')) {
+    urlParams.delete('trezor-connect-src');
+
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+
+    window.history.replaceState({}, document.title, newUrl);
+    window.location.reload();
+  }
+};
+
+checkAndRemoveQueryParam();
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );

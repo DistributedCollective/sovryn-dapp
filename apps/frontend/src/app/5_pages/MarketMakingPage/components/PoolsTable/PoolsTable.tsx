@@ -25,6 +25,7 @@ type PoolsTableProps = {
   setActivePool: (poolKey: string) => void;
   shouldScroll?: boolean;
   showHighlightedPools?: boolean;
+  filter?: string;
 };
 
 export const PoolsTable: FC<PoolsTableProps> = ({
@@ -32,15 +33,35 @@ export const PoolsTable: FC<PoolsTableProps> = ({
   setActivePool,
   shouldScroll = false,
   showHighlightedPools,
+  filter,
 }) => {
   const navigate = useNavigate();
   const { account } = useAccount();
   const tableRef = useRef<HTMLDivElement>(null);
 
+  const filteredPools = useMemo(() => {
+    if (!filter || filter === '') {
+      return ammPools;
+    }
+
+    // split by comma, slash and space
+    const symbols = filter.toLowerCase().split(/,| |\//);
+
+    return ammPools.filter(pool =>
+      symbols.find(
+        symbol =>
+          pool.assetA.toLowerCase().includes(symbol) ||
+          pool.assetB.toLowerCase().includes(symbol),
+      ),
+    );
+  }, [filter]);
+
   const pools = useMemo(
     () =>
-      ammPools.filter(pool => pool.isHighlighted === !!showHighlightedPools),
-    [showHighlightedPools],
+      filteredPools.filter(
+        pool => pool.isHighlighted === !!showHighlightedPools,
+      ),
+    [filteredPools, showHighlightedPools],
   );
 
   const expandedIndex = useMemo(

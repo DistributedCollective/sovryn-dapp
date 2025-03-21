@@ -1,5 +1,38 @@
 # frontend
 
+## 1.1.31
+
+### Patch Changes
+
+- c73f791c: SOV-4656: Add search functionality to Market making page
+- add37ff7: SOV-4639: Fix maximum deposit value on Market making page
+- 36b941bf: chore: change bob testnet rpc address
+- 881d4164: SOV-4514: Changes for "Transfer Assets" Button
+- Updated dependencies [36b941bf]
+- Updated dependencies [36b941bf]
+  - @sovryn/sdk@2.0.5
+  - @sovryn/sdex@0.3.15
+
+## 1.1.30
+
+### Patch Changes
+
+- 27d0a760: SOV-4618: Adjust governor in proclamation proposals
+- ca6d0643: SOV-4569: Adjust convert gas limit
+
+## 1.1.29
+
+### Patch Changes
+
+- 08fa89a4: Update spiceInfo.json
+- e3c19dae: SOV-4609: fix display ambient liq balance
+
+## 1.1.28
+
+### Patch Changes
+
+- c760d5c0: Fix Spice multipliers
+
 ## 1.1.27
 
 ### Patch Changes

@@ -2,6 +2,7 @@ import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
 import {
   Button,
   ButtonStyle,
@@ -16,7 +17,6 @@ import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/Cur
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
-import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import {
   DEFAULT_RANGE_WIDTH,
   DEFAULT_SLIPPAGE,
@@ -34,7 +34,7 @@ const pageTranslations = translations.bobMarketMakingPage.depositModal;
 type BobDepositModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  pool: AmbientLiquidityPool;
+  pool: Pool;
 };
 
 export const BobDepositModal: FC<BobDepositModalProps> = ({
@@ -68,7 +68,7 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
 
   const { base, quote } = useMemo(() => pool, [pool]);
   const { isFirstAssetValueInvalid, isSecondAssetValueInvalid } =
-    useValidateDepositAmounts(base, quote);
+    useValidateDepositAmounts(base.symbol, quote.symbol);
 
   const onComplete = useCallback(() => {
     onClose();
@@ -100,7 +100,7 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
     setIsSecondAssetOutOfRange,
   ]);
 
-  const handleSubmit = useHandleSubmit(base, quote, onComplete);
+  const handleSubmit = useHandleSubmit(pool, onComplete);
 
   const isSubmitDisabled = useMemo(
     () =>
@@ -132,8 +132,8 @@ export const BobDepositModal: FC<BobDepositModalProps> = ({
         <DialogBody>
           <div className="bg-gray-90 p-4 rounded">
             <CurrentStatistics
-              symbol={base}
-              symbol2={quote}
+              symbol={base.symbol}
+              symbol2={quote.symbol}
               className="flex justify-between"
             />
           </div>

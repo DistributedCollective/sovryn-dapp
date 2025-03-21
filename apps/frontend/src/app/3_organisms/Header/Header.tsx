@@ -18,6 +18,7 @@ import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
 import { isBobChain } from '../../../utils/chain';
+import { getOriginsUrl } from '../../../utils/helpers';
 import { menuItemsMapping } from './Header.constants';
 import { BridgeMenuItem } from './components/BridgeMenuItem/BridgeMenuItem';
 import { NavItem } from './components/NavItem/NavItem';
@@ -68,6 +69,16 @@ export const Header: FC = () => {
                 <NavItem item={item} onClick={toggle} />
               </li>
             ))}
+            <li>
+              <a
+                href={getOriginsUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-10 font-normal text-sm text-opacity-75 hover:text-gray-10 no-underline px-2 py-3"
+              >
+                {t(translations.header.nav.origins)}
+              </a>
+            </li>
             <ProductLinks />
             {isBobChain(chainId) && (
               <>

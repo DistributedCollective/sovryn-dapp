@@ -80,7 +80,8 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
         }
         className="cursor-pointer self-end text-gray-20 text-xs mt-5 mb-1"
       >
-        (max: {formatUnits(data?.confirmed.toString() || '0', 8)} wBTC)
+        ({t(translations.common.max)}:{' '}
+        {formatUnits(data?.confirmed.toString() || '0', 8)} wBTC)
       </div>
 
       <div className="flex items-center gap-3 mb-4">
@@ -129,7 +130,11 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
         size={ButtonSize.large}
         loading={isPending}
         disabled={isDisabled}
-        text={btcAddress ? 'Deposit' : 'Connect Wallet'}
+        text={
+          btcAddress
+            ? t(translations.common.deposit)
+            : t(translations.bobGatewayPage.connectWalletCta)
+        }
         onClick={onSubmit}
       />
     </div>

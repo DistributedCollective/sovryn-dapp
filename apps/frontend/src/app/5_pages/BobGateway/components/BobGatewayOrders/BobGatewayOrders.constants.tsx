@@ -38,7 +38,10 @@ export const COLUMNS_CONFIG = [
   {
     id: 'status',
     title: t(translations.bobGatewayPage.orderTable.status),
-    cellRenderer: (tx: Order) => (tx.status ? 'Confirmed' : 'Pending'),
+    cellRenderer: (tx: Order) =>
+      tx.status
+        ? t(translations.bobGatewayPage.orderTable.confirmed)
+        : t(translations.bobGatewayPage.orderTable.pending),
   },
   {
     id: 'gatewayAddress',

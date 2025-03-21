@@ -1962,6 +1962,7 @@
         "description": "New way earning in AMM",
         "deposit": "Deposit",
         "withdraw": "Withdraw",
+        "connectWalletCta": "Connect wallet",
         "orderTable": {
             "baseToken": "Base Token",
             "outputToken": "Output Token",
@@ -1969,7 +1970,9 @@
             "gatewayAddress": "Gateway Address",
             "strategyAddress": "Strategy Address",
             "txHash": "Tx Hash",
-            "amount": "Amount"
+            "amount": "Amount",
+            "confirmed": "Confirmed",
+            "pending": "Pending"
         },
         "amountInput": "Amount (BTC)",
         "lst": "LST",

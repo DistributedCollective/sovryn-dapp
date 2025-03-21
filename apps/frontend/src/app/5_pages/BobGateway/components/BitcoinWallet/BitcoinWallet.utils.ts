@@ -3,7 +3,7 @@ import { SatsConnector } from '@gobob/sats-wagmi';
 import BinanceIcon from '../../../../../assets/images/BitcoinWallets/Binance.svg';
 import LeatherIcon from '../../../../../assets/images/BitcoinWallets/Leather.svg';
 import MetaMaskIcon from '../../../../../assets/images/BitcoinWallets/MetaMask.svg';
-import UniSetIcon from '../../../../../assets/images/BitcoinWallets/UniSet.svg';
+import UniSatIcon from '../../../../../assets/images/BitcoinWallets/UniSat.svg';
 import XversIcon from '../../../../../assets/images/BitcoinWallets/Xvers.svg';
 
 export const getBitcoinWalletIcon = (connector: SatsConnector) => {
@@ -15,7 +15,7 @@ export const getBitcoinWalletIcon = (connector: SatsConnector) => {
     case 'xverse':
       return XversIcon;
     case 'unisat':
-      return UniSetIcon;
+      return UniSatIcon;
     case 'binancew3w':
       return BinanceIcon;
     case 'metamask_snap':

@@ -1,6 +1,6 @@
 import { useAccount, useConnect, useDisconnect } from '@gobob/sats-wagmi';
 
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
@@ -20,12 +20,19 @@ import { useNotificationContext } from '../../../../../contexts/NotificationCont
 import { translations } from '../../../../../locales/i18n';
 import { getBitcoinWalletIcon } from './BitcoinWallet.utils';
 
-export const BitcoinWallet: FC = () => {
+type BitcoinWalletProps = {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+};
+
+export const BitcoinWallet: FC<BitcoinWalletProps> = ({
+  isOpen,
+  setIsOpen,
+}) => {
   const { addNotification } = useNotificationContext();
   const { connectors, connect } = useConnect();
   const { address: btcAddress } = useAccount();
   const { disconnect } = useDisconnect();
-  const [isOpen, setIsOpen] = useState(false);
 
   const onCopyAddress = useCallback(() => {
     addNotification({
@@ -41,7 +48,7 @@ export const BitcoinWallet: FC = () => {
     if (btcAddress && isOpen) {
       setIsOpen(false);
     }
-  }, [btcAddress, isOpen]);
+  }, [btcAddress, isOpen, setIsOpen]);
 
   if (!btcAddress) {
     return (
@@ -57,27 +64,32 @@ export const BitcoinWallet: FC = () => {
           />
           <DialogBody className="p-6">
             <div className="flex flex-col gap-4 mx-8">
-              {connectors.map(connector => (
-                <Button
-                  className="w-full flex items-center gap-2"
-                  size={ButtonSize.large}
-                  key={connector.id}
-                  style={ButtonStyle.secondary}
-                  text={
-                    <>
-                      {getBitcoinWalletIcon(connector) && (
-                        <img
-                          alt={connector.name}
-                          src={getBitcoinWalletIcon(connector)}
-                          width={24}
-                        />
-                      )}
-                      {connector.name}
-                    </>
-                  }
-                  onClick={() => connect({ connector })}
-                />
-              ))}
+              {connectors
+                .filter(
+                  connector =>
+                    !['metamask_snap', 'binancew3w'].includes(connector.id),
+                )
+                .map(connector => (
+                  <Button
+                    className="w-full flex items-center gap-2"
+                    size={ButtonSize.large}
+                    key={connector.id}
+                    style={ButtonStyle.secondary}
+                    text={
+                      <>
+                        {getBitcoinWalletIcon(connector) && (
+                          <img
+                            alt={connector.name}
+                            src={getBitcoinWalletIcon(connector)}
+                            width={24}
+                          />
+                        )}
+                        {connector.name}
+                      </>
+                    }
+                    onClick={() => connect({ connector })}
+                  />
+                ))}
             </div>
           </DialogBody>
         </Dialog>

@@ -11,6 +11,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { useWalletConnect } from '../../../../../hooks';
 import { useAccount as useEvmAccount } from '../../../../../hooks/useAccount';
 import { useDollarValue } from '../../../../../hooks/useDollarValue';
 import { translations } from '../../../../../locales/i18n';
@@ -23,16 +24,20 @@ const commonTranslations = translations.common;
 type BobGatewayDepositProps = {
   setStrategyAddress: (strategy: string) => void;
   strategyAddress: string;
+  openBTCWallet: () => void;
 };
 
 export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
   strategyAddress,
   setStrategyAddress,
+  openBTCWallet,
 }) => {
   const [amount, setAmount] = useState('');
   const { address: btcAddress } = useAccount();
   const { account } = useEvmAccount();
   const { data } = useBalance();
+  const { connectWallet } = useWalletConnect();
+
   const btcPrice = useDollarValue(
     'BTC',
     toWei(1).toString(),
@@ -43,11 +48,18 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
   });
 
   const onSubmit = async () => {
+    if (!btcAddress) {
+      return openBTCWallet();
+    }
+    if (!account) {
+      return connectWallet();
+    }
+
     const strategy = strategies.find(
       t => t.strategyAddress === strategyAddress,
     );
 
-    if (!account || !amount || !strategy) {
+    if (!amount || !strategy) {
       return;
     }
 
@@ -65,13 +77,13 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
 
   const isDisabled = useMemo(() => {
     return (
-      !btcAddress ||
-      !account ||
-      !amount ||
-      !strategyAddress ||
-      Number(formatUnits(data?.confirmed.toString() || '0', 8)) <
-        Number(amount) ||
-      Number(amount) <= 0
+      !!btcAddress &&
+      !!account &&
+      (!amount ||
+        !strategyAddress ||
+        Number(formatUnits(data?.confirmed.toString() || '0', 8)) <
+          Number(amount) ||
+        Number(amount) <= 0)
     );
   }, [account, amount, btcAddress, data?.confirmed, strategyAddress]);
 
@@ -134,7 +146,7 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
         loading={isPending}
         disabled={isDisabled}
         text={
-          btcAddress
+          btcAddress && account
             ? t(translations.common.deposit)
             : t(translations.bobGatewayPage.connectWalletCta)
         }

@@ -75,6 +75,7 @@
     },
     "connectWalletButton": {
         "connect": "Get started",
+        "connectBTC": "Connect BTC wallet",
         "rewards": "Rewards",
         "notifications": "Notifications",
         "history": "History",
@@ -115,6 +116,7 @@
             "bob": "Go BoB",
             "runes": "Runes",
             "spicePoints": "Spice Points",
+            "bobGateway": "Bob Gateway",
             "bridges": {
                 "title": "Bridges",
                 "connectWallet": "Connect a wallet to use the bridges.",
@@ -1390,6 +1392,7 @@
             "priceRange": "Price range",
             "balanced": "Balanced",
             "infinite": "Infinite",
+            "allowSurplus": "Allow Personal Reserve Vault Balances",
             "newPoolStatistics": {
                 "newPoolBalance": "New pool balance",
                 "currentPrice": "Current {{token}} price",
@@ -1952,6 +1955,37 @@
     "unclaimedVestings": {
         "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",
         "cta": "Open Rewards page"
+    },
+    "bobGatewayPage": {
+        "meta": {
+            "title": "BOB Gateway"
+        },
+        "description": "New way earning in AMM",
+        "deposit": "Deposit",
+        "withdraw": "Withdraw",
+        "connectWalletCta": "Connect wallet",
+        "orderTable": {
+            "baseToken": "Base Token",
+            "outputToken": "Output Token",
+            "status": "Status",
+            "gatewayAddress": "Gateway Address",
+            "strategyAddress": "Strategy Address",
+            "txHash": "Tx Hash",
+            "amount": "Amount",
+            "confirmed": "Confirmed",
+            "pending": "Pending"
+        },
+        "amountInput": "Amount (BTC)",
+        "lst": "LST",
+        "selectStrategy": "Select strategy",
+        "strategyDetails": {
+            "title": "Strategy details",
+            "name": "Name",
+            "category": "Category",
+            "incentives": "Incentives",
+            "token": "Token",
+            "about": "About"
+        }
     },
     "runesPage": {
         "meta": {

@@ -103,12 +103,12 @@ export const useHandleSubmit = (pool: Pool, onComplete: () => void) => {
       tokenA: {
         address: poolTokens.tokenA.tokenAddr,
         qty: firstAssetBigNumberAmount,
-        isWithdrawFromDexChecked: false,
+        isWithdrawFromDexChecked: true,
       },
       tokenB: {
         address: poolTokens.tokenB.tokenAddr,
         qty: secondAssetBigNumberAmount,
-        isWithdrawFromDexChecked: false,
+        isWithdrawFromDexChecked: true,
       },
       isTokenAPrimaryRange: usesBaseToken,
       tick,

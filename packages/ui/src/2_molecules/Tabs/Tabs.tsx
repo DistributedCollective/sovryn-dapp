@@ -17,6 +17,7 @@ export interface ITabItem {
 type TabsProps = {
   className?: string;
   contentClassName?: string;
+  labelsClassName?: string;
   index: number;
   items: ITabItem[];
   onChange?: (index: number) => void;
@@ -34,6 +35,7 @@ export const Tabs: React.FC<TabsProps> = ({
   type = TabType.primary,
   size = TabSize.normal,
   wrapperRef,
+  labelsClassName,
 }) => {
   const selectTab = useCallback(
     (item: ITabItem, index: number) => {
@@ -48,7 +50,7 @@ export const Tabs: React.FC<TabsProps> = ({
 
   return (
     <div className={classNames(styles.wrapper, className)} ref={wrapperRef}>
-      <div className={classNames(styles.tabs, styles[type])}>
+      <div className={classNames(styles.tabs, styles[type], labelsClassName)}>
         {items.map((item, i) => (
           <Tab
             key={i}

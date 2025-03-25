@@ -6,6 +6,8 @@
   "dependencies": {
     "@apollo/client": "3.7.1",
     "@apollo/react-hooks": "4.0.0",
+    "@gobob/bob-sdk": "^3.1.7-alpha0",
+    "@gobob/sats-wagmi": "^0.3.21-alpha1",
     "@loadable/component": "5.15.2",
     "@sovryn-zero/lib-base": "0.2.1",
     "@sovryn-zero/lib-ethers": "0.2.5",
@@ -26,6 +28,7 @@
     "@sovryn/tailwindcss-config": "*",
     "@sovryn/ui": "*",
     "@sovryn/utils": "0.0.2",
+    "@tanstack/react-query": "^5.59.0",
     "@uniswap/permit2-sdk": "1.2.0",
     "bitcoin-address-validation": "2.2.1",
     "chart.js": "4.1.1",

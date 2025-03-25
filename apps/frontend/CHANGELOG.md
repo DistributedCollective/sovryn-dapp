@@ -1,5 +1,15 @@
 # frontend
 
+## 1.1.32
+
+### Patch Changes
+
+- 756c9249: chore: add origins link
+- 5d389b6f: chore: change bob testnet rpc address
+- 0c3563ec: SOV-4753: fix-start-time-calculation-for-staking-reward-retrieval
+- Updated dependencies [5d389b6f]
+  - @sovryn/sdex@0.3.16
+
 ## 1.1.31
 
 ### Patch Changes

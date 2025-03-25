@@ -1,5 +1,11 @@
 # @sovryn/sdex
 
+## 0.3.16
+
+### Patch Changes
+
+- 5d389b6f: chore: change bob testnet rpc address
+
 ## 0.3.15
 
 ### Patch Changes

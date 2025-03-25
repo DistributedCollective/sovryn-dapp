@@ -5,7 +5,7 @@ import { t } from 'i18next';
 
 import { getProtocolContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
-import { Button, ButtonType, ButtonStyle } from '@sovryn/ui';
+import { Button, ButtonType, ButtonStyle, Input, FormGroup } from '@sovryn/ui';
 
 import { RSK_CHAIN_ID } from '../../../../../../../config/chains';
 
@@ -29,10 +29,10 @@ type WithdrawFeeProps = {
   refetch: () => void;
 };
 
-const MAX_CHECKPOINTS = 150;
 const MAX_NEXT_POSITIVE_CHECKPOINT = 75;
 
 export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
+  const [maxCheckpoints, setMaxCheckpoints] = useState(1);
   const { account } = useAccount();
   const [loading, setLoading] = useState(false);
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
@@ -116,7 +116,7 @@ export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
           nonRbtcRegular,
           rbtcRegular,
           tokensWithSkippedCheckpoints,
-          MAX_CHECKPOINTS,
+          maxCheckpoints,
           account,
         ],
         gasLimit: GAS_LIMIT.REWARDS_CLAIM,
@@ -132,6 +132,7 @@ export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
     account,
     feeSharing,
     fees,
+    maxCheckpoints,
     onComplete,
     setIsOpen,
     setTitle,
@@ -139,16 +140,27 @@ export const WithdrawAllFees: FC<WithdrawFeeProps> = ({ fees, refetch }) => {
   ]);
 
   return (
-    <Button
-      type={ButtonType.button}
-      style={ButtonStyle.secondary}
-      text={t(translations.rewardPage.stabilityPool.actions.withdrawAll)}
-      onClick={onSubmit}
-      disabled={isClaimDisabled || loading}
-      loading={loading}
-      className="w-full lg:w-auto whitespace-nowrap"
-      dataAttribute="rewards-withdraw"
-    />
+    <div>
+      <Button
+        type={ButtonType.button}
+        style={ButtonStyle.secondary}
+        text={t(translations.rewardPage.stabilityPool.actions.withdrawAll)}
+        onClick={onSubmit}
+        disabled={isClaimDisabled || loading}
+        loading={loading}
+        className="w-full lg:w-auto whitespace-nowrap"
+        dataAttribute="rewards-withdraw"
+      />
+      <FormGroup className="my-2" label="Max checkpoints">
+        <Input
+          type="number"
+          min="0"
+          className="w-20"
+          onChange={e => setMaxCheckpoints(parseInt(e.target.value || '0'))}
+          value={maxCheckpoints.toString()}
+        />
+      </FormGroup>
+    </div>
   );
 };
 

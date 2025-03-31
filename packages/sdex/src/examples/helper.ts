@@ -49,7 +49,7 @@ export interface CreateConcentratedPositionProps {
 export type PriceRange = [number, number];
 export type TickRange = [number, number];
 
-const SLIPPAGE_TORELANCE = 0.05; // 0.05%
+const SLIPPAGE_TORELANCE = 15; //0.05; // 0.05%
 
 function checkWithinSlippageTolerancePercentage(
   price1: number,
@@ -219,12 +219,21 @@ export async function burnAmbientLiquidity(
     poolPrice * (1 + SLIPPAGE_TORELANCE / 100),
   ];
   console.log('pool price:', poolPrice);
-  console.log(
-    'encoded_data: ',
-    await pool.burnAmbientLiq(amount, limits, {
-      lpConduit: lpConduit,
-    }),
-  );
+  console.log('pool price tick:', priceToTick(poolPrice));
+  console.log('price param:', price);
+  console.log('price param tick:', priceToTick(price));
+  const encodedData = await pool.burnAmbientLiq(amount, limits, {
+    lpConduit: lpConduit,
+  });
+  console.log('encoded_data: ', encodedData);
+  const cntx = await croc.context;
+  if (process.argv.includes('--tx')) {
+    const data = cntx.dex.interface.encodeFunctionData('userCmd', [
+      cntx.chain.proxyPaths.liq,
+      encodedData,
+    ]);
+    console.log('data:', data);
+  }
 }
 
 export async function createPositionConcentratedLiquidity(
@@ -396,7 +405,6 @@ export async function burnConcentratedLiquidity(
           roundDownTick(priceToTick(minimumPrice), gridSize),
           roundUpTick(priceToTick(maximumPrice), gridSize),
         ];
-
   // const expectedBase =
   //   pool.baseToken.tokenAddr.toLowerCase() === base.toLowerCase();
 
@@ -433,7 +441,7 @@ export async function burnConcentratedLiquidity(
     ]);
     console.log('data:', data);
   }
-  console.log('-'.repeat(50));
+  console.log('-'.repeat(50), '\n');
 }
 
 export function roundDownTick(lowTick: number, nTicksGrid: number): number {

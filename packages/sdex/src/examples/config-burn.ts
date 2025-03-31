@@ -1,4 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { BigNumber } from 'ethers';
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
+//import { priceToTick } from '../utils/price';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+//import { tickToPrice } from '../utils/price';
 
 export const bobMainnetAmbientPoolConfigs = [
   {
@@ -55,29 +61,45 @@ export const bobMainnetAmbientPoolConfigs = [
     lpConduit: '0xBd696d1a6E09D051dDce2d7DcDDD6B6Bf082f8AA',
   },
 ];
+// console.log('[priceToTick(0.01), priceToTick(100)]:', [
+//   priceToTick(0.0009),
+//   priceToTick(0.0008),
+// ]);
+// console.log('[priceToTick(14465186888527), priceToTick(14465186888527)]:', [
+//   priceToTick(14465186888527),
+//   priceToTick(17491213330499),
+// ]);
+// console.log('tickToPrice(14465186888527), tickToPrice(14465186888527)]:', [
+//   tickToPrice(14465186888527),
+//   tickToPrice(17491213330499),
+// ]);
+// console.log('[tickToPrice(-2764240), tickToPrice(-276196)]:', [
+//   tickToPrice(-2764240),
+//   tickToPrice(-276196),
+// ]);
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 const stablesRangeMultipliers = [0.99044, 1.01288]; // [0.1, 10000]; - to play around with the price range - hasn't worked though
 export const bobMainnetConcentratedPoolConfigs = [
-  // {
-  //   baseToken: {
-  //     tokenSymbol: 'DLLR',
-  //     tokenDeploymentName: 'DLLR',
-  //     isNativeToken: false,
-  //     tokenAddress: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
-  //   },
-  //   quoteToken: {
-  //     tokenSymbol: 'SOV',
-  //     tokenDeploymentName: 'SOV',
-  //     isNativeToken: false,
-  //     tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
-  //   },
-  //   price: 0.56,
-  //   poolIdx: 400,
-  //   amountSqrtXY: 0,
-  //   rangeMultipliers: [0.2, 5], // [-80%, + 5X]
-  //   tickRange: [-21896, 10296],
-  // },
   {
+    //   baseToken: {
+    //     tokenSymbol: 'DLLR',
+    //     tokenDeploymentName: 'DLLR',
+    //     isNativeToken: false,
+    //     tokenAddress: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
+    //   },
+    //   quoteToken: {
+    //     tokenSymbol: 'SOV',
+    //     tokenDeploymentName: 'SOV',
+    //     isNativeToken: false,
+    //     tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+    //   },
+    //   price: 0.56,
+    //   poolIdx: 400,
+    //   amountSqrtXY: 0,
+    //   rangeMultipliers: [0.2, 5], // [-80%, + 5X]
+    //   tickRange: [-21896, 10296],
+    // },
+    // {
     baseToken: {
       tokenSymbol: 'USDT',
       tokenDeploymentName: 'USDT',
@@ -90,11 +112,11 @@ export const bobMainnetConcentratedPoolConfigs = [
       isNativeToken: false,
       tokenAddress: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
     },
-    price: 1,
+    price: 0.00009219475707, //1,
     poolIdx: 400,
     amountSqrtXY: BigNumber.from(0), // 0 - will be queried from the tickRange //BigNumber.from('10028165608911452160') SqrtXY amount - from SdexQuery queryRangePosition func https://explorer.gobob.xyz/address/0x1dff4Ff93dF17Ad6F44E23368341CcFb8fB8B675?tab=read_write_contract
     rangeMultipliers: stablesRangeMultipliers,
-    tickRange: [-276424, -276196],
+    tickRange: [-276424, -276196], //[(priceToTick(0.9), priceToTick(1.01))], //[303042, 304942], //[-276424, -276196], - previous, didn't work
   },
   // {
   //   baseToken: {
@@ -133,5 +155,5 @@ export const bobMainnetConcentratedPoolConfigs = [
   //   amountSqrtXY: 0,
   //   rangeMultipliers: [0.995, 1.005], //make it symmetric
   //   tickRange: [-230324, -230220],
-  // },
+  //  },
 ];

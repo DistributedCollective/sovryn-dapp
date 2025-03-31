@@ -4,6 +4,7 @@ import path from 'path';
 
 //import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
+//import { priceToTick, tickToPrice } from '../utils';
 //import { CrocPositionView } from '../position';
 import {
   //createPositionConcentratedLiquidity,
@@ -135,7 +136,7 @@ async function demo() {
   //   .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
   // console.log('Encoded data to deposit', amountParam, ' USDT:', encodedData);
 
-  const slippageTolerancePercentage = 500000; // 10%
+  const slippageTolerancePercentage = 1000; // due to a huge disbalance
 
   // for (const poolConfig of bobMainnetConcentratedPoolConfigs) {
   //   console.log(

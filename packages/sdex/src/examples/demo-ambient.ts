@@ -4,6 +4,7 @@ import path from 'path';
 
 //import { ERC20_READ_ABI } from '../abis/erc20.read';
 import { CrocEnv } from '../croc';
+import { priceToTick } from '../utils';
 
 // import { // bobMainnetMockAmbientPoolConfigs,
 // bobMainnetAmbientPoolConfigs //bobMainnetConcentratedPoolConfigs //bobMainnetAmbientPoolConfigs, //, // bobMainnetMockConcentratedPoolConfigs,
@@ -208,7 +209,7 @@ async function demo() {
     console.log(
       `Processing ambient pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
     );
-    const SLIPPAGE_TORELANCE = 1; // 0.05%
+    const SLIPPAGE_TORELANCE = 0.05; // 0.05%
     type PriceRange = [number, number];
     const pool = croc.pool(
       bobMainnetTokens[
@@ -228,22 +229,32 @@ async function demo() {
       `burning from ${poolConfig.baseToken.tokenSymbol} (${poolConfig.baseToken.tokenAddress}) - ${poolConfig.quoteToken.tokenSymbol} (${poolConfig.quoteToken.tokenAddress}) ${poolConfig.lpTokenAmount} LP token amount`,
     );
     console.log('pool price:', poolPrice);
+    console.log('pool price tick:', priceToTick(poolPrice));
     console.log('LP conduit:', poolConfig.lpConduit);
+    const encodedData = await pool.burnAmbientLiq(
+      ethers.utils.parseEther(poolConfig.lpTokenAmount.toString()), //909.944828342431797637
+      limits,
+      {
+        lpConduit: poolConfig.lpConduit,
+      },
+    );
     console.log(
       'encoded_data: ',
       // await pool.burnAmbientAll(limits, {
       //   lpConduit: poolConfig.lpConduit,
       // }),
       //await pool.burnAmbientLiq(ethers.utils.parseEther('0.0193363'), limits, {
-      await pool.burnAmbientLiq(
-        ethers.utils.parseEther(poolConfig.lpTokenAmount.toString()), //909.944828342431797637
-        limits,
-        {
-          lpConduit: poolConfig.lpConduit,
-        },
-      ),
-      console.log('-'.repeat(50)),
+      encodedData,
     );
+    const cntx = await croc.context;
+    //if (process.argv.includes('--tx')) {
+    const data = cntx.dex.interface.encodeFunctionData('userCmd', [
+      cntx.chain.proxyPaths.liq,
+      encodedData,
+    ]);
+    console.log('data:', data);
+    //}
+    console.log('-'.repeat(50));
   }
 
   // CONCENTRATED LIQUIDITY

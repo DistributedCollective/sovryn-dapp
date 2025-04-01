@@ -136,13 +136,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
     [withdrawLiquidity, isFullWithdrawal, totalLiquidity],
   );
 
-  const handleSubmit = useHandleSubmit(
-    withdraw,
-    isFullWithdrawal,
-    pool,
-    position,
-    onClose,
-  );
+  const handleSubmit = useHandleSubmit(withdraw, pool, position, onClose);
 
   const isValidAmount = useMemo(
     () => Number(withdrawAmount) <= Number(depositedAmountBase),

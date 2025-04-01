@@ -18,10 +18,10 @@ import { PoolPositionType } from '../../../MarketMakingPage.types';
 import { useGetPool } from '../../../hooks/useGetPool';
 import { AmbientPosition } from '../../AmbientMarketMaking/AmbientMarketMaking.types';
 import { DEFAULT_SLIPPAGE } from '../../BobDepositModal/BobDepositModal.constants';
+import { bigNumberic } from './../../../../../../utils/math';
 
 export const useHandleSubmit = (
   withdrawAmount: BigNumber,
-  isFullWithdrawal: boolean,
   pool: Pool,
   position: AmbientPosition,
   onComplete: () => void,
@@ -33,7 +33,7 @@ export const useHandleSubmit = (
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const onSubmit = useCallback(async () => {
-    if (!croc || !poolTokens || !signer) {
+    if (!croc || !poolTokens || !signer || !pool || !position || !pool.extra) {
       return;
     }
 
@@ -56,19 +56,13 @@ export const useHandleSubmit = (
 
     try {
       if (position.positionType === PoolPositionType.ambient) {
-        if (isFullWithdrawal && !pool.extra.lpToken) {
-          calldata = await crocPool.burnAmbientAll([price.min, price.max], {
+        calldata = await crocPool.burnAmbientLiq(
+          bigNumberic(withdrawAmount),
+          [price.min, price.max],
+          {
             lpConduit: pool.extra.lpToken,
-          });
-        } else {
-          calldata = await crocPool.burnAmbientLiq(
-            withdrawAmount,
-            [price.min, price.max],
-            {
-              lpConduit: pool.extra.lpTokens,
-            },
-          );
-        }
+          },
+        );
       } else if (position.positionType === PoolPositionType.concentrated) {
         calldata = await crocPool.burnRangeLiq(
           withdrawAmount,
@@ -106,7 +100,6 @@ export const useHandleSubmit = (
     setIsOpen,
     setTitle,
     withdrawAmount,
-    isFullWithdrawal,
     position,
     onComplete,
     pool,

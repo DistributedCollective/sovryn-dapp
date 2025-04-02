@@ -34,7 +34,7 @@ export const Staking: FC = () => {
 
   const {
     amount: liquidOsSovClaimAmount,
-    nextWithdrawTimestamp,
+    withdrawTimestamp,
     refetch: refetchLiquidOsSovClaim,
   } = useGetLiquidOsSovClaimAmount();
 
@@ -160,7 +160,7 @@ export const Staking: FC = () => {
                     amountToClaim={liquidOsSovClaimAmount
                       .toBigNumber()
                       .toString()}
-                    nextWithdrawTimestamp={nextWithdrawTimestamp}
+                    nextWithdrawTimestamp={withdrawTimestamp}
                     refetch={refetchLiquidOsSovClaim}
                   />
                 </div>
@@ -175,7 +175,7 @@ export const Staking: FC = () => {
       earnedFeesSum,
       hasLiquidOsSov,
       liquidOsSovClaimAmount,
-      nextWithdrawTimestamp,
+      withdrawTimestamp,
       earnedFees,
       refetch,
       hasLiquidSov,

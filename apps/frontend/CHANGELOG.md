@@ -1,5 +1,12 @@
 # frontend
 
+## 1.1.33
+
+### Patch Changes
+
+- 7ff2088f: SOV-4820: staking-subsidies-incorrect-os-sov-withdrawal-amount
+- 08a37a7e: SOV-4723: fix liquidity withdraw on bob chain
+
 ## 1.1.32
 
 ### Patch Changes

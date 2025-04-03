@@ -11,7 +11,7 @@ import { useGetLockDate } from '../../StakePage/components/StakesFrame/hooks/use
 export const useGetLiquidOsSovClaimAmount = () => {
   const [value, setValue] = useState({
     amount: Decimal.ZERO,
-    nextWithdrawTimestamp: 0,
+    withdrawTimestamp: 0,
     loading: true,
   });
 
@@ -23,10 +23,11 @@ export const useGetLiquidOsSovClaimAmount = () => {
 
   const getRewards = useCallback(async () => {
     if (!account || !stakingRewardsOs) {
-      return { amount: Decimal.ZERO, nextWithdrawTimestamp: 0, loading: false };
+      return { amount: Decimal.ZERO, withdrawTimestamp: 0, loading: false };
     }
 
     let nextWithdrawTimestamp = 0;
+    let withdrawTimestamp = 0;
     let amount = Decimal.ZERO;
     let checkpointCount = 15;
 
@@ -38,12 +39,13 @@ export const useGetLiquidOsSovClaimAmount = () => {
           account,
         );
 
-        nextWithdrawTimestamp = result.nextWithdrawTimestamp?.toNumber() || 0;
-
         if (!result.amount.isZero()) {
           amount = Decimal.fromBigNumberString(result.amount);
+          withdrawTimestamp = nextWithdrawTimestamp; // Save the timestamp that gave a positive amount
           break;
         }
+
+        nextWithdrawTimestamp = result.nextWithdrawTimestamp?.toNumber() || 0;
 
         if (nextWithdrawTimestamp === 0 || nextWithdrawTimestamp >= lockDate) {
           console.log('Breaking loop, no rewards or past lock date');
@@ -53,16 +55,16 @@ export const useGetLiquidOsSovClaimAmount = () => {
         checkpointCount--;
       }
 
-      return { amount, nextWithdrawTimestamp, loading: false };
+      return { amount, withdrawTimestamp, loading: false };
     } catch (error) {
       console.error('Error fetching rewards:', error);
-      return { amount: Decimal.ZERO, nextWithdrawTimestamp: 0, loading: false };
+      return { amount: Decimal.ZERO, withdrawTimestamp: 0, loading: false };
     }
   }, [account, stakingRewardsOs, lockDate]);
 
   const updateRewards = useCallback(() => {
-    getRewards().then(({ amount, nextWithdrawTimestamp, loading }) => {
-      setValue({ amount, nextWithdrawTimestamp, loading });
+    getRewards().then(({ amount, withdrawTimestamp, loading }) => {
+      setValue({ amount, withdrawTimestamp, loading });
     });
   }, [getRewards]);
 

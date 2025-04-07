@@ -71,22 +71,18 @@ export function useDollarValue(
     } else {
       const amount = Decimal.fromBigNumberString(weiAmount)
         .mul(usdPrice)
-        .toNumber();
+        .toString();
 
-      return toDisplayPrice(
-        amount,
-        destinationDetails?.decimals || 18,
-        assetDetails?.decimals || 18,
-      ).toString();
+      return amount;
     }
   }, [
     entry,
     destination,
     chain,
     weiAmount,
-    usdPrice,
     assetDetails?.decimals,
     destinationDetails?.decimals,
+    usdPrice,
   ]);
 
   return {

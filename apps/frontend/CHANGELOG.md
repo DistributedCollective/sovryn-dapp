@@ -1,5 +1,11 @@
 # frontend
 
+## 1.1.34
+
+### Patch Changes
+
+- 0cf9109f: SOV-4868: Fix dollar values
+
 ## 1.1.33
 
 ### Patch Changes

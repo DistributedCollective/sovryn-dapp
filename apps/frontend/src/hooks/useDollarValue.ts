@@ -63,6 +63,7 @@ export function useDollarValue(
         STABLECOINS[chain]?.includes(destination))
     ) {
       const amount = Number(fromWei(weiAmount, assetDetails?.decimals || 18));
+
       return toDisplayPrice(
         amount,
         destinationDetails?.decimals || 18,

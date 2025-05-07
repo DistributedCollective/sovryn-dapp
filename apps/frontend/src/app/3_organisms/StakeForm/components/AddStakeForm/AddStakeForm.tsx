@@ -87,9 +87,15 @@ export const AddStakeForm: FC<StakeFormProps> = ({
     [amount, balance, stakingLocked, unlockDate],
   );
 
+  const isRenderValid = useMemo(
+    () =>
+      decimalic(amount).gt(0) && isValidAmount && unlockDate > 0 && weight > 0,
+    [amount, isValidAmount, unlockDate, weight],
+  );
+
   const renderNewStakedAmount = useCallback(
     () =>
-      decimalic(amount).isZero() || !isValidAmount ? (
+      !isRenderValid ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -98,12 +104,12 @@ export const AddStakeForm: FC<StakeFormProps> = ({
           precision={TOKEN_RENDER_PRECISION}
         />
       ),
-    [amount, isValidAmount, totalStakedValue],
+    [amount, totalStakedValue, isRenderValid],
   );
 
   const renderVotingPowerReceived = useCallback(
     () =>
-      decimalic(amount).isZero() || !isValidAmount ? (
+      !isRenderValid ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -112,12 +118,12 @@ export const AddStakeForm: FC<StakeFormProps> = ({
           precision={TOKEN_RENDER_PRECISION}
         />
       ),
-    [amount, votingPowerReceived, isValidAmount],
+    [votingPowerReceived, isRenderValid],
   );
 
   const renderNewVotingPowerIncrease = useCallback(
     () =>
-      decimalic(amount).isZero() || !isValidAmount ? (
+      !isRenderValid ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -126,7 +132,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({
           precision={TOKEN_RENDER_PRECISION}
         />
       ),
-    [amount, votingPowerReceived, votingPower, isValidAmount],
+    [votingPower, votingPowerReceived, isRenderValid],
   );
 
   const onTransactionSuccess = useCallback(() => {
@@ -148,13 +154,17 @@ export const AddStakeForm: FC<StakeFormProps> = ({
   }, [isSubmitDisabled, handleSubmitStake]);
 
   useEffect(() => {
-    if (unlockDate === 0 || !isValidAmount) {
+    if (!isRenderValid) {
       setVotingPowerReceived(0);
+      return;
     }
-    if (weight !== 0) {
-      setVotingPowerReceived((Number(amount) * weight) / WEIGHT_FACTOR);
+
+    const newVotingPower = (Number(amount) * weight) / WEIGHT_FACTOR;
+
+    if (!isNaN(newVotingPower) && weight > 0) {
+      setVotingPowerReceived(newVotingPower);
     }
-  }, [amount, weight, unlockDate, isValidAmount]);
+  }, [amount, weight, isRenderValid]);
 
   return (
     <div>

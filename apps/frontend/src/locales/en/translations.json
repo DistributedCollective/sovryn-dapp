@@ -537,6 +537,11 @@
                 "title": "Soon on BOB",
                 "description": "Lending, Borrowing, Bitocracy voting & more.",
                 "action": "Coming soon"
+            },
+            "originsLaunchpad": {
+                "title": "Join $BOS Presale – Phase 2 Live",
+                "description": "Deposit from any chain. Get bonuses for $SOV staking. BTC and ADA deposits.",
+                "action": "Join Presale"
             }
         },
         "promotions": {
@@ -570,6 +575,12 @@
                 "title": "Launching BOS!",
                 "description": "Sovryn to lead BitcoinOS launch & retain 10% of $BOS. $SOV stakers decide allocation.",
                 "cta": "Stake SOV"
+            },
+            "originsLaunch": {
+                "title": "Origins is live!",
+                "description": "Join the $BOS Phase 2 presale on Sovryn’s multichain launchpad. $SOV stakers earn bonuses!",
+                "cta": "Join Presale",
+                "secondaryCta": "Learn more"
             }
         },
         "titleSection": {

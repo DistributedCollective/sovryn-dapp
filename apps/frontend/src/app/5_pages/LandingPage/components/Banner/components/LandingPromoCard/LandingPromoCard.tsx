@@ -25,7 +25,7 @@ export const LandingPromoCard: FC<LandingPromoCardProps> = ({
       )}
     >
       <div>
-        <Heading className="font-medium font-druk text-gray-10 tracking-wide antialiased text-[2rem] xs:text-[2.25rem] md:text-[2.875rem] leading-[3.75rem]">
+        <Heading className="font-medium font-druk text-gray-10 tracking-wide antialiased text-[2rem] xs:text-[2.25rem] md:text-[2.875rem] leading-[3.75rem] uppercase">
           {heading}
         </Heading>
         <Paragraph className="font-medium leading-5 my-2 text-sm">

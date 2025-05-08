@@ -1,5 +1,12 @@
 # frontend
 
+## 1.1.35
+
+### Patch Changes
+
+- c9a4e660: chore: banner update
+- 3fd94d7c: SOV-4921: Refactors stake form validation logic and improves date han…
+
 ## 1.1.34
 
 ### Patch Changes

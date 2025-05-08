@@ -68,3 +68,9 @@ export const SEPOLIA_FAUCET_LINK = 'https://sepolia-faucet.pk910.de';
 export const BOB_DOCS_LINK = 'https://docs.gobob.xyz/';
 
 export const ROOTSTOCK_LINK = 'https://rootstock.io/';
+
+export const LAUNCHPAD_LINKS = {
+  ORIGINS: 'https://origins.sovryn.app',
+  LEARN_MORE:
+    'https://sovryn.com/all-things-sovryn/stake-sov-get-origins-bonus',
+};

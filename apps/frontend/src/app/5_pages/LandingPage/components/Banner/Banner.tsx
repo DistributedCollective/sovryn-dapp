@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
+import { LAUNCHPAD_LINKS } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
 import styles from './Banner.module.css';
 import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard';
@@ -32,12 +33,41 @@ export const Banner: FC = () => {
         swipeable
         className="static"
         renderDotsOutside
-        showDots={false} // Needs to be true when we have more than 1 promo
+        showDots
         autoPlay={false} // Needs to be true when we have more than 1 promo
         dotListClass={styles.dot}
         autoPlaySpeed={15000}
         infinite
       >
+        <LandingPromoCard
+          heading={t(translations.landingPage.promotions.originsLaunch.title)}
+          description={t(
+            translations.landingPage.promotions.originsLaunch.description,
+          )}
+          actions={
+            <>
+              <Button
+                style={ButtonStyle.secondary}
+                size={ButtonSize.large}
+                text={t(translations.landingPage.promotions.originsLaunch.cta)}
+                href={LAUNCHPAD_LINKS.ORIGINS}
+                hrefExternal
+              />
+              <Button
+                style={ButtonStyle.ghost}
+                size={ButtonSize.large}
+                className="text-sm"
+                text={t(
+                  translations.landingPage.promotions.originsLaunch
+                    .secondaryCta,
+                )}
+                href={LAUNCHPAD_LINKS.LEARN_MORE}
+                hrefExternal
+              />
+            </>
+          }
+          className="border-primary"
+        />
         <LandingPromoCard
           heading={t(translations.landingPage.promotions.bosLaunch.title)}
           description={t(

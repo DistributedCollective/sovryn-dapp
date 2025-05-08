@@ -31,10 +31,16 @@ const walletConnect = walletConnectModule({
   projectId: 'd3483196fbaa8259ab4191347c67f973',
 });
 
+const chainList = APP_CHAIN_LIST.map(item => ({
+  ...item,
+  rpcUrl: typeof item.rpcUrl === 'string' ? item.rpcUrl : item.rpcUrl[0],
+  indexer: undefined,
+})).map(item => {
+  delete item.indexer;
+  return item;
+});
+
 export const onboard = Onboard({
   wallets: [injected, bitget, walletConnect, ledger, trezor],
-  chains: APP_CHAIN_LIST.map(item => ({
-    ...item,
-    rpcUrl: typeof item.rpcUrl === 'string' ? item.rpcUrl : item.rpcUrl[0],
-  })),
+  chains: chainList,
 });

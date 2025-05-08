@@ -19,7 +19,7 @@ export const Banner: FC = () => {
     <div className="w-full relative pb-16">
       <Carousel
         arrows={false}
-        draggable={false} // Needs to be true when we have more than 1 promo
+        draggable
         partialVisible={false}
         focusOnSelect={false}
         responsive={{

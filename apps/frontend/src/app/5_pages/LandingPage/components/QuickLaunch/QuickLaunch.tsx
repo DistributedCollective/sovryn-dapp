@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
+import Carousel from 'react-multi-carousel';
 import { useNavigate } from 'react-router-dom';
 
 import { noop } from '@sovryn/ui';
@@ -12,9 +13,11 @@ import borrowSovryn from '../../../../../assets/images/QuickLaunch/Borrow with S
 import comingSoon from '../../../../../assets/images/QuickLaunch/Coming soon.svg';
 import depositAMM from '../../../../../assets/images/QuickLaunch/Deposit in AMM.svg';
 import lendDLLR from '../../../../../assets/images/QuickLaunch/Lend DLLR.svg';
+import originsLaunch from '../../../../../assets/images/QuickLaunch/Origins Launch.svg';
 import passiveYield from '../../../../../assets/images/QuickLaunch/Passive yield.svg';
 import stakeSOV from '../../../../../assets/images/QuickLaunch/Stake SOV.svg';
 import tradeRunes from '../../../../../assets/images/QuickLaunch/Trade Runes.svg';
+import { LAUNCHPAD_LINKS } from '../../../../../constants/links';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../utils/asset';
@@ -23,6 +26,7 @@ import { formatValue } from '../../../../../utils/math';
 import { useGetNextSupplyInterestRate } from '../../../LendPage/hooks/useGetNextSupplyInterestRate';
 import { useGetReturnRates } from '../../../MarketMakingPage/hooks/useGetReturnRates';
 import { useGetStakingStatistics } from '../../../StakePage/components/StakingStatistics/hooks/useGetStakingStatistics';
+import styles from './QuickLaunch.module.css';
 
 const pageTranslations = translations.landingPage;
 
@@ -46,6 +50,19 @@ export const QuickLaunch: FC = () => {
 
   const options = useMemo(
     () => [
+      {
+        title: t(pageTranslations.quickLaunch.originsLaunchpad.title, {
+          amount: formatValue(maxStakingApr, 2),
+        }),
+        description: t(
+          pageTranslations.quickLaunch.originsLaunchpad.description,
+        ),
+        action: t(pageTranslations.quickLaunch.originsLaunchpad.action),
+        href: LAUNCHPAD_LINKS.ORIGINS,
+        url: noop,
+        backgroundImage: originsLaunch,
+        chains: [Chains.RSK],
+      },
       {
         title: t(pageTranslations.quickLaunch.stake.title, {
           amount: formatValue(maxStakingApr, 2),
@@ -130,19 +147,59 @@ export const QuickLaunch: FC = () => {
   }, [options, chainId]);
 
   return (
-    <div className="bg-gray-80 rounded min-h-72 md:p-6 p-4 sm:mb-14 mb-10 grid md:grid-cols-2 xl:grid-cols-4 md:gap-6 gap-4">
-      {filteredOptions.map((option, index) => (
-        <CTA
-          key={index}
-          index={index}
-          backgroundImage={option.backgroundImage}
-          title={option.title}
-          description={option.description}
-          action={option.action}
-          navigateTo={option.url}
-          disableCTA={option.disable}
-        />
-      ))}
+    <div className="bg-gray-80 rounded min-h-72 md:p-6 p-4 md:px-3 md:pb-16 sm:mb-14 mb-10 relative w-full">
+      <Carousel
+        arrows={false}
+        draggable
+        partialVisible={false}
+        focusOnSelect={false}
+        responsive={{
+          superLargeDesktop: {
+            breakpoint: { max: 4000, min: 3000 },
+            items: 4,
+            slidesToSlide: 4,
+          },
+          desktop: {
+            breakpoint: { max: 3000, min: 1280 },
+            items: 4,
+            slidesToSlide: 4,
+          },
+          tablet: {
+            breakpoint: { max: 1280, min: 768 },
+            items: 3,
+            slidesToSlide: 3,
+          },
+          mobile: {
+            breakpoint: { max: 768, min: 0 },
+            items: 1,
+            slidesToSlide: 1,
+          },
+        }}
+        minimumTouchDrag={80}
+        swipeable
+        className="static"
+        renderDotsOutside
+        showDots
+        itemClass="px-3"
+        autoPlay={false}
+        dotListClass={styles.dot}
+        autoPlaySpeed={15000}
+        infinite={false}
+      >
+        {filteredOptions.map((option, index) => (
+          <CTA
+            key={index}
+            index={index}
+            backgroundImage={option.backgroundImage}
+            title={option.title}
+            description={option.description}
+            action={option.action}
+            href={option.href}
+            navigateTo={option.url}
+            disableCTA={option.disable}
+          />
+        ))}
+      </Carousel>
     </div>
   );
 };

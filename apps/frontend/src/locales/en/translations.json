@@ -537,6 +537,11 @@
                 "title": "Soon on BOB",
                 "description": "Lending, Borrowing, Bitocracy voting & more.",
                 "action": "Coming soon"
+            },
+            "originsLaunchpad": {
+                "title": "Join $BOS Presale – Phase 2 Live",
+                "description": "Deposit from any chain. Get bonuses for $SOV staking. BTC and ADA deposits.",
+                "action": "Join Presale"
             }
         },
         "promotions": {

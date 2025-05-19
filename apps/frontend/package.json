@@ -28,6 +28,7 @@
     "@sovryn/tailwindcss-config": "*",
     "@sovryn/ui": "*",
     "@sovryn/utils": "0.0.2",
+    "@sovryn/wagmi-wrapper": "*",
     "@tanstack/react-query": "^5.59.0",
     "@uniswap/permit2-sdk": "1.2.0",
     "bitcoin-address-validation": "2.2.1",

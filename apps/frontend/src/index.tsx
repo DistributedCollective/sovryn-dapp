@@ -9,6 +9,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { RouterProvider } from 'react-router-dom';
 
 import { OnboardProvider } from '@sovryn/onboard-react';
+import { createWagmiConfig, WagmiProvider } from '@sovryn/wagmi-wrapper';
 
 // chain config must be imported before other internal files
 import './config/chains';
@@ -49,28 +50,30 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <NetworkProvider>
-      <TransactionProvider>
-        <NotificationProvider>
-          <ServiceWorkerProvider>
-            <TokenPricesProvider>
-              <ApolloProvider client={rskClient}>
-                <HelmetProvider>
-                  <MaintenanceModeContextProvider>
-                    <LoaderProvider>
-                      <SharedStateProvider>
-                        <RouterProvider router={router} />
-                        <OnboardProvider dataAttribute="dapp-onboard" />
-                      </SharedStateProvider>
-                    </LoaderProvider>
-                  </MaintenanceModeContextProvider>
-                </HelmetProvider>
-              </ApolloProvider>
-            </TokenPricesProvider>
-            <TransactionStepDialog disableFocusTrap />
-          </ServiceWorkerProvider>
-        </NotificationProvider>
-      </TransactionProvider>
-    </NetworkProvider>
+    <WagmiProvider config={createWagmiConfig()}>
+      <NetworkProvider>
+        <TransactionProvider>
+          <NotificationProvider>
+            <ServiceWorkerProvider>
+              <TokenPricesProvider>
+                <ApolloProvider client={rskClient}>
+                  <HelmetProvider>
+                    <MaintenanceModeContextProvider>
+                      <LoaderProvider>
+                        <SharedStateProvider>
+                          <RouterProvider router={router} />
+                          <OnboardProvider dataAttribute="dapp-onboard" />
+                        </SharedStateProvider>
+                      </LoaderProvider>
+                    </MaintenanceModeContextProvider>
+                  </HelmetProvider>
+                </ApolloProvider>
+              </TokenPricesProvider>
+              <TransactionStepDialog disableFocusTrap />
+            </ServiceWorkerProvider>
+          </NotificationProvider>
+        </TransactionProvider>
+      </NetworkProvider>
+    </WagmiProvider>
   </React.StrictMode>,
 );

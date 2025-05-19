@@ -1,0 +1,25 @@
+{
+  "name": "@sovryn/wagmi-wrapper",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest --passWithNoTests",
+    "test:staged": "jest --passWithNoTests --bail --onlyChanged",
+    "coverage": "jest --coverage",
+    "lint": "eslint ./src/**/*.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "viem": "^2.29.4",
+    "wagmi": "^2.15.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

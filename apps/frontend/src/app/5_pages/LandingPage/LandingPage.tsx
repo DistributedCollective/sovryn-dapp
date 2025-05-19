@@ -1,20 +1,19 @@
-import React, { FC, useRef } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
+import { WagmiExample } from '../../2_molecules/WagmiExample/WagmiExample';
 import { translations } from '../../../locales/i18n';
-import { Banner } from './components/Banner/Banner';
-import { FaqSection } from './components/FaqSection/FaqSection';
-import { GetStarted } from './components/GetStarted/GetStarted';
-import { ProtocolData } from './components/ProtocolData/ProtocolData';
-import { QuickLaunch } from './components/QuickLaunch/QuickLaunch';
-import { TitleSection } from './components/TitleSection/TitleSection';
 
 const pageTranslations = translations.landingPage;
 
+const queryClient = new QueryClient();
+
 const LandingPage: FC = () => {
-  const gettingStartedRef = useRef<HTMLDivElement>(null);
+  // const gettingStartedRef = useRef<HTMLDivElement>(null);
 
   return (
     <>
@@ -27,7 +26,11 @@ const LandingPage: FC = () => {
       </Helmet>
 
       <div className="container max-w-screen-xl mx-auto mt-10 mb-20">
-        <div className="flex flex-col lg:flex-row mb-10 gap-4 items-start">
+        <QueryClientProvider client={queryClient}>
+          <WagmiExample />
+        </QueryClientProvider>
+
+        {/* <div className="flex flex-col lg:flex-row mb-10 gap-4 items-start">
           <div className="flex-1 min-h-40">
             <TitleSection ctaRef={gettingStartedRef} />
             <ProtocolData />
@@ -46,7 +49,7 @@ const LandingPage: FC = () => {
         >
           <GetStarted />
           <FaqSection />
-        </div>
+        </div> */}
       </div>
     </>
   );

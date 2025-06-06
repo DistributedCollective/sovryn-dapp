@@ -106,7 +106,7 @@
   },
   {
     "lpTokenAddress": "0xEBE212e59c012Bd2f092489d98d11fCe17697cb2",
-    "displayName": "UniBTC/SolvBTC.BBN",
+    "displayName": "UniBTC/XSOLVBTC",
     "label1": "20x",
     "label2": "20x",
     "content": "Earn 1 Spice Point daily per $1 deposited on BOB (Build on Bitcoin). Sovryn Spice multiplier boosts your points by a set value."
@@ -120,7 +120,7 @@
   },
   {
     "lpTokenAddress": "0x0F3dAef46d5631f4C335643e287314580135011E",
-    "displayName": "wBTC/SolvBTC.BBN",
+    "displayName": "wBTC/XSOLVBTC",
     "label1": "7x",
     "label2": "20x",
     "content": "Earn 1 Spice Point daily per $1 deposited on BOB (Build on Bitcoin). Sovryn Spice multiplier boosts your points by a set value."

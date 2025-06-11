@@ -111,7 +111,7 @@ export const bob: Array<AssetDetails> = [
     getIcon: async () => (await import('./icons/bob/solvbtc')).default,
   },
   {
-    symbol: 'SolvBTC.BBN',
+    symbol: 'XSOLVBTC',
     address: '0xCC0966D8418d412c599A6421b760a847eB169A8c',
     name: 'SolvBTC Babylon',
     decimals: 18,

@@ -1,5 +1,16 @@
 # frontend
 
+## 1.1.35
+
+### Patch Changes
+
+- 8f1c3ff1: fix: asset symbol
+- c9a4e660: chore: banner update
+- 3fd94d7c: SOV-4921: Refactors stake form validation logic and improves date han…
+- Updated dependencies [8f1c3ff1]
+  - @sovryn/contracts@1.2.5
+  - @sovryn/sdk@2.0.6
+
 ## 1.1.34
 
 ### Patch Changes

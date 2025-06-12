@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.2.5
+
+### Patch Changes
+
+- 8f1c3ff1: fix: asset symbol
+
 ## 1.2.4
 
 ### Patch Changes

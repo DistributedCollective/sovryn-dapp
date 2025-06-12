@@ -1,5 +1,13 @@
 # @sovryn/sdk
 
+## 2.0.6
+
+### Patch Changes
+
+- 8f1c3ff1: fix: asset symbol
+- Updated dependencies [8f1c3ff1]
+  - @sovryn/contracts@1.2.5
+
 ## 2.0.5
 
 ### Patch Changes

@@ -28,6 +28,8 @@ export const BTC_IN_SATOSHIS = 100_000_000;
 
 export const RSK_FAUCET = 'https://faucet.rsk.co';
 
+export const POWPEG = 'https://powpeg.rootstock.io/';
+
 export const CURRENT_RELEASE: ReleaseFileContent = JSON.parse(
   process.env.REACT_APP_RELEASE_DATA || '{}',
 );

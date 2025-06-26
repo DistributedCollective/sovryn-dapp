@@ -11,6 +11,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { BITCOIN } from '../../../../../constants/currencies';
 import { useWalletConnect } from '../../../../../hooks';
 import { useAccount as useEvmAccount } from '../../../../../hooks/useAccount';
 import { useGetRBTCPrice } from '../../../../../hooks/zero/useGetRBTCPrice';
@@ -92,13 +93,13 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
         className="cursor-pointer self-end text-gray-20 text-xs mt-5 mb-1"
       >
         ({t(translations.common.max)}:{' '}
-        {formatUnits(data?.confirmed.toString() || '0', 8)} wBTC)
+        {formatUnits(data?.confirmed.toString() || '0', 8)} {BITCOIN})
       </div>
 
       <div className="flex items-center gap-3 mb-4">
         <div className="flex-1 relative">
           <AmountInput
-            placeholder={t(translations.bobGatewayPage.amountInput)}
+            placeholder="0"
             step="0.00000001"
             value={amount}
             onChangeText={setAmount}
@@ -113,7 +114,7 @@ export const BobGatewayDeposit: FC<BobGatewayDepositProps> = ({
         </div>
 
         <div className="bg-gray-70 p-2.5 rounded">
-          <AssetRenderer asset="wBTC" showAssetLogo />
+          <AssetRenderer asset={BITCOIN} showAssetLogo />
         </div>
       </div>
       <div className="mb-6">

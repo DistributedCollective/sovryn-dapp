@@ -6,7 +6,7 @@ import { t } from 'i18next';
 import { ChainIds } from '@sovryn/ethers-provider';
 import { Menu, MenuItem, Tooltip } from '@sovryn/ui';
 
-import { RSK_FAUCET } from '../../../../../constants/general';
+import { POWPEG, RSK_FAUCET } from '../../../../../constants/general';
 import { BOB } from '../../../../../constants/infrastructure/bob';
 import {
   BABELFISH_APP_LINK,
@@ -109,6 +109,19 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
           dataAttribute={dataAttribute}
         >
           <Menu className="rounded-t-none rounded-b px-2 py-3 lg:rounded lg:p-1">
+            <MenuItem
+              key={t('header.nav.bridges.subMenu.powPeg')}
+              text={t('header.nav.bridges.subMenu.powPeg')}
+              label={
+                !isMobile && t('header.nav.bridges.subMenu.powPegDescription')
+              }
+              dataAttribute={`dapp-menu-powPeg`}
+              className={classNames('no-underline', {
+                hidden: !isRskChain(chainId),
+              })}
+              href={POWPEG}
+              hrefExternal
+            />
             <MenuItem
               key={t('header.nav.bridges.subMenu.ethBridge')}
               text={t('header.nav.bridges.subMenu.ethBridge')}

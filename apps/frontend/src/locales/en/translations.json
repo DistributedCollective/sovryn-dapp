@@ -127,6 +127,8 @@
                     "tokenBridgeDescription": "Transfer between RSK and other chains",
                     "btcBridge": "BTC",
                     "btcBridgeDescription": "Transfer between Bitcoin and RSK",
+                    "erc20Bridge": "ERC-20",
+                    "erc20BridgeDescription": "Transfer between Ethereum, Binance and RSK",
                     "ethBridge": "ETH",
                     "ethBridgeDescription": "Transfer between BOB and other chains",
                     "ercBridge": "ERC-20",
@@ -190,7 +192,6 @@
         "resetValues": "Reset values",
         "notEnoughBalance": "Estimated gas fee exceeds {{asset}} balance"
     },
-
     "zeroPage": {
         "meta": {
             "title": "Zero line of credit - Sovryn",
@@ -390,7 +391,6 @@
         "inputLabel": "Maximum origination fee rate",
         "errorMessage": "Value entered must be between {{min}} and {{max}}"
     },
-
     "earnPage": {
         "meta": {
             "title": "Stability pool - Sovryn",
@@ -416,7 +416,6 @@
         },
         "apr": "APR"
     },
-
     "convertPage": {
         "meta": {
             "title": "Sovryn - DeFi for bitcoin",
@@ -442,7 +441,6 @@
         "minimumReceived": "Minimum received",
         "maximumPrice": "Maximum price"
     },
-
     "landingPage": {
         "meta": {
             "title": "Welcome to Sovryn",
@@ -601,7 +599,6 @@
             "dataComingSoon": "Data coming soon"
         }
     },
-
     "stakePage": {
         "meta": {
             "title": "Staking - Sovryn"
@@ -696,7 +693,6 @@
             "signUp": "Sign up"
         }
     },
-
     "fixedInterestPage": {
         "meta": {
             "title": "Fixed-interest loans - Sovryn",
@@ -812,7 +808,6 @@
         },
         "collateralRatio": "collateral ratio"
     },
-
     "bitocracyPage": {
         "meta": {
             "title": "Bitocracy - Sovryn",
@@ -887,7 +882,6 @@
             "accountBalance": "Account balance:"
         }
     },
-
     "proposalPage": {
         "meta": {
             "title": "Bitocracy - Sovryn"
@@ -953,7 +947,6 @@
             "calldata": "Calldata"
         }
     },
-
     "leaderboardPointsPage": {
         "meta": {
             "title": "Spice Leaderboard - Sovryn"
@@ -1075,7 +1068,6 @@
             }
         }
     },
-
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -1159,7 +1151,6 @@
             }
         }
     },
-
     "rewardPage": {
         "meta": {
             "title": "Rewards - Sovryn",
@@ -1272,7 +1263,6 @@
             }
         }
     },
-
     "historyPage": {
         "meta": {
             "title": "History - Sovryn",
@@ -1320,7 +1310,6 @@
         },
         "apr": "APR"
     },
-
     "marketMakingPage": {
         "meta": {
             "title": "Market Making - Sovryn"
@@ -1392,7 +1381,6 @@
             "24hVolume": "24h volume (BTC)"
         }
     },
-
     "bobMarketMakingPage": {
         "depositModal": {
             "title": "Deposit liquidity",
@@ -1450,7 +1438,6 @@
         },
         "loading": "Loading..."
     },
-
     "borrowHistory": {
         "types": {
             "lineOfCredit": "Line of credit",

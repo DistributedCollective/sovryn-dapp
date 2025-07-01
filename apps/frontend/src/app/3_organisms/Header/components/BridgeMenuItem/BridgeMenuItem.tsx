@@ -136,6 +136,17 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
               onClick={handleBtcClicked}
             />
             <MenuItem
+              key={t('header.nav.bridges.subMenu.erc20Bridge')}
+              text={t('header.nav.bridges.subMenu.erc20Bridge')}
+              label={
+                !isMobile &&
+                t('header.nav.bridges.subMenu.erc20BridgeDescription')
+              }
+              dataAttribute={`dapp-menu-erc20Bridge`}
+              className="no-underline"
+              onClick={handleRunesClick}
+            />
+            <MenuItem
               key={t('header.nav.bridges.subMenu.runeBridge')}
               text={t('header.nav.bridges.subMenu.runeBridge')}
               label={

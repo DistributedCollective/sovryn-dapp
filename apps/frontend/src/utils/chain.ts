@@ -27,3 +27,11 @@ export const getChainById = (chainId: ChainId) =>
   APP_CHAIN_LIST.find(chain => chain.id === chainId);
 
 export const getChainLabel = (chainId: ChainId) => getChainById(chainId)?.label;
+
+export const getIndexer = (chainId: ChainId, path?: string) => {
+  const chain = getChainById(chainId);
+  if (!chain) {
+    throw new Error(`Chain with id ${chainId} not found`);
+  }
+  return chain.indexer + (path || '');
+};

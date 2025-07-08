@@ -1,73 +1,49 @@
-import React, {
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { PropsWithChildren, useCallback } from 'react';
 
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 
-import {
-  Table,
-  OrderOptions,
-  OrderDirection,
-  NotificationType,
-} from '@sovryn/ui';
+import { ChainId } from '@sovryn/ethers-provider';
+import { Table, OrderDirection, NotificationType } from '@sovryn/ui';
 
-import {
-  DEFAULT_HISTORY_FRAME_PAGE_SIZE,
-  EXPORT_RECORD_LIMIT,
-} from '../../../../../constants/general';
+import { EXPORT_RECORD_LIMIT } from '../../../../../constants/general';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
-import { useBlockNumber } from '../../../../../hooks/useBlockNumber';
+import { usePaginatedIndexer } from '../../../../../hooks/usePaginatedIndexer';
 import { translations } from '../../../../../locales/i18n';
 import { rskClient } from '../../../../../utils/clients';
 import {
-  Swap,
   Swap_OrderBy,
   useGetSwapHistoryLazyQuery,
 } from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import { BaseConversionsHistoryFrame } from '../BaseConversionsHistoryFrame/BaseConversionsHistoryFrame';
-import { COLUMNS_CONFIG } from './AmmConversionsHistoryFrame.constants';
-import { generateRowTitle } from './AmmConversionsHistoryFrame.utils';
-import { useGetAMMConversionsHistory } from './hooks/useGetAMMConversionsHistory';
+import { COLUMNS_CONFIG, Swap } from './ConversionsHistoryFrame.constants';
+import { generateRowTitle } from './ConversionsHistoryFrame.utils';
 
-export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
-  children,
-}) => {
+type ConversionHistoryFrameProps = {
+  chain: ChainId;
+};
+
+export const ConversionsHistoryFrame: React.FC<
+  PropsWithChildren<ConversionHistoryFrameProps>
+> = ({ chain, children }) => {
   const { account } = useAccount();
-  const [page, setPage] = useState(0);
-
-  const { value: block } = useBlockNumber();
 
   const { addNotification } = useNotificationContext();
 
-  const [orderOptions, setOrderOptions] = useState<OrderOptions>({
-    orderBy: 'timestamp',
-    orderDirection: OrderDirection.Desc,
+  const {
+    response: { data },
+    fetchNext,
+    isFetching,
+  } = usePaginatedIndexer<Swap>(chain, {
+    path: '/swaps',
+    query: {
+      user: account.toLocaleLowerCase(),
+    },
   });
-
-  const { data, loading, refetch } = useGetAMMConversionsHistory(
-    account,
-    DEFAULT_HISTORY_FRAME_PAGE_SIZE,
-    page,
-    orderOptions,
-  );
-
-  useEffect(() => {
-    refetch();
-  }, [refetch, block]);
-
-  const conversions = useMemo(
-    () => (data?.swaps as Swap[]) || [],
-    [data?.swaps],
-  );
 
   const [getConversions] = useGetSwapHistoryLazyQuery({
     client: rskClient,
@@ -116,21 +92,19 @@ export const AmmConversionsHistoryFrame: React.FC<PropsWithChildren> = ({
       name="amm-conversions"
       table={
         <Table
-          setOrderOptions={setOrderOptions}
-          orderOptions={orderOptions}
-          columns={COLUMNS_CONFIG}
-          rows={conversions}
+          columns={COLUMNS_CONFIG(chain)}
+          rows={data}
           rowTitle={generateRowTitle}
-          isLoading={loading}
+          isLoading={isFetching}
           className="bg-gray-80 text-gray-10 lg:px-6 lg:py-4"
           noData={t(translations.common.tables.noData)}
           dataAttribute="amm-conversions-history-table"
         />
       }
-      setPage={setPage}
-      page={page}
-      totalItems={conversions.length}
-      isLoading={loading}
+      setPage={() => fetchNext()}
+      page={0}
+      totalItems={data.length}
+      isLoading={isFetching}
     >
       {children}
     </BaseConversionsHistoryFrame>

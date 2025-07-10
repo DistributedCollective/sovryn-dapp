@@ -28,7 +28,7 @@ const StakePage: FC = () => {
         <title>{t(translations.stakePage.meta.title)}</title>
       </Helmet>
 
-      <div className="px-0 container md:mx-9 mx-0 md:mb-2 mt-4 mb-7">
+      <div className="px-0 container md:mx-9 mx-0">
         <div className="flex md:flex-row flex-col items-center mb-6 gap-4">
           <StakingStatistics />
           <StakingRewards />

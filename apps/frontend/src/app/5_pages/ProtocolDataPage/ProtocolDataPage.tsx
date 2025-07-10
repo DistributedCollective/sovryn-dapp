@@ -59,12 +59,12 @@ const ProtocolDataPage: FC = () => {
       </Helmet>
 
       <div className="w-full  text-gray-10 md:mx-9 mx-0 md:mb-2 md:mt-7 mt-4 mb-7 max-w-6xl">
-        <Heading className="text-center mb-3 lg:text-2xl text-base font-medium">
+        <Heading className="text-center mb-4 lg:text-2xl text-base font-medium">
           {t(pageTranslations.title)}
         </Heading>
 
         <Paragraph
-          className="text-center mb-6 lg:mb-9 font-semibold px-4 sm:px-0"
+          className="text-center mb-6 lg:mb-10 font-semibold px-4 sm:px-0"
           size={ParagraphSize.base}
         >
           {t(pageTranslations.subtitle)}

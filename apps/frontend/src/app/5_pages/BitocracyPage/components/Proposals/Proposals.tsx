@@ -33,7 +33,7 @@ export const Proposals: FC<ProposalsProps> = ({
         </div>
       )}
 
-      <div className="sm:mt-12 w-full sm:p-6 sm:border sm:border-gray-50 rounded sm:bg-gray-90 mb-8">
+      <div className="w-full sm:p-6 sm:border sm:border-gray-50 rounded sm:bg-gray-90 mb-8">
         <Paragraph className="text-base font-medium mb-3 md:mb-6">
           {t(translations.bitocracyPage.pastProposals)}
         </Paragraph>

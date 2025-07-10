@@ -670,21 +670,21 @@ const ConvertPage: FC = () => {
       <Helmet>
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
-      <div className="w-full flex flex-col items-center text-gray-10 my-9 sm:my-24">
-        <Heading className="text-base sm:text-2xl font-medium">
+      <div className="w-full flex flex-col items-center text-gray-10 container mx-auto">
+        <Heading className="text-center mb-4 lg:text-2xl">
           {t(pageTranslations.title)}
         </Heading>
         <Paragraph
+          className="text-center mb-6 lg:mb-10"
           size={ParagraphSize.base}
-          className="mt-2.5 sm:mt-4 sm:text-base font-medium"
         >
           {t(pageTranslations.subtitle)}
         </Paragraph>
 
-        <div className="flex flex-col-reverse items-center lg:items-stretch gap-y-12 lg:flex-row lg:space-x-6 xl:w-9/12 w-full h-full mt-6 lg:mt-12">
+        <div className="flex flex-col-reverse items-center lg:items-stretch lg:flex-row lg:space-x-6 xl:w-9/12 w-full">
           <TradingChart pair={renderPair} />
 
-          <div className="p-0 sm:border sm:border-gray-50 sm:rounded lg:min-w-[28rem] sm:p-6 sm:bg-gray-90 lg:self-start h-full w-full sm:w-auto">
+          <div className="p-0 sm:border sm:border-gray-50 sm:rounded lg:min-w-[28rem] sm:p-6 sm:bg-gray-90 lg:self-start h-full w-full sm:w-auto mb-6 lg:mb-0">
             <div className="bg-gray-80 rounded p-6">
               <div className="w-full flex flex-row justify-between items-center">
                 <Paragraph size={ParagraphSize.base} className="font-medium">

@@ -40,7 +40,10 @@ export const PageContainer: FC<PageContainerProps> = ({
           <Header />
           {account && chainID === RSK_CHAIN_ID && <UnclaimcedVestingAlert />}
           <div
-            className={classNames('my-2 px-4 flex flex-grow', contentClassName)}
+            className={classNames(
+              'mt-10 mb-4 px-4 flex flex-grow',
+              contentClassName,
+            )}
           >
             <Outlet />
           </div>

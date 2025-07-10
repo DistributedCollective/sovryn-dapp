@@ -49,13 +49,13 @@ export const MarketMaking: FC = () => {
           requiredChainId={BOB_CHAIN_ID}
           storageKey={RSK_STORAGE_KEY}
         />
-        <div className="flex flex-col items-center text-gray-10 mt-6 mb-4 sm:mt-9">
-          <Heading className="text-center mb-1 lg:mb-3 text-base lg:text-2xl">
+        <div className="flex flex-col items-center text-gray-10">
+          <Heading className="text-center mb-4 lg:text-2xl">
             {t(translations.marketMakingPage.title)}
           </Heading>
 
           <Paragraph
-            className="text-center mb-5 lg:mb-10"
+            className="text-center mb-6 lg:mb-10"
             size={ParagraphSize.base}
           >
             {t(translations.marketMakingPage.subtitle)}
@@ -65,26 +65,6 @@ export const MarketMaking: FC = () => {
             setActivePool={setActivePool}
             onClick={setIsPromoCardClicked}
           />
-
-          {/* <Paragraph
-            className="pl-2 w-full text-base font-medium text-left mb-4 mt-8"
-            size={ParagraphSize.base}
-          >
-            {t(translations.marketMakingPage.newPairs)}
-          </Paragraph>
-          <PoolsTable
-            setActivePool={setActivePoolKey}
-            shouldScroll={isPromoCardClicked}
-            activePool={activePool}
-            showHighlightedPools
-          />
-
-          <Paragraph
-            className="pl-2 w-full text-base font-medium text-left mb-4 mt-8"
-            size={ParagraphSize.base}
-          >
-            {t(translations.marketMakingPage.allPairs)}
-          </Paragraph> */}
 
           <div className="w-full my-4">
             <Input

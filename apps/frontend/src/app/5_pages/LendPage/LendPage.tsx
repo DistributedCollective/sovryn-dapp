@@ -16,9 +16,9 @@ const LendPage: FC = () => (
     <Helmet>
       <title>{t(translations.lendPage.meta.title)}</title>
     </Helmet>
-    <div className="px-0 container md:mx-9 mx-0 md:mb-2 mb-7">
+    <div className="px-0 container md:mx-9 mx-0">
       <NetworkBanner requiredChainId={RSK_CHAIN_ID}>
-        <Heading className="text-center mb-3 lg:text-2xl">
+        <Heading className="text-center mb-4 lg:text-2xl">
           {t(translations.lendPage.title)}
         </Heading>
 

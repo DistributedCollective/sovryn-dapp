@@ -56,8 +56,8 @@ export const AmbientMarketMaking: FC = () => {
           storageKey={BOB_STORAGE_KEY}
         />
 
-        <div className="text-gray-10 mt-6 mb-4 sm:mt-9">
-          <Heading className="text-center mb-1 lg:mb-3 text-base lg:text-2xl">
+        <div className="text-gray-10 mb-4">
+          <Heading className="text-center mb-4 lg:text-2xl">
             {t(translations.ambientMarketMaking.title)}
           </Heading>
 

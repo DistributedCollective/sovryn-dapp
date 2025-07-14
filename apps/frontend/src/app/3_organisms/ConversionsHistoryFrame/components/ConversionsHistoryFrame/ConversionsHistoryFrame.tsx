@@ -4,21 +4,15 @@ import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 
 import { ChainId } from '@sovryn/ethers-provider';
-import { Table, OrderDirection, NotificationType } from '@sovryn/ui';
+import { Table, NotificationType } from '@sovryn/ui';
 
-import { EXPORT_RECORD_LIMIT } from '../../../../../constants/general';
+import { MS } from '../../../../../constants/general';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { usePaginatedIndexer } from '../../../../../hooks/usePaginatedIndexer';
 import { translations } from '../../../../../locales/i18n';
-import { rskClient } from '../../../../../utils/clients';
-import {
-  Swap_OrderBy,
-  useGetSwapHistoryLazyQuery,
-} from '../../../../../utils/graphql/rsk/generated';
 import { dateFormat } from '../../../../../utils/helpers';
-import { decimalic } from '../../../../../utils/math';
 import { BaseConversionsHistoryFrame } from '../BaseConversionsHistoryFrame/BaseConversionsHistoryFrame';
 import { COLUMNS_CONFIG, Swap } from './ConversionsHistoryFrame.constants';
 import { generateRowTitle } from './ConversionsHistoryFrame.utils';
@@ -45,24 +39,8 @@ export const ConversionsHistoryFrame: React.FC<
     },
   });
 
-  const [getConversions] = useGetSwapHistoryLazyQuery({
-    client: rskClient,
-  });
-
   const exportData = useCallback(async () => {
-    const { data } = await getConversions({
-      variables: {
-        user: account.toLocaleLowerCase(),
-        skip: 0,
-        pageSize: EXPORT_RECORD_LIMIT,
-        orderBy: Swap_OrderBy.Timestamp,
-        orderDirection: OrderDirection.Desc,
-      },
-    });
-
-    let conversions = data?.swaps || [];
-
-    if (!conversions || !conversions?.length) {
+    if (!data || !data?.length) {
       addNotification({
         type: NotificationType.warning,
         title: t(translations.common.tables.actions.noDataToExport),
@@ -71,20 +49,18 @@ export const ConversionsHistoryFrame: React.FC<
       });
     }
 
-    return conversions.map(tx => ({
-      timestamp: dateFormat(tx.transaction.timestamp),
+    return data.map(tx => ({
+      timestamp: dateFormat(new Date(tx.confirmedAt).getTime() / MS),
       transactionType: t(translations.conversionsHistory.swap),
-      sent: tx.fromAmount,
-      sentToken: getTokenDisplayName(tx.fromToken.symbol!),
-      received: tx.toAmount,
-      receivedToken: getTokenDisplayName(tx.toToken.symbol!),
-      conversionFee: `${decimalic(tx.conversionFee).add(
-        tx.protocolFee || '0',
-      )}`,
-      conversionFeeToken: getTokenDisplayName(tx.toToken.symbol!),
-      TXID: tx.transaction.id,
+      sent: tx.baseAmount,
+      sentToken: getTokenDisplayName(tx.base.symbol!),
+      received: tx.quoteAmount,
+      receivedToken: getTokenDisplayName(tx.quote.symbol!),
+      conversionFee: `${tx.fees}`,
+      conversionFeeToken: getTokenDisplayName(tx.quote.symbol!),
+      TXID: tx.transactionHash,
     }));
-  }, [account, addNotification, getConversions]);
+  }, [addNotification, data]);
 
   return (
     <BaseConversionsHistoryFrame

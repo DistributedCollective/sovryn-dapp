@@ -127,9 +127,11 @@
                     "tokenBridgeDescription": "Transfer between RSK and other chains",
                     "btcBridge": "BTC",
                     "btcBridgeDescription": "Transfer between Bitcoin and RSK",
+                    "erc20Bridge": "ERC-20",
+                    "erc20BridgeDescription": "Transfer between Ethereum, Binance and RSK",
                     "ethBridge": "ETH",
                     "ethBridgeDescription": "Transfer between BOB and other chains",
-                    "ercBridge": "ERC-20",
+                    "ercBridge": "ERC20",
                     "ercBridgeDescription": "Transfer between BOB and other chains"
                 }
             }
@@ -168,6 +170,7 @@
     "maintenanceMode": {
         "fastBtc": "Fast BTC is locked",
         "runeBridge": "Rune Bridge is locked",
+        "erc20Bridge": "ERC-20 Bridge is locked",
         "featureDisabled": "This feature is currently disabled",
         "openingLOC": "Opening a line of credit is currently disabled",
         "fullD2": {
@@ -190,7 +193,6 @@
         "resetValues": "Reset values",
         "notEnoughBalance": "Estimated gas fee exceeds {{asset}} balance"
     },
-
     "zeroPage": {
         "meta": {
             "title": "Zero line of credit - Sovryn",
@@ -390,7 +392,6 @@
         "inputLabel": "Maximum origination fee rate",
         "errorMessage": "Value entered must be between {{min}} and {{max}}"
     },
-
     "earnPage": {
         "meta": {
             "title": "Stability pool - Sovryn",
@@ -416,7 +417,6 @@
         },
         "apr": "APR"
     },
-
     "convertPage": {
         "meta": {
             "title": "Sovryn - DeFi for bitcoin",
@@ -442,7 +442,6 @@
         "minimumReceived": "Minimum received",
         "maximumPrice": "Maximum price"
     },
-
     "landingPage": {
         "meta": {
             "title": "Welcome to Sovryn",
@@ -601,7 +600,6 @@
             "dataComingSoon": "Data coming soon"
         }
     },
-
     "stakePage": {
         "meta": {
             "title": "Staking - Sovryn"
@@ -696,7 +694,6 @@
             "signUp": "Sign up"
         }
     },
-
     "fixedInterestPage": {
         "meta": {
             "title": "Fixed-interest loans - Sovryn",
@@ -812,7 +809,6 @@
         },
         "collateralRatio": "collateral ratio"
     },
-
     "bitocracyPage": {
         "meta": {
             "title": "Bitocracy - Sovryn",
@@ -887,7 +883,6 @@
             "accountBalance": "Account balance:"
         }
     },
-
     "proposalPage": {
         "meta": {
             "title": "Bitocracy - Sovryn"
@@ -953,7 +948,6 @@
             "calldata": "Calldata"
         }
     },
-
     "leaderboardPointsPage": {
         "meta": {
             "title": "Spice Leaderboard - Sovryn"
@@ -1075,7 +1069,6 @@
             }
         }
     },
-
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -1159,7 +1152,6 @@
             }
         }
     },
-
     "rewardPage": {
         "meta": {
             "title": "Rewards - Sovryn",
@@ -1272,7 +1264,6 @@
             }
         }
     },
-
     "historyPage": {
         "meta": {
             "title": "History - Sovryn",
@@ -1320,7 +1311,6 @@
         },
         "apr": "APR"
     },
-
     "marketMakingPage": {
         "meta": {
             "title": "Market Making - Sovryn"
@@ -1392,7 +1382,6 @@
             "24hVolume": "24h volume (BTC)"
         }
     },
-
     "bobMarketMakingPage": {
         "depositModal": {
             "title": "Deposit liquidity",
@@ -1450,7 +1439,6 @@
         },
         "loading": "Loading..."
     },
-
     "borrowHistory": {
         "types": {
             "lineOfCredit": "Line of credit",
@@ -2031,6 +2019,45 @@
         "startEarning": {
             "title": "Bridge your runes",
             "subtitle": "Bridge your runes to start trading and earning with runes on Sovryn"
+        }
+    },
+    "erc20Bridge": {
+        "mainScreen": {
+            "title": "ERC-20 Bridge",
+            "tabs": {
+                "receiveLabel": "Receive",
+                "sendLabel": "Send",
+                "receiveInfoText": "Transfer assets from Ethereum and BSC network to your Rootstock address",
+                "sendInfoText": "Transfer assets from Rootstock to Ethereum or BSC"
+            }
+        },
+        "instructions": {
+            "title": "Instructions",
+            "1": "Only send supported ERC-20 assets",
+            "2": "Do not send less than the minimum amount",
+            "3": "Do not send more than the maximum amount",
+            "4": "Allow up to 1.5 hrs to process",
+            "5": "If you transaction takes longer than 1.5 hrs please <0>create a support ticket</0>",
+            "createSupportTicketCta": "create a support ticket"
+        },
+        "confirmationScreens": {
+            "from": "From",
+            "to": "To",
+            "date": "Date",
+            "originNetwork": "Origin network",
+            "destinationNetwork": "Destination network",
+            "token": "Token",
+            "amount": "Amount",
+            "sending": "Sending",
+            "serviceFee": "Service fee",
+            "sendingAmount": "Sending amount",
+            "receivingAmount": "Receiving amount",
+            "reviewTitle": "Review transaction",
+            "statusTitleProcessing": "Transfer processing...",
+            "statusTitleComplete": "Transfer complete",
+            "statusTitleFailed": "Transfer failed",
+            "hash": "{{chainName}} TXID",
+            "rootstockTxId": "Rootstock TXID"
         }
     }
 }

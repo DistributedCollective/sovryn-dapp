@@ -14,7 +14,6 @@ import { getNativeToken } from '../ProtocolSection/ProtocolSection.utils';
 import { ProtocolTotalSection } from '../ProtocolSection/components/ProtocolTotalSection/ProtocolTotalSection';
 import { getAvailableTokens } from './AssetSection.constants';
 import { AssetBalanceRow } from './components/AssetBalanceRow/AssetBalanceRow';
-import { AssetSectionActions } from './components/AssetSectionActions/AssetSectionActions';
 
 export const AssetSection: FC = () => {
   const { account } = useAccount();
@@ -69,8 +68,6 @@ export const AssetSection: FC = () => {
         title={t(translations.portfolioPage.assetSection.totalAssets)}
         className="md:max-w-sm"
       />
-
-      <AssetSectionActions />
 
       <div className="flex flex-col gap-2 md:gap-3 mt-3">
         <div className="hidden md:grid grid-cols-3 px-6 py-2">

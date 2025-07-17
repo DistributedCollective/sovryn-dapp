@@ -1,6 +1,7 @@
 import { createContext, Dispatch, SetStateAction, useContext } from 'react';
 
 import { ChainIds } from '@sovryn/ethers-provider';
+import { AssetConfig } from '@sovryn/sdk';
 import { noop } from '@sovryn/ui';
 
 export enum SendFlowStep {
@@ -23,9 +24,8 @@ export type SendFlowContextStateType = {
   step: SendFlowStep;
   amount: string;
   receiver: string;
-
   chain: ChainIds;
-  asset: string | undefined;
+  asset: AssetConfig | undefined;
 };
 
 export type SendFlowContextFunctionsType = {

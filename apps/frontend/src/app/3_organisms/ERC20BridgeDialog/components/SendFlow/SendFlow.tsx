@@ -42,7 +42,7 @@ export const SendFlow: React.FC<SendFlowProps> = () => {
       )}
 
       {step !== SendFlowStep.INITIAL && (
-        <Stepper className="mt-6" steps={4} activeStep={2} />
+        <Stepper className="mt-6" steps={4} activeStep={step} />
       )}
 
       <div className="mt-0 md:mt-20">

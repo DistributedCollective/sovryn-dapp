@@ -39,6 +39,7 @@ export interface NetworkConfig {
 }
 
 export interface AssetConfig {
+  id?: string;
   asset: CrossBridgeAsset;
   symbol: string;
   icon: string;

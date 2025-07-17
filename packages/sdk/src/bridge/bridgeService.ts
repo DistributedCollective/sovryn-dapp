@@ -92,7 +92,7 @@ export class BridgeService {
   }
 
   // Get assets by source chain
-  getAssetsBySourceChain(sourceChain: ChainIds) {
+  getAssetsBySourceChain(sourceChain: ChainIds): AssetConfig[] {
     const supportedChains = this.getSupportedTargetChains(sourceChain);
     const assets: AssetConfig[] = [];
 
@@ -112,7 +112,7 @@ export class BridgeService {
   }
 
   // Get assets by target chain
-  getAssetsByTargetChain(targetChain: ChainIds) {
+  getAssetsByTargetChain(targetChain: ChainIds): AssetConfig[] {
     const assets: AssetConfig[] = [];
 
     // Get all possible source chains that can bridge to the target chain

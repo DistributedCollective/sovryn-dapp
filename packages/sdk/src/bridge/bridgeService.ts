@@ -91,6 +91,48 @@ export class BridgeService {
     return bridge?.assets.find(a => a.asset === asset);
   }
 
+  // Get assets by source chain
+  getAssetsBySourceChain(sourceChain: ChainIds) {
+    const supportedChains = this.getSupportedTargetChains(sourceChain);
+    const assets: AssetConfig[] = [];
+
+    for (const targetChain of supportedChains) {
+      const bridge = this.getBridgeConfig(sourceChain, targetChain);
+      if (bridge) {
+        assets.push(
+          ...bridge.assets.filter(asset => asset.fromChainId === sourceChain),
+        );
+      }
+    }
+
+    return assets.map(asset => ({
+      ...asset,
+      id: `${asset.symbol}-${asset.toChainId}`,
+    }));
+  }
+
+  // Get assets by target chain
+  getAssetsByTargetChain(targetChain: ChainIds) {
+    const assets: AssetConfig[] = [];
+
+    // Get all possible source chains that can bridge to the target chain
+    const allChains = Object.values(ChainIds);
+
+    for (const sourceChain of allChains) {
+      const bridge = this.getBridgeConfig(sourceChain, targetChain);
+      if (bridge) {
+        assets.push(
+          ...bridge.assets.filter(asset => asset.toChainId === targetChain),
+        );
+      }
+    }
+
+    return assets.map(asset => ({
+      ...asset,
+      id: `${asset.symbol}-${asset.toChainId}`,
+    }));
+  }
+
   // Get token balance
   async getBalance(
     chain: ChainIds,
@@ -294,12 +336,12 @@ export class BridgeService {
   }
 
   private getAssetForChain(
-    chain: ChainIds,
+    sourceChain: ChainIds,
     asset: CrossBridgeAsset,
   ): AssetConfig | undefined {
-    const supportedChains = this.getSupportedTargetChains(chain);
+    const supportedChains = this.getSupportedTargetChains(sourceChain);
     for (const targetChain of supportedChains) {
-      const config = this.getAssetConfig(chain, targetChain, asset);
+      const config = this.getAssetConfig(sourceChain, targetChain, asset);
       if (config) {
         return config;
       }

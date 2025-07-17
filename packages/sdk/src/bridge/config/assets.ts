@@ -1,3 +1,5 @@
+import { ChainIds } from '@sovryn/ethers-provider';
+
 import { AssetConfig, CrossBridgeAsset } from '../types';
 
 // Aggregator addresses
@@ -29,6 +31,8 @@ export const bscToRskMainnetAssets: AssetConfig[] = [
     usesAggregator: true,
     aggregatorContractAddress: aggregators.mainnet.bnbs,
     allowedTargets: [CrossBridgeAsset.BNBS],
+    fromChainId: ChainIds.BSC_MAINNET,
+    toChainId: ChainIds.RSK_MAINNET,
   },
   {
     asset: CrossBridgeAsset.BUSD,
@@ -43,6 +47,8 @@ export const bscToRskMainnetAssets: AssetConfig[] = [
     usesAggregator: true,
     aggregatorContractAddress: aggregators.mainnet.xusd,
     allowedTargets: [CrossBridgeAsset.XUSD],
+    fromChainId: ChainIds.BSC_MAINNET,
+    toChainId: ChainIds.RSK_MAINNET,
   },
   {
     asset: CrossBridgeAsset.USDT,
@@ -57,6 +63,8 @@ export const bscToRskMainnetAssets: AssetConfig[] = [
     usesAggregator: true,
     aggregatorContractAddress: aggregators.mainnet.xusd,
     allowedTargets: [CrossBridgeAsset.XUSD],
+    fromChainId: ChainIds.BSC_MAINNET,
+    toChainId: ChainIds.RSK_MAINNET,
   },
   {
     asset: CrossBridgeAsset.USDC,
@@ -71,6 +79,8 @@ export const bscToRskMainnetAssets: AssetConfig[] = [
     usesAggregator: true,
     aggregatorContractAddress: aggregators.mainnet.xusd,
     allowedTargets: [CrossBridgeAsset.XUSD],
+    fromChainId: ChainIds.BSC_MAINNET,
+    toChainId: ChainIds.RSK_MAINNET,
   },
   {
     asset: CrossBridgeAsset.DAI,
@@ -85,6 +95,8 @@ export const bscToRskMainnetAssets: AssetConfig[] = [
     usesAggregator: true,
     aggregatorContractAddress: aggregators.mainnet.xusd,
     allowedTargets: [CrossBridgeAsset.XUSD],
+    fromChainId: ChainIds.BSC_MAINNET,
+    toChainId: ChainIds.RSK_MAINNET,
   },
   {
     asset: CrossBridgeAsset.ETH,
@@ -99,6 +111,8 @@ export const bscToRskMainnetAssets: AssetConfig[] = [
     usesAggregator: true,
     aggregatorContractAddress: aggregators.mainnet.eths,
     allowedTargets: [CrossBridgeAsset.ETHS],
+    fromChainId: ChainIds.BSC_MAINNET,
+    toChainId: ChainIds.RSK_MAINNET,
   },
 ];
 
@@ -121,6 +135,8 @@ export const rskToBscMainnetAssets: AssetConfig[] = [
     targetContracts: new Map([
       [CrossBridgeAsset.BNB, '0xd2a826b78200c8434b957913ce4067e6e3169385'],
     ]),
+    fromChainId: ChainIds.RSK_MAINNET,
+    toChainId: ChainIds.BSC_MAINNET,
   },
   {
     asset: CrossBridgeAsset.ETHS,
@@ -139,40 +155,151 @@ export const rskToBscMainnetAssets: AssetConfig[] = [
     targetContracts: new Map([
       [CrossBridgeAsset.ETH, '0x30d1B36924c2c0CD1c03EC257D7FFf31bD8c3007'],
     ]),
+    fromChainId: ChainIds.RSK_MAINNET,
+    toChainId: ChainIds.BSC_MAINNET,
   },
+];
+
+// BSC to RSK Assets (Testnet)
+export const bscToRskTestnetAssets: AssetConfig[] = [
   {
-    asset: CrossBridgeAsset.XUSD,
-    symbol: 'XUSD',
-    icon: '/icons/xusd.svg',
+    asset: CrossBridgeAsset.BNB,
+    symbol: 'BNB',
+    icon: '/icons/bnb.svg',
     decimals: 18,
     minDecimals: 4,
-    tokenContractAddress: '0xb5999795BE0EbB5bAb23144AA5FD6A02D080299F',
+    tokenContractAddress: '0x68bD35422b457f315AA176743325a9F7C9830c68',
+    isNative: true,
+    targetAsset: CrossBridgeAsset.BNBS,
+    isBase: true,
+    usesAggregator: true,
+    aggregatorContractAddress: '0x790C4451c2e8e4cDC50cEdEC22756DaC993e93eb',
+    allowedTargets: [CrossBridgeAsset.BNBS],
+    fromChainId: ChainIds.BSC_TESTNET,
+    toChainId: ChainIds.RSK_TESTNET,
+  },
+  {
+    asset: CrossBridgeAsset.BUSD,
+    symbol: 'BUSD',
+    icon: '/icons/busd.svg',
+    decimals: 18,
+    minDecimals: 4,
+    tokenContractAddress: '0x137BEc8c83740920ebc4f29f51C7B65b75Beec83',
     isNative: false,
     targetAsset: CrossBridgeAsset.XUSD,
     isBase: true,
-    usesAggregator: false,
-    aggregatorContractAddress: aggregators.mainnet.xusd,
-    bridgeTokenAddress: '0xFf4299bCA0313C20A61dc5eD597739743BEf3f6d',
-    allowedTargets: [
-      CrossBridgeAsset.USDT,
-      CrossBridgeAsset.USDC,
-      CrossBridgeAsset.DAI,
-      CrossBridgeAsset.BUSD,
-    ],
-    targetContracts: new Map([
-      [CrossBridgeAsset.USDT, '0xFf4299bCA0313C20A61dc5eD597739743BEf3f6d'],
-      [CrossBridgeAsset.USDC, '0x91EDceE9567cd5612c9DEDeaAE24D5e574820af1'],
-      [CrossBridgeAsset.DAI, '0x6A42Ff12215a90f50866A5cE43A9c9C870116e76'],
-      [CrossBridgeAsset.BUSD, '0x61e9604e31a736129d7f5C58964c75935b2d80D6'],
-    ]),
+    usesAggregator: true,
+    aggregatorContractAddress: '0x372d5C32A5e601D0e8Dd5289Bfb18da79c5E11e2',
+    allowedTargets: [CrossBridgeAsset.XUSD],
+    fromChainId: ChainIds.BSC_TESTNET,
+    toChainId: ChainIds.RSK_TESTNET,
+  },
+  {
+    asset: CrossBridgeAsset.USDT,
+    symbol: 'USDT',
+    icon: '/icons/usdt.svg',
+    decimals: 18,
+    minDecimals: 4,
+    tokenContractAddress: '0x268e3bf855cbcdf8fe31ba3557a554ab2283351f',
+    isNative: false,
+    targetAsset: CrossBridgeAsset.XUSD,
+    isBase: true,
+    usesAggregator: true,
+    aggregatorContractAddress: '0x372d5C32A5e601D0e8Dd5289Bfb18da79c5E11e2',
+    allowedTargets: [CrossBridgeAsset.XUSD],
+    fromChainId: ChainIds.BSC_TESTNET,
+    toChainId: ChainIds.RSK_TESTNET,
+  },
+  {
+    asset: CrossBridgeAsset.USDC,
+    symbol: 'USDC',
+    icon: '/icons/usdc.svg',
+    decimals: 18,
+    minDecimals: 4,
+    tokenContractAddress: '0x0b654c687dc8b828139406c070e0a34486e5072b',
+    isNative: false,
+    targetAsset: CrossBridgeAsset.XUSD,
+    isBase: true,
+    usesAggregator: true,
+    aggregatorContractAddress: '0x372d5C32A5e601D0e8Dd5289Bfb18da79c5E11e2',
+    allowedTargets: [CrossBridgeAsset.XUSD],
+    fromChainId: ChainIds.BSC_TESTNET,
+    toChainId: ChainIds.RSK_TESTNET,
+  },
+  {
+    asset: CrossBridgeAsset.DAI,
+    symbol: 'DAI',
+    icon: '/icons/dai.svg',
+    decimals: 18,
+    minDecimals: 4,
+    tokenContractAddress: '0x83241490517384cb28382bdd4d1534ee54d9350f',
+    isNative: false,
+    targetAsset: CrossBridgeAsset.XUSD,
+    isBase: true,
+    usesAggregator: true,
+    aggregatorContractAddress: '0x372d5C32A5e601D0e8Dd5289Bfb18da79c5E11e2',
+    allowedTargets: [CrossBridgeAsset.XUSD],
+    fromChainId: ChainIds.BSC_TESTNET,
+    toChainId: ChainIds.RSK_TESTNET,
+  },
+  {
+    asset: CrossBridgeAsset.ETH,
+    symbol: 'ETH',
+    icon: '/icons/eth.svg',
+    decimals: 18,
+    minDecimals: 4,
+    tokenContractAddress: '0x7d1FE4FdB0Afaf26ada5083A688139EbA10d3e1B',
+    isNative: false,
+    targetAsset: CrossBridgeAsset.ETHS,
+    isBase: true,
+    usesAggregator: true,
+    aggregatorContractAddress: '0x00632183B7c36Bb436C3f709E3e8e9DFB5002852',
+    allowedTargets: [CrossBridgeAsset.ETHS],
+    fromChainId: ChainIds.BSC_TESTNET,
+    toChainId: ChainIds.RSK_TESTNET,
   },
 ];
 
-// Similar configurations for testnet...
-export const bscToRskTestnetAssets: AssetConfig[] = [
-  // ... testnet assets
-];
-
+// RSK to BSC Assets (Testnet)
 export const rskToBscTestnetAssets: AssetConfig[] = [
-  // ... testnet assets
+  {
+    asset: CrossBridgeAsset.BNBS,
+    symbol: 'BNBs',
+    icon: '/icons/bnbs.svg',
+    decimals: 18,
+    minDecimals: 4,
+    tokenContractAddress: '0x801F223Def9A4e3a543eAcCEFB79dCE981Fa2Fb5',
+    isNative: false,
+    targetAsset: CrossBridgeAsset.BNBS,
+    isBase: true,
+    usesAggregator: false,
+    aggregatorContractAddress: '0x790C4451c2e8e4cDC50cEdEC22756DaC993e93eb',
+    bridgeTokenAddress: '0xafa6A1eb7E2282E8854822d2bB412b6db2cabA4E',
+    allowedTargets: [CrossBridgeAsset.BNB],
+    targetContracts: new Map([
+      [CrossBridgeAsset.BNB, '0xafa6A1eb7E2282E8854822d2bB412b6db2cabA4E'],
+    ]),
+    fromChainId: ChainIds.RSK_TESTNET,
+    toChainId: ChainIds.BSC_TESTNET,
+  },
+  {
+    asset: CrossBridgeAsset.ETHS,
+    symbol: 'ETHs',
+    icon: '/icons/eths.svg',
+    decimals: 18,
+    minDecimals: 4,
+    tokenContractAddress: '0x0fd0D8D78CE9299eE0e5676A8D51f938c234162c',
+    isNative: false,
+    targetAsset: CrossBridgeAsset.ETHS,
+    isBase: true,
+    usesAggregator: false,
+    aggregatorContractAddress: '0x00632183B7c36Bb436C3f709E3e8e9DFB5002852',
+    bridgeTokenAddress: '0x793CE6F95912D5b43532c2116e1b68993d902272',
+    allowedTargets: [CrossBridgeAsset.ETH],
+    targetContracts: new Map([
+      [CrossBridgeAsset.ETH, '0x793CE6F95912D5b43532c2116e1b68993d902272'],
+    ]),
+    fromChainId: ChainIds.RSK_TESTNET,
+    toChainId: ChainIds.BSC_TESTNET,
+  },
 ];

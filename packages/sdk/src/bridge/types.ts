@@ -53,6 +53,8 @@ export interface AssetConfig {
   bridgeTokenAddress?: string;
   allowedTargets: CrossBridgeAsset[];
   targetContracts?: Map<CrossBridgeAsset, string>;
+  fromChainId: ChainIds;
+  toChainId: ChainIds;
 }
 
 export interface BridgeConfig {

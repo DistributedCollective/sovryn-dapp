@@ -125,7 +125,7 @@
                     "runeBridgeDescription": "Transfer between Bitcoin and Sovryn",
                     "tokenBridge": "Stablecoins",
                     "tokenBridgeDescription": "Transfer between RSK and other chains",
-                    "btcBridge": "BTC",
+                    "btcBridge": "Fast BTC",
                     "btcBridgeDescription": "Transfer between Bitcoin and RSK",
                     "ethBridge": "ETH",
                     "ethBridgeDescription": "Transfer between BOB and other chains",

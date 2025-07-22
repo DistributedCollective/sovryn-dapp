@@ -11,23 +11,58 @@ import {
   Select,
 } from '@sovryn/ui';
 
+import { AssetRenderer } from '../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../../locales/i18n';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useAssetsBySourceChain } from '../../../hooks/useBridgeAssets';
+import { useBridgeLimits } from '../../../hooks/useBridgeLimits';
 
 export const MainScreen: React.FC = () => {
-  const assets = useAssetsBySourceChain(ChainIds.RSK_TESTNET);
-  const { set, asset } = useContext(SendFlowContext);
+  const assets = useAssetsBySourceChain(ChainIds.RSK_MAINNET);
+
+  const { set, asset, token, chainId } = useContext(SendFlowContext);
+  const { data, aggregatorBalance } = useBridgeLimits(
+    ChainIds.RSK_MAINNET,
+    chainId,
+    token,
+  );
+
+  console.log({ data, aggregatorBalance });
+  const uniqueAssets = assets.filter(
+    (asset, index, arr) =>
+      arr.findIndex(a => a.symbol === asset.symbol) === index,
+  );
+
+  const filteredAssets = assets.filter(a => a.symbol === token);
+  const chains = filteredAssets
+    .filter(a => a.symbol === token)
+    .map(a => a.sideChainId);
+
   const onContinueClick = useCallback(
     () => set(prevState => ({ ...prevState, step: SendFlowStep.AMOUNT })),
     [set],
   );
   const setAsset = useCallback(
-    (assetId: string) => {
-      const asset = assets.find(a => a.id === assetId);
-      set(prevState => ({ ...prevState, asset: asset ?? undefined }));
+    (symbol: string) => {
+      const asset = assets.find(a => a.symbol === symbol);
+      set(prevState => ({
+        ...prevState,
+        token: asset?.symbol,
+        chainId: asset?.sideChainId,
+      }));
     },
     [assets, set],
+  );
+  const setChain = useCallback(
+    (network: string) => {
+      const asset = filteredAssets.find(a => a.sideChainId === network);
+      set(prevState => ({
+        ...prevState,
+        token: asset?.symbol,
+        chainId: asset?.sideChainId,
+      }));
+    },
+    [filteredAssets, set],
   );
 
   return (
@@ -38,11 +73,18 @@ export const MainScreen: React.FC = () => {
         <Select
           className="w-full"
           onChange={setAsset}
-          options={assets.map(asset => ({
-            value: asset.id,
-            label: asset.symbol,
+          options={uniqueAssets.map(asset => ({
+            value: asset.symbol,
+            label: (
+              <AssetRenderer
+                showAssetLogo
+                asset={asset.symbol}
+                chainId={asset.mainChainId}
+                assetClassName="font-medium"
+              />
+            ),
           }))}
-          value={asset?.id || ''}
+          value={token || ''}
         />
       </div>
 
@@ -51,20 +93,22 @@ export const MainScreen: React.FC = () => {
 
         <Select
           className="w-full"
-          onChange={setAsset}
-          options={assets.map(asset => ({
-            value: asset.id,
-            label: asset.symbol,
-          }))}
-          value={asset?.id || ''}
+          onChange={setChain}
+          options={chains
+            .filter(chain => !!chain)
+            .map(chainId => ({
+              value: chainId || '',
+              label: chainId,
+            }))}
+          value={chainId || ''}
         />
       </div>
       <div>
         <AmountInput
-          className="w-full"
+          className="w-full max-w-full"
           label="Avaiaible liquidity"
           value="12,345.13 ETH"
-          disabled
+          readOnly
         />
       </div>
 

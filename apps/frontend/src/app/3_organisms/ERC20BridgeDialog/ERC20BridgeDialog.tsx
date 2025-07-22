@@ -1,3 +1,5 @@
+import { QueryClientProvider } from '@tanstack/react-query';
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
@@ -20,9 +22,9 @@ import { useAccount } from '../../../hooks/useAccount';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
 import { useChainDetails } from '../RuneBridgeDialog/hooks/useChainDetails';
+import { ACTIVE_CLASSNAME, queryClient } from './ERC20BridgeDialog.constants';
 import { ReceiveFlow } from './components/ReceiveFlow/ReceiveFlow';
 import { SendFlow } from './components/SendFlow/SendFlow';
-import { ACTIVE_CLASSNAME } from './constants';
 import { SendFlowContextProvider } from './contextproviders/SendFlowContext';
 
 const translation = translations.erc20Bridge.mainScreen;
@@ -115,39 +117,41 @@ export const ERC20BridgeDialog: React.FC<ERC20BridgeDialogProps> = ({
       disableFocusTrap
       closeOnEscape={false}
     >
-      <Tabs
-        index={index}
-        items={items}
-        onChange={onChangeIndex}
-        className="w-full md:hidden"
-        contentClassName="pt-9 px-6 pb-7 h-full"
-      />
-      <VerticalTabs
-        items={items}
-        onChange={onChangeIndex}
-        selectedIndex={index}
-        tabsClassName="min-h-[42rem] block pt-0 relative"
-        headerClassName="pb-0 pt-5"
-        footerClassName="absolute bottom-5 left-5"
-        contentClassName="px-10 pb-10 pt-6"
-        className="hidden md:flex"
-        header={() => (
-          <>
-            <div className="rounded bg-gray-60 px-2 py-1 w-fit mb-9">
-              <AddressBadge address={account} />
-            </div>
-            <Heading className="mb-6">{t(translation.title)}</Heading>
-          </>
-        )}
-        footer={() => (
-          <Button
-            text={t(translations.common.buttons.close)}
-            onClick={onClose}
-            style={ButtonStyle.ghost}
-            dataAttribute="erc20-bridge-close"
-          />
-        )}
-      />
+      <QueryClientProvider client={queryClient}>
+        <Tabs
+          index={index}
+          items={items}
+          onChange={onChangeIndex}
+          className="w-full md:hidden"
+          contentClassName="pt-9 px-6 pb-7 h-full"
+        />
+        <VerticalTabs
+          items={items}
+          onChange={onChangeIndex}
+          selectedIndex={index}
+          tabsClassName="min-h-[42rem] block pt-0 relative"
+          headerClassName="pb-0 pt-5"
+          footerClassName="absolute bottom-5 left-5"
+          contentClassName="px-10 pb-10 pt-6"
+          className="hidden md:flex"
+          header={() => (
+            <>
+              <div className="rounded bg-gray-60 px-2 py-1 w-fit mb-9">
+                <AddressBadge address={account} />
+              </div>
+              <Heading className="mb-6">{t(translation.title)}</Heading>
+            </>
+          )}
+          footer={() => (
+            <Button
+              text={t(translations.common.buttons.close)}
+              onClick={onClose}
+              style={ButtonStyle.ghost}
+              dataAttribute="erc20-bridge-close"
+            />
+          )}
+        />
+      </QueryClientProvider>
     </Dialog>
   );
 };

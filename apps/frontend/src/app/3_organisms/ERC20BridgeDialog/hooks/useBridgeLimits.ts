@@ -1,23 +1,23 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { ChainIds } from '@sovryn/ethers-provider';
-import { CrossBridgeAsset } from '@sovryn/sdk';
 
+import { useAccount } from '../../../../hooks';
 import { useBridgeService } from './useBridgeService';
 
 export function useBridgeLimits(
-  sourceChain: ChainIds,
-  targetChain: ChainIds,
-  asset: CrossBridgeAsset,
+  sourceChain: ChainIds | undefined,
+  targetChain: ChainIds | undefined,
+  asset: string | undefined,
 ) {
   const bridgeService = useBridgeService();
-
-  const queryKey = ['bridgeLimits', sourceChain, targetChain, asset];
+  const { signer } = useAccount();
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey,
+    queryKey: ['bridgeLimits', sourceChain, targetChain, asset],
     queryFn: async () => {
-      if (!bridgeService) throw new Error('Bridge service not initialized');
+      if (!bridgeService || !sourceChain || !targetChain || !asset)
+        throw new Error('Bridge service not initialized');
 
       const limits = await bridgeService.getBridgeLimits(
         sourceChain,
@@ -29,7 +29,22 @@ export function useBridgeLimits(
         returnData: limits,
       };
     },
-    enabled: !!bridgeService,
+    enabled: Boolean(bridgeService && sourceChain && targetChain && asset),
+    refetchInterval: 60_000 * 10, // Refresh 10 minutes
+  });
+  const { data: aggregatorBalance } = useQuery({
+    queryKey: ['aggregatorBalance', sourceChain, targetChain, asset],
+    queryFn: async () => {
+      if (!bridgeService || !sourceChain || !targetChain || !asset)
+        throw new Error('Bridge service not initialized');
+
+      return await bridgeService.getBridgeAggregatorBalance(
+        sourceChain,
+        targetChain,
+        asset,
+      );
+    },
+    enabled: Boolean(bridgeService && sourceChain && targetChain && asset),
     refetchInterval: 60_000 * 10, // Refresh 10 minutes
   });
 
@@ -41,8 +56,9 @@ export function useBridgeLimits(
       amount: string;
       spender: string;
     }) => {
-      if (!bridgeService) throw new Error('Bridge service not initialized');
-      return bridgeService.approve(sourceChain, asset, spender, amount);
+      if (!bridgeService || !signer || !sourceChain || !asset)
+        throw new Error('Bridge service not initialized');
+      return bridgeService.approve(sourceChain, asset, spender, amount, signer);
     },
     onSuccess: () => {
       refetch();
@@ -51,13 +67,15 @@ export function useBridgeLimits(
 
   const depositMutation = useMutation({
     mutationFn: async (params: { amount: string; receiver?: string }) => {
-      if (!bridgeService) throw new Error('Bridge service not initialized');
+      if (!bridgeService || !signer || !sourceChain || !targetChain || !asset)
+        throw new Error('Bridge service not initialized');
       return bridgeService.deposit({
         sourceChain,
         targetChain,
         asset,
         amount: params.amount,
         receiver: params.receiver,
+        signer,
       });
     },
     onSuccess: () => {
@@ -67,6 +85,7 @@ export function useBridgeLimits(
 
   return {
     data: data,
+    aggregatorBalance,
     isLoading,
     error,
     refetch,

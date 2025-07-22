@@ -4,9 +4,7 @@ import { ChainIds } from '@sovryn/ethers-provider';
 
 import { useBridgeService } from './useBridgeService';
 
-export const useAssetsBySourceChain = (
-  sourceChainId: typeof ChainIds | undefined,
-) => {
+export const useAssetsBySourceChain = (sourceChainId: ChainIds | undefined) => {
   const bridgeService = useBridgeService();
 
   return useMemo(() => {
@@ -21,9 +19,7 @@ export const useAssetsBySourceChain = (
   }, [bridgeService, sourceChainId]);
 };
 
-export const useAssetsByTargetChain = (
-  targetChainId: typeof ChainIds | undefined,
-) => {
+export const useAssetsByTargetChain = (targetChainId: ChainIds | undefined) => {
   const bridgeService = useBridgeService();
 
   return useMemo(() => {

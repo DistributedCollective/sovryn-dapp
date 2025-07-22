@@ -61,7 +61,6 @@ export function useBridgeReceive({
   const possibleSourceChains = useCallback(() => {
     if (!bridgeService) return [];
 
-    const chains: ChainIds[] = [];
     const allChains = [
       ChainIds.RSK_MAINNET,
       ChainIds.RSK_TESTNET,
@@ -71,15 +70,15 @@ export function useBridgeReceive({
       ChainIds.BSC_TESTNET,
     ];
 
-    for (const chain of allChains) {
-      const supportedTargets = bridgeService.getSupportedTargetChains(chain);
-      if (supportedTargets.includes(targetChain)) {
-        chains.push(chain);
-      }
-    }
+    // for (const chain of allChains) {
+    //   const supportedTargets = bridgeService.getSupportedTargetChains(chain);
+    //   if (supportedTargets.includes(targetChain)) {
+    //     chains.push(chain);
+    //   }
+    // }
 
-    return chains;
-  }, [bridgeService, targetChain]);
+    return allChains;
+  }, [bridgeService]);
 
   const {
     data: transfers,

@@ -49,21 +49,16 @@ export const bridges: BridgeConfig[] = [
 export const getBridge = (
   sourceChain: ChainIds,
   targetChain: ChainIds,
-  mode: Environments = Environments.MAINNET,
 ): BridgeConfig | undefined => {
   return bridges.find(
-    b =>
-      b.mainChainId === sourceChain &&
-      b.mode === mode &&
-      b.sideChainId === targetChain,
+    b => b.mainChainId === sourceChain && b.sideChainId === targetChain,
   );
 };
 
-export const getSupportedTargetChains = (
-  sourceChain: ChainIds,
-  mode: Environments = Environments.MAINNET,
-): ChainIds[] => {
-  return bridges
-    .filter(b => b.mainChainId === sourceChain && b.mode === mode)
-    .map(b => b.sideChainId);
+export const getSupportedBridgesBySource = (sourceChain: ChainIds) => {
+  return bridges.filter(b => b.mainChainId === sourceChain);
+};
+
+export const getSupportedBridgesByTarget = (targetChain: ChainIds) => {
+  return bridges.filter(b => b.sideChainId === targetChain);
 };

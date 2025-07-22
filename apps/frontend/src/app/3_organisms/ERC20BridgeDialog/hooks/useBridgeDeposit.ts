@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useMemo } from 'react';
 
 import { ethers } from 'ethers';
 
@@ -12,6 +12,7 @@ import {
   TxStep,
 } from '@sovryn/sdk';
 
+import { useAccount } from '../../../../hooks';
 import { useBridgeService } from './useBridgeService';
 
 interface UseBridgeDepositParams {
@@ -50,6 +51,7 @@ export function useBridgeDeposit({
   account,
 }: UseBridgeDepositParams): UseBridgeDepositReturn {
   const bridgeService = useBridgeService();
+  const { signer } = useAccount();
   const [transaction, setTransaction] = useState<BridgeTransaction>({
     step: TxStep.IDLE,
   });
@@ -61,7 +63,7 @@ export function useBridgeDeposit({
     asset,
   );
 
-  const spenderAddress = useCallback(() => {
+  const spenderAddress = useMemo(() => {
     if (!bridgeConfig || !assetConfig) return undefined;
 
     if (
@@ -110,28 +112,22 @@ export function useBridgeDeposit({
     error: allowanceError,
     refetch: refetchAllowance,
   } = useQuery({
-    queryKey: [
-      'bridgeAllowance',
-      sourceChain,
-      asset,
-      account,
-      spenderAddress(),
-    ],
+    queryKey: ['bridgeAllowance', sourceChain, asset, account, spenderAddress],
     queryFn: async () => {
-      if (!bridgeService || !account || !spenderAddress()) {
+      if (!bridgeService || !account || !spenderAddress) {
         throw new Error('Missing requirements');
       }
       return bridgeService.getAllowance(
         sourceChain,
         asset,
         account,
-        spenderAddress()!,
+        spenderAddress!,
       );
     },
     enabled:
       !!bridgeService &&
       !!account &&
-      !!spenderAddress() &&
+      !!spenderAddress &&
       !assetConfig?.isNative,
     refetchInterval: 30_000,
   });
@@ -144,7 +140,8 @@ export function useBridgeDeposit({
       amount: string;
       spender: string;
     }) => {
-      if (!bridgeService) throw new Error('Bridge service not initialized');
+      if (!bridgeService || !signer)
+        throw new Error('Bridge service not initialized');
 
       setTransaction({ step: TxStep.APPROVING });
 
@@ -154,6 +151,7 @@ export function useBridgeDeposit({
           asset,
           spender,
           amount,
+          signer,
         );
         const receipt = await tx.wait();
 
@@ -193,7 +191,8 @@ export function useBridgeDeposit({
       amount: string;
       receiver?: string;
     }) => {
-      if (!bridgeService) throw new Error('Bridge service not initialized');
+      if (!bridgeService || !signer)
+        throw new Error('Bridge service not initialized');
 
       setTransaction(prev => ({
         ...prev,
@@ -207,6 +206,7 @@ export function useBridgeDeposit({
           asset,
           amount,
           receiver,
+          signer,
         });
 
         setTransaction(prev => ({
@@ -260,7 +260,7 @@ export function useBridgeDeposit({
 
   const approve = useCallback(
     async (amount: string, spender?: string) => {
-      const targetSpender = spender || spenderAddress();
+      const targetSpender = spender || spenderAddress;
       if (!targetSpender) throw new Error('No spender address');
 
       await approveMutation.mutateAsync({ amount, spender: targetSpender });
@@ -324,7 +324,8 @@ export function useBridgeDeposit({
 
   const estimateGas = useCallback(
     async (amount: string, receiver?: string): Promise<ethers.BigNumber> => {
-      if (!bridgeService) throw new Error('Bridge service not initialized');
+      if (!bridgeService || !signer)
+        throw new Error('Bridge service not initialized');
 
       return bridgeService.estimateDepositGas({
         sourceChain,
@@ -332,9 +333,10 @@ export function useBridgeDeposit({
         asset,
         amount,
         receiver,
+        signer,
       });
     },
-    [bridgeService, sourceChain, targetChain, asset],
+    [bridgeService, signer, sourceChain, targetChain, asset],
   );
 
   useEffect(() => {

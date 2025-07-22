@@ -1,3 +1,5 @@
+import { Signer } from 'ethers';
+
 import { ChainIds } from '@sovryn/ethers-provider';
 
 export enum Environments {
@@ -39,13 +41,10 @@ export interface NetworkConfig {
 }
 
 export interface AssetConfig {
-  id?: string;
-  asset: CrossBridgeAsset;
+  mainChainId?: ChainIds;
+  sideChainId?: ChainIds;
   symbol: string;
-  icon: string;
-  decimals: number;
   minDecimals: number;
-  tokenContractAddress: string;
   isNative: boolean;
   targetAsset: CrossBridgeAsset;
   isBase: boolean;
@@ -54,8 +53,6 @@ export interface AssetConfig {
   bridgeTokenAddress?: string;
   allowedTargets: CrossBridgeAsset[];
   targetContracts?: Map<CrossBridgeAsset, string>;
-  fromChainId: ChainIds;
-  toChainId: ChainIds;
 }
 
 export interface BridgeConfig {
@@ -96,7 +93,8 @@ export interface BridgeTransaction {
 export interface BridgeDepositParams {
   sourceChain: ChainIds;
   targetChain: ChainIds;
-  asset: CrossBridgeAsset;
+  asset: string;
   amount: string;
   receiver?: string;
+  signer: Signer;
 }

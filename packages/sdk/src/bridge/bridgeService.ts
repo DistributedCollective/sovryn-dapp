@@ -1,14 +1,18 @@
-import { ethers } from 'ethers';
+import { ethers, Signer } from 'ethers';
 
+import { getAsset, getAssetData } from '@sovryn/contracts';
 import { ChainIds } from '@sovryn/ethers-provider';
+import { ERC20_ABI } from '@sovryn/sdex';
 
 import ALLOW_TOKENS_ABI from './abis/allowTokens.json';
 import BRIDGE_ABI from './abis/bridge.json';
-import ERC20_ABI from './abis/erc20.json';
-import { getBridge, getSupportedTargetChains } from './config/bridges';
-import { getNetwork } from './config/networks';
 import {
-  CrossBridgeAsset,
+  getBridge,
+  getSupportedBridgesBySource,
+  getSupportedBridgesByTarget,
+} from './config/bridges';
+import { getNetwork, getNetworkByChainId } from './config/networks';
+import {
   BridgeDepositParams,
   BridgeLimits,
   AssetConfig,
@@ -27,45 +31,12 @@ export class BridgeService {
     this.mode = isMainnet ? Environments.MAINNET : Environments.TESTNET;
   }
 
-  // Initialize provider for a specific chain
-  initProvider(
-    chain: ChainIds,
-    providerOrSigner: ethers.providers.Provider | ethers.Signer,
-  ) {
-    if (ethers.Signer.isSigner(providerOrSigner)) {
-      this.signers.set(chain, providerOrSigner);
-      this.providers.set(
-        chain,
-        providerOrSigner.provider as ethers.providers.JsonRpcProvider,
-      );
-    } else {
-      this.providers.set(
-        chain,
-        providerOrSigner as ethers.providers.JsonRpcProvider,
-      );
-    }
-  }
-
   private getProvider(chain: ChainIds): ethers.providers.JsonRpcProvider {
-    const provider = this.providers.get(chain);
-    if (!provider) {
-      throw new Error(`Provider not initialized for chain ${chain}`);
+    const rpcUrl = getNetworkByChainId(chain)?.rpcUrl;
+    if (!rpcUrl) {
+      throw new Error(`RPC url not found`);
     }
-    return provider;
-  }
-
-  // Get signer for chain
-  private getSigner(chain: ChainIds): ethers.Signer {
-    const signer = this.signers.get(chain);
-    if (!signer) {
-      throw new Error(`Signer not initialized for chain ${chain}`);
-    }
-    return signer;
-  }
-
-  // Get supported target chains for a source chain
-  getSupportedTargetChains(sourceChain: ChainIds): ChainIds[] {
-    return getSupportedTargetChains(sourceChain, this.mode);
+    return new ethers.providers.JsonRpcProvider(rpcUrl);
   }
 
   // Get bridge configuration
@@ -73,7 +44,7 @@ export class BridgeService {
     sourceChain: ChainIds,
     targetChain: ChainIds,
   ): BridgeConfig | undefined {
-    return getBridge(sourceChain, targetChain, this.mode);
+    return getBridge(sourceChain, targetChain);
   }
 
   // Get network configuration
@@ -85,108 +56,79 @@ export class BridgeService {
   getAssetConfig(
     sourceChain: ChainIds,
     targetChain: ChainIds,
-    asset: CrossBridgeAsset,
+    symbol: string,
   ): AssetConfig | undefined {
     const bridge = this.getBridgeConfig(sourceChain, targetChain);
-    return bridge?.assets.find(a => a.asset === asset);
+    return bridge?.assets.find(a => a.symbol === symbol);
   }
 
   // Get assets by source chain
   getAssetsBySourceChain(sourceChain: ChainIds): AssetConfig[] {
-    const supportedChains = this.getSupportedTargetChains(sourceChain);
+    const supportedBridges = getSupportedBridgesBySource(sourceChain);
     const assets: AssetConfig[] = [];
 
-    for (const targetChain of supportedChains) {
-      const bridge = this.getBridgeConfig(sourceChain, targetChain);
-      if (bridge) {
-        assets.push(
-          ...bridge.assets.filter(asset => asset.fromChainId === sourceChain),
-        );
-      }
+    for (const bridge of supportedBridges) {
+      assets.push(
+        ...bridge.assets.map(asset => ({
+          ...asset,
+          mainChainId: bridge.mainChainId,
+          sideChainId: bridge.sideChainId,
+        })),
+      );
     }
 
-    return assets.map(asset => ({
-      ...asset,
-      id: `${asset.symbol}-${asset.toChainId}`,
-    }));
+    return assets;
   }
 
   // Get assets by target chain
   getAssetsByTargetChain(targetChain: ChainIds): AssetConfig[] {
+    const supportedBridges = getSupportedBridgesByTarget(targetChain);
     const assets: AssetConfig[] = [];
 
-    // Get all possible source chains that can bridge to the target chain
-    const allChains = Object.values(ChainIds);
-
-    for (const sourceChain of allChains) {
-      const bridge = this.getBridgeConfig(sourceChain, targetChain);
-      if (bridge) {
-        assets.push(
-          ...bridge.assets.filter(asset => asset.toChainId === targetChain),
-        );
-      }
+    for (const bridge of supportedBridges) {
+      assets.push(
+        ...bridge.assets.map(asset => ({
+          ...asset,
+          mainChainId: bridge.mainChainId,
+          sideChainId: bridge.sideChainId,
+        })),
+      );
     }
 
-    return assets.map(asset => ({
-      ...asset,
-      id: `${asset.symbol}-${asset.toChainId}`,
-    }));
+    return assets;
   }
 
-  // Get token balance
-  async getBalance(
-    chain: ChainIds,
-    asset: CrossBridgeAsset,
-    address: string,
-  ): Promise<string> {
-    const provider = this.getProvider(chain);
-    const assetConfig = this.getAssetForChain(chain, asset);
+  // Get aggregator balance
+  async getBridgeAggregatorBalance(
+    sourceChain: ChainIds,
+    targetChain: ChainIds,
+    asset: string,
+  ) {
+    const bridge = this.getBridgeConfig(sourceChain, targetChain);
+    const assetConfig = this.getAssetConfig(sourceChain, targetChain, asset);
+    const assetDetails = await getAsset(asset, sourceChain);
 
-    if (!assetConfig) {
-      throw new Error(`Asset ${asset} not found for chain ${chain}`);
+    if (!bridge || !assetConfig || !assetConfig.aggregatorContractAddress) {
+      return;
     }
 
-    if (assetConfig.isNative) {
-      return (await provider.getBalance(address)).toString();
-    }
-
+    const provider = this.getProvider(sourceChain);
     const token = new ethers.Contract(
-      assetConfig.tokenContractAddress,
+      bridge.bridgeContractAddress || assetDetails.address,
       ERC20_ABI,
       provider,
     );
 
-    return (await token.balanceOf(address)).toString();
-  }
-
-  // Get allowance
-  async getAllowance(
-    chain: ChainIds,
-    asset: CrossBridgeAsset,
-    owner: string,
-    spender: string,
-  ): Promise<string> {
-    const assetConfig = this.getAssetForChain(chain, asset);
-
-    if (!assetConfig || assetConfig.isNative) {
-      return ethers.constants.MaxUint256.toString();
-    }
-
-    const provider = this.getProvider(chain);
-    const token = new ethers.Contract(
-      assetConfig.tokenContractAddress,
-      ERC20_ABI,
-      provider,
-    );
-
-    return (await token.allowance(owner, spender)).toString();
+    return (
+      await token.balanceOf(assetConfig.aggregatorContractAddress)
+    ).toString();
   }
 
   // Get bridge limits
   async getBridgeLimits(
     sourceChain: ChainIds,
     targetChain: ChainIds,
-    asset: CrossBridgeAsset,
+    asset: string,
   ): Promise<BridgeLimits> {
     const bridge = this.getBridgeConfig(sourceChain, targetChain);
     const assetConfig = this.getAssetConfig(sourceChain, targetChain, asset);
@@ -196,6 +138,7 @@ export class BridgeService {
     }
 
     const provider = this.getProvider(sourceChain);
+
     const bridgeContract = new ethers.Contract(
       bridge.bridgeContractAddress,
       BRIDGE_ABI,
@@ -211,12 +154,8 @@ export class BridgeService {
       await Promise.all([
         bridgeContract.spentToday(),
         allowTokensContract.dailyLimit(),
-        allowTokensContract.getMinPerToken(
-          assetConfig.bridgeTokenAddress || assetConfig.tokenContractAddress,
-        ),
-        allowTokensContract.getFeePerToken(
-          assetConfig.bridgeTokenAddress || assetConfig.tokenContractAddress,
-        ),
+        allowTokensContract.getMinPerToken(assetConfig.bridgeTokenAddress),
+        allowTokensContract.getFeePerToken(assetConfig.bridgeTokenAddress),
         allowTokensContract.getMaxTokensAllowed(),
       ]);
 
@@ -232,27 +171,23 @@ export class BridgeService {
   // Approve tokens
   async approve(
     chain: ChainIds,
-    asset: CrossBridgeAsset,
+    asset: string,
     spender: string,
     amount: string,
+    signer: Signer,
   ): Promise<ethers.ContractTransaction> {
-    const assetConfig = this.getAssetForChain(chain, asset);
+    const assetDetails = await getAssetData(asset, chain);
 
-    if (!assetConfig || assetConfig.isNative) {
+    if (!assetDetails || assetDetails.isNative) {
       throw new Error('Cannot approve native asset');
     }
 
-    const signer = this.getSigner(chain);
-    const token = new ethers.Contract(
-      assetConfig.tokenContractAddress,
-      ERC20_ABI,
-      signer,
-    );
+    const token = assetDetails.contract(signer);
 
     // Special handling for USDT on Ethereum
     if (
-      asset === CrossBridgeAsset.USDT &&
-      [ChainIds.MAINNET, ChainIds.ROPSTEN].includes(chain)
+      [ChainIds.MAINNET, ChainIds.ROPSTEN].includes(chain) &&
+      asset === 'USDT'
     ) {
       const currentAllowance = await token.allowance(
         await signer.getAddress(),
@@ -273,16 +208,17 @@ export class BridgeService {
   async deposit(
     params: BridgeDepositParams,
   ): Promise<ethers.ContractTransaction> {
-    const { sourceChain, targetChain, asset, amount, receiver } = params;
+    const { sourceChain, targetChain, asset, amount, receiver, signer } =
+      params;
 
     const bridge = this.getBridgeConfig(sourceChain, targetChain);
     const assetConfig = this.getAssetConfig(sourceChain, targetChain, asset);
+    const assetData = await getAsset(asset, sourceChain);
 
     if (!bridge || !assetConfig) {
       throw new Error('Bridge or asset configuration not found');
     }
 
-    const signer = this.getSigner(sourceChain);
     const sender = await signer.getAddress();
     const bridgeContract = new ethers.Contract(
       bridge.bridgeContractAddress,
@@ -299,11 +235,52 @@ export class BridgeService {
 
     // For token transfers
     return bridgeContract.receiveTokensAt(
-      assetConfig.bridgeTokenAddress || assetConfig.tokenContractAddress,
+      assetConfig.bridgeTokenAddress || assetData.address,
       amount,
       receiver || sender,
       '0x',
     );
+  }
+
+  // Get allowance
+  async getAllowance(
+    chain: ChainIds,
+    asset: string,
+    owner: string,
+    spender: string,
+  ): Promise<string> {
+    const assetData = await getAsset(chain, asset);
+
+    if (!assetData || assetData.isNative) {
+      return ethers.constants.MaxUint256.toString();
+    }
+
+    const provider = this.getProvider(chain);
+    const token = new ethers.Contract(assetData.address, ERC20_ABI, provider);
+
+    return (await token.allowance(owner, spender)).toString();
+  }
+
+  // Get token balance
+  async getBalance(
+    chain: ChainIds,
+    asset: string,
+    address: string,
+  ): Promise<string> {
+    const provider = this.getProvider(chain);
+    const assetData = await getAsset(chain, asset);
+
+    if (!assetData) {
+      throw new Error(`Asset ${asset} not found for chain ${chain}`);
+    }
+
+    if (assetData.isNative) {
+      return (await provider.getBalance(address)).toString();
+    }
+
+    const token = new ethers.Contract(assetData.address, ERC20_ABI, provider);
+
+    return (await token.balanceOf(address)).toString();
   }
 
   // Get transaction status
@@ -335,34 +312,21 @@ export class BridgeService {
     return transactions.slice(0, limit);
   }
 
-  private getAssetForChain(
-    sourceChain: ChainIds,
-    asset: CrossBridgeAsset,
-  ): AssetConfig | undefined {
-    const supportedChains = this.getSupportedTargetChains(sourceChain);
-    for (const targetChain of supportedChains) {
-      const config = this.getAssetConfig(sourceChain, targetChain, asset);
-      if (config) {
-        return config;
-      }
-    }
-    return undefined;
-  }
-
   // Estimate gas for depositx
   async estimateDepositGas(
     params: BridgeDepositParams,
   ): Promise<ethers.BigNumber> {
-    const { sourceChain, targetChain, asset, amount, receiver } = params;
+    const { sourceChain, targetChain, asset, amount, receiver, signer } =
+      params;
 
     const bridge = this.getBridgeConfig(sourceChain, targetChain);
     const assetConfig = this.getAssetConfig(sourceChain, targetChain, asset);
+    const assetData = await getAsset(sourceChain, asset);
 
     if (!bridge || !assetConfig) {
       throw new Error('Bridge or asset configuration not found');
     }
 
-    const signer = this.getSigner(sourceChain);
     const sender = await signer.getAddress();
     const bridgeContract = new ethers.Contract(
       bridge.bridgeContractAddress,
@@ -377,7 +341,7 @@ export class BridgeService {
     }
 
     return bridgeContract.estimateGas.receiveTokensAt(
-      assetConfig.bridgeTokenAddress || assetConfig.tokenContractAddress,
+      assetConfig.bridgeTokenAddress || assetData.address,
       amount,
       receiver || sender,
       '0x',

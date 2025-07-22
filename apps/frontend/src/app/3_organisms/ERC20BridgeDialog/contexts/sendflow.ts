@@ -26,6 +26,9 @@ export type SendFlowContextStateType = {
   receiver: string;
   chain: ChainIds;
   asset: AssetConfig | undefined;
+
+  chainId: ChainIds | undefined;
+  token: string | undefined;
 };
 
 export type SendFlowContextFunctionsType = {
@@ -42,6 +45,9 @@ export const defaultValue: SendFlowContextType = {
   chain: ChainIds.MAINNET,
   asset: undefined,
   set: noop,
+
+  chainId: undefined,
+  token: undefined,
 };
 
 export const SendFlowContext = createContext<SendFlowContextType>(defaultValue);

@@ -1,5 +1,12 @@
 # frontend
 
+## 1.1.36
+
+### Patch Changes
+
+- a7c02de3: SOV-5023: Add PowPeg link
+- 5d750838: SOV-5052: PowPeg Portfolio adjustments
+
 ## 1.1.35
 
 ### Patch Changes

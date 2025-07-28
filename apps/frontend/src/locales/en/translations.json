@@ -2050,6 +2050,7 @@
             "destinationNetwork": "Destination network",
             "token": "Token",
             "amount": "Amount",
+            "receiver": "Receiver",
             "sending": "Sending",
             "serviceFee": "Service fee",
             "sendingAmount": "Sending amount",

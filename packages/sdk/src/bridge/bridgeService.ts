@@ -11,7 +11,7 @@ import {
   getSupportedBridgesBySource,
   getSupportedBridgesByTarget,
 } from './config/bridges';
-import { getNetwork, getNetworkByChainId } from './config/networks';
+import { getBridgeNetwork } from './config/networks';
 import {
   BridgeDepositParams,
   BridgeLimits,
@@ -32,7 +32,7 @@ export class BridgeService {
   }
 
   private getProvider(chain: ChainIds): ethers.providers.JsonRpcProvider {
-    const rpcUrl = getNetworkByChainId(chain)?.rpcUrl;
+    const rpcUrl = getBridgeNetwork(chain)?.rpcUrl;
     if (!rpcUrl) {
       throw new Error(`RPC url not found`);
     }
@@ -49,7 +49,7 @@ export class BridgeService {
 
   // Get network configuration
   getNetworkConfig(chain: ChainIds): NetworkConfig | undefined {
-    return getNetwork(chain, this.mode);
+    return getBridgeNetwork(chain);
   }
 
   // Get asset configuration

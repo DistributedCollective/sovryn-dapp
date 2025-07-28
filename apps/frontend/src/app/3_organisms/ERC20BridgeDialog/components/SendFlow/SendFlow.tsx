@@ -3,8 +3,10 @@ import React, { useCallback } from 'react';
 import { GoBackButton } from '../../../../1_atoms/GoBackButton/GoBackButton';
 import { Stepper } from '../../../../1_atoms/Stepper/Stepper';
 import { SendFlowStep, useSendFlowContext } from '../../contexts/sendflow';
+import { AmountScreen } from './components/AmountScreen';
 import { InitialScreen } from './components/InitialScreen';
 import { MainScreen } from './components/MainScreen';
+import { ReviewScreen } from './components/ReviewScreen';
 
 type SendFlowProps = {
   onClose: () => void;
@@ -48,6 +50,8 @@ export const SendFlow: React.FC<SendFlowProps> = () => {
       <div className="mt-0 md:mt-20">
         {step === SendFlowStep.INITIAL && <InitialScreen />}
         {step === SendFlowStep.MAIN && <MainScreen />}
+        {step === SendFlowStep.AMOUNT && <AmountScreen />}
+        {step === SendFlowStep.REVIEW && <ReviewScreen />}
       </div>
     </>
   );

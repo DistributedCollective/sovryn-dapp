@@ -20,19 +20,19 @@ export const Instructions: React.FC<InstructionsProps> = () => {
       </Heading>
 
       <ul className="list-disc list-inside text-xs leading-5 font-medium text-gray-30 mt-4 mb-12">
-        <li className="mb-4">
+        <li className="mb-2">
           {t(translations.erc20Bridge.instructions['1'])}
         </li>
-        <li className="mb-4">
+        <li className="mb-2">
           {t(translations.erc20Bridge.instructions['2'])}
         </li>
-        <li className="mb-4">
+        <li className="mb-2">
           {t(translations.erc20Bridge.instructions['3'])}
         </li>
-        <li className="mb-4">
+        <li className="mb-2">
           {t(translations.erc20Bridge.instructions['4'])}
         </li>
-        <li className="mb-4">
+        <li className="mb-2">
           <Trans
             i18nKey={t(translations.erc20Bridge.instructions['5'])}
             tOptions={{ hours: 1.5 }}

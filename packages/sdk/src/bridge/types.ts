@@ -33,7 +33,6 @@ export interface NetworkConfig {
   chainId: ChainIds;
   name: string;
   nativeCurrency: CrossBridgeAsset;
-  icon: string;
   rpcUrl: string;
   explorerUrl: string;
   mode: Environments;

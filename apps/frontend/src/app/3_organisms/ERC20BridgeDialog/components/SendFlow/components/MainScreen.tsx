@@ -15,19 +15,12 @@ import { AssetRenderer } from '../../../../../2_molecules/AssetRenderer/AssetRen
 import { translations } from '../../../../../../locales/i18n';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useAssetsBySourceChain } from '../../../hooks/useBridgeAssets';
-import { useBridgeLimits } from '../../../hooks/useBridgeLimits';
+import { NetworkRenderer } from '../../NetworkRenderer';
 
 export const MainScreen: React.FC = () => {
+  const { set, token, chainId } = useContext(SendFlowContext);
   const assets = useAssetsBySourceChain(ChainIds.RSK_MAINNET);
 
-  const { set, asset, token, chainId } = useContext(SendFlowContext);
-  const { data, aggregatorBalance } = useBridgeLimits(
-    ChainIds.RSK_MAINNET,
-    chainId,
-    token,
-  );
-
-  console.log({ data, aggregatorBalance });
   const uniqueAssets = assets.filter(
     (asset, index, arr) =>
       arr.findIndex(a => a.symbol === asset.symbol) === index,
@@ -42,6 +35,7 @@ export const MainScreen: React.FC = () => {
     () => set(prevState => ({ ...prevState, step: SendFlowStep.AMOUNT })),
     [set],
   );
+
   const setAsset = useCallback(
     (symbol: string) => {
       const asset = assets.find(a => a.symbol === symbol);
@@ -68,7 +62,7 @@ export const MainScreen: React.FC = () => {
   return (
     <div>
       <div className="mb-6">
-        <Paragraph className="mb-2">Asset</Paragraph>
+        <Paragraph className="mb-2 text-sm">Asset</Paragraph>
 
         <Select
           className="w-full"
@@ -89,7 +83,7 @@ export const MainScreen: React.FC = () => {
       </div>
 
       <div className="mb-6">
-        <Paragraph className="mb-2">Send to</Paragraph>
+        <Paragraph className="mb-2 text-sm">Send to</Paragraph>
 
         <Select
           className="w-full"
@@ -98,7 +92,7 @@ export const MainScreen: React.FC = () => {
             .filter(chain => !!chain)
             .map(chainId => ({
               value: chainId || '',
-              label: chainId,
+              label: <NetworkRenderer chainId={chainId} />,
             }))}
           value={chainId || ''}
         />
@@ -118,7 +112,7 @@ export const MainScreen: React.FC = () => {
         className="w-full mt-12"
         style={ButtonStyle.secondary}
         dataAttribute="funding-send-instructions-confirm"
-        disabled={!asset}
+        disabled={!token || !chainId}
       />
     </div>
   );

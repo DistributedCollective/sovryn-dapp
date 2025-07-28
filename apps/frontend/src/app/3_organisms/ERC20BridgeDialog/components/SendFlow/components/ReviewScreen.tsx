@@ -1,33 +1,22 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 
 import classNames from 'classnames';
 import { t } from 'i18next';
 
-import {
-  Button,
-  ErrorBadge,
-  ErrorLevel,
-  Heading,
-  HeadingType,
-} from '@sovryn/ui';
+import { ChainIds } from '@sovryn/ethers-provider';
+import { Button, Heading, HeadingType } from '@sovryn/ui';
 
 import { translations } from '../../../../../../locales/i18n';
 import { formatValue } from '../../../../../../utils/math';
+import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
+import { useBridgeService } from '../../../hooks/useBridgeService';
 
 const translation = translations.erc20Bridge.confirmationScreens;
 
-type ReviewScreenProps = {
-  amount: string;
-  onConfirm: () => void;
-};
+export const ReviewScreen: React.FC = () => {
+  const { set, token, chainId, amount, receiver } = useContext(SendFlowContext);
+  const bridgeService = useBridgeService();
 
-export const ReviewScreen: React.FC<ReviewScreenProps> = ({
-  amount,
-  onConfirm,
-}) => {
-  const erc20BridgeLocked = false;
-  // const { selectedToken } = useSendFlowContext();
-  // const { explorerUrl, baseCurrency } = useChainDetails();
   const items = useMemo(
     () => [
       {
@@ -36,22 +25,35 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
       },
       {
         label: t(translation.token),
-        value: <>ETH {'->'} ETHs</>,
+        value: (
+          <>
+            {token} {'->'} {token}
+          </>
+        ),
       },
       {
         label: t(translation.originNetwork),
-        value: <>Ethereum</>,
+        value: bridgeService.getNetworkConfig(ChainIds.RSK_MAINNET)?.name,
       },
       {
         label: t(translation.destinationNetwork),
-        value: <>RSK</>,
+        value: chainId ? bridgeService.getNetworkConfig(chainId)?.name : '',
+      },
+      {
+        label: t(translation.receiver),
+        value: receiver,
       },
       {
         label: t(translation.serviceFee),
         value: <>0.0012 ETH</>,
       },
     ],
-    [amount],
+    [amount, bridgeService, chainId, receiver, token],
+  );
+
+  const onConfirm = useCallback(
+    () => set(prevState => ({ ...prevState, step: SendFlowStep.REVIEW })),
+    [set],
   );
 
   return (
@@ -78,16 +80,9 @@ export const ReviewScreen: React.FC<ReviewScreenProps> = ({
         <Button
           text={t(translations.common.buttons.confirm)}
           onClick={onConfirm}
-          disabled={erc20BridgeLocked}
           className="w-full"
           dataAttribute="erc20-send-confirm"
         />
-        {erc20BridgeLocked && (
-          <ErrorBadge
-            level={ErrorLevel.Warning}
-            message={t(translations.maintenanceMode.runeBridge)}
-          />
-        )}
       </div>
     </div>
   );

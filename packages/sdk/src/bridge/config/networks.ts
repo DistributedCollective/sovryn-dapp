@@ -8,7 +8,6 @@ export const networks: NetworkConfig[] = [
     chainId: ChainIds.RSK_MAINNET,
     name: 'RSK',
     nativeCurrency: CrossBridgeAsset.RBTC,
-    icon: '/icons/rsk.svg',
     rpcUrl: 'https://rsk-live.sovryn.app/rpc',
     explorerUrl: 'https://explorer.rsk.co',
     mode: Environments.MAINNET,
@@ -18,7 +17,6 @@ export const networks: NetworkConfig[] = [
     chainId: ChainIds.RSK_TESTNET,
     name: 'RSK Testnet',
     nativeCurrency: CrossBridgeAsset.RBTC,
-    icon: '/icons/rsk.svg',
     rpcUrl: 'https://testnet.sovryn.app/rpc',
     explorerUrl: 'https://explorer.testnet.rsk.co',
     mode: Environments.TESTNET,
@@ -30,9 +28,7 @@ export const networks: NetworkConfig[] = [
     chainId: ChainIds.MAINNET,
     name: 'Ethereum',
     nativeCurrency: CrossBridgeAsset.ETH,
-    icon: '/icons/eth.svg',
-    rpcUrl:
-      process.env.REACT_APP_ETH_RPC || 'https://eth-mainnet.public.blastapi.io',
+    rpcUrl: 'https://eth-mainnet.public.blastapi.io',
     explorerUrl: 'https://etherscan.io',
     mode: Environments.MAINNET,
     multicallAddress: '0x5ba1e12693dc8f9c48aad8770482f4739beed696',
@@ -41,10 +37,7 @@ export const networks: NetworkConfig[] = [
     chainId: ChainIds.ROPSTEN,
     name: 'Ropsten',
     nativeCurrency: CrossBridgeAsset.ETH,
-    icon: '/icons/eth.svg',
-    rpcUrl:
-      process.env.REACT_APP_ETH_TESTNET_RPC ||
-      `https://ropsten.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`,
+    rpcUrl: `https://ropsten.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`,
     explorerUrl: 'https://ropsten.etherscan.io',
     mode: Environments.TESTNET,
     multicallAddress: '0x5ba1e12693dc8f9c48aad8770482f4739beed696',
@@ -55,7 +48,6 @@ export const networks: NetworkConfig[] = [
     chainId: ChainIds.BSC_MAINNET,
     name: 'Binance Smart Chain',
     nativeCurrency: CrossBridgeAsset.BNB,
-    icon: '/icons/bsc.svg',
     rpcUrl: 'https://bsc.sovryn.app/mainnet',
     explorerUrl: 'https://bscscan.com',
     mode: Environments.MAINNET,
@@ -65,7 +57,6 @@ export const networks: NetworkConfig[] = [
     chainId: ChainIds.BSC_TESTNET,
     name: 'Binance Smart Testnet',
     nativeCurrency: CrossBridgeAsset.BNB,
-    icon: '/icons/bsc.svg',
     rpcUrl: 'https://bsc.sovryn.app/testnet',
     explorerUrl: 'https://testnet.bscscan.com',
     mode: Environments.TESTNET,
@@ -73,19 +64,12 @@ export const networks: NetworkConfig[] = [
   },
 ];
 
-export const getNetwork = (
-  chain: ChainIds,
-  mode: Environments = Environments.MAINNET,
-): NetworkConfig | undefined => {
-  return networks.find(n => n.chainId === chain && n.mode === mode);
-};
-
-export const getNetworkByChainId = (
+export const getBridgeNetwork = (
   chainId: ChainIds,
 ): NetworkConfig | undefined => {
   return networks.find(n => n.chainId === chainId);
 };
 
-export const getSupportedChainIds = (): ChainIds[] => {
+export const getBridgeSupportedChainIds = (): ChainIds[] => {
   return networks.map(n => n.chainId);
 };

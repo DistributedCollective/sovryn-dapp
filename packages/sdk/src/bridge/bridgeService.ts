@@ -1,7 +1,7 @@
 import { ethers, Signer } from 'ethers';
 
 import { getAsset, getAssetData } from '@sovryn/contracts';
-import { ChainIds } from '@sovryn/ethers-provider';
+import { ChainIds, ChainId } from '@sovryn/ethers-provider';
 import { ERC20_ABI } from '@sovryn/sdex';
 
 import ALLOW_TOKENS_ABI from './abis/allowTokens.json';
@@ -16,22 +16,12 @@ import {
   BridgeDepositParams,
   BridgeLimits,
   AssetConfig,
-  Environments,
   NetworkConfig,
   BridgeConfig,
 } from './types';
 
 export class BridgeService {
-  private providers: Map<ChainIds, ethers.providers.JsonRpcProvider> =
-    new Map();
-  private signers: Map<ChainIds, ethers.Signer> = new Map();
-  private mode: Environments;
-
-  constructor(isMainnet = true) {
-    this.mode = isMainnet ? Environments.MAINNET : Environments.TESTNET;
-  }
-
-  private getProvider(chain: ChainIds): ethers.providers.JsonRpcProvider {
+  private getProvider(chain: ChainId): ethers.providers.JsonRpcProvider {
     const rpcUrl = getBridgeNetwork(chain)?.rpcUrl;
     if (!rpcUrl) {
       throw new Error(`RPC url not found`);
@@ -41,21 +31,21 @@ export class BridgeService {
 
   // Get bridge configuration
   getBridgeConfig(
-    sourceChain: ChainIds,
-    targetChain: ChainIds,
+    sourceChain: ChainId,
+    targetChain: ChainId,
   ): BridgeConfig | undefined {
     return getBridge(sourceChain, targetChain);
   }
 
   // Get network configuration
-  getNetworkConfig(chain: ChainIds): NetworkConfig | undefined {
+  getNetworkConfig(chain: ChainId): NetworkConfig | undefined {
     return getBridgeNetwork(chain);
   }
 
   // Get asset configuration
   getAssetConfig(
-    sourceChain: ChainIds,
-    targetChain: ChainIds,
+    sourceChain: ChainId,
+    targetChain: ChainId,
     symbol: string,
   ): AssetConfig | undefined {
     const bridge = this.getBridgeConfig(sourceChain, targetChain);
@@ -63,7 +53,7 @@ export class BridgeService {
   }
 
   // Get assets by source chain
-  getAssetsBySourceChain(sourceChain: ChainIds): AssetConfig[] {
+  getAssetsBySourceChain(sourceChain: ChainId): AssetConfig[] {
     const supportedBridges = getSupportedBridgesBySource(sourceChain);
     const assets: AssetConfig[] = [];
 
@@ -81,7 +71,7 @@ export class BridgeService {
   }
 
   // Get assets by target chain
-  getAssetsByTargetChain(targetChain: ChainIds): AssetConfig[] {
+  getAssetsByTargetChain(targetChain: ChainId): AssetConfig[] {
     const supportedBridges = getSupportedBridgesByTarget(targetChain);
     const assets: AssetConfig[] = [];
 
@@ -100,8 +90,8 @@ export class BridgeService {
 
   // Get aggregator balance
   async getBridgeAggregatorBalance(
-    sourceChain: ChainIds,
-    targetChain: ChainIds,
+    sourceChain: ChainId,
+    targetChain: ChainId,
     asset: string,
   ) {
     const bridge = this.getBridgeConfig(sourceChain, targetChain);
@@ -114,20 +104,19 @@ export class BridgeService {
 
     const provider = this.getProvider(sourceChain);
     const token = new ethers.Contract(
-      bridge.bridgeContractAddress || assetDetails.address,
+      (assetConfig.bridgeTokenAddress || assetDetails.address).toLowerCase(),
       ERC20_ABI,
       provider,
     );
-
     return (
-      await token.balanceOf(assetConfig.aggregatorContractAddress)
+      await token.balanceOf(assetConfig.aggregatorContractAddress.toLowerCase())
     ).toString();
   }
 
   // Get bridge limits
   async getBridgeLimits(
-    sourceChain: ChainIds,
-    targetChain: ChainIds,
+    sourceChain: ChainId,
+    targetChain: ChainId,
     asset: string,
   ): Promise<BridgeLimits> {
     const bridge = this.getBridgeConfig(sourceChain, targetChain);
@@ -140,12 +129,12 @@ export class BridgeService {
     const provider = this.getProvider(sourceChain);
 
     const bridgeContract = new ethers.Contract(
-      bridge.bridgeContractAddress,
+      bridge.bridgeContractAddress.toLowerCase(),
       BRIDGE_ABI,
       provider,
     );
     const allowTokensContract = new ethers.Contract(
-      bridge.allowTokensContractAddress,
+      bridge.allowTokensContractAddress.toLowerCase(),
       ALLOW_TOKENS_ABI,
       provider,
     );
@@ -154,8 +143,12 @@ export class BridgeService {
       await Promise.all([
         bridgeContract.spentToday(),
         allowTokensContract.dailyLimit(),
-        allowTokensContract.getMinPerToken(assetConfig.bridgeTokenAddress),
-        allowTokensContract.getFeePerToken(assetConfig.bridgeTokenAddress),
+        allowTokensContract.getMinPerToken(
+          assetConfig.bridgeTokenAddress?.toLowerCase(),
+        ),
+        allowTokensContract.getFeePerToken(
+          assetConfig.bridgeTokenAddress?.toLowerCase(),
+        ),
         allowTokensContract.getMaxTokensAllowed(),
       ]);
 
@@ -170,7 +163,7 @@ export class BridgeService {
 
   // Approve tokens
   async approve(
-    chain: ChainIds,
+    chain: ChainId,
     asset: string,
     spender: string,
     amount: string,
@@ -186,7 +179,7 @@ export class BridgeService {
 
     // Special handling for USDT on Ethereum
     if (
-      [ChainIds.MAINNET, ChainIds.ROPSTEN].includes(chain) &&
+      [ChainIds.MAINNET, ChainIds.ROPSTEN].includes(chain as ChainIds) &&
       asset === 'USDT'
     ) {
       const currentAllowance = await token.allowance(
@@ -244,7 +237,7 @@ export class BridgeService {
 
   // Get allowance
   async getAllowance(
-    chain: ChainIds,
+    chain: ChainId,
     asset: string,
     owner: string,
     spender: string,
@@ -263,7 +256,7 @@ export class BridgeService {
 
   // Get token balance
   async getBalance(
-    chain: ChainIds,
+    chain: ChainId,
     asset: string,
     address: string,
   ): Promise<string> {
@@ -280,12 +273,12 @@ export class BridgeService {
 
     const token = new ethers.Contract(assetData.address, ERC20_ABI, provider);
 
-    return (await token.balanceOf(address)).toString();
+    return (await token.balanceOf(address.toLowerCase())).toString();
   }
 
   // Get transaction status
   async getTransactionStatus(
-    chain: ChainIds,
+    chain: ChainId,
     txHash: string,
   ): Promise<ethers.providers.TransactionReceipt> {
     const provider = this.getProvider(chain);
@@ -293,7 +286,7 @@ export class BridgeService {
   }
 
   async getTransactionHistory(
-    chain: ChainIds,
+    chain: ChainId,
     address: string,
     limit = 10,
   ): Promise<ethers.providers.TransactionResponse[]> {
@@ -329,7 +322,7 @@ export class BridgeService {
 
     const sender = await signer.getAddress();
     const bridgeContract = new ethers.Contract(
-      bridge.bridgeContractAddress,
+      bridge.bridgeContractAddress.toLowerCase(),
       BRIDGE_ABI,
       signer,
     );
@@ -349,7 +342,7 @@ export class BridgeService {
   }
 
   // Get current gas price for a chain
-  async getGasPrice(chain: ChainIds): Promise<string> {
+  async getGasPrice(chain: ChainId): Promise<string> {
     const provider = this.getProvider(chain);
     const gasPrice = await provider.getGasPrice();
     return gasPrice.toString();

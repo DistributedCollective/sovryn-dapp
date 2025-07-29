@@ -129,10 +129,10 @@ export const ERC20BridgeDialog: React.FC<ERC20BridgeDialogProps> = ({
           items={items}
           onChange={onChangeIndex}
           selectedIndex={index}
-          tabsClassName="min-h-[42rem] block pt-0 relative"
+          tabsClassName="min-h-[42rem] block pt-0 relative flex-1"
           headerClassName="pb-0 pt-5"
           footerClassName="absolute bottom-5 left-5"
-          contentClassName="px-10 pb-10 pt-6"
+          contentClassName="px-9 pb-10 pt-6 flex-1"
           className="hidden md:flex"
           header={() => (
             <>

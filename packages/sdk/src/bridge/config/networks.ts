@@ -1,6 +1,6 @@
-import { ChainIds } from '@sovryn/ethers-provider';
+import { ChainIds, ChainId } from '@sovryn/ethers-provider';
 
-import { NetworkConfig, Environments, CrossBridgeAsset } from '../types';
+import { NetworkConfig, CrossBridgeAsset } from '../types';
 
 export const networks: NetworkConfig[] = [
   // RSK Networks
@@ -10,7 +10,6 @@ export const networks: NetworkConfig[] = [
     nativeCurrency: CrossBridgeAsset.RBTC,
     rpcUrl: 'https://rsk-live.sovryn.app/rpc',
     explorerUrl: 'https://explorer.rsk.co',
-    mode: Environments.MAINNET,
     multicallAddress: '0x6c62bf5440de2cb157205b15c424bceb5c3368f5',
   },
   {
@@ -19,7 +18,6 @@ export const networks: NetworkConfig[] = [
     nativeCurrency: CrossBridgeAsset.RBTC,
     rpcUrl: 'https://testnet.sovryn.app/rpc',
     explorerUrl: 'https://explorer.testnet.rsk.co',
-    mode: Environments.TESTNET,
     multicallAddress: '0x9e469e1fc7fb4c5d17897b68eaf1afc9df39f103',
   },
 
@@ -30,7 +28,6 @@ export const networks: NetworkConfig[] = [
     nativeCurrency: CrossBridgeAsset.ETH,
     rpcUrl: 'https://eth-mainnet.public.blastapi.io',
     explorerUrl: 'https://etherscan.io',
-    mode: Environments.MAINNET,
     multicallAddress: '0x5ba1e12693dc8f9c48aad8770482f4739beed696',
   },
   {
@@ -39,7 +36,6 @@ export const networks: NetworkConfig[] = [
     nativeCurrency: CrossBridgeAsset.ETH,
     rpcUrl: `https://ropsten.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`,
     explorerUrl: 'https://ropsten.etherscan.io',
-    mode: Environments.TESTNET,
     multicallAddress: '0x5ba1e12693dc8f9c48aad8770482f4739beed696',
   },
 
@@ -50,7 +46,6 @@ export const networks: NetworkConfig[] = [
     nativeCurrency: CrossBridgeAsset.BNB,
     rpcUrl: 'https://bsc.sovryn.app/mainnet',
     explorerUrl: 'https://bscscan.com',
-    mode: Environments.MAINNET,
     multicallAddress: '0x41263cba59eb80dc200f3e2544eda4ed6a90e76c',
   },
   {
@@ -59,17 +54,16 @@ export const networks: NetworkConfig[] = [
     nativeCurrency: CrossBridgeAsset.BNB,
     rpcUrl: 'https://bsc.sovryn.app/testnet',
     explorerUrl: 'https://testnet.bscscan.com',
-    mode: Environments.TESTNET,
     multicallAddress: '0xae11C5B5f29A6a25e955F0CB8ddCc416f522AF5C',
   },
 ];
 
 export const getBridgeNetwork = (
-  chainId: ChainIds,
+  chainId: ChainId,
 ): NetworkConfig | undefined => {
   return networks.find(n => n.chainId === chainId);
 };
 
-export const getBridgeSupportedChainIds = (): ChainIds[] => {
+export const getBridgeSupportedChainIds = (): ChainId[] => {
   return networks.map(n => n.chainId);
 };

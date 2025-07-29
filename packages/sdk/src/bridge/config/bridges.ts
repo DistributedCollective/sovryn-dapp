@@ -1,6 +1,6 @@
-import { ChainIds } from '@sovryn/ethers-provider';
+import { ChainIds, ChainId } from '@sovryn/ethers-provider';
 
-import { BridgeConfig, Environments } from '../types';
+import { BridgeConfig } from '../types';
 import {
   bscToRskMainnetAssets,
   rskToBscMainnetAssets,
@@ -16,7 +16,6 @@ export const bridges: BridgeConfig[] = [
     bridgeContractAddress: '0x971b97c8cc82e7d27bc467c2dc3f219c6ee2e350',
     allowTokensContractAddress: '0xa2f50a2c699c1aa3b9089f6b565d4999d45d8983',
     assets: rskToBscMainnetAssets,
-    mode: Environments.MAINNET,
   },
   {
     mainChainId: ChainIds.BSC_MAINNET,
@@ -24,7 +23,6 @@ export const bridges: BridgeConfig[] = [
     bridgeContractAddress: '0xdfc7127593c8af1a17146893f10e08528f4c2aa7',
     allowTokensContractAddress: '0x05b68e70168e876b2025f837bc8e0b2312d5327d',
     assets: bscToRskMainnetAssets,
-    mode: Environments.MAINNET,
   },
 
   // Testnet Bridges
@@ -34,7 +32,6 @@ export const bridges: BridgeConfig[] = [
     bridgeContractAddress: '0x2b2bcad081fa773dc655361d1bb30577caa556f8',
     allowTokensContractAddress: '0xa9f2ccb27fe01479a1f21f3a236989c614f801bc',
     assets: rskToBscTestnetAssets,
-    mode: Environments.TESTNET,
   },
   {
     mainChainId: ChainIds.BSC_TESTNET,
@@ -42,23 +39,22 @@ export const bridges: BridgeConfig[] = [
     bridgeContractAddress: '0x862e8aff917319594cc7faaae5350d21196c086f',
     allowTokensContractAddress: '0xeb23e848ceca88b7d0c019c7186bb86cefadd0bd',
     assets: bscToRskTestnetAssets,
-    mode: Environments.TESTNET,
   },
 ];
 
 export const getBridge = (
-  sourceChain: ChainIds,
-  targetChain: ChainIds,
+  sourceChain: ChainId,
+  targetChain: ChainId,
 ): BridgeConfig | undefined => {
   return bridges.find(
     b => b.mainChainId === sourceChain && b.sideChainId === targetChain,
   );
 };
 
-export const getSupportedBridgesBySource = (sourceChain: ChainIds) => {
+export const getSupportedBridgesBySource = (sourceChain: ChainId) => {
   return bridges.filter(b => b.mainChainId === sourceChain);
 };
 
-export const getSupportedBridgesByTarget = (targetChain: ChainIds) => {
+export const getSupportedBridgesByTarget = (targetChain: ChainId) => {
   return bridges.filter(b => b.sideChainId === targetChain);
 };

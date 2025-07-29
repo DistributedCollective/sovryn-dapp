@@ -1,8 +1,8 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 
+import { formatUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { ChainIds } from '@sovryn/ethers-provider';
 import {
   AmountInput,
   Button,
@@ -11,15 +11,24 @@ import {
   Select,
 } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
+
 import { AssetRenderer } from '../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../../locales/i18n';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
+import { useBridgeAggregatorBalance } from '../../../hooks/useBridgeAggregatorBalance';
 import { useAssetsBySourceChain } from '../../../hooks/useBridgeAssets';
+import { Limits } from '../../Limits';
 import { NetworkRenderer } from '../../NetworkRenderer';
 
 export const MainScreen: React.FC = () => {
   const { set, token, chainId } = useContext(SendFlowContext);
-  const assets = useAssetsBySourceChain(ChainIds.RSK_MAINNET);
+  const assets = useAssetsBySourceChain(RSK_CHAIN_ID);
+  const { data: aggregatorBalance } = useBridgeAggregatorBalance(
+    RSK_CHAIN_ID,
+    chainId,
+    token,
+  );
 
   const uniqueAssets = assets.filter(
     (asset, index, arr) =>
@@ -35,7 +44,6 @@ export const MainScreen: React.FC = () => {
     () => set(prevState => ({ ...prevState, step: SendFlowStep.AMOUNT })),
     [set],
   );
-
   const setAsset = useCallback(
     (symbol: string) => {
       const asset = assets.find(a => a.symbol === symbol);
@@ -58,6 +66,12 @@ export const MainScreen: React.FC = () => {
     },
     [filteredAssets, set],
   );
+
+  useEffect(() => {
+    if (!token && !chainId && uniqueAssets.length > 0) {
+      setAsset(uniqueAssets[0].symbol);
+    }
+  }, [chainId, setAsset, token, uniqueAssets]);
 
   return (
     <div>
@@ -97,14 +111,16 @@ export const MainScreen: React.FC = () => {
           value={chainId || ''}
         />
       </div>
-      <div>
-        <AmountInput
-          className="w-full max-w-full"
-          label="Avaiaible liquidity"
-          value="12,345.13 ETH"
-          readOnly
-        />
-      </div>
+
+      <AmountInput
+        className="w-full max-w-full mb-6"
+        label="Avaiaible liquidity"
+        value={formatUnits(aggregatorBalance || '0')}
+        readOnly
+        unit={token}
+      />
+
+      <Limits sourceChain={RSK_CHAIN_ID} targetChain={chainId} asset={token} />
 
       <Button
         onClick={onContinueClick}

@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
-import { ChainIds } from '@sovryn/ethers-provider';
+import { ChainId } from '@sovryn/ethers-provider';
 
 import { useBridgeService } from './useBridgeService';
 
-export const useAssetsBySourceChain = (sourceChainId: ChainIds | undefined) => {
+export const useAssetsBySourceChain = (sourceChainId: ChainId | undefined) => {
   const bridgeService = useBridgeService();
 
   return useMemo(() => {
@@ -19,7 +19,7 @@ export const useAssetsBySourceChain = (sourceChainId: ChainIds | undefined) => {
   }, [bridgeService, sourceChainId]);
 };
 
-export const useAssetsByTargetChain = (targetChainId: ChainIds | undefined) => {
+export const useAssetsByTargetChain = (targetChainId: ChainId | undefined) => {
   const bridgeService = useBridgeService();
 
   return useMemo(() => {

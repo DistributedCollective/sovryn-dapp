@@ -4,20 +4,26 @@ import { ChainId } from '@sovryn/ethers-provider';
 
 import { useBridgeService } from './useBridgeService';
 
-export function useBridgeLimits(
+export function useBridgeAggregatorBalance(
   sourceChain: ChainId | undefined,
   targetChain: ChainId | undefined,
   asset: string | undefined,
 ) {
   const bridgeService = useBridgeService();
+
   return useQuery({
-    queryKey: ['bridgeLimits', sourceChain, targetChain, asset],
+    queryKey: ['aggregatorBalance', sourceChain, targetChain, asset],
     queryFn: async () => {
-      return await bridgeService.getBridgeLimits(
-        sourceChain!,
-        targetChain!,
-        asset!,
-      );
+      try {
+        return await bridgeService.getBridgeAggregatorBalance(
+          sourceChain!,
+          targetChain!,
+          asset!,
+        );
+      } catch (error) {
+        console.log('Error fetching aggregator balance:', error);
+        return '0';
+      }
     },
     enabled: Boolean(bridgeService && sourceChain && targetChain && asset),
     refetchInterval: 60_000 * 10,

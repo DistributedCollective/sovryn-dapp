@@ -3,8 +3,9 @@ import React, { useCallback, useContext, useMemo } from 'react';
 import classNames from 'classnames';
 import { t } from 'i18next';
 
-import { ChainIds } from '@sovryn/ethers-provider';
 import { Button, Heading, HeadingType } from '@sovryn/ui';
+
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { translations } from '../../../../../../locales/i18n';
 import { formatValue } from '../../../../../../utils/math';
@@ -33,7 +34,7 @@ export const ReviewScreen: React.FC = () => {
       },
       {
         label: t(translation.originNetwork),
-        value: bridgeService.getNetworkConfig(ChainIds.RSK_MAINNET)?.name,
+        value: bridgeService.getNetworkConfig(RSK_CHAIN_ID)?.name,
       },
       {
         label: t(translation.destinationNetwork),

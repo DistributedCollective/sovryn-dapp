@@ -2,11 +2,6 @@ import { Signer } from 'ethers';
 
 import { ChainIds } from '@sovryn/ethers-provider';
 
-export enum Environments {
-  TESTNET = 'testnet',
-  MAINNET = 'mainnet',
-}
-
 export enum CrossBridgeAsset {
   // Native assets
   RBTC = 'RBTC',
@@ -35,7 +30,6 @@ export interface NetworkConfig {
   nativeCurrency: CrossBridgeAsset;
   rpcUrl: string;
   explorerUrl: string;
-  mode: Environments;
   multicallAddress: string;
 }
 
@@ -60,7 +54,6 @@ export interface BridgeConfig {
   bridgeContractAddress: string;
   allowTokensContractAddress: string;
   assets: AssetConfig[];
-  mode: Environments;
 }
 
 export interface BridgeLimits {

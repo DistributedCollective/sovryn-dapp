@@ -3,7 +3,6 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import { isAddress } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { ChainIds } from '@sovryn/ethers-provider';
 import {
   AmountInput,
   Button,
@@ -16,6 +15,8 @@ import {
   InputSize,
   Paragraph,
 } from '@sovryn/ui';
+
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { useAccount } from '../../../../../../hooks';
 import { translations } from '../../../../../../locales/i18n';
@@ -57,7 +58,7 @@ export const AmountScreen: React.FC = () => {
       {chainId && (
         <Paragraph className="flex text-base font-medium items-center mb-6 gap-2">
           <>
-            Sending {bridgeService.getNetworkConfig(ChainIds.RSK_MAINNET)?.name}
+            Sending {bridgeService.getNetworkConfig(RSK_CHAIN_ID)?.name}
             <Icon icon={IconNames.ARROW_RIGHT} size={12} />
             {bridgeService.getNetworkConfig(chainId)?.name}
           </>

@@ -14,19 +14,23 @@ import {
   Input,
   InputSize,
   Paragraph,
+  ParagraphSize,
 } from '@sovryn/ui';
 
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
+import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../../hooks';
 import { translations } from '../../../../../../locales/i18n';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useBridgeService } from '../../../hooks/useBridgeService';
+import { useTokenBalance } from '../../../hooks/useTokenBalance';
 
 export const AmountScreen: React.FC = () => {
   const { account } = useAccount();
   const { set, token, chainId, amount, receiver } = useContext(SendFlowContext);
   const bridgeService = useBridgeService();
+  const { data: balance } = useTokenBalance(token, RSK_CHAIN_ID);
 
   const onContinueClick = useCallback(
     () => set(prevState => ({ ...prevState, step: SendFlowStep.REVIEW })),
@@ -42,6 +46,11 @@ export const AmountScreen: React.FC = () => {
     [set],
   );
 
+  const onMaximumAmountClick = useCallback(
+    () => setAmount((balance || '0').toString()),
+    [balance, setAmount],
+  );
+
   useEffect(() => {
     if (!receiver && account) {
       setReceiver(account);
@@ -51,7 +60,10 @@ export const AmountScreen: React.FC = () => {
 
   const isValidAddress = Boolean(receiver && isAddress(receiver));
 
-  const isValidAmount = Number(amount || '0') > 0;
+  const isValidAmount =
+    !isNaN(Number(amount)) &&
+    Number(amount) > 0 &&
+    Number(amount) <= Number(balance || '0');
 
   return (
     <div>
@@ -65,7 +77,20 @@ export const AmountScreen: React.FC = () => {
         </Paragraph>
       )}
 
-      <Paragraph className="mb-1 text-sm">Send</Paragraph>
+      <div className="w-full flex flex-row justify-between items-center mb-1">
+        <Paragraph size={ParagraphSize.small}>Send</Paragraph>
+
+        {token && balance && (
+          <MaxButton
+            onClick={onMaximumAmountClick}
+            value={balance || '0'}
+            token={token}
+            dataAttribute="bridge-from-max"
+            chainId={RSK_CHAIN_ID}
+          />
+        )}
+      </div>
+
       <AmountInput
         value={amount}
         onChangeText={setAmount}
@@ -88,9 +113,16 @@ export const AmountScreen: React.FC = () => {
 
       <ErrorBadge
         level={ErrorLevel.Warning}
-        message="
-              Beware when sending to exchange address
-              Not all exchanges receiving assets directly from the bridge smart contracts. Before sending directly  to an exchange address, be sure to confirm that your exchange supports directly transactions from smart contratcts."
+        message={
+          <>
+            Beware when sending to exchange address <br />
+            <br />
+            Not all exchanges receiving assets directly from the bridge smart
+            contracts. Before sending directly to an exchange address, be sure
+            to confirm that your exchange supports directly transactions from
+            smart contratcts.
+          </>
+        }
       />
 
       <Button

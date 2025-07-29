@@ -42,7 +42,7 @@ export const networks: NetworkConfig[] = [
   // BSC Networks
   {
     chainId: ChainIds.BSC_MAINNET,
-    name: 'Binance Smart Chain',
+    name: 'BSC',
     nativeCurrency: CrossBridgeAsset.BNB,
     rpcUrl: 'https://bsc.sovryn.app/mainnet',
     explorerUrl: 'https://bscscan.com',
@@ -50,7 +50,7 @@ export const networks: NetworkConfig[] = [
   },
   {
     chainId: ChainIds.BSC_TESTNET,
-    name: 'Binance Smart Testnet',
+    name: 'BSC Testnet',
     nativeCurrency: CrossBridgeAsset.BNB,
     rpcUrl: 'https://bsc.sovryn.app/testnet',
     explorerUrl: 'https://testnet.bscscan.com',

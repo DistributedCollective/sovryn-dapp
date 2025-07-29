@@ -1,15 +1,18 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 
 import classNames from 'classnames';
+import { formatUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { Button, Heading, HeadingType } from '@sovryn/ui';
+import { Button, Heading, HeadingType, prettyTx } from '@sovryn/ui';
 
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
+import { getTokenDisplayName } from '../../../../../../constants/tokens';
 import { translations } from '../../../../../../locales/i18n';
 import { formatValue } from '../../../../../../utils/math';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
+import { useBridgeLimits } from '../../../hooks/useBridgeLimits';
 import { useBridgeService } from '../../../hooks/useBridgeService';
 
 const translation = translations.erc20Bridge.confirmationScreens;
@@ -17,6 +20,7 @@ const translation = translations.erc20Bridge.confirmationScreens;
 export const ReviewScreen: React.FC = () => {
   const { set, token, chainId, amount, receiver } = useContext(SendFlowContext);
   const bridgeService = useBridgeService();
+  const { data: limits } = useBridgeLimits(RSK_CHAIN_ID, chainId, token);
 
   const items = useMemo(
     () => [
@@ -42,14 +46,17 @@ export const ReviewScreen: React.FC = () => {
       },
       {
         label: t(translation.receiver),
-        value: receiver,
+        value: prettyTx(receiver),
       },
       {
         label: t(translation.serviceFee),
-        value: <>0.0012 ETH</>,
+        value:
+          limits && token
+            ? `${formatUnits(limits.feePerToken)} ${getTokenDisplayName(token)}`
+            : '-',
       },
     ],
-    [amount, bridgeService, chainId, receiver, token],
+    [amount, bridgeService, chainId, limits, receiver, token],
   );
 
   const onConfirm = useCallback(

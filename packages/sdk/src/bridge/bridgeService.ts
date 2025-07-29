@@ -1,4 +1,5 @@
 import { ethers, Signer } from 'ethers';
+import { formatUnits } from 'ethers/lib/utils';
 
 import { getAsset, getAssetData } from '@sovryn/contracts';
 import { ChainIds, ChainId } from '@sovryn/ethers-provider';
@@ -242,7 +243,7 @@ export class BridgeService {
     owner: string,
     spender: string,
   ): Promise<string> {
-    const assetData = await getAsset(chain, asset);
+    const assetData = await getAsset(asset, chain);
 
     if (!assetData || assetData.isNative) {
       return ethers.constants.MaxUint256.toString();
@@ -261,7 +262,7 @@ export class BridgeService {
     address: string,
   ): Promise<string> {
     const provider = this.getProvider(chain);
-    const assetData = await getAsset(chain, asset);
+    const assetData = await getAsset(asset, chain);
 
     if (!assetData) {
       throw new Error(`Asset ${asset} not found for chain ${chain}`);
@@ -271,9 +272,13 @@ export class BridgeService {
       return (await provider.getBalance(address)).toString();
     }
 
-    const token = new ethers.Contract(assetData.address, ERC20_ABI, provider);
-
-    return (await token.balanceOf(address.toLowerCase())).toString();
+    const token = new ethers.Contract(
+      assetData.address.toLowerCase(),
+      ERC20_ABI,
+      provider,
+    );
+    const balance = (await token.balanceOf(address.toLowerCase())).toString();
+    return formatUnits(balance, assetData.decimals);
   }
 
   // Get transaction status

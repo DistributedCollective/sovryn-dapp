@@ -1,5 +1,11 @@
 # @sovryn/sdex
 
+## 0.3.17
+
+### Patch Changes
+
+- eb1b4502: SOV-4798: update testnet contract address
+
 ## 0.3.16
 
 ### Patch Changes

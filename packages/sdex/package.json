@@ -1,6 +1,6 @@
 {
   "name": "@sovryn/sdex",
-  "version": "0.3.16",
+  "version": "0.3.17",
   "description": "🛠🐊🛠 An SDK for building applications on top of Sovryn dex",
   "repository": "https://github.com/DistributedCollective/sovryn-dapp.git",
   "license": "MIT",

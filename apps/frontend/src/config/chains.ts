@@ -30,7 +30,7 @@ export const BOB_CHAIN_ID = (
   IS_MAINNET ? ChainIds.BOB_MAINNET : ChainIds.BOB_TESTNET
 ) as ChainId;
 
-export type ChainWithLogo = Chain & { icon: string };
+export type ChainWithLogo = Chain & { icon: string; indexer?: string };
 
 export const APP_CHAIN_LIST: ChainWithLogo[] = [
   ...(IS_MAINNET
@@ -43,6 +43,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           rpcUrl: RSK.rpc[Environments.Mainnet],
           blockExplorerUrl: RSK.explorer[Environments.Mainnet],
           icon: rskLogo,
+          indexer: 'https://indexer.sovryn.app/v2/rootstock',
         },
         {
           id: ChainIds.BOB_MAINNET,
@@ -52,6 +53,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           rpcUrl: BOB.rpc[Environments.Mainnet],
           blockExplorerUrl: BOB.explorer[Environments.Mainnet],
           icon: bobLogo,
+          indexer: 'https://indexer.sovryn.app/v2/gobob',
         },
       ]
     : [
@@ -63,6 +65,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           rpcUrl: RSK.rpc[Environments.Testnet],
           blockExplorerUrl: RSK.explorer[Environments.Testnet],
           icon: rskLogo,
+          indexer: 'https://indexer.test.sovryn.app/v2/rootstock',
         },
         {
           id: ChainIds.BOB_TESTNET,
@@ -72,6 +75,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           rpcUrl: BOB.rpc[Environments.Testnet],
           blockExplorerUrl: BOB.explorer[Environments.Testnet],
           icon: bobLogo,
+          indexer: 'https://indexer.test.sovryn.app/v2/gobob',
         },
         {
           id: ChainIds.SEPOLIA,
@@ -94,4 +98,8 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
       ]),
 ];
 
-setup(APP_CHAIN_LIST);
+setup(
+  APP_CHAIN_LIST.map(item => ({
+    ...item,
+  })),
+);

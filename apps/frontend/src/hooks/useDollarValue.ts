@@ -34,6 +34,10 @@ export function useDollarValue(
   );
 
   const entry = useMemo(() => {
+    if (asset.toUpperCase() === COMMON_SYMBOLS.OSSOV) {
+      return COMMON_SYMBOLS.SOV;
+    }
+
     if (isRskChain(chain)) {
       if (asset.toUpperCase() === COMMON_SYMBOLS.ZUSD) {
         return COMMON_SYMBOLS.XUSD;

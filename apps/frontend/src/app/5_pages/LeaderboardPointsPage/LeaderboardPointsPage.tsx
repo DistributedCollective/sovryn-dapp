@@ -25,12 +25,12 @@ const LeaderboardPointsPage: FC = () => {
         <title>{t(translations.leaderboardPointsPage.meta.title)}</title>
       </Helmet>
 
-      <div className="w-full flex flex-col items-center text-gray-10 mt-9 mb-14 md:px-20">
-        <Heading className="text-center lg:text-2xl">
+      <div className="w-full flex flex-col items-center text-gray-10 md:px-20">
+        <Heading className="text-center mb-4 lg:text-2xl">
           {t(translations.leaderboardPointsPage.title)}
         </Heading>
 
-        <Paragraph className="font-medium text-center my-6 text-xs leading-5 max-w-xl">
+        <Paragraph className="font-medium text-center mb-4 text-xs leading-5 max-w-xl">
           {t(translations.leaderboardPointsPage.description1)}
         </Paragraph>
         <Paragraph className="font-medium text-center lg:mb-10 mb-2 text-xs leading-5 max-w-xl">

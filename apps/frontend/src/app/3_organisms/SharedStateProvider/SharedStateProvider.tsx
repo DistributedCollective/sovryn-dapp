@@ -6,7 +6,9 @@ import {
   FastBtcDialogState,
   EmailNotificationSettingsDialogState,
   RuneBridgeDialogState,
+  Erc20BridgeDialogState,
 } from '../../../store/rxjs/shared-state';
+import { ERC20BridgeDialog } from '../ERC20BridgeDialog/ERC20BridgeDialog';
 import { EmailNotificationSettingsDialog } from '../EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { FastBtcDialog } from '../FastBtcDialog/FastBtcDialog';
 import { RuneBridgeDialog } from '../RuneBridgeDialog/RuneBridgeDialog';
@@ -22,6 +24,9 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
 
   const [runeBridgeDialog, setRuneBridgeDialog] =
     useState<RuneBridgeDialogState>(sharedState.get().runeBridgeDialog);
+
+  const [erc20BridgeDialog, setErc20BridgeDialog] =
+    useState<Erc20BridgeDialogState>(sharedState.get().erc20BridgeDialog);
 
   const [emailNotificationSettingsDialog, setEmailNotificationSettingsDialog] =
     useState<EmailNotificationSettingsDialogState>(
@@ -58,6 +63,16 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
     };
   }, []);
 
+  useEffect(() => {
+    const erc20BridgeDialogSubscription = sharedState
+      .select('erc20BridgeDialog')
+      .subscribe(setErc20BridgeDialog);
+
+    return () => {
+      erc20BridgeDialogSubscription.unsubscribe();
+    };
+  }, []);
+
   const handleFastBtcDialogClose = useCallback(
     () => sharedState.actions.closeFastBtcDialog(),
     [],
@@ -70,6 +85,11 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
 
   const handleRuneBridgeDialogClose = useCallback(
     () => sharedState.actions.closeRuneBridgeDialog(),
+    [],
+  );
+
+  const handleErc20BridgeDialogClose = useCallback(
+    () => sharedState.actions.closeErc20BridgeDialog(),
     [],
   );
 
@@ -100,6 +120,12 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
         isOpen={runeBridgeDialog.isOpen}
         onClose={handleRuneBridgeDialogClose}
         step={runeBridgeDialog.step}
+      />
+
+      <ERC20BridgeDialog
+        isOpen={erc20BridgeDialog.isOpen}
+        onClose={handleErc20BridgeDialogClose}
+        step={erc20BridgeDialog.step}
       />
     </>
   );

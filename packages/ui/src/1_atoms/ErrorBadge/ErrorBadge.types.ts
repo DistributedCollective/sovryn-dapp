@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export enum ErrorLevel {
   Warning = 'Warning',
   Critical = 'Critical',
@@ -5,7 +7,7 @@ export enum ErrorLevel {
 
 export type ErrorBadgeProps = {
   level: ErrorLevel;
-  message: string;
+  message: ReactNode;
   weight?: number;
   className?: string;
   dataAttribute?: string;

@@ -1,5 +1,18 @@
 # frontend
 
+## 1.1.36
+
+### Patch Changes
+
+- aa5eaecf: Update conversion history
+- a7c02de3: SOV-5023: Add PowPeg link
+- 2fccce5a: SOV-5075: Fix osSOV USD value
+- 3168a484: SOV-4922: Margin inconsistency in the header across pages
+- 5d750838: SOV-5052: PowPeg Portfolio adjustments
+- b9024a6c: SOV-4874: Fix naming on BOB Gateway page
+- Updated dependencies [eb1b4502]
+  - @sovryn/sdex@0.3.17
+
 ## 1.1.35
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 import { Signer } from 'ethers';
 
-import { ChainIds } from '@sovryn/ethers-provider';
+import { ChainId, ChainIds } from '@sovryn/ethers-provider';
 
 export enum CrossBridgeAsset {
   // Native assets
@@ -82,9 +82,9 @@ export interface BridgeTransaction {
   error?: Error;
 }
 
-export interface BridgeDepositParams {
-  sourceChain: ChainIds;
-  targetChain: ChainIds;
+export interface BridgeParams {
+  sourceChain: ChainId;
+  targetChain: ChainId;
   asset: string;
   amount: string;
   receiver?: string;

@@ -1,5 +1,4 @@
 import { ethers, Signer } from 'ethers';
-import { formatUnits } from 'ethers/lib/utils';
 
 import { getAsset, getAssetData } from '@sovryn/contracts';
 import { ChainIds, ChainId } from '@sovryn/ethers-provider';
@@ -7,6 +6,7 @@ import { ERC20_ABI } from '@sovryn/sdex';
 
 import ALLOW_TOKENS_ABI from './abis/allowTokens.json';
 import BRIDGE_ABI from './abis/bridge.json';
+import MASSET_ABI from './abis/massetAbi.json';
 import {
   getBridge,
   getSupportedBridgesBySource,
@@ -14,11 +14,11 @@ import {
 } from './config/bridges';
 import { getBridgeNetwork } from './config/networks';
 import {
-  BridgeDepositParams,
   BridgeLimits,
   AssetConfig,
   NetworkConfig,
   BridgeConfig,
+  BridgeParams,
 } from './types';
 
 export class BridgeService {
@@ -199,9 +199,7 @@ export class BridgeService {
   }
 
   // Deposit tokens to bridge
-  async deposit(
-    params: BridgeDepositParams,
-  ): Promise<ethers.ContractTransaction> {
+  async deposit(params: BridgeParams): Promise<ethers.ContractTransaction> {
     const { sourceChain, targetChain, asset, amount, receiver, signer } =
       params;
 
@@ -215,24 +213,107 @@ export class BridgeService {
 
     const sender = await signer.getAddress();
     const bridgeContract = new ethers.Contract(
-      bridge.bridgeContractAddress,
+      bridge.bridgeContractAddress.toLowerCase(),
       BRIDGE_ABI,
       signer,
     );
 
     // For native assets
     if (assetConfig.isNative) {
-      return bridgeContract.receiveEthAt(receiver || sender, '0x', {
+      return bridgeContract.receiveEthAt(
+        (receiver || sender).toLowerCase(),
+        '0x',
+        {
+          value: amount,
+        },
+      );
+    }
+
+    // For token transfers
+    return bridgeContract.receiveTokensAt(
+      (assetConfig.bridgeTokenAddress || assetData.address).toLowerCase(),
+      amount,
+      (receiver || sender).toLowerCase(),
+      '0x',
+    );
+  }
+
+  // Withdraw tokens from bridge (RSK to other chains)
+  async withdraw(params: BridgeParams): Promise<ethers.ContractTransaction> {
+    const { sourceChain, targetChain, asset, amount, receiver, signer } =
+      params;
+
+    const bridge = this.getBridgeConfig(sourceChain, targetChain);
+    const assetConfig = this.getAssetConfig(sourceChain, targetChain, asset);
+    const assetData = await getAsset(asset, sourceChain);
+
+    if (!bridge || !assetConfig) {
+      throw new Error('Bridge or asset configuration not found');
+    }
+
+    const sender = await signer.getAddress();
+    const receiverAddress = (receiver || sender).toLowerCase();
+
+    // For withdrawals from RSK chain to another chain using aggregator
+    if (
+      this.isRSK(sourceChain) &&
+      !this.isRSK(targetChain) &&
+      assetConfig.usesAggregator &&
+      assetConfig.aggregatorContractAddress
+    ) {
+      const aggregatorContract = new ethers.Contract(
+        assetConfig.aggregatorContractAddress.toLowerCase(),
+        MASSET_ABI,
+        signer,
+      );
+
+      const bridgeTokenAddress =
+        assetConfig.bridgeTokenAddress || assetData.address;
+
+      return aggregatorContract.redeemToBridge(
+        bridgeTokenAddress.toLowerCase(),
+        amount,
+        receiverAddress,
+      );
+    }
+
+    // For transfers between non-RSK chains or from non-RSK to RSK
+    const bridgeContract = new ethers.Contract(
+      bridge.bridgeContractAddress.toLowerCase(),
+      BRIDGE_ABI,
+      signer,
+    );
+
+    let actualReceiver = receiverAddress;
+    let extraData = '0x';
+
+    // If target is RSK and uses aggregator, send to aggregator with receiver in extraData
+    if (
+      this.isRSK(targetChain) &&
+      assetConfig.usesAggregator &&
+      assetConfig.aggregatorContractAddress
+    ) {
+      actualReceiver = assetConfig.aggregatorContractAddress.toLowerCase();
+      extraData = ethers.utils.defaultAbiCoder.encode(
+        ['address'],
+        [receiverAddress],
+      );
+    }
+
+    // For native assets
+    if (assetConfig.isNative) {
+      return bridgeContract.receiveEthAt(actualReceiver, extraData, {
         value: amount,
       });
     }
 
     // For token transfers
+    const tokenAddress = assetConfig.bridgeTokenAddress || assetData.address;
     return bridgeContract.receiveTokensAt(
-      assetConfig.bridgeTokenAddress || assetData.address,
+      tokenAddress.toLowerCase(),
       amount,
-      receiver || sender,
-      '0x',
+      actualReceiver,
+      extraData,
     );
   }
 
@@ -277,8 +358,7 @@ export class BridgeService {
       ERC20_ABI,
       provider,
     );
-    const balance = (await token.balanceOf(address.toLowerCase())).toString();
-    return formatUnits(balance, assetData.decimals);
+    return (await token.balanceOf(address.toLowerCase())).toString();
   }
 
   // Get transaction status
@@ -311,9 +391,7 @@ export class BridgeService {
   }
 
   // Estimate gas for depositx
-  async estimateDepositGas(
-    params: BridgeDepositParams,
-  ): Promise<ethers.BigNumber> {
+  async estimateDepositGas(params: BridgeParams): Promise<ethers.BigNumber> {
     const { sourceChain, targetChain, asset, amount, receiver, signer } =
       params;
 
@@ -351,5 +429,12 @@ export class BridgeService {
     const provider = this.getProvider(chain);
     const gasPrice = await provider.getGasPrice();
     return gasPrice.toString();
+  }
+
+  // is chain RSK
+  isRSK(chain: ChainId) {
+    return [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET].includes(
+      chain as ChainIds,
+    );
   }
 }

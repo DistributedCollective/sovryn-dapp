@@ -13,7 +13,7 @@ import { getTokenDisplayName } from '../../../../../../constants/tokens';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { translations } from '../../../../../../locales/i18n';
 import { formatValue } from '../../../../../../utils/math';
-import { SendFlowContext } from '../../../contexts/sendflow';
+import { ReceiveFlowContext } from '../../../contexts/receiveflow';
 import { useBridgeLimits } from '../../../hooks/useBridgeLimits';
 import { useBridgeSend } from '../../../hooks/useBridgeSend';
 import { useBridgeService } from '../../../hooks/useBridgeService';
@@ -21,7 +21,7 @@ import { useBridgeService } from '../../../hooks/useBridgeService';
 const translation = translations.erc20Bridge.confirmationScreens;
 
 export const ReviewScreen: React.FC = () => {
-  const { token, chainId, amount, receiver } = useContext(SendFlowContext);
+  const { token, chainId, amount, receiver } = useContext(ReceiveFlowContext);
   const bridgeService = useBridgeService();
   const { data: limits } = useBridgeLimits(RSK_CHAIN_ID, chainId, token);
   const assetDetails = useTokenDetailsByAsset(token, RSK_CHAIN_ID);

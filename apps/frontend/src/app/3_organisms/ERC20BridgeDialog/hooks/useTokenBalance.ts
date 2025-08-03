@@ -14,7 +14,8 @@ export function useTokenBalance(
 
   return useQuery({
     queryKey: ['tokenBalance', chain, asset, account],
-    queryFn: () => bridgeService.getBalance(chain!, asset!, account!),
+    queryFn: async () =>
+      await bridgeService.getBalance(chain!, asset!, account!),
     enabled: Boolean(bridgeService && account && chain && asset),
   });
 }

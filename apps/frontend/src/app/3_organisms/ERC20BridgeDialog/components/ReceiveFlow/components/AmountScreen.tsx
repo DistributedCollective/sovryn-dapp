@@ -23,13 +23,17 @@ import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../../hooks';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { translations } from '../../../../../../locales/i18n';
-import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
+import {
+  ReceiveFlowContext,
+  ReceiveFlowStep,
+} from '../../../contexts/receiveflow';
 import { useBridgeService } from '../../../hooks/useBridgeService';
 import { useTokenBalance } from '../../../hooks/useTokenBalance';
 
 export const AmountScreen: React.FC = () => {
   const { account } = useAccount();
-  const { set, token, chainId, amount, receiver } = useContext(SendFlowContext);
+  const { set, token, chainId, amount, receiver } =
+    useContext(ReceiveFlowContext);
   const bridgeService = useBridgeService();
   const assetDetails = useTokenDetailsByAsset(token, RSK_CHAIN_ID);
   const { data: tokenBalance } = useTokenBalance(token, RSK_CHAIN_ID);
@@ -37,7 +41,7 @@ export const AmountScreen: React.FC = () => {
   const balance = formatUnits(tokenBalance || '0', assetDetails?.decimals);
 
   const onContinueClick = useCallback(
-    () => set(prevState => ({ ...prevState, step: SendFlowStep.REVIEW })),
+    () => set(prevState => ({ ...prevState, step: ReceiveFlowStep.REVIEW })),
     [set],
   );
 

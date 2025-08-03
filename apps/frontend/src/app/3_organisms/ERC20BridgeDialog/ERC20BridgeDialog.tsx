@@ -25,6 +25,7 @@ import { useChainDetails } from '../RuneBridgeDialog/hooks/useChainDetails';
 import { ACTIVE_CLASSNAME, queryClient } from './ERC20BridgeDialog.constants';
 import { ReceiveFlow } from './components/ReceiveFlow/ReceiveFlow';
 import { SendFlow } from './components/SendFlow/SendFlow';
+import { ReceiveFlowContextProvider } from './contextproviders/ReceiveFlowContext';
 import { SendFlowContextProvider } from './contextproviders/SendFlowContext';
 
 const translation = translations.erc20Bridge.mainScreen;
@@ -73,10 +74,10 @@ export const ERC20BridgeDialog: React.FC<ERC20BridgeDialogProps> = ({
         label: t(translation.tabs.receiveLabel),
         infoText: t(translation.tabs.receiveInfoText),
         content: (
-          <>
+          <ReceiveFlowContextProvider>
             <ReceiveFlow onClose={onClose} />
             <MobileCloseButton onClick={onClose} />
-          </>
+          </ReceiveFlowContextProvider>
         ),
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'erc20-bridge-receive',

@@ -15,18 +15,22 @@ import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { AssetRenderer } from '../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../../locales/i18n';
-import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
+import {
+  ReceiveFlowContext,
+  ReceiveFlowStep,
+} from '../../../contexts/receiveflow';
 import { useBridgeAggregatorBalance } from '../../../hooks/useBridgeAggregatorBalance';
-import { useAssetsBySourceChain } from '../../../hooks/useBridgeAssets';
+import { useAssetsByTargetChain } from '../../../hooks/useBridgeAssets';
 import { Limits } from '../../Limits';
 import { NetworkRenderer } from '../../NetworkRenderer';
 
 export const MainScreen: React.FC = () => {
-  const { set, token, chainId } = useContext(SendFlowContext);
-  const assets = useAssetsBySourceChain(RSK_CHAIN_ID);
+  const { set, token, chainId } = useContext(ReceiveFlowContext);
+  const assets = useAssetsByTargetChain(RSK_CHAIN_ID);
+
   const { data: aggregatorBalance } = useBridgeAggregatorBalance(
-    RSK_CHAIN_ID,
     chainId,
+    RSK_CHAIN_ID,
     token,
   );
 
@@ -38,10 +42,10 @@ export const MainScreen: React.FC = () => {
   const filteredAssets = assets.filter(a => a.symbol === token);
   const chains = filteredAssets
     .filter(a => a.symbol === token)
-    .map(a => a.sideChainId);
+    .map(a => a.mainChainId);
 
   const onContinueClick = useCallback(
-    () => set(prevState => ({ ...prevState, step: SendFlowStep.AMOUNT })),
+    () => set(prevState => ({ ...prevState, step: ReceiveFlowStep.AMOUNT })),
     [set],
   );
   const setAsset = useCallback(
@@ -50,18 +54,18 @@ export const MainScreen: React.FC = () => {
       set(prevState => ({
         ...prevState,
         token: asset?.symbol,
-        chainId: asset?.sideChainId,
+        chainId: asset?.mainChainId,
       }));
     },
     [assets, set],
   );
   const setChain = useCallback(
     (network: string) => {
-      const asset = filteredAssets.find(a => a.sideChainId === network);
+      const asset = filteredAssets.find(a => a.mainChainId === network);
       set(prevState => ({
         ...prevState,
         token: asset?.symbol,
-        chainId: asset?.sideChainId,
+        chainId: asset?.mainChainId,
       }));
     },
     [filteredAssets, set],
@@ -97,7 +101,7 @@ export const MainScreen: React.FC = () => {
       </div>
 
       <div className="mb-6">
-        <Paragraph className="mb-2 text-sm font-medium">Send to</Paragraph>
+        <Paragraph className="mb-2 text-sm font-medium">Receive from</Paragraph>
 
         <Select
           className="w-full"
@@ -120,14 +124,14 @@ export const MainScreen: React.FC = () => {
         unit={token}
       />
 
-      <Limits sourceChain={RSK_CHAIN_ID} targetChain={chainId} asset={token} />
+      <Limits sourceChain={chainId} targetChain={RSK_CHAIN_ID} asset={token} />
 
       <Button
         onClick={onContinueClick}
         text={t(translations.common.buttons.continue)}
         className="w-full mt-12"
         style={ButtonStyle.secondary}
-        dataAttribute="funding-send-instructions-confirm"
+        dataAttribute="funding-receive-instructions-confirm"
         disabled={!token || !chainId}
       />
     </div>

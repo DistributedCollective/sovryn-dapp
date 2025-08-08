@@ -15,6 +15,7 @@ import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../../hooks/useBlockNumber';
 import { useMaintenance } from '../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../locales/i18n';
+import { useCheckPoolBlocked } from '../../../../hooks/useCheckPoolBlocked';
 import { useCheckPoolMaintenance } from '../../../../hooks/useCheckPoolMaintenance';
 import { useGetUserInfo } from '../../../../hooks/useGetUserInfo';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
@@ -30,6 +31,7 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
 
   const { checkMaintenance, States } = useMaintenance();
   const poolLocked = useCheckPoolMaintenance(pool);
+  const poolBlocked = useCheckPoolBlocked(pool);
 
   const {
     balanceA: poolBalanceA,
@@ -37,14 +39,20 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
     refetch,
   } = useGetUserInfo(pool);
 
-  const isMynt = useMemo(() => pool.assetA === 'MYNT', [pool.assetA]);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInitialDeposit, setIsInitialDeposit] = useState(true);
 
   const actionLocked = useMemo(
-    () => checkMaintenance(States.D2_MARKET_MAKING_FULL) || poolLocked,
-    [States.D2_MARKET_MAKING_FULL, checkMaintenance, poolLocked],
+    () =>
+      checkMaintenance(States.D2_MARKET_MAKING_FULL) ||
+      poolLocked ||
+      poolBlocked.isBlocked,
+    [
+      States.D2_MARKET_MAKING_FULL,
+      checkMaintenance,
+      poolLocked,
+      poolBlocked.isBlocked,
+    ],
   );
 
   const handleDepositClick = useCallback(() => {
@@ -83,7 +91,7 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
             {!account ||
             (poolBalanceA.lte(Decimal.ZERO) &&
               poolBalanceB.lte(Decimal.ZERO)) ? (
-              isMynt ? (
+              poolBlocked.isBlocked ? (
                 <Tooltip
                   children={
                     <div>
@@ -97,10 +105,13 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
                       />
                     </div>
                   }
-                  content={t(
-                    translations.marketMakingPage.marketMakingOperations
-                      .depositNotAllowed,
-                  )}
+                  content={
+                    poolBlocked.message ??
+                    t(
+                      translations.marketMakingPage.marketMakingOperations
+                        .depositNotAllowed,
+                    )
+                  }
                   dataAttribute="pools-table-deposit-button-tooltip"
                   className="w-full lg:w-auto prevent-row-click"
                 />
@@ -128,7 +139,6 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
                 onClick={handleAdjustClick}
               />
             )}
-            <p>{actionLocked && 'action locked'}</p>
           </>
         }
       />

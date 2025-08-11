@@ -74,6 +74,7 @@ export const COLUMNS_CONFIG = [
 export const BLOCKED_POOLS: BlockedPoolConfig[] = [
   {
     poolAssetA: 'MYNT',
+    poolAssetB: 'BTC',
     chainId: ChainIds.RSK_MAINNET,
     message: t(
       translations.marketMakingPage.marketMakingOperations.depositNotAllowed,
@@ -81,11 +82,13 @@ export const BLOCKED_POOLS: BlockedPoolConfig[] = [
   },
   {
     poolAssetA: 'SOV',
+    poolAssetB: 'BTC',
     chainId: ChainIds.RSK_TESTNET,
     message: 'SOV pool deposits are under maintenance for testing purposes',
   },
   {
     poolAssetA: 'DAI',
+    poolAssetB: 'SOV',
     chainId: ChainIds.BOB_TESTNET,
     message: 'DAI pool deposits are under maintenance for testing purposes',
   },

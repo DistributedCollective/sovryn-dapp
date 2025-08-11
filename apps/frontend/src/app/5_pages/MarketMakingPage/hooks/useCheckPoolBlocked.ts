@@ -13,10 +13,11 @@ export const useCheckPoolBlocked = (pool: AmmLiquidityPool): PoolBlockInfo => {
     () =>
       BLOCKED_POOLS.find(
         blockedPool =>
-          blockedPool.poolAssetA === pool.assetA &&
+          blockedPool.poolAssetA.toLowerCase() === pool.assetA.toLowerCase() &&
+          blockedPool.poolAssetB.toLowerCase() === pool.assetB.toLowerCase() &&
           blockedPool.chainId === pool.chainId,
       ),
-    [pool.assetA, pool.chainId],
+    [pool.assetA, pool.assetB, pool.chainId],
   );
 
   return {

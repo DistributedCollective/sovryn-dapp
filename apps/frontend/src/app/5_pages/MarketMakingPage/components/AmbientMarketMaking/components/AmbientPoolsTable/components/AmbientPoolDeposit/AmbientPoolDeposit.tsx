@@ -10,6 +10,7 @@ import { useMaintenance } from '../../../../../../../../../hooks/useMaintenance'
 import { translations } from '../../../../../../../../../locales/i18n';
 import { BobDepositModal } from '../../../../../BobDepositModal/BobDepositModal';
 import { DepositContextProvider } from '../../../../../BobDepositModal/contexts/BobDepositModalContext';
+import { useCheckAmbientPoolBlocked } from '../../../../hooks/useCheckAmbientPoolBlocked';
 
 type AmbientPoolDepositProps = {
   pool: Pool;
@@ -24,6 +25,8 @@ export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {
   const { checkMaintenance, States } = useMaintenance();
   const depositLocked = checkMaintenance(States.BOB_DEPOSIT_LIQUIDITY);
 
+  const poolBlocked = useCheckAmbientPoolBlocked(pool);
+
   return (
     <>
       <Button
@@ -35,7 +38,7 @@ export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {
           e.stopPropagation();
           onClick();
         }}
-        disabled={!account || depositLocked}
+        disabled={!account || depositLocked || poolBlocked.isBlocked}
       />
 
       <DepositContextProvider>

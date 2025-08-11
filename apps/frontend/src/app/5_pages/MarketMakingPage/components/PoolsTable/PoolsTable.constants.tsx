@@ -84,4 +84,9 @@ export const BLOCKED_POOLS: BlockedPoolConfig[] = [
     chainId: ChainIds.RSK_TESTNET,
     message: 'SOV pool deposits are under maintenance for testing purposes',
   },
+  {
+    poolAssetA: 'DAI',
+    chainId: ChainIds.BOB_TESTNET,
+    message: 'DAI pool deposits are under maintenance for testing purposes',
+  },
 ];

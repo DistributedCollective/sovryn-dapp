@@ -191,7 +191,7 @@ export function useBridgeSend({
     account,
   ]);
 
-  const handleDeposit = useCallback(async (): Promise<void> => {
+  const handleSend = useCallback(async (): Promise<void> => {
     if (!bridgeService || !signer) {
       throw new Error('Missing requirements for deposit');
     }
@@ -202,7 +202,7 @@ export function useBridgeSend({
     }));
 
     try {
-      const tx = await bridgeService.deposit({
+      const tx = await bridgeService.withdraw({
         sourceChain,
         targetChain,
         asset,
@@ -267,15 +267,15 @@ export function useBridgeSend({
 
       if (requiresApproval) {
         await handleApproval();
-        await handleDeposit();
+        await handleSend();
       } else {
         // Direct deposit for native assets or when allowance is sufficient
-        await handleDeposit();
+        await handleSend();
       }
     } catch (error) {
       console.error('Bridge transfer failed:', error);
     }
-  }, [canDeposit, requiresApproval, handleApproval, handleDeposit]);
+  }, [canDeposit, requiresApproval, handleApproval, handleSend]);
 
   // Reset transaction when parameters change
   useEffect(() => {

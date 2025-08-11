@@ -6,6 +6,8 @@ import {
   rskToBscMainnetAssets,
   bscToRskTestnetAssets,
   rskToBscTestnetAssets,
+  rskToEthMainnetAssets,
+  ethToRskMainnetAssets,
 } from './assets';
 
 export const bridges: BridgeConfig[] = [
@@ -23,6 +25,20 @@ export const bridges: BridgeConfig[] = [
     bridgeContractAddress: '0xdfc7127593c8af1a17146893f10e08528f4c2aa7',
     allowTokensContractAddress: '0x05b68e70168e876b2025f837bc8e0b2312d5327d',
     assets: bscToRskMainnetAssets,
+  },
+  {
+    mainChainId: ChainIds.RSK_MAINNET,
+    sideChainId: ChainIds.MAINNET,
+    bridgeContractAddress: '0x1ccad820b6d031b41c54f1f3da11c0d48b399581',
+    allowTokensContractAddress: '0x200FD7A1Ccea4651f15008Cc99bf82d7461EFD3f',
+    assets: rskToEthMainnetAssets,
+  },
+  {
+    mainChainId: ChainIds.MAINNET,
+    sideChainId: ChainIds.RSK_MAINNET,
+    bridgeContractAddress: '0x33c0d33a0d4312562ad622f91d12b0ac47366ee1',
+    allowTokensContractAddress: '0x8DF20c2c85Bee0c3DA250dA96D892598C70aA1bE',
+    assets: ethToRskMainnetAssets,
   },
 
   // Testnet Bridges

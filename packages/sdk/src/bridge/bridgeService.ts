@@ -261,20 +261,23 @@ export class BridgeService {
       assetConfig.usesAggregator &&
       assetConfig.aggregatorContractAddress
     ) {
+      const provider = this.getProvider(sourceChain);
       const aggregatorContract = new ethers.Contract(
         assetConfig.aggregatorContractAddress.toLowerCase(),
         MASSET_ABI,
-        signer,
+        provider,
       );
 
       const bridgeTokenAddress =
         assetConfig.bridgeTokenAddress || assetData.address;
 
-      return aggregatorContract.redeemToBridge(
-        bridgeTokenAddress.toLowerCase(),
-        amount,
-        receiverAddress,
-      );
+      return aggregatorContract
+        .connect(signer)
+        .redeemToBridge(
+          bridgeTokenAddress.toLowerCase(),
+          amount,
+          receiverAddress,
+        );
     }
 
     // For transfers between non-RSK chains or from non-RSK to RSK
@@ -315,6 +318,17 @@ export class BridgeService {
       actualReceiver,
       extraData,
     );
+  }
+
+  // Bridge tokens
+  async bridge(params: BridgeParams): Promise<ethers.ContractTransaction> {
+    const { sourceChain, targetChain } = params;
+    if (this.isRSK(sourceChain) && !this.isRSK(targetChain)) {
+      return this.withdraw(params);
+    } else if (!this.isRSK(sourceChain) && this.isRSK(targetChain)) {
+      return this.deposit(params);
+    }
+    throw new Error('Bridging between two non-RSK chains is not supported');
   }
 
   // Get allowance

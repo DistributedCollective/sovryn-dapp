@@ -39,12 +39,11 @@ export interface AssetConfig {
   symbol: string;
   minDecimals: number;
   isNative: boolean;
-  targetAsset: CrossBridgeAsset;
   isBase: boolean;
   usesAggregator: boolean;
   aggregatorContractAddress?: string;
   bridgeTokenAddress?: string;
-  allowedTargets: CrossBridgeAsset[];
+  allowedTargets?: CrossBridgeAsset[];
   targetContracts?: Map<CrossBridgeAsset, string>;
 }
 

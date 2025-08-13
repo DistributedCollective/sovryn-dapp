@@ -2,8 +2,14 @@ import React, { FC, useCallback, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { Pool } from '@sovryn/sdk';
-import { ButtonSize, ButtonStyle, Button } from '@sovryn/ui';
+import { Pool as AmbientPool } from '@sovryn/sdk';
+import {
+  ButtonSize,
+  ButtonStyle,
+  Button,
+  Tooltip,
+  TooltipTrigger,
+} from '@sovryn/ui';
 
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../../../../../hooks/useMaintenance';
@@ -13,7 +19,7 @@ import { DepositContextProvider } from '../../../../../BobDepositModal/contexts/
 import { useCheckAmbientPoolBlocked } from '../../../../hooks/useCheckAmbientPoolBlocked';
 
 type AmbientPoolDepositProps = {
-  pool: Pool;
+  pool: AmbientPool;
 };
 
 export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {
@@ -24,22 +30,35 @@ export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {
   const handleClose = useCallback(() => setIsOpen(false), []);
   const { checkMaintenance, States } = useMaintenance();
   const depositLocked = checkMaintenance(States.BOB_DEPOSIT_LIQUIDITY);
-
   const poolBlocked = useCheckAmbientPoolBlocked(pool);
+
+  console.log(JSON.stringify(pool, null, 2));
+
+  const isLocked = depositLocked || poolBlocked.isBlocked;
 
   return (
     <>
-      <Button
-        className="md:w-auto w-full"
-        style={ButtonStyle.primary}
-        size={ButtonSize.small}
-        text={t(translations.common.deposit)}
-        onClick={e => {
-          e.stopPropagation();
-          onClick();
-        }}
-        disabled={!account || depositLocked || poolBlocked.isBlocked}
-      />
+      <Tooltip
+        trigger={TooltipTrigger.click}
+        content={
+          poolBlocked.isBlocked && poolBlocked.message
+            ? poolBlocked.message
+            : t(translations.maintenanceMode.featureDisabled)
+        }
+        disabled={!isLocked}
+      >
+        <Button
+          className="md:w-auto w-full"
+          style={ButtonStyle.primary}
+          size={ButtonSize.small}
+          text={t(translations.common.deposit)}
+          onClick={e => {
+            e.stopPropagation();
+            onClick();
+          }}
+          disabled={!account || isLocked}
+        />
+      </Tooltip>
 
       <DepositContextProvider>
         <BobDepositModal isOpen={isOpen} onClose={handleClose} pool={pool} />

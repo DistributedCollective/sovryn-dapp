@@ -43,25 +43,17 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
   const [isInitialDeposit, setIsInitialDeposit] = useState(true);
 
   const actionLocked = useMemo(
-    () =>
-      checkMaintenance(States.D2_MARKET_MAKING_FULL) ||
-      poolLocked ||
-      poolBlocked.isBlocked,
-    [
-      States.D2_MARKET_MAKING_FULL,
-      checkMaintenance,
-      poolLocked,
-      poolBlocked.isBlocked,
-    ],
+    () => checkMaintenance(States.D2_MARKET_MAKING_FULL) || poolLocked,
+    [States.D2_MARKET_MAKING_FULL, checkMaintenance, poolLocked],
   );
 
   const handleDepositClick = useCallback(() => {
-    if (actionLocked) {
+    if (actionLocked || poolBlocked.isBlocked) {
       return;
     }
     setIsInitialDeposit(true);
     setIsModalOpen(true);
-  }, [actionLocked]);
+  }, [actionLocked, poolBlocked.isBlocked]);
 
   const handleAdjustClick = useCallback(() => {
     if (actionLocked) {

@@ -1,5 +1,7 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react';
 
+import classNames from 'classnames';
+
 import { Accordion, AccordionStyle } from '../../../../../1_atoms';
 import { noop } from '../../../../../utils';
 import { SimpleTableRow } from '../../../../SimpleTable';
@@ -68,8 +70,8 @@ export const TableMobileRow = <RowType extends RowObject>({
                     ? column.cellRenderer(row, column.id)
                     : row[column.id]
                 }
-                valueClassName={column.valueClassName}
-                className={column.className}
+                valueClassName={classNames(column.valueClassName, styles.value)}
+                className={classNames(column.className, styles.tableRow)}
               />
             ))}
           {expandedContent && <div>{expandedContent(row)}</div>}

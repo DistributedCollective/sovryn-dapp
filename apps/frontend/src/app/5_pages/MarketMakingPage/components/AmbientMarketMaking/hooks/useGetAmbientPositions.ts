@@ -5,11 +5,11 @@ import { Pool } from '@sovryn/sdk';
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
-import { getSovrynIndexerUri } from '../../../../../../utils/indexer';
 import { PoolPositionType } from '../../../MarketMakingPage.types';
 import { AmbientPosition } from '../AmbientMarketMaking.types';
 import { useGetLpTokenBalance } from './useGetLpTokenBalance';
 import { useQuery } from '@tanstack/react-query';
+import { loadIndexer } from '../../../../../../lib/indexer';
 
 export const useGetAmbientPositions = (pool: Pool) => {
   const { croc } = useCrocContext();
@@ -26,9 +26,9 @@ export const useGetAmbientPositions = (pool: Pool) => {
       }
 
       const { data } = await axios.get<any>(
-        `${getSovrynIndexerUri(
-          chainId,
-        )}/sdex/user_pool_positions?user=${account}&base=${
+        `${
+          loadIndexer(chainId).url
+        }/sdex/user_pool_positions?user=${account}&base=${
           pool.base.address
         }&quote=${pool.quote.address}&poolIdx=${
           pool.extra.poolIdx

@@ -3,9 +3,9 @@ import { useCallback } from 'react';
 import { Pool } from '@sovryn/sdk';
 
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
-import { getIndexerUri } from '../../../../../../utils/indexer';
 import { useGetPool } from '../../../hooks/useGetPool';
 import { useQuery } from '@tanstack/react-query';
+import { loadIndexer } from '../../../../../../lib/indexer';
 
 export const useGetPoolInfo = (pool: Pool) => {
   const chainId = useCurrentChain();
@@ -16,7 +16,7 @@ export const useGetPoolInfo = (pool: Pool) => {
       return '0';
     }
 
-    const poolStatsFreshEndpoint = getIndexerUri(chainId) + '/pool_stats?';
+    const poolStatsFreshEndpoint = loadIndexer(chainId).url + '/pool_stats?';
 
     return fetch(
       poolStatsFreshEndpoint +

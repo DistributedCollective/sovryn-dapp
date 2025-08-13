@@ -13,7 +13,7 @@ export const eth: Array<AssetDetails> = [
   },
   {
     symbol: 'ESOV',
-    address: '0x1f4a4737ECcB77B4b63B34edFb32515940d69A34',
+    address: '0xbdab72602e9ad40fc6a6852caf43258113b8f7a5',
     name: 'Sovryn',
     decimals: 18,
     getIcon: async () => (await import('./icons/rsk/sov')).default,
@@ -21,7 +21,7 @@ export const eth: Array<AssetDetails> = [
   },
   {
     symbol: 'DLLR',
-    address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    address: '0xbdbb63f938c8961af31ead3deba5c96e6a323dd1',
     name: 'DLLR',
     decimals: 18,
     getIcon: async () => (await import('./icons/rsk/dllr')).default,

@@ -18,10 +18,6 @@ import {
 const IS_MAINNET = process.env.REACT_APP_NETWORK === Environments.Mainnet;
 const IS_STAGING = process.env.REACT_APP_STAGING === 'true';
 
-console.log('IS_MAINNET', IS_MAINNET);
-console.log('IS_STAGING', IS_STAGING);
-console.log('p', process.env);
-
 export enum Chains {
   RSK = 'rsk',
   BSC = 'bsc',

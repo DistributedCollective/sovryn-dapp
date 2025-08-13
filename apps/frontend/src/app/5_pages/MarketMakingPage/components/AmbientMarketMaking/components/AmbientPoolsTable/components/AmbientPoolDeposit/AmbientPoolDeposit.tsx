@@ -39,7 +39,9 @@ export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {
       />
 
       <DepositContextProvider>
-        <BobDepositModal isOpen={isOpen} onClose={handleClose} pool={pool} />
+        {isOpen && (
+          <BobDepositModal isOpen={isOpen} onClose={handleClose} pool={pool} />
+        )}
       </DepositContextProvider>
     </>
   );

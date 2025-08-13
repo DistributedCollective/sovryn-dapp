@@ -1,5 +1,4 @@
 import { Network, SatsWagmiConfig } from '@gobob/sats-wagmi';
-import { QueryClientProvider } from '@tanstack/react-query';
 
 import React, { FC } from 'react';
 
@@ -9,9 +8,9 @@ import { Helmet } from 'react-helmet-async';
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { translations } from '../../../locales/i18n';
-import { queryClient } from './BobGateway.constants';
 import { BobGatewayForm } from './components/BobGatewayForm/BobGatewayForm';
 import { BobGatewayOrders } from './components/BobGatewayOrders/BobGatewayOrders';
+import { queryClient } from '../../../lib/query-client';
 
 const BobGateway: FC = () => (
   <>
@@ -31,14 +30,12 @@ const BobGateway: FC = () => (
         {t(translations.bobGatewayPage.description)}
       </Paragraph>
 
-      <QueryClientProvider client={queryClient}>
-        <SatsWagmiConfig network={Network.mainnet} queryClient={queryClient}>
-          <div className="px-0 md:mx-9 mx-0 md:mb-2 mb-7">
-            <BobGatewayForm />
-            <BobGatewayOrders />
-          </div>
-        </SatsWagmiConfig>
-      </QueryClientProvider>
+      <SatsWagmiConfig network={Network.mainnet} queryClient={queryClient}>
+        <div className="px-0 md:mx-9 mx-0 md:mb-2 mb-7">
+          <BobGatewayForm />
+          <BobGatewayOrders />
+        </div>
+      </SatsWagmiConfig>
     </div>
   </>
 );

@@ -69,3 +69,9 @@ export interface AmbientPoolStats {
   lastPriceIndic: number;
   feeRate: number;
 }
+
+export type BlockedAmbientPoolConfig = {
+  poolAssetA: string;
+  poolAssetB: string;
+  message: string;
+};

@@ -32,8 +32,6 @@ export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {
   const depositLocked = checkMaintenance(States.BOB_DEPOSIT_LIQUIDITY);
   const poolBlocked = useCheckAmbientPoolBlocked(pool);
 
-  console.log(JSON.stringify(pool, null, 2));
-
   const isLocked = depositLocked || poolBlocked.isBlocked;
 
   return (

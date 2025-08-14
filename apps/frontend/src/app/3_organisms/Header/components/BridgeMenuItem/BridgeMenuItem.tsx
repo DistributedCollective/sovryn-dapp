@@ -74,6 +74,10 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
     sharedState.actions.openRuneBridgeDialog();
   }, []);
 
+  const handleErc20Click = useCallback(() => {
+    sharedState.actions.openErc20BridgeDialog();
+  }, []);
+
   const handleStablecoinsClick = useCallback(() => {
     window.open(BABELFISH_APP_LINK, '_blank');
   }, []);
@@ -147,6 +151,17 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
                 hidden: !isRskChain(chainId),
               })}
               onClick={handleBtcClicked}
+            />
+            <MenuItem
+              key={t('header.nav.bridges.subMenu.erc20Bridge')}
+              text={t('header.nav.bridges.subMenu.erc20Bridge')}
+              label={
+                !isMobile &&
+                t('header.nav.bridges.subMenu.erc20BridgeDescription')
+              }
+              dataAttribute={`dapp-menu-erc20Bridge`}
+              className="no-underline"
+              onClick={handleErc20Click}
             />
             <MenuItem
               key={t('header.nav.bridges.subMenu.runeBridge')}

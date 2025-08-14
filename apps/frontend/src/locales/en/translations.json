@@ -431,7 +431,9 @@
             "convertTo": "To",
             "invalidAmountError": "Exceeds maximum amount",
             "quoteError": "No route found, please try another asset or a lower amount",
-            "noAvailableTokens": "No available tokens"
+            "noAvailableTokens": "No available tokens",
+            "swapValueWarning": "The swap value is significantly lower than expected due to market conditions or slippage.",
+            "slippageWarning": "I acknowledge the risk and confirm to proceed"
         },
         "txDialog": {
             "convertTitle": "Convert {{from}} to {{to}}",

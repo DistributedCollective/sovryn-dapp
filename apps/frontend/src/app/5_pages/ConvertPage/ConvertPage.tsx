@@ -54,7 +54,6 @@ import {
 } from '../../../utils/asset';
 import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei, toWei } from '../../../utils/math';
-import { useGetMarketLiquidity } from '../LendPage/components/LendFrame/components/LendFrameDetails/hooks/useGetMarketLiquidity';
 import {
   CATEGORY_TOKENS,
   DEFAULT_SLIPPAGE_TOLERANCE,
@@ -509,8 +508,6 @@ const ConvertPage: FC = () => {
     quote !== '' ? toWei(renderDestinationAmount).toString() : '0',
   );
 
-  const { availableAmount } = useGetMarketLiquidity(destinationToken);
-
   const slippagePercent = useMemo(() => {
     if (
       !sourceUsdValue ||
@@ -825,17 +822,6 @@ const ConvertPage: FC = () => {
                   }
                   onTokenChange={onDestinationTokenChange}
                   dataAttribute="convert-to-asset"
-                />
-              </div>
-
-              <div className="flex items-center font-medium text-base sm:text-xs text-gray-40">
-                <Paragraph className="mr-1">
-                  {t(pageTranslations.form.availableLiquidity)}
-                </Paragraph>
-                <AmountRenderer
-                  className="mx-1"
-                  value={availableAmount}
-                  suffix={destinationToken}
                 />
               </div>
             </div>

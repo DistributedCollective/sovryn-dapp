@@ -47,6 +47,7 @@ export const TableMobileRow = <RowType extends RowObject>({
     () => <>{titleRenderer?.(row, open) || index}</>,
     [index, open, row, titleRenderer],
   );
+
   return (
     <>
       <Accordion

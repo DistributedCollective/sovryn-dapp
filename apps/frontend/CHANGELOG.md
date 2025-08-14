@@ -1,5 +1,11 @@
 # frontend
 
+## 1.1.37
+
+### Patch Changes
+
+- d10e9c79: SOV-5095: Disable deposits general solution
+
 ## 1.1.36
 
 ### Patch Changes

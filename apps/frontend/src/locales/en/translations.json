@@ -448,7 +448,7 @@
     "landingPage": {
         "meta": {
             "title": "Welcome to Sovryn",
-            "description": "The Decentralized Bitcoin Trading And Lending Platform"
+            "description": "The largest Bitcoin DeFi dapp - trading, lending, yield farming and home to the Origins cross-chain launchpad."
         },
         "getStarted": {
             "title": "Get started",
@@ -587,7 +587,7 @@
         },
         "titleSection": {
             "title": "Welcome to Sovryn",
-            "description": "The decentralized bitcoin trading and lending platform",
+            "description": "The largest Bitcoin DeFi dapp - trading, lending, yield farming and home to the Origins cross-chain launchpad.",
             "cta": "<0>New to Sovryn?</0>",
             "ctaText": "New to Sovryn?"
         },

@@ -14,13 +14,15 @@ import {
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { AssetRenderer } from '../../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { useChainStore } from '../../../../../../hooks/useChainStore';
+import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { translations } from '../../../../../../locales/i18n';
 import {
   ReceiveFlowContext,
   ReceiveFlowStep,
 } from '../../../contexts/receiveflow';
-import { useBridgeAggregatorBalance } from '../../../hooks/useBridgeAggregatorBalance';
 import { useAssetsByTargetChain } from '../../../hooks/useBridgeAssets';
+import { useTokenBalance } from '../../../hooks/useTokenBalance';
 import { Limits } from '../../Limits';
 import { NetworkRenderer } from '../../NetworkRenderer';
 
@@ -28,11 +30,12 @@ export const MainScreen: React.FC = () => {
   const { set, token, chainId } = useContext(ReceiveFlowContext);
   const assets = useAssetsByTargetChain(RSK_CHAIN_ID);
 
-  const { data: aggregatorBalance } = useBridgeAggregatorBalance(
-    chainId,
-    RSK_CHAIN_ID,
-    token,
-  );
+  const { currentChainId, setCurrentChainId } = useChainStore();
+  const isWrongChain = currentChainId !== chainId;
+  const { data: tokenBalance } = useTokenBalance(token, chainId);
+  const assetDetails = useTokenDetailsByAsset(token, chainId);
+
+  const balance = formatUnits(tokenBalance || '0', assetDetails?.decimals);
 
   const uniqueAssets = assets.filter(
     (asset, index, arr) =>
@@ -116,24 +119,41 @@ export const MainScreen: React.FC = () => {
         />
       </div>
 
-      <AmountInput
-        className="w-full max-w-full mb-6"
-        label="Avaiaible liquidity"
-        value={formatUnits(aggregatorBalance || '0')}
-        readOnly
-        unit={token}
-      />
+      {isWrongChain ? (
+        <Button
+          onClick={() => chainId && setCurrentChainId(chainId)}
+          text={t(translations.erc20Bridge.confirmationScreens.switchNetwork)}
+          className="w-full mt-12"
+          style={ButtonStyle.secondary}
+          dataAttribute="switch-network-button"
+          disabled={!token || !chainId}
+        />
+      ) : (
+        <>
+          <AmountInput
+            className="w-full max-w-full mb-6"
+            label="Avaiaible Balance"
+            value={balance}
+            readOnly
+            unit={token}
+          />
 
-      <Limits sourceChain={chainId} targetChain={RSK_CHAIN_ID} asset={token} />
+          <Limits
+            sourceChain={chainId}
+            targetChain={RSK_CHAIN_ID}
+            asset={token}
+          />
 
-      <Button
-        onClick={onContinueClick}
-        text={t(translations.common.buttons.continue)}
-        className="w-full mt-12"
-        style={ButtonStyle.secondary}
-        dataAttribute="funding-receive-instructions-confirm"
-        disabled={!token || !chainId}
-      />
+          <Button
+            onClick={onContinueClick}
+            text={t(translations.common.buttons.continue)}
+            className="w-full mt-12"
+            style={ButtonStyle.secondary}
+            dataAttribute="funding-receive-instructions-confirm"
+            disabled={!token || !chainId || Number(balance) <= 0}
+          />
+        </>
+      )}
     </div>
   );
 };

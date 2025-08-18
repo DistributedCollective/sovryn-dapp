@@ -13,11 +13,15 @@ export function useBridgeLimits(
   return useQuery({
     queryKey: ['bridgeLimits', sourceChain, targetChain, asset],
     queryFn: async () => {
-      return await bridgeService.getBridgeLimits(
-        sourceChain!,
-        targetChain!,
-        asset!,
-      );
+      try {
+        return await bridgeService.getBridgeLimits(
+          sourceChain!,
+          targetChain!,
+          asset!,
+        );
+      } catch (error) {
+        console.error('Error fetching bridge limits:', error);
+      }
     },
     enabled: Boolean(bridgeService && sourceChain && targetChain && asset),
     refetchInterval: 60_000 * 10,

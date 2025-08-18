@@ -1,11 +1,14 @@
+import { constants } from 'ethers';
+
 import { AssetDetails } from '../../types';
 
 export const bsc: Array<AssetDetails> = [
   {
     symbol: 'BNB',
-    address: '0xB6C313a427fa911A4C9a119e80Feea0fe20E69F0',
+    address: constants.AddressZero,
     name: 'Binance Coin',
     decimals: 18,
+    isNative: true,
     getIcon: async () => (await import('./icons/bsc/bnb')).default,
   },
   {

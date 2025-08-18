@@ -2056,11 +2056,13 @@
             "sendingAmount": "Sending amount",
             "receivingAmount": "Receiving amount",
             "reviewTitle": "Review transaction",
+            "statusApprovalProcessing": "Approval processing...",
             "statusTitleProcessing": "Transfer processing...",
             "statusTitleComplete": "Transfer complete",
-            "statusTitleFailed": "Transfer failed",
+            "statusTitleFailed": "Process failed",
             "hash": "{{chainName}} TXID",
-            "rootstockTxId": "Rootstock TXID"
+            "rootstockTxId": "Rootstock TXID",
+            "switchNetwork": "Switch network"
         },
         "limits": {
             "title": "Daily bridge limits",

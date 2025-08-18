@@ -11,8 +11,6 @@ import {
   Dialog,
   DialogSize,
   Heading,
-  Paragraph,
-  ParagraphSize,
   Tabs,
   VerticalTabs,
 } from '@sovryn/ui';
@@ -21,7 +19,6 @@ import { MobileCloseButton } from '../../1_atoms/MobileCloseButton/MobileCloseBu
 import { useAccount } from '../../../hooks/useAccount';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
-import { useChainDetails } from '../RuneBridgeDialog/hooks/useChainDetails';
 import { ACTIVE_CLASSNAME, queryClient } from './ERC20BridgeDialog.constants';
 import { ReceiveFlow } from './components/ReceiveFlow/ReceiveFlow';
 import { SendFlow } from './components/SendFlow/SendFlow';
@@ -43,7 +40,6 @@ export const ERC20BridgeDialog: React.FC<ERC20BridgeDialogProps> = ({
 }) => {
   const [index, setIndex] = useState(step);
   const { account } = useAccount();
-  const { supported: isChainSupported, chainName } = useChainDetails();
   const { isMobile } = useIsMobile();
 
   useEffect(() => {
@@ -51,24 +47,6 @@ export const ERC20BridgeDialog: React.FC<ERC20BridgeDialogProps> = ({
   }, [step]);
 
   const items = useMemo(() => {
-    if (!isChainSupported) {
-      return [
-        {
-          label: '',
-          infoText: '',
-          content: (
-            <div className="mt-0 md:mt-12">
-              <Paragraph
-                size={ParagraphSize.base}
-                children={`${chainName} is currently not supported by the ERC20 Bridge.`}
-              />
-              <MobileCloseButton onClick={onClose} />
-            </div>
-          ),
-          activeClassName: ACTIVE_CLASSNAME,
-        },
-      ];
-    }
     return [
       {
         label: t(translation.tabs.receiveLabel),
@@ -95,7 +73,7 @@ export const ERC20BridgeDialog: React.FC<ERC20BridgeDialogProps> = ({
         dataAttribute: 'erc20-bridge-send',
       },
     ];
-  }, [onClose, chainName, isChainSupported]);
+  }, [onClose]);
 
   const onChangeIndex = useCallback((index: number | null) => {
     index !== null ? setIndex(index) : setIndex(0);

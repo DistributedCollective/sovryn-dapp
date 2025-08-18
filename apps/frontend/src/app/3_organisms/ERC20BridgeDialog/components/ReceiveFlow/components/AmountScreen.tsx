@@ -21,6 +21,7 @@ import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../../hooks';
+import { useChainStore } from '../../../../../../hooks/useChainStore';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { translations } from '../../../../../../locales/i18n';
 import {
@@ -31,13 +32,16 @@ import { useBridgeService } from '../../../hooks/useBridgeService';
 import { useTokenBalance } from '../../../hooks/useTokenBalance';
 
 export const AmountScreen: React.FC = () => {
-  const { account } = useAccount();
   const { set, token, chainId, amount, receiver } =
     useContext(ReceiveFlowContext);
-  const bridgeService = useBridgeService();
-  const assetDetails = useTokenDetailsByAsset(token, RSK_CHAIN_ID);
-  const { data: tokenBalance } = useTokenBalance(token, RSK_CHAIN_ID);
 
+  const bridgeService = useBridgeService();
+  const { account } = useAccount();
+  const { currentChainId, setCurrentChainId } = useChainStore();
+  const isWrongChain = currentChainId !== chainId;
+
+  const { data: tokenBalance } = useTokenBalance(token, chainId);
+  const assetDetails = useTokenDetailsByAsset(token, chainId);
   const balance = formatUnits(tokenBalance || '0', assetDetails?.decimals);
 
   const onContinueClick = useCallback(
@@ -78,9 +82,9 @@ export const AmountScreen: React.FC = () => {
       {chainId && (
         <Paragraph className="flex text-base font-medium items-center mb-6 gap-2">
           <>
-            Sending {bridgeService.getNetworkConfig(RSK_CHAIN_ID)?.name}
+            Sending {bridgeService.getNetworkConfig(chainId)?.name}
             <Icon icon={IconNames.ARROW_RIGHT} size={12} />
-            {bridgeService.getNetworkConfig(chainId)?.name}
+            {bridgeService.getNetworkConfig(RSK_CHAIN_ID)?.name}
           </>
         </Paragraph>
       )}
@@ -94,7 +98,7 @@ export const AmountScreen: React.FC = () => {
             value={balance || '0'}
             token={token}
             dataAttribute="bridge-from-max"
-            chainId={RSK_CHAIN_ID}
+            chainId={chainId}
           />
         )}
       </div>
@@ -109,7 +113,9 @@ export const AmountScreen: React.FC = () => {
         placeholder="0"
       />
 
-      <Paragraph className="mb-1 text-sm">Receiving Ethereum address</Paragraph>
+      <Paragraph className="mb-1 text-sm">
+        Receiving Rootstock address
+      </Paragraph>
       <Input
         value={receiver}
         onChangeText={setReceiver}
@@ -121,26 +127,28 @@ export const AmountScreen: React.FC = () => {
 
       <ErrorBadge
         level={ErrorLevel.Warning}
-        message={
-          <>
-            Beware when sending to exchange address <br />
-            <br />
-            Not all exchanges receiving assets directly from the bridge smart
-            contracts. Before sending directly to an exchange address, be sure
-            to confirm that your exchange supports directly transactions from
-            smart contratcts.
-          </>
-        }
+        message="Provide only the wallet address that you have access to"
       />
 
-      <Button
-        onClick={onContinueClick}
-        text={t(translations.common.buttons.continue)}
-        className="w-full mt-6"
-        style={ButtonStyle.secondary}
-        dataAttribute="funding-send-instructions-confirm"
-        disabled={!(isValidAddress && isValidAmount)}
-      />
+      {isWrongChain ? (
+        <Button
+          onClick={() => chainId && setCurrentChainId(chainId)}
+          text={t(translations.erc20Bridge.confirmationScreens.switchNetwork)}
+          className="w-full mt-12"
+          style={ButtonStyle.secondary}
+          dataAttribute="switch-network-button"
+          disabled={!token || !chainId}
+        />
+      ) : (
+        <Button
+          onClick={onContinueClick}
+          text={t(translations.common.buttons.continue)}
+          className="w-full mt-6"
+          style={ButtonStyle.secondary}
+          dataAttribute="funding-receive-instructions-confirm"
+          disabled={!(isValidAddress && isValidAmount)}
+        />
+      )}
     </div>
   );
 };

@@ -127,6 +127,7 @@ export class BridgeService {
       throw new Error('Bridge or asset configuration not found');
     }
 
+    const assetDetails = await getAssetData(asset, sourceChain);
     const provider = this.getProvider(sourceChain);
 
     const bridgeContract = new ethers.Contract(
@@ -140,16 +141,16 @@ export class BridgeService {
       provider,
     );
 
+    const tokenAddress = (
+      assetConfig.bridgeTokenAddress || assetDetails.address
+    ).toLowerCase();
+
     const [spentToday, dailyLimit, minPerToken, feePerToken, maxTokensAllowed] =
       await Promise.all([
         bridgeContract.spentToday(),
         allowTokensContract.dailyLimit(),
-        allowTokensContract.getMinPerToken(
-          assetConfig.bridgeTokenAddress?.toLowerCase(),
-        ),
-        allowTokensContract.getFeePerToken(
-          assetConfig.bridgeTokenAddress?.toLowerCase(),
-        ),
+        allowTokensContract.getMinPerToken(tokenAddress),
+        allowTokensContract.getFeePerToken(tokenAddress),
         allowTokensContract.getMaxTokensAllowed(),
       ]);
 
@@ -198,7 +199,7 @@ export class BridgeService {
     return token.approve(spender, amount);
   }
 
-  // Deposit tokens to bridge
+  // Deposit tokens to Rootstock
   async deposit(params: BridgeParams): Promise<ethers.ContractTransaction> {
     const { sourceChain, targetChain, asset, amount, receiver, signer } =
       params;
@@ -218,27 +219,40 @@ export class BridgeService {
       signer,
     );
 
+    let receiverAddress: string | undefined = (
+      receiver || sender
+    ).toLowerCase();
+    let extraData: string = '0x';
+
+    if (assetConfig.usesAggregator) {
+      receiverAddress = assetConfig.aggregatorContractAddress;
+      extraData = ethers.utils.defaultAbiCoder.encode(
+        ['address'],
+        [receiverAddress],
+      );
+    }
+
+    if (!receiverAddress) {
+      throw new Error('No receiver address provided');
+    }
+
     // For native assets
     if (assetConfig.isNative) {
-      return bridgeContract.receiveEthAt(
-        (receiver || sender).toLowerCase(),
-        '0x',
-        {
-          value: amount,
-        },
-      );
+      return bridgeContract.receiveEthAt(receiverAddress, extraData, {
+        value: amount,
+      });
     }
 
     // For token transfers
     return bridgeContract.receiveTokensAt(
       (assetConfig.bridgeTokenAddress || assetData.address).toLowerCase(),
       amount,
-      (receiver || sender).toLowerCase(),
-      '0x',
+      receiverAddress,
+      extraData,
     );
   }
 
-  // Withdraw tokens from bridge (RSK to other chains)
+  // Withdraw tokens from Rootstock
   async withdraw(params: BridgeParams): Promise<ethers.ContractTransaction> {
     const { sourceChain, targetChain, asset, amount, receiver, signer } =
       params;

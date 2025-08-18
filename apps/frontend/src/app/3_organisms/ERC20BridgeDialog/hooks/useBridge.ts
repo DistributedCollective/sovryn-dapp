@@ -2,33 +2,28 @@ import { useQuery } from '@tanstack/react-query';
 
 import { useCallback, useState, useEffect, useMemo } from 'react';
 
-import { BigNumberish, ethers } from 'ethers';
+import { ethers } from 'ethers';
 
-import { ChainIds, ChainId } from '@sovryn/ethers-provider';
-import { BridgeTransaction, CrossBridgeAsset, TxStep } from '@sovryn/sdk';
-
-import { RSK_CHAIN_ID } from '../../../../config/chains';
+import { ChainIds } from '@sovryn/ethers-provider';
+import {
+  BridgeParams,
+  BridgeTransaction,
+  CrossBridgeAsset,
+  TxStep,
+} from '@sovryn/sdk';
 
 import { useAccount } from '../../../../hooks';
 import { useBridgeLimits } from './useBridgeLimits';
 import { useBridgeService } from './useBridgeService';
 import { useTokenBalance } from './useTokenBalance';
 
-interface UseBridgeSendParams {
-  sourceChain: ChainId;
-  targetChain: ChainId;
-  asset: string;
-  amount: BigNumberish;
-  receiver?: string;
-}
-
-export function useBridgeSend({
+export function useBridge({
   sourceChain,
   targetChain,
   asset,
   amount,
   receiver,
-}: UseBridgeSendParams) {
+}: Omit<BridgeParams, 'signer'>) {
   const bridgeService = useBridgeService();
   const { account, signer } = useAccount();
   const [transaction, setTransaction] = useState<BridgeTransaction>({
@@ -48,17 +43,12 @@ export function useBridgeSend({
   const spenderAddress = useMemo(() => {
     if (!bridgeConfig || !assetConfig) return undefined;
 
-    // For RSK chain with aggregator
-    if (
-      sourceChain === RSK_CHAIN_ID &&
-      assetConfig.usesAggregator &&
-      assetConfig.aggregatorContractAddress
-    ) {
+    if (assetConfig.usesAggregator && assetConfig.aggregatorContractAddress) {
       return assetConfig.aggregatorContractAddress;
     }
 
     return bridgeConfig.bridgeContractAddress;
-  }, [sourceChain, bridgeConfig, assetConfig]);
+  }, [bridgeConfig, assetConfig]);
 
   // Fetch allowance
   const { data: allowance, refetch: refetchAllowance } = useQuery({
@@ -82,7 +72,7 @@ export function useBridgeSend({
   });
 
   const { data: balance } = useTokenBalance(asset, sourceChain);
-  const { data: limits } = useBridgeLimits(RSK_CHAIN_ID, targetChain, asset);
+  const { data: limits } = useBridgeLimits(sourceChain, targetChain, asset);
 
   const requiresApproval = useMemo(() => {
     if (!assetConfig || assetConfig.isNative) return false;
@@ -191,7 +181,7 @@ export function useBridgeSend({
     account,
   ]);
 
-  const handleSend = useCallback(async (): Promise<void> => {
+  const handleBridge = useCallback(async (): Promise<void> => {
     if (!bridgeService || !signer) {
       throw new Error('Missing requirements for deposit');
     }
@@ -202,7 +192,7 @@ export function useBridgeSend({
     }));
 
     try {
-      const tx = await bridgeService.withdraw({
+      const tx = await bridgeService.bridge({
         sourceChain,
         targetChain,
         asset,
@@ -211,6 +201,9 @@ export function useBridgeSend({
         signer,
       });
 
+      console.log({
+        tx,
+      });
       setTransaction(prev => ({
         ...prev,
         step: TxStep.PENDING,
@@ -229,6 +222,9 @@ export function useBridgeSend({
         transferHash: receipt.transactionHash,
       }));
     } catch (error: any) {
+      console.log({
+        error,
+      });
       if (error?.code === 4001 || error?.code === 'ACTION_REJECTED') {
         setTransaction(prev => ({
           ...prev,
@@ -267,15 +263,15 @@ export function useBridgeSend({
 
       if (requiresApproval) {
         await handleApproval();
-        await handleSend();
+        await handleBridge();
       } else {
         // Direct deposit for native assets or when allowance is sufficient
-        await handleSend();
+        await handleBridge();
       }
     } catch (error) {
       console.error('Bridge transfer failed:', error);
     }
-  }, [canDeposit, requiresApproval, handleApproval, handleSend]);
+  }, [canDeposit, requiresApproval, handleApproval, handleBridge]);
 
   // Reset transaction when parameters change
   useEffect(() => {

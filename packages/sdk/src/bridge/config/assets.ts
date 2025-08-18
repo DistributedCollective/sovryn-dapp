@@ -173,6 +173,7 @@ export const bscToRskTestnetAssets: AssetConfig[] = [
     isBase: false,
     usesAggregator: true,
     aggregatorContractAddress: aggregators.testnet.bnbs,
+    bridgeTokenAddress: '0x68bD35422b457f315AA176743325a9F7C9830c68',
     allowedTargets: [CrossBridgeAsset.BNBS],
   },
   {

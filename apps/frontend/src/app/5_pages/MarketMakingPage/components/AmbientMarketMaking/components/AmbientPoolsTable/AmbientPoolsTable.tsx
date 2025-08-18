@@ -80,7 +80,7 @@ export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items, filter }) => {
   );
 
   return (
-    <div ref={tableRef} className="bg-gray-90 py-4 px-4 rounded w-full mt-8">
+    <div ref={tableRef} className="bg-gray-90 py-4 px-4 rounded w-full mt-10">
       <div className="flex justify-end mb-4">
         <Link
           to="/claim-lp"

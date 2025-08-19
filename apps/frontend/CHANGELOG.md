@@ -1,5 +1,12 @@
 # frontend
 
+## 1.1.37
+
+### Patch Changes
+
+- 56cf43f8: SOV-4813: update text on main page
+- d10e9c79: SOV-5095: Disable deposits general solution
+
 ## 1.1.36
 
 ### Patch Changes

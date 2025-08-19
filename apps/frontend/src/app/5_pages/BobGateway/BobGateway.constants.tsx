@@ -1,5 +1,4 @@
 import { GatewaySDK } from '@gobob/bob-sdk';
-import { QueryClient } from '@tanstack/react-query';
 
 import React from 'react';
 
@@ -60,5 +59,3 @@ export const strategies = [
       'Combine wrapped BTC liquidity with staking rewards. This pool pairs wBTC with UniBTC, allowing users to move between a widely-used BTC wrapper and an interest-bearing LST. Liquidity providers earn a 7x Spice multiplier on wBTC and a 20x multiplier on UniBTC, making it an attractive option for BTC holders looking to gain exposure to liquid staking rewards.',
   },
 ];
-
-export const queryClient = new QueryClient();

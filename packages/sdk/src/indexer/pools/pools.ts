@@ -11,6 +11,9 @@ export class PoolList {
   #pools = new Map<string, Pool>();
   #context: Indexer;
 
+  #abortController: AbortController | null = null;
+  #request: Promise<PaginatorResponse<Pool>> | null = null;
+
   constructor(context: Indexer) {
     this.#context = context;
     this.query({ limit: 1000 }).catch(console.error);
@@ -44,14 +47,24 @@ export class PoolList {
   public async query(
     options?: PaginatorQuery,
   ): Promise<PaginatorResponse<Pool>> {
-    const res = await fetch(
+    if (this.#request) {
+      return this.#request;
+    }
+
+    if (this.#abortController) {
+      this.#abortController.abort();
+    }
+
+    this.#abortController = new AbortController();
+
+    this.#request = fetch(
       makePaginatedUrl(
         `${this.#context.url}/v2/${this.#context.chainId}/pools`,
         options,
       ),
-    );
-    return await res
-      .json()
+      { signal: this.#abortController.signal },
+    )
+      .then(res => res.json())
       .then(data => {
         return {
           data: data.data.map((item: PoolData) => this.addPool(item)),
@@ -61,5 +74,7 @@ export class PoolList {
       .finally(() => {
         this.#queried = true;
       });
+
+    return this.#request;
   }
 }

@@ -2,9 +2,11 @@ import setup, { Chain, ChainIds } from '@sovryn/ethers-provider';
 import { ChainId } from '@sovryn/ethers-provider';
 
 import bobLogo from '../assets/chains/bob.svg';
+import bscLogo from '../assets/chains/bsc.svg';
 import rskLogo from '../assets/chains/rsk.svg';
 import unknownLogo from '../assets/chains/unknown.svg';
 import { BOB } from '../constants/infrastructure/bob';
+import { BSC } from '../constants/infrastructure/bsc';
 import { FORK } from '../constants/infrastructure/fork';
 import { RSK } from '../constants/infrastructure/rsk';
 import { SEPOLIA } from '../constants/infrastructure/sepolia';
@@ -85,6 +87,15 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           rpcUrl: SEPOLIA.rpc[Environments.Testnet],
           blockExplorerUrl: SEPOLIA.explorer[Environments.Testnet],
           icon: unknownLogo,
+        },
+        {
+          id: ChainIds.BSC_TESTNET,
+          label: 'BSC Testnet',
+          token: 'tBNB',
+          publicRpcUrl: BSC.publicRpc[Environments.Testnet],
+          rpcUrl: BSC.rpc[Environments.Testnet],
+          blockExplorerUrl: BSC.explorer[Environments.Testnet],
+          icon: bscLogo,
         },
         {
           id: ChainIds.FORK,

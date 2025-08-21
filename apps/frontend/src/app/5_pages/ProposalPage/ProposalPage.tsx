@@ -1,15 +1,24 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
+import {
+  Button,
+  ButtonStyle,
+  Heading,
+  Icon,
+  IconNames,
+  Paragraph,
+  ParagraphSize,
+} from '@sovryn/ui';
 
 import { LoaderWithLogo } from '../../1_atoms/LoaderWithLogo/LoaderWithLogo';
 import { TxIdWithNotification } from '../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { ProposalVotingPower } from '../../3_organisms/ProposalVotingPower/ProposalVotingPower';
 import { ProposalVotingResults } from '../../3_organisms/ProposalVotingResults/ProposalVotingResults';
+import { useBlockNumber } from '../../../hooks/useBlockNumber';
 import { useGetProtocolContract } from '../../../hooks/useGetContract';
 import { translations } from '../../../locales/i18n';
 import { areAddressesEqual } from '../../../utils/helpers';
@@ -28,11 +37,12 @@ const pageTranslations = translations.proposalPage;
 
 const ProposalPage: FC = () => {
   let { id } = useParams();
-
+  const navigate = useNavigate();
+  const { value: block } = useBlockNumber();
   const adminAddress = useGetProtocolContract('governorAdmin')?.address ?? '';
   const ownerAddress = useGetProtocolContract('governorOwner')?.address ?? '';
 
-  const { proposal } = useGetProposalById(id || '');
+  const { proposal, refetch } = useGetProposalById(id || '');
 
   const status = useProposalStatus(proposal);
 
@@ -57,6 +67,12 @@ const ProposalPage: FC = () => {
     }
   }, [adminAddress, ownerAddress, proposal]);
 
+  const handleBack = useCallback(() => navigate('/bitocracy'), [navigate]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, block]);
+
   if (!proposal) {
     return <LoaderWithLogo />;
   }
@@ -68,11 +84,22 @@ const ProposalPage: FC = () => {
       </Helmet>
       <div className="w-full flex flex-col lg:flex-row lg:gap-5 xl:gap-20 text-left text-gray-10 mt-6 mb-5 sm:mt-16 max-w-7xl">
         <div className="w-full lg:w-2/3 flex flex-col gap-6">
+          <Button
+            onClick={handleBack}
+            style={ButtonStyle.ghost}
+            className="text-gray-10 inline-flex justify-start items-center text-base font-medium cursor-pointer hover:opacity-80"
+            text={
+              <>
+                <Icon size={12} icon={IconNames.ARROW_LEFT} className="mr-2" />
+                {t(translations.header.nav.bitocracy)}
+              </>
+            }
+          />
           <div className="lg:px-6 lg:pb-6">
-            <Heading className="text-base sm:text-2xl font-medium break-all">
+            <Heading className="text-base sm:text-2xl font-medium break-words">
               {proposalInfo.title}
             </Heading>
-            <div className="mt-2.5 sm:mt-3 font-medium text-gray-30 break-all">
+            <div className="mt-2.5 sm:mt-3 font-medium text-gray-30 break-words">
               {proposalInfo.summary}
             </div>
             <div className="mt-2.5 sm:mt-6 text-xs font-medium text-gray-30 flex justify-between lg:justify-start">
@@ -112,7 +139,11 @@ const ProposalPage: FC = () => {
                   </Paragraph>
 
                   <div className="flex flex-col items-end">
-                    <ProposalStatus proposal={proposal} isProposalDetail />
+                    <ProposalStatus
+                      proposal={proposal}
+                      isProposalDetail
+                      blockNumber={block}
+                    />
                     <ProposalAction proposal={proposal} className="mt-1" />
                   </div>
                 </div>
@@ -147,7 +178,11 @@ const ProposalPage: FC = () => {
                 {t(pageTranslations.status)}
               </Paragraph>
 
-              <ProposalStatus proposal={proposal} isProposalDetail />
+              <ProposalStatus
+                proposal={proposal}
+                isProposalDetail
+                blockNumber={block}
+              />
               <ProposalAction proposal={proposal} className="ml-4 pl-0.5" />
             </div>
 

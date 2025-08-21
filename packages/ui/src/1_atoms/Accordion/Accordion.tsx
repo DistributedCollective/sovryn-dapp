@@ -23,6 +23,8 @@ export interface IAccordionProps {
   onClick?: (toOpen: boolean) => void;
   dataAttribute?: string;
   style?: AccordionStyle;
+  flatMode?: boolean;
+  alwaysMounted?: boolean;
 }
 
 export const Accordion: FC<IAccordionProps> = ({
@@ -35,10 +37,12 @@ export const Accordion: FC<IAccordionProps> = ({
   dataAttribute,
   labelClassName,
   style = AccordionStyle.primary,
+  flatMode,
+  alwaysMounted = false,
 }) => {
   const onClickCallback = useCallback(
-    () => !disabled && onClick?.(!open),
-    [disabled, open, onClick],
+    () => !disabled && !flatMode && onClick?.(!open),
+    [disabled, flatMode, onClick, open],
   );
 
   return (
@@ -61,19 +65,30 @@ export const Accordion: FC<IAccordionProps> = ({
             label
           )}
         </>
-        <div className={styles.arrow}>
-          <Icon
-            icon={IconNames.ARROW_DOWN}
-            size={8}
-            className={classNames(styles.icon, {
-              [styles.isOpen]: open,
-            })}
-          />
-        </div>
+        {!flatMode && (
+          <div className={styles.arrow}>
+            <Icon
+              icon={IconNames.ARROW_DOWN}
+              size={8}
+              className={classNames(styles.icon, {
+                [styles.isOpen]: open,
+              })}
+            />
+          </div>
+        )}
       </button>
-      {open && (
+      {alwaysMounted && (
         <div
-          className={styles.content}
+          className={classNames(styles.content, open && styles.isOpen)}
+          {...applyDataAttr(`${dataAttribute}-content`)}
+        >
+          {children}
+        </div>
+      )}
+
+      {!alwaysMounted && open && (
+        <div
+          className={classNames(styles.content, styles.isOpen)}
           {...applyDataAttr(`${dataAttribute}-content`)}
         >
           {children}

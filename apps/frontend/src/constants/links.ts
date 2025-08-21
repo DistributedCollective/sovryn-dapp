@@ -49,6 +49,28 @@ export const WIKI_LINKS = {
     'https://wiki.sovryn.com/en/sovryn-dapp/market-making#yield-farming',
   BORROWING:
     'https://wiki.sovryn.com/sovryn-dapp/borrowing#basics-of-borrowing-on-sovryn',
+  REWARDS: 'https://wiki.sovryn.app/en/sovryn-dapp/sovryn-rewards-explained',
+  STAKING: 'https://wiki.sovryn.com/en/governance/staking-vesting-voting',
+  WALLET_SETUP: 'https://wiki.sovryn.com/en/getting-started/wallet-setup',
+  BRIDGE_RUNES: 'https://wiki.sovryn.com/en/sovryn-dapp/runes#bridging-runes',
 };
 
 export const HELPDESK_LINK = 'https://help.sovryn.app/';
+
+export const BABELFISH_APP_LINK = 'https://app.babelfish.money';
+
+export const POWA_LINK = 'https://sovryn.com/powa';
+
+export const GOBOB_LINK = 'https://gobob.sovryn.app';
+
+export const SEPOLIA_FAUCET_LINK = 'https://sepolia-faucet.pk910.de';
+
+export const BOB_DOCS_LINK = 'https://docs.gobob.xyz/';
+
+export const ROOTSTOCK_LINK = 'https://rootstock.io/';
+
+export const LAUNCHPAD_LINKS = {
+  ORIGINS: 'https://origins.sovryn.app',
+  LEARN_MORE:
+    'https://sovryn.com/all-things-sovryn/stake-sov-get-origins-bonus',
+};

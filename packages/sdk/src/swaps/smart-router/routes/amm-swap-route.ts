@@ -1,12 +1,9 @@
-import { Contract, constants, providers } from 'ethers';
+import { BigNumber, Contract, constants, providers } from 'ethers';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenContract,
-} from '@sovryn/contracts';
-import { ChainId, numberToChainId } from '@sovryn/ethers-provider';
+import { getAssetContract, getProtocolContract } from '@sovryn/contracts';
+import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
 
+import { RSK_STABLECOINS } from '../../../constants';
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import {
   canSwapPair,
@@ -26,6 +23,7 @@ export const ammSwapRoute: SwapRouteFunction = (
   let swapConverter: Contract;
   let rbtcConverter: Contract;
   let protocolContract: Contract;
+  let wrbtcMinter: Contract;
 
   const getChainId = async () => {
     if (!chainId) {
@@ -71,22 +69,32 @@ export const ammSwapRoute: SwapRouteFunction = (
     return protocolContract;
   };
 
-  const isNativeToken = async (token: string) =>
-    token === constants.AddressZero ||
-    token ===
-      (
-        await getTokenContract(SupportedTokens.wrbtc, await getChainId())
-      ).address.toLowerCase();
+  const getWrbtcMinter = async () => {
+    if (!wrbtcMinter) {
+      const chainId = await getChainId();
+      const { address, abi } = await getProtocolContract(
+        'wrbtcMinter',
+        chainId,
+      );
+      wrbtcMinter = new Contract(address, abi, provider);
+    }
+    return wrbtcMinter;
+  };
 
-  const validatedTokenAddress = async (token: string) => {
-    token = token.toLowerCase();
+  const isNativeToken = async (token: string) =>
+    token === constants.AddressZero;
+
+  const isNativeWrapper = async (token: string) =>
+    token ===
+    (await getAssetContract('WBTC', await getChainId())).address.toLowerCase();
+
+  const getTokenAddress = async (token: string) => {
     if (await isNativeToken(token)) {
       if (wrbtcAddress) {
         return wrbtcAddress;
       }
       const chainId = await getChainId();
-      wrbtcAddress = (await getTokenContract(SupportedTokens.wrbtc, chainId))
-        .address;
+      wrbtcAddress = (await getAssetContract('WBTC', chainId)).address;
       return wrbtcAddress;
     }
 
@@ -95,35 +103,55 @@ export const ammSwapRoute: SwapRouteFunction = (
 
   return {
     name: 'AMM',
+    chains: [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET],
     pairs: async () => {
       if (!pairCache) {
         const chainId = await getChainId();
 
         const swapTokens = [
-          SupportedTokens.rbtc,
-          SupportedTokens.dllr,
-          SupportedTokens.fish,
-          SupportedTokens.moc,
-          SupportedTokens.rif,
-          SupportedTokens.sov,
-          // Temporarily disabled in https://sovryn.atlassian.net/browse/SOV-2595
-          // SupportedTokens.eths,
-          // SupportedTokens.bnbs,
+          'BTC',
+          'WBTC',
+          'DLLR',
+          'FISH',
+          'MOC',
+          'RIF',
+          'SOV',
+          'BNB',
+          'DOC',
+          'RUSDT',
+          'ETH',
+          'XUSD',
+          'MYNT',
+          'BPRO',
+          'POWA',
         ];
 
-        const contracts = await Promise.all(
-          swapTokens.map(token => getTokenContract(token, chainId)),
-        );
-
-        const addresses = contracts.map(contract =>
-          contract.address.toLowerCase(),
-        );
+        const contracts = (
+          await Promise.all(
+            swapTokens.map(token => getAssetContract(token, chainId)),
+          )
+        ).map((contract, index) => ({
+          address: contract.address.toLowerCase(),
+          token: swapTokens[index],
+        }));
 
         const pairs = new Map<string, string[]>();
 
-        for (const address of addresses) {
-          const pair = addresses.filter(a => a !== address);
-          pairs.set(address, pair);
+        for (const contract of contracts) {
+          const isStablecoin = RSK_STABLECOINS.find(
+            token => token === contract.token,
+          );
+
+          const pair = contracts
+            .filter(a => {
+              return (
+                a.address !== contract.address &&
+                (!isStablecoin ||
+                  !RSK_STABLECOINS.find(token => token === a.token))
+              );
+            })
+            .map(contract => contract.address);
+          pairs.set(contract.address, pair);
         }
 
         pairCache = pairs;
@@ -132,8 +160,16 @@ export const ammSwapRoute: SwapRouteFunction = (
       return pairCache;
     },
     quote: async (entry, destination, amount) => {
-      const baseToken = await validatedTokenAddress(entry);
-      const quoteToken = await validatedTokenAddress(destination);
+      if (
+        ((await isNativeToken(entry)) &&
+          (await isNativeWrapper(destination))) ||
+        ((await isNativeToken(destination)) && (await isNativeWrapper(entry)))
+      ) {
+        return BigNumber.from(amount);
+      }
+
+      const baseToken = await getTokenAddress(entry);
+      const quoteToken = await getTokenAddress(destination);
       return (await getSwapQuoteContract())
         .getSwapExpectedReturn(baseToken, quoteToken, amount)
         .catch(e => {
@@ -146,14 +182,22 @@ export const ammSwapRoute: SwapRouteFunction = (
         return undefined;
       }
 
+      // swapping from WRBTC to RBTC is always approved
+      if (
+        (await isNativeWrapper(entry)) &&
+        (await isNativeToken(destination))
+      ) {
+        return undefined;
+      }
+
       const converter = await getConverterContract(entry, destination);
 
       if (
         await hasEnoughAllowance(
           provider,
           entry,
-          converter.address,
           from,
+          converter.address,
           amount ?? constants.MaxUint256,
         )
       ) {
@@ -179,8 +223,37 @@ export const ammSwapRoute: SwapRouteFunction = (
         );
       }
 
-      const baseToken = await validatedTokenAddress(entry);
-      const quoteToken = await validatedTokenAddress(destination);
+      // RBTC -> WRBTC
+      if (
+        (await isNativeToken(entry)) &&
+        (await isNativeWrapper(destination))
+      ) {
+        const minter = await getWrbtcMinter();
+        return {
+          to: minter.address,
+          data: minter.interface.encodeFunctionData('deposit'),
+          value: amount.toString(),
+          gasLimit: 30_000,
+          ...overrides,
+        };
+      }
+
+      // WRBTC -> RBTC
+      if (
+        (await isNativeWrapper(entry)) &&
+        (await isNativeToken(destination))
+      ) {
+        const minter = await getWrbtcMinter();
+        return {
+          to: minter.address,
+          data: minter.interface.encodeFunctionData('withdraw', [amount]),
+          // gasLimit: 30_000,
+          ...overrides,
+        };
+      }
+
+      const baseToken = await getTokenAddress(entry);
+      const quoteToken = await getTokenAddress(destination);
 
       const entryIsNative = await isNativeToken(entry);
       const destinationIsNative = await isNativeToken(destination);

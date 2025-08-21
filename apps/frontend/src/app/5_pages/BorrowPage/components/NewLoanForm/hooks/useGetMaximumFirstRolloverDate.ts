@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 
 import dayjs from 'dayjs';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Decimal } from '@sovryn/utils';
 
 import {
@@ -11,14 +10,15 @@ import {
 } from '../../../../../../constants/general';
 import { useGetRBTCPrice } from '../../../../../../hooks/zero/useGetRBTCPrice';
 import { decimalic, fromWei } from '../../../../../../utils/math';
+import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
 import { useGetBorrowingAPR } from '../../../hooks/useGetBorrowingAPR';
 import { useGetCollateralAssetPrice } from '../../../hooks/useGetCollateralAssetPrice';
 
 export const useGetMaximumFirstRolloverDate = (
   collateralAmount: Decimal,
   borrowAmount: Decimal,
-  collateralToken: SupportedTokens,
-  borrowToken: SupportedTokens,
+  collateralToken: string,
+  borrowToken: string,
 ) => {
   const { price: rbtcPrice } = useGetRBTCPrice();
 
@@ -30,10 +30,8 @@ export const useGetMaximumFirstRolloverDate = (
   const collateralPriceInLoanAsset = useMemo(
     () =>
       decimalic(
-        collateralToken === SupportedTokens.rbtc
-          ? rbtcPrice
-          : collateralPriceUsd,
-      ).div(borrowToken === SupportedTokens.rbtc ? rbtcPrice : borrowPriceUsd),
+        collateralToken === COMMON_SYMBOLS.BTC ? rbtcPrice : collateralPriceUsd,
+      ).div(borrowToken === COMMON_SYMBOLS.BTC ? rbtcPrice : borrowPriceUsd),
     [
       borrowToken,
       borrowPriceUsd,

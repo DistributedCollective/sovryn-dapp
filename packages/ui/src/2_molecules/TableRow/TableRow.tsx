@@ -1,4 +1,4 @@
-import React, { Fragment, ReactNode, useCallback, useReducer } from 'react';
+import React, { Fragment, ReactNode, useCallback } from 'react';
 
 import classNames from 'classnames';
 
@@ -20,6 +20,7 @@ type TableRowProps<RowType extends RowObject> = {
   expandedContent?: (row: RowType) => ReactNode;
   expandedClassNames?: string;
   preventExpandOnClickClass?: string;
+  expandedRow?: boolean;
 };
 
 export const TableRow = <RowType extends RowObject>({
@@ -35,8 +36,8 @@ export const TableRow = <RowType extends RowObject>({
   expandedContent,
   expandedClassNames = '',
   preventExpandOnClickClass,
+  expandedRow,
 }: TableRowProps<RowType>) => {
-  const [expandedRow, toggleExpandedRow] = useReducer(v => !v, false);
   const onClick = useCallback(
     (event: React.MouseEvent<HTMLTableRowElement>) => {
       if (preventExpandOnClickClass) {
@@ -50,7 +51,6 @@ export const TableRow = <RowType extends RowObject>({
         }
       }
       onRowClick?.(row);
-      toggleExpandedRow();
     },
     [onRowClick, row, preventExpandOnClickClass],
   );
@@ -60,7 +60,7 @@ export const TableRow = <RowType extends RowObject>({
       <tr
         key={index}
         className={classNames(styles.row, className, styles[size], {
-          [styles.clickable]: isClickable,
+          [styles.clickable]: isClickable || expandedContent,
           [styles.active]: isClickable && isSelected,
           [styles.expanded]: expandedRow && expandedContent,
         })}

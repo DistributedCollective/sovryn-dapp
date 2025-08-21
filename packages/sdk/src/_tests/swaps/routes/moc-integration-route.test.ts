@@ -1,16 +1,15 @@
 import { BigNumber, constants, Contract } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenContract,
-} from '@sovryn/contracts';
+import { getAssetContract, getProtocolContract } from '@sovryn/contracts';
 
 import { mocIntegrationSwapRoute } from '../../../swaps/smart-router/routes/moc-integration-swap-route';
 import { SwapRoute } from '../../../swaps/smart-router/types';
 import { makeChainFixture } from '../../_fixtures/chain';
-import { FAKE_PERMIT } from '../../_fixtures/permit';
+import {
+  FAKE_PERMIT_TRANSFER_FROM,
+  FAKE_SIGNATURE,
+} from '../../_fixtures/permit';
 import { makeTokenAddress } from '../../_fixtures/tokens';
 import { TEST_TIMEOUT } from '../../config';
 
@@ -21,7 +20,6 @@ describe('Moc Integration Route', () => {
   const rbtc = constants.AddressZero;
   let dllr: string;
   let moc: string;
-  let mocIntegration: string;
   let masset: string;
   let doc: Contract;
   let balance: BigNumber = constants.WeiPerEther;
@@ -29,11 +27,10 @@ describe('Moc Integration Route', () => {
   beforeAll(async () => {
     const fixture = await makeChainFixture();
     route = mocIntegrationSwapRoute(fixture.provider);
-    dllr = await makeTokenAddress(SupportedTokens.dllr);
-    moc = await makeTokenAddress(SupportedTokens.moc);
-    mocIntegration = (await getProtocolContract('mocIntegrationProxy')).address;
+    dllr = await makeTokenAddress('DLLR');
+    moc = await makeTokenAddress('MOC');
     masset = (await getProtocolContract('massetManager')).address;
-    const { address, abi } = await getTokenContract(SupportedTokens.doc);
+    const { address, abi } = await getAssetContract('DOC');
     doc = new Contract(address, abi, fixture.provider);
 
     balance = await doc.balanceOf(masset);
@@ -75,29 +72,28 @@ describe('Moc Integration Route', () => {
   });
 
   describe('approve', () => {
-    it('returns undefined for approval tx request', async () => {
+    it('returns data for approval tx request', async () => {
       await expect(
         route.approve(dllr, rbtc, constants.WeiPerEther, constants.AddressZero),
-      ).resolves.toBe(undefined);
+      ).resolves.toMatchObject({
+        to: expect.any(String),
+        data: expect.any(String),
+      });
     });
   });
 
   describe('permit', () => {
-    it('returns valid permit request for DLLR to RBTC swap', async () => {
-      await expect(
-        route.permit(dllr, rbtc, constants.WeiPerEther, constants.AddressZero),
-      ).resolves.toMatchObject({
-        token: dllr,
-        spender: mocIntegration,
-        owner: constants.AddressZero,
-        value: constants.WeiPerEther,
-      });
-    });
-
-    it('returns undefined for permit function for non-valid pair', async () => {
+    it('returns undefined for permit function', async () => {
       await expect(
         route.permit(moc, rbtc, constants.WeiPerEther, constants.AddressZero),
-      ).resolves.toBe(undefined);
+      ).resolves.toMatchObject({
+        approvalRequired: true,
+        typedData: expect.objectContaining({
+          domain: expect.any(Object),
+          types: expect.any(Object),
+          values: expect.any(Object),
+        }),
+      });
     });
   });
 
@@ -105,7 +101,8 @@ describe('Moc Integration Route', () => {
     it('builds swap tx data for DLLR -> RBTC', async () => {
       await expect(
         route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero, {
-          permit: FAKE_PERMIT,
+          typedDataValue: FAKE_PERMIT_TRANSFER_FROM,
+          typedDataSignature: FAKE_SIGNATURE,
         }),
       ).resolves.toMatchObject({
         to: expect.any(String),
@@ -114,10 +111,10 @@ describe('Moc Integration Route', () => {
       });
     });
 
-    it('fails build swap tx data if permit is not provided', async () => {
+    it('fails build swap tx data if permitTransferFrom is not provided', async () => {
       await expect(
         route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero),
-      ).rejects.toThrowError(/Permit is required for swap/);
+      ).rejects.toThrowError(/Permit2 is required for swap/);
     });
 
     it('fails build swap tx data for RBTC -> DLLR', async () => {

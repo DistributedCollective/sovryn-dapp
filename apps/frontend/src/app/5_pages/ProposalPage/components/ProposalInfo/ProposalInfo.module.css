@@ -1,0 +1,32 @@
+.markdown {
+  @apply w-full text-xs text-gray-30;
+
+  > pre {
+    @apply whitespace-pre-wrap break-words;
+  }
+}
+.description {
+  @apply flex-1 leading-5 font-medium text-gray-30;
+
+  h1 {
+    @apply text-lg mb-2;
+  }
+  h2 {
+    @apply text-base mb-2;
+  }
+  h3 {
+    @apply text-sm mb-2;
+  }
+
+  ul {
+    @apply list-disc pl-5 mb-2;
+  }
+
+  ol {
+    @apply list-decimal pl-5 mb-2;
+  }
+
+  p {
+    @apply mb-2;
+  }
+}

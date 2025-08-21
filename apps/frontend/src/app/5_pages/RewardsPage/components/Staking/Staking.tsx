@@ -4,7 +4,6 @@ import { BigNumber } from 'ethers';
 import { formatUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Paragraph, Table } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -12,13 +11,16 @@ import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { decimalic } from '../../../../../utils/math';
 import { EarnedFee } from '../../RewardsPage.types';
 import { useGetFeesEarned } from '../../hooks/useGetFeesEarned';
+import { useGetLiquidOsSovClaimAmount } from '../../hooks/useGetLiquidOsSovClaimAmount';
 import { useGetLiquidSovClaimAmount } from '../../hooks/useGetLiquidSovClaimAmount';
 import { columns } from './Staking.constants';
 import { WithdrawAllFees } from './components/WithdrawAllFees/WithdrawAllFees';
 import { WithdrawLiquidFee } from './components/WithdrawLiquidFee/WithdrawLiquidFee';
+import { WithdrawLiquidOsFee } from './components/WithdrawLiquidOsFee/WithdrawLiquidOsFee';
 
 export const Staking: FC = () => {
   const { account } = useAccount();
@@ -30,26 +32,37 @@ export const Staking: FC = () => {
     refetch: refetchLiquidSovClaim,
   } = useGetLiquidSovClaimAmount();
 
+  const {
+    amount: liquidOsSovClaimAmount,
+    withdrawTimestamp,
+    refetch: refetchLiquidOsSovClaim,
+  } = useGetLiquidOsSovClaimAmount();
+
   const hasEarnedFees = useMemo(
     () => earnedFees.some(earnedFee => decimalic(earnedFee.value).gt(0)),
     [earnedFees],
   );
 
   const hasLiquidSov = useMemo(
-    () => decimalic(liquidSovClaimAmount).gt(0),
+    () => liquidSovClaimAmount.gt(0),
     [liquidSovClaimAmount],
   );
 
+  const hasLiquidOsSov = useMemo(
+    () => liquidOsSovClaimAmount.gt(0),
+    [liquidOsSovClaimAmount],
+  );
+
   const noRewards = useMemo(
-    () => (!hasEarnedFees && !hasLiquidSov) || !account,
-    [hasEarnedFees, hasLiquidSov, account],
+    () => (!hasEarnedFees && !hasLiquidSov && !hasLiquidOsSov) || !account,
+    [hasEarnedFees, hasLiquidSov, hasLiquidOsSov, account],
   );
 
   const earnedFeesSum = useMemo(() => {
     const btcFees = earnedFees.filter(
       earnedFee =>
-        earnedFee.token === SupportedTokens.rbtc ||
-        earnedFee.token === SupportedTokens.wrbtc,
+        earnedFee.token.toUpperCase() === COMMON_SYMBOLS.BTC ||
+        earnedFee.token.toUpperCase() === COMMON_SYMBOLS.WBTC,
     );
 
     if (!btcFees.length) {
@@ -58,12 +71,12 @@ export const Staking: FC = () => {
 
     const otherFees = earnedFees.filter(
       earnedFee =>
-        earnedFee.token !== SupportedTokens.rbtc &&
-        earnedFee.token !== SupportedTokens.wrbtc,
+        earnedFee.token.toUpperCase() !== COMMON_SYMBOLS.BTC &&
+        earnedFee.token.toUpperCase() !== COMMON_SYMBOLS.WBTC,
     );
 
     const btcFeesSum: EarnedFee = {
-      token: SupportedTokens.rbtc,
+      token: COMMON_SYMBOLS.BTC,
       value: btcFees
         .reduce((sum, fee) => sum.add(fee.value), BigNumber.from(0))
         .toString(),
@@ -93,7 +106,11 @@ export const Staking: FC = () => {
                   ))}
                 </div>
               ),
-              action: <WithdrawAllFees fees={earnedFees} refetch={refetch} />,
+              action: (
+                <div className="flex justify-end w-full md:w-auto h-full pt-3">
+                  <WithdrawAllFees fees={earnedFees} refetch={refetch} />
+                </div>
+              ),
               key: `all-fee`,
             },
           ]
@@ -104,20 +121,51 @@ export const Staking: FC = () => {
               type: t(translations.rewardPage.staking.stakingSubsidies),
               amount: (
                 <AmountRenderer
-                  value={formatUnits(liquidSovClaimAmount, 18)}
-                  suffix={getTokenDisplayName(SupportedTokens.sov)}
+                  value={liquidSovClaimAmount}
+                  suffix={getTokenDisplayName(COMMON_SYMBOLS.SOV)}
                   precision={BTC_RENDER_PRECISION}
-                  dataAttribute={`${SupportedTokens.sov}-liquid-amount`}
+                  dataAttribute={`sov-liquid-amount`}
                 />
               ),
               action: (
-                <WithdrawLiquidFee
-                  amountToClaim={liquidSovClaimAmount}
-                  lastWithdrawalInterval={lastWithdrawalInterval}
-                  refetch={refetchLiquidSovClaim}
+                <div className="flex justify-end w-full md:w-auto h-full pt-3">
+                  <WithdrawLiquidFee
+                    amountToClaim={liquidSovClaimAmount
+                      .toBigNumber()
+                      .toString()}
+                    lastWithdrawalInterval={lastWithdrawalInterval}
+                    refetch={refetchLiquidSovClaim}
+                  />
+                </div>
+              ),
+              key: `sov-liquid-fee`,
+            },
+          ]
+        : []),
+      ...(hasLiquidOsSov
+        ? [
+            {
+              type: t(translations.rewardPage.staking.stakingSubsidiesOs),
+              amount: (
+                <AmountRenderer
+                  value={liquidOsSovClaimAmount}
+                  suffix={getTokenDisplayName(COMMON_SYMBOLS.OSSOV)}
+                  precision={BTC_RENDER_PRECISION}
+                  dataAttribute={`${COMMON_SYMBOLS.SOV}-os-liquid-amount`}
                 />
               ),
-              key: `${SupportedTokens.sov}-liquid-fee`,
+              action: (
+                <div className="flex justify-end w-full md:w-auto h-full pt-3">
+                  <WithdrawLiquidOsFee
+                    amountToClaim={liquidOsSovClaimAmount
+                      .toBigNumber()
+                      .toString()}
+                    nextWithdrawTimestamp={withdrawTimestamp}
+                    refetch={refetchLiquidOsSovClaim}
+                  />
+                </div>
+              ),
+              key: `${COMMON_SYMBOLS.SOV}-os-liquid-fee`,
             },
           ]
         : []),
@@ -125,12 +173,16 @@ export const Staking: FC = () => {
     [
       hasEarnedFees,
       earnedFeesSum,
+      hasLiquidOsSov,
+      liquidOsSovClaimAmount,
+      withdrawTimestamp,
       earnedFees,
       refetch,
       hasLiquidSov,
       liquidSovClaimAmount,
       lastWithdrawalInterval,
       refetchLiquidSovClaim,
+      refetchLiquidOsSovClaim,
     ],
   );
 

@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Accordion, AccordionStyle } from '../../../../../1_atoms';
 import { noop } from '../../../../../utils';
@@ -11,10 +11,14 @@ type TableMobileRowProps<RowType extends RowObject> = {
   row: RowType;
   onRowClick?: (row: RowType) => void;
   dataAttribute?: string;
-  title: ReactNode;
+  titleRenderer:
+    | ((row: RowType, isOpen?: boolean | undefined) => React.ReactNode)
+    | undefined;
   expandedContent?: (row: RowType) => ReactNode;
   renderer?: (row: RowType) => ReactNode;
   subtitleRenderer?: (row: RowType) => ReactNode;
+  flatMode?: boolean;
+  index: number;
 };
 
 export const TableMobileRow = <RowType extends RowObject>({
@@ -22,17 +26,25 @@ export const TableMobileRow = <RowType extends RowObject>({
   row,
   onRowClick = noop,
   dataAttribute,
-  title,
+  titleRenderer,
   expandedContent,
   renderer,
   subtitleRenderer,
+  flatMode,
+  index,
 }: TableMobileRowProps<RowType>) => {
   const [open, setOpen] = useState(false);
 
   const onClick = useCallback(() => {
-    onRowClick?.(row);
-  }, [onRowClick, row]);
+    if (!flatMode) {
+      onRowClick?.(row);
+    }
+  }, [flatMode, onRowClick, row]);
 
+  const title = useMemo(
+    () => <>{titleRenderer?.(row, open) || index}</>,
+    [index, open, row, titleRenderer],
+  );
   return (
     <>
       <Accordion
@@ -42,6 +54,7 @@ export const TableMobileRow = <RowType extends RowObject>({
         labelClassName={styles.accordion}
         dataAttribute={dataAttribute}
         style={AccordionStyle.secondary}
+        flatMode={flatMode}
       >
         <div onClick={onClick} className={styles.row}>
           {!renderer &&

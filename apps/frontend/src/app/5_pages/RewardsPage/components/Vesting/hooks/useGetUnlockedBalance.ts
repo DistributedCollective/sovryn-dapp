@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import dayjs from 'dayjs';
 
-import { defaultChainId } from '../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useIsMounted } from '../../../../../../hooks/useIsMounted';
@@ -20,7 +20,7 @@ export const useGetUnlockedBalance = (item: VestingContractTableRecord) => {
 
   const [currentTimestamp, setCurrentTimestamp] = useState(dayjs().unix());
 
-  const { value: block } = useBlockNumber(defaultChainId);
+  const { value: block } = useBlockNumber(RSK_CHAIN_ID);
   const isMounted = useIsMounted();
 
   useEffect(() => {

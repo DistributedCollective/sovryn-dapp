@@ -42,6 +42,7 @@ export type DropdownProps = {
   dropdownClassName?: string;
   closeOnClick?: boolean;
   active?: boolean;
+  disabled?: boolean;
 };
 
 export const NavDropdown = forwardRef<HTMLButtonElement, DropdownProps>(
@@ -58,6 +59,7 @@ export const NavDropdown = forwardRef<HTMLButtonElement, DropdownProps>(
       dropdownClassName,
       closeOnClick,
       active,
+      disabled,
     },
     ref,
   ) => {
@@ -75,8 +77,8 @@ export const NavDropdown = forwardRef<HTMLButtonElement, DropdownProps>(
     );
 
     const onButtonClick = useCallback(
-      () => setOpen(prevValue => !prevValue),
-      [setOpen],
+      () => !disabled && setOpen(prevValue => !prevValue),
+      [setOpen, disabled],
     );
 
     const getCoords = useCallback(() => {
@@ -112,8 +114,9 @@ export const NavDropdown = forwardRef<HTMLButtonElement, DropdownProps>(
         classNames(styles.button, styles[size], className, {
           [styles.isOpen]: isOpen,
           [styles.isActive]: isAccordionActive,
+          [styles.disabled]: disabled,
         }),
-      [size, className, isOpen, isAccordionActive],
+      [size, className, isOpen, isAccordionActive, disabled],
     );
 
     const useClickedOutside = useCallback(() => {
@@ -154,8 +157,12 @@ export const NavDropdown = forwardRef<HTMLButtonElement, DropdownProps>(
     }, [isOpen, updateCoords, onOpen, mode, onClose]);
 
     useEffect(() => {
-      setOpen(!!active);
-    }, [active]);
+      if (isMobile) {
+        setOpen(!!active);
+      } else {
+        setOpen(false);
+      }
+    }, [active, isMobile]);
 
     const renderDropdown = useMemo(
       () => (

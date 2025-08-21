@@ -23,8 +23,13 @@
 }
 
 .content {
-  @apply mt-2;
+  @apply mt-2 hidden;
+
+  &.isOpen {
+    @apply block;
+  }
 }
+
 
 .secondary {
   @apply bg-gray-70 my-1 px-3 py-2.5 rounded;

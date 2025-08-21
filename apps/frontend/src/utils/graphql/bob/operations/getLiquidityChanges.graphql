@@ -1,0 +1,27 @@
+query getLiquidityChanges(
+  $user: Bytes
+  $skip: Int!
+  $pageSize: Int!
+  $orderBy: LiquidityChange_orderBy
+  $orderDirection: OrderDirection
+) {
+  liquidityChanges(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    pool {
+      base
+      quote
+    }
+    changeType
+    baseFlow
+    quoteFlow
+    time
+    transactionHash
+    positionType
+    liq
+  }
+}

@@ -3,37 +3,46 @@ import { useEffect, useMemo, useState } from 'react';
 import { BigNumber } from 'ethers';
 
 import { getProtocolContract, SupportedTokens } from '@sovryn/contracts';
+import { ChainId } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import { useAccount } from '../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useIsMounted } from '../../../../hooks/useIsMounted';
-import { allowedTokens, bassets, masset } from '../ConvertPage.types';
+import { isRskChain } from '../../../../utils/chain';
+import {
+  SMART_ROUTER_ALLOWED_TOKENS,
+  BASSETS,
+  MASSET,
+} from '../ConvertPage.constants';
 
 export const useGetMaximumAvailableAmount = (
   sourceToken: SupportedTokens,
   destinationToken: SupportedTokens,
+  chain?: ChainId,
 ) => {
+  const currentChainId = useCurrentChain();
   const isMounted = useIsMounted();
   const { account } = useAccount();
 
   //  bAsset => DLLR conversion
   const isMint = useMemo(
-    () => bassets.includes(sourceToken) && destinationToken === masset,
+    () => BASSETS.includes(sourceToken) && destinationToken === MASSET,
     [destinationToken, sourceToken],
   );
 
   const isZero = useMemo(
     () =>
-      allowedTokens.includes(sourceToken) &&
-      allowedTokens.includes(destinationToken),
+      SMART_ROUTER_ALLOWED_TOKENS.includes(sourceToken) &&
+      SMART_ROUTER_ALLOWED_TOKENS.includes(destinationToken),
     [destinationToken, sourceToken],
   );
 
   const { weiBalance: sourceTokenWeiBalance, balance: sourceTokenBalance } =
-    useAssetBalance(sourceToken);
+    useAssetBalance(sourceToken, chain ?? currentChainId);
 
   const [massetManagerAddress, setMassetManagerAddress] = useState('');
 
@@ -41,21 +50,23 @@ export const useGetMaximumAvailableAmount = (
     const getMassetManagerDetails = async () => {
       const { address: massetManagerAddress } = await getProtocolContract(
         'massetManager',
-        defaultChainId,
+        RSK_CHAIN_ID,
       );
       return massetManagerAddress;
     };
 
-    getMassetManagerDetails().then(result => {
-      if (isMounted()) {
-        setMassetManagerAddress(result);
-      }
-    });
-  }, [isMounted]);
+    if (isRskChain(currentChainId)) {
+      getMassetManagerDetails().then(result => {
+        if (isMounted()) {
+          setMassetManagerAddress(result);
+        }
+      });
+    }
+  }, [chain, currentChainId, isMounted]);
 
   const { weiBalance: destinationTokenAggregatorWeiBalance } = useAssetBalance(
     destinationToken,
-    defaultChainId,
+    RSK_CHAIN_ID,
     massetManagerAddress,
   );
 
@@ -66,6 +77,10 @@ export const useGetMaximumAvailableAmount = (
 
   if (!account) {
     return Decimal.ZERO;
+  }
+
+  if (!isRskChain(currentChainId)) {
+    return sourceTokenBalance;
   }
 
   if (isMint || !isZero) {

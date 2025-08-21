@@ -1,6 +1,6 @@
 {
   "name": "@sovryn/sdk",
-  "version": "0.0.6",
+  "version": "2.0.6",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",
@@ -29,13 +29,16 @@
     "@sovryn-zero/lib-ethers": "0.2.5",
     "@sovryn/contracts": "*",
     "@sovryn/ethers-provider": "*",
+    "@sovryn/sdex": "*",
+    "@sovryn/utils": "^0.0.2",
+    "@uniswap/permit2-sdk": "^1.2.1",
     "rxjs": "7.5.6"
   },
   "peerDependencies": {
-    "ethers": "*",
     "@ethersproject/abstract-provider": "*",
     "@ethersproject/providers": "*",
     "@sovryn-zero/lib-base": "*",
-    "@sovryn/contracts": "*"
+    "@sovryn/contracts": "*",
+    "ethers": "*"
   }
 }

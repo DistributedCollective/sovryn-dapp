@@ -16,6 +16,7 @@ import { EmailUnsubscribedPage } from './app/5_pages/EmailUnsubscribedPage/Email
 import { EmailVerifiedPage } from './app/5_pages/EmailVerifiedPage/EmailVerifiedPage';
 import { ErrorPage } from './app/5_pages/ErrorPage/ErrorPage';
 import { zeroPageLoader } from './app/5_pages/ZeroPage/loader';
+import { CrocContextProvider } from './contexts/CrocContext';
 import { isIPFSBuild } from './utils/helpers';
 import { loadable } from './utils/loadable';
 
@@ -38,9 +39,15 @@ const RewardsPage = loadable(
   () => import('./app/5_pages/RewardsPage/RewardsPage'),
 );
 const LendPage = loadable(() => import('./app/5_pages/LendPage/LendPage'));
+const MarketMakingPage = loadable(
+  () => import('./app/5_pages/MarketMakingPage/MarketMakingPage'),
+);
 const StakePage = loadable(() => import('./app/5_pages/StakePage/StakePage'));
 const BorrowPage = loadable(
   () => import('./app/5_pages/BorrowPage/BorrowPage'),
+);
+const BobGateway = loadable(
+  () => import('./app/5_pages/BobGateway/BobGateway'),
 );
 const BitocracyPage = loadable(
   () => import('./app/5_pages/BitocracyPage/BitocracyPage'),
@@ -48,6 +55,25 @@ const BitocracyPage = loadable(
 const ProposalPage = loadable(
   () => import('./app/5_pages/ProposalPage/ProposalPage'),
 );
+const LandingPage = loadable(
+  () => import('./app/5_pages/LandingPage/LandingPage'),
+);
+const PortfolioPage = loadable(
+  () => import('./app/5_pages/PortfolioPage/PortfolioPage'),
+);
+const ProtocolDataPage = loadable(
+  () => import('./app/5_pages/ProtocolDataPage/ProtocolDataPage'),
+);
+
+const LeaderboardPointsPage = loadable(
+  () => import('./app/5_pages/LeaderboardPointsPage/LeaderboardPointsPage'),
+);
+
+const ClaimLpPage = loadable(
+  () => import('./app/5_pages/ClaimLpPage/ClaimLpPage'),
+);
+
+const RunesPage = loadable(() => import('./app/5_pages/RunesPage/RunesPage'));
 
 const routes = [
   {
@@ -62,7 +88,7 @@ const routes = [
     children: [
       {
         index: true,
-        element: <ConvertPage />,
+        element: <LandingPage />,
       },
       {
         path: '/convert',
@@ -78,6 +104,10 @@ const routes = [
         element: <BorrowPage />,
       },
       {
+        path: '/bob-gateway',
+        element: <BobGateway />,
+      },
+      {
         path: '/borrow',
         loader: () => redirect('/borrow/fixed-interest'),
       },
@@ -89,6 +119,10 @@ const routes = [
       {
         path: '/earn/lend',
         element: <LendPage />,
+      },
+      {
+        path: '/earn/market-making',
+        element: <MarketMakingPage />,
       },
       {
         path: '/earn',
@@ -112,8 +146,33 @@ const routes = [
         loader: zeroPageLoader,
       },
       {
+        path: '/portfolio',
+        element: (
+          <CrocContextProvider>
+            <PortfolioPage />
+          </CrocContextProvider>
+        ),
+        loader: zeroPageLoader,
+      },
+      {
         path: '/earn/staking',
         element: <StakePage />,
+      },
+      {
+        path: '/bob-lp-points',
+        element: <LeaderboardPointsPage />,
+      },
+      {
+        path: '/stats',
+        element: <ProtocolDataPage />,
+      },
+      {
+        path: '/claim-lp',
+        element: <ClaimLpPage />,
+      },
+      {
+        path: '/runes',
+        element: <RunesPage />,
       },
     ],
   },

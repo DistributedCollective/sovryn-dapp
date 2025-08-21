@@ -17,6 +17,7 @@
             "cancel": "Cancel",
             "withdraw": "Withdraw",
             "continue": "Continue",
+            "reposition": "Reposition",
             "done": "Done",
             "close": "Close",
             "retry": "Retry",
@@ -24,6 +25,7 @@
             "back": "Back"
         },
         "na": "N/A",
+        "select": "Select",
         "tables": {
             "columnTitles": {
                 "amount": "Amount",
@@ -42,9 +44,12 @@
         "max": "max",
         "amount": "Amount",
         "deposit": "Deposit",
+        "adjust": "Adjust",
         "withdraw": "Withdraw",
         "txId": "TXID",
         "btc": "BTC",
+        "eth": "ETH",
+        "usd": "USD",
         "tx": {
             "signPermitTitle": "Permit {{symbol}}",
             "signPermitSubtitle": "Sign a permit to allow the contract to spend your {{symbol}}",
@@ -64,15 +69,19 @@
         "transactionTypes": {
             "deposit": "Deposit",
             "withdrawal": "Withdrawal"
-        }
+        },
+        "learnMore": "Learn more",
+        "invalidAmountError": "Exceeds maximum amount"
     },
     "connectWalletButton": {
         "connect": "Get started",
+        "connectBTC": "Connect BTC wallet",
         "rewards": "Rewards",
         "notifications": "Notifications",
         "history": "History",
         "copyAddress": "Copy address",
-        "disconnect": "Disconnect"
+        "disconnect": "Disconnect",
+        "portfolio": "Portfolio"
     },
     "header": {
         "funding": "Funding",
@@ -95,12 +104,37 @@
                     "stabilityPool": "Stability pool",
                     "stabilityPoolDescription": "Earn BTC from Zero liquidations",
                     "staking": "Staking",
-                    "stakingDescription": "Gain voting power and earn fees"
+                    "stakingDescription": "Gain voting power and earn fees",
+                    "marketMaking": "Market making",
+                    "marketMakingDescription": "Earn fees from AMM swaps"
                 }
             },
             "convert": "Convert",
             "stake": "Stake",
-            "bitocracy": "Bitocracy"
+            "bitocracy": "Bitocracy",
+            "origins": "Origins",
+            "bob": "Go BoB",
+            "runes": "Runes",
+            "spicePoints": "Spice Points",
+            "bobGateway": "Bob Gateway",
+            "bridges": {
+                "title": "Bridges",
+                "connectWallet": "Connect a wallet to use the bridges.",
+                "subMenu": {
+                    "runeBridge": "Runes",
+                    "runeBridgeDescription": "Transfer between Bitcoin and Sovryn",
+                    "tokenBridge": "Stablecoins",
+                    "tokenBridgeDescription": "Transfer between RSK and other chains",
+                    "btcBridge": "Fast BTC",
+                    "btcBridgeDescription": "Transfer between Bitcoin and RSK",
+                    "ethBridge": "ETH",
+                    "ethBridgeDescription": "Transfer between BOB and other chains",
+                    "ercBridge": "ERC-20",
+                    "ercBridgeDescription": "Transfer between BOB and other chains",
+                    "powPeg": "PowPeg",
+                    "powPegDescription": "Transfer between Bitcoin and RSK"
+                }
+            }
         }
     },
     "footer": {
@@ -112,11 +146,13 @@
         "fees": "Fees",
         "terms": "Terms of service",
         "policy": "Privacy policy",
+        "stats": "Stats",
         "buildID": "Build ID:"
     },
     "wrongNetworkSwitcher": {
         "title": "Wrong network",
-        "description": "We detected that you are currently connected to the wrong network. Please switch your wallet to use {{network}} network."
+        "description": "We detected that you are currently connected to the wrong network. Please switch your wallet to use {{network}} network.",
+        "learnMore": "Learn more"
     },
     "errorPage": {
         "meta": {
@@ -133,7 +169,9 @@
     },
     "maintenanceMode": {
         "fastBtc": "Fast BTC is locked",
+        "runeBridge": "Rune Bridge is locked",
         "featureDisabled": "This feature is currently disabled",
+        "openingLOC": "Opening a line of credit is currently disabled",
         "fullD2": {
             "title": "Sovryn is in maintenance mode.",
             "description": "Follow the social channels linked in the footer for further updates."
@@ -152,12 +190,12 @@
         "gasLimit": "Gas limit",
         "gasPrice": "Gas price",
         "resetValues": "Reset values",
-        "notEnoughBalance": "Estimated gas fee exceeds BTC balance"
+        "notEnoughBalance": "Estimated gas fee exceeds {{asset}} balance"
     },
 
     "zeroPage": {
         "meta": {
-            "title": "Borrow - Sovryn",
+            "title": "Zero line of credit - Sovryn",
             "description": "0% interest loans with Sovryn's Zero protocol. Borrow ZUSD or DLLR against your Bitcoin in a fully decentralized system. Increase your earning potential today."
         },
         "dashboardWelcomeBanner": {
@@ -238,6 +276,19 @@
             "borrow": "Borrow {{asset}}",
             "addCollateral": "Add collateral",
             "withdrawCollateral": "Withdraw collateral"
+        },
+        "redeem": {
+            "title": "Redeem",
+            "cta": "Redeem",
+            "form": {
+                "description": "You can redeem your ZUSD for RBTC here. The corresponding RBTC is drawn from the lowest-collateralized loans, reducing the borrower's debt while you receive an equivalent value in RBTC.",
+                "link": "Learn more about Redemptions.",
+                "minimum": "Minimum {{value}} {{symbol}}",
+                "confirm": "Confirm"
+            },
+            "tx": {
+                "title": "Redeem {{symbol}}"
+            }
         }
     },
     "stats": {
@@ -344,7 +395,7 @@
 
     "earnPage": {
         "meta": {
-            "title": "Earn - Sovryn",
+            "title": "Stability pool - Sovryn",
             "description": "Earn BTC by supplying ZUSD and ensure full collateralization of Zero with the Stability Pool. Join Sovryn's decentralized Zero protocol and start earning now."
         },
         "title": "Stability pool",
@@ -370,7 +421,7 @@
 
     "convertPage": {
         "meta": {
-            "title": "Convert - Sovryn",
+            "title": "Sovryn - DeFi for bitcoin",
             "description": "Convert between stablecoins on Zero - ZUSD, DOC, and Sovryn DLLR - using the Zero and Mynt protocols. Exchange with ease and convenience."
         },
         "title": "Convert",
@@ -378,7 +429,9 @@
         "form": {
             "convertFrom": "Convert from",
             "convertTo": "To",
-            "invalidAmountError": "Exceeds maximum amount"
+            "invalidAmountError": "Exceeds maximum amount",
+            "quoteError": "No route found, please try another asset or a lower amount",
+            "noAvailableTokens": "No available tokens"
         },
         "txDialog": {
             "convertTitle": "Convert {{from}} to {{to}}",
@@ -392,9 +445,168 @@
         "maximumPrice": "Maximum price"
     },
 
+    "landingPage": {
+        "meta": {
+            "title": "Welcome to Sovryn",
+            "description": "The largest Bitcoin DeFi dapp - trading, lending, yield farming and home to the Origins cross-chain launchpad."
+        },
+        "getStarted": {
+            "title": "Get started",
+            "steps": {
+                "first": {
+                    "title": "Connect your wallet",
+                    "description": "Sovryn supports the most popular browser and hardware wallets."
+                },
+                "second": {
+                    "title": "Deposit funds",
+                    "description": "Transfer funds to your address from our selection of bridges."
+                },
+                "third": {
+                    "title": "Start earning",
+                    "description": "Enjoy permisionless and decentralized trading keeping the full control of your funds."
+                }
+            },
+            "actions": {
+                "getStarted": "Get Started",
+                "fundYourWallet": "Fund Wallet",
+                "learnMore": "Learn more in wiki"
+            }
+        },
+        "faqSection": {
+            "title": "FAQ",
+            "list": {
+                "first": {
+                    "title": "What is Sovryn?",
+                    "description": "Sovryn is a decentralized exchange built on bitcoin. Use your bitcoin to trade, borrow, lend, and earn income. Sovryn is a DAO and the most feature-rich DeFi platform for bitcoin."
+                },
+                "second": {
+                    "title": "On which blockchain does Sovryn operate?",
+                    "description": "Sovryn currently operates on two chains—BOB and Rootstock.<br/><br/><0>BOB (Build on Bitcoin)</0> — a hybrid Layer-2 rollup secured by bitcoin and natively connected to Ethereum. It uses the Ethereum Virtual Machine.<br/><br/><1>Rootstock (RSK)</1>—a smart-contract, merge-mined sidechain of bitcoin. Its engine is a forked version of the Ethereum Virtual Machine.<br/><br/>Both BOB and Rootstock are compatible with Ethereum smart contracts and the tools used to deploy and interact with them.",
+                    "cta": "BOB (Build on Bitcoin)",
+                    "cta2": "Rootstock (RSK)"
+                },
+                "third": {
+                    "title": "How do I get funds into Sovryn?",
+                    "description": "On BOB, you can use the bridge interface to bring in assets from Ethereum and to bridge in BTC from the bitcoin network.<br/><br/>On Rootstock, you can bridge in BTC from the bitcoin network with FastBTC. You can also bridge in stablecoins with Babelfish and other assets from Ethereum and BSC using the Sovryn bridge."
+                },
+                "fourth": {
+                    "title": "What is the native gas token?",
+                    "description": "On BOB, the native currency is ETH, which must be used for gas for transactions. Soon you will be able to use other assets to pay for gas as well.<br/><br/>On Rootstock, the native currency is RBTC, which must be used for gas for transactions. RBTC is pegged 1:1 with BTC."
+                },
+                "fifth": {
+                    "title": "What can I do on the Sovryn dapp?",
+                    "description": "You can trade, swap, provide liquidity, stake, lend, or borrow funds."
+                }
+            }
+        },
+        "quickLaunch": {
+            "stake": {
+                "title": "Stake SOV – earn up to {{amount}}% APR",
+                "description": "Earn a share of Sovryn’s revenue & vote on key decisions in Bitocracy.",
+                "action": "Stake SOV"
+            },
+            "earn": {
+                "title": "Earn up to {{amount}}% APR in AMM",
+                "description": "Deposit in the AMM pools, earn from trades and get SOV rewards.",
+                "action": "Deposit in AMM"
+            },
+            "lend": {
+                "title": "Lend DLLR – earn {{amount}}% APR",
+                "description": "Lend your DLLR and earn interest from Borrowers.",
+                "action": "Lend DLLR"
+            },
+            "borrow": {
+                "title": "Borrow with Sovryn",
+                "description": "Borrow against your assets in Sovryn’s lending pools.",
+                "action": "Borrow with Sovryn"
+            },
+            "stake_BOB": {
+                "title": "Stake SOV",
+                "description": "Stake SOV and earn Runes & Spice points.",
+                "action": "Stake SOV"
+            },
+            "runes_BOB": {
+                "title": "Trade Runes",
+                "description": "The hottest tokens now trading on Sovryn.",
+                "action": "Trade Runes"
+            },
+            "earnYield_BOB": {
+                "title": "Passive Yield",
+                "description": "Earn Spice points & Trading fees in the Sovryn AMM.",
+                "action": "Deposit in AMM"
+            },
+            "soon_BOB": {
+                "title": "Soon on BOB",
+                "description": "Lending, Borrowing, Bitocracy voting & more.",
+                "action": "Coming soon"
+            },
+            "originsLaunchpad": {
+                "title": "Join $BOS Presale – Phase 2 Live",
+                "description": "Deposit from any chain. Get bonuses for $SOV staking. BTC and ADA deposits.",
+                "action": "Join Presale"
+            }
+        },
+        "promotions": {
+            "sov": {
+                "title": "BUY SOV - Shape The future",
+                "description": "Buy SOV - Sovryn’s governance token. Stake to earn rewards and vote in Bitocracy.",
+                "cta": "Buy SOV"
+            },
+            "competition": {
+                "title": "YOU’VE GOT THE POWA",
+                "description": "Anyone using Sovryn already has points that will convert to POWA - a new bitcoin-token that allows an early use of what’s to come with the BitcoinOS launch. See how many points you’ve got:",
+                "cta": "Leaderboard",
+                "secondaryCta": "More about POWA"
+            },
+            "runesExtraSpice": {
+                "title": "RUNES & EXTRA SPICE",
+                "description": "Get early exposure to bitcoin tokens with our points campaign. In collaboration with BOB. Last chance! Open until April 30!",
+                "cta": "Learn More"
+            },
+            "runesBridge": {
+                "title": "RUNES ARE HERE!",
+                "description": "Runes are now tradeable on mainnet! Runes bridge is live!",
+                "cta": "Learn more about Runes"
+            },
+            "sovrynIsLiveOnBob": {
+                "title": "Hello, BOB!",
+                "description": "The Sovryn DEX is now live on BOB. Enjoy passive yield, Spice, runes trading & more on the new chain.",
+                "cta": "Deposit in AMM"
+            },
+            "bosLaunch": {
+                "title": "Launching BOS!",
+                "description": "Sovryn to lead BitcoinOS launch & retain 10% of $BOS. $SOV stakers decide allocation.",
+                "cta": "Stake SOV"
+            },
+            "originsLaunch": {
+                "title": "Origins is live!",
+                "description": "Join the $BOS Phase 2 presale on Sovryn’s multichain launchpad. $SOV stakers earn bonuses!",
+                "cta": "Join Presale",
+                "secondaryCta": "Learn more"
+            }
+        },
+        "titleSection": {
+            "title": "Welcome to Sovryn",
+            "description": "The largest Bitcoin DeFi dapp - trading, lending, yield farming and home to the Origins cross-chain launchpad.",
+            "cta": "<0>New to Sovryn?</0>",
+            "ctaText": "New to Sovryn?"
+        },
+        "protocolDataSection": {
+            "title": "Protocol data",
+            "cta": "View more",
+            "totalValueLockedAllNetworks": "Total value locked on all networks",
+            "volumeAllNetworks": "24 hour volume on all networks",
+            "tvlRskNetwork": "TVL RSK network",
+            "volumeRskNetwork": "24 hour RSK network",
+            "tvlBobNetwork": "TVL BOB network",
+            "volumeBobNetwork": "24 hour BOB network",
+            "dataComingSoon": "Data coming soon"
+        }
+    },
+
     "stakePage": {
         "meta": {
-            "title": "Stake - Sovryn"
+            "title": "Staking - Sovryn"
         },
         "statistics": {
             "title": "Global staking statistics",
@@ -408,11 +620,6 @@
             "title": "Personal staking statistics",
             "stakedSov": "Staked SOV",
             "votingPower": "Voting power",
-            "votingPowerInfo": {
-                "line1": "Own voting power",
-                "line2": "Delegated voting power",
-                "line3": "Total personal voting power"
-            },
             "votingPowerShare": "Voting power share"
         },
         "table": {
@@ -617,7 +824,7 @@
         "subtitle": "Help decide the future of Sovryn",
         "pastProposals": "Past proposals",
         "liveProposals": "Live proposals",
-        "activeProposalError": "Only one proposal may be active from a single wallet",
+        "activeProposalError": "An address may only create one live proposal at a time.",
         "table": {
             "status": "Status",
             "title": "Title",
@@ -749,6 +956,128 @@
         }
     },
 
+    "leaderboardPointsPage": {
+        "meta": {
+            "title": "Spice Leaderboard - Sovryn"
+        },
+        "title": "Spice Leaderboard",
+        "description1": "Spice Points are rewards earned by providing liquidity and staking SOV on the Sovryn DEX on the BOB chain. These points track user contributions and engagement, helping determine future rewards allocated by the BOB team. This leaderboard displays only the rewards distributed by Sovryn and allows you to check your accumulated points and current position.",
+        "description2": "If you want to earn your Spice points simply bridge your funds via <0>BOB Fusion and</0> start providing liquidity via our the <1>Market Making</1>  page or start <2>Staking SOV</2> tokens.",
+        "claimDescription": "Users who participated in the Season 1 Liquidity Provisioning campaign can claim their LP tokens here:",
+        "leaderboard": "Leaderboard",
+        "claimWarning": "Please note that users claiming from the distributor contract prior to <0>2024-05-31 12:00:00 UTC</0> will not be eligible to Extra Spice, and claiming prior to <1>2024-06-30 12:00:00 UTC</1> will not be eligible to Rune points.",
+        "aboutCampaign": "About Extra Spice and Runes campaign",
+        "claimLp": "Claim LP tokens",
+        "connectWalletText": "Connect your wallet to see how many points you’ve got.",
+        "connectWalletCta": "Connect wallet",
+        "season1": "Season 1",
+        "season2": "Season 2",
+        "table": {
+            "leaderboard": "Season 1 Leaderboard",
+            "yourPosition": "Your position",
+            "participant": "Participant",
+            "balance": "Balance",
+            "points": "Points",
+            "spice": "Season 1 and 2 Spice",
+            "spice3": "Season 3 Spice",
+            "total": "Total",
+            "extraSpice": "Extra Spice",
+            "extraSpiceShot": "Extra Spice Shot",
+            "runes": "Runes"
+        }
+    },
+    "runeBridge": {
+        "mainScreen": {
+            "title": "Rune Bridge",
+            "tabs": {
+                "receiveLabel": "Receive",
+                "receiveInfoText": "Transfer Runes from Bitcoin to your {{chainName}} address",
+                "sendLabel": "Send",
+                "sendInfoText": "Transfer Rune Tokens from {{chainName}} to your Bitcoin address"
+            }
+        },
+        "instructions": {
+            "title": "Instructions",
+            "upToNHours": "Allow up to {{hours}} hrs to process",
+            "createSupportTicket": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
+            "createSupportTicketCta": "create a support ticket",
+            "receive": {
+                "onlyRunes": "Only transfer Runes, not Bitcoin",
+                "onlySupportedRunes": "Only transfer Runes that are supported by the bridge, visible on the next page. Transfers of unsupported Runes will not be processed",
+                "postage": "Set the postage to at least {{postageSat}} satoshi ({{postageBtc}} BTC)"
+            },
+            "send": {
+                "wallet": "Only transfer Rune Tokens to a wallet that supports Runes, such as <0>the Ordinals wallet \"ord\"</0>. Runes sent to a Bitcoin wallet without support for Runes will be lost",
+                "walletCta": "the Ordinals wallet \"ord\"",
+                "minAmount": "Do not send less than the minimum amount",
+                "maxAmount": "Do not send more than the maximum amount",
+                "supportedFormats": "Supported address formats: P2TR, P2PKH, P2SH, P2WPKH, P2WSH"
+            }
+        },
+        "limits": {
+            "title": "Transfer policies",
+            "minimumAmount": "Minimum amount",
+            "maximumAmount": "Maximum amount",
+            "minimumPostage": "Minimum postage",
+            "serviceFee": "Service fee",
+            "supportedRunes": "Supported Runes"
+        },
+        "addressForm": {
+            "title": "Send Runes to this address",
+            "copyAddressSuccess": "Address was copied to clipboard."
+        },
+        "send": {
+            "amountForm": {
+                "title": "Select the Rune Token and enter the amount to send",
+                "amountLabel": "Send"
+            },
+            "addressForm": {
+                "title": "Enter recipient's bitcoin address",
+                "addressLabel": "Address",
+                "maxExceed": "Exceeds maximum amount",
+                "invalidAddress": "Invalid address"
+            },
+            "confirmationScreens": {
+                "reviewTitle": "Transfer details",
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "statusTitleFailed": "Transfer failed",
+                "from": "From",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "hash": "{{chainName}} TXID",
+                "bitcoinTxId": "Bitcoin TXID"
+            },
+            "txDialog": {
+                "title": "Send {{rune}} to the bitcoin network",
+                "approveTxTitle": "Approve {{rune}}",
+                "sendTxTitle": "Send {{rune}}"
+            }
+        },
+        "receive": {
+            "loading": "Loading... this may take up to 30 seconds",
+            "statusScreen": {
+                "transferStatus": {
+                    "detected": "Transfer detected",
+                    "seen": "Runes received by the bridge",
+                    "sent_to_evm": "Rune Tokens transferred in {{chainName}}",
+                    "confirmed": "Rune Token transfer confirmed in {{chainName}}"
+                },
+                "statusTitleProcessing": "Transfer processing...",
+                "statusTitleComplete": "Transfer complete",
+                "to": "To",
+                "sending": "Sending",
+                "serviceFee": "Service fee",
+                "receiving": "Receiving",
+                "bitcoinTxId": "Bitcoin TXID",
+                "rootstockTxId": "Rootstock TXID",
+                "currentChainTxId": "{{chainName}} TXID"
+            }
+        }
+    },
+
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -845,6 +1174,7 @@
         "tabs": {
             "title": "Available rewards",
             "titles": {
+                "liquidityMining": "Liquidity mining",
                 "stabilityPool": "Stability pool",
                 "staking": "Staking",
                 "vesting": "Vesting"
@@ -890,9 +1220,30 @@
         },
         "staking": {
             "stakingSubsidies": "Staking subsidies",
+            "stakingSubsidiesOs": "Staking subsidies (SIP-77)",
             "stakingRevenue": "Staking revenue",
             "stakingRevenueLegacy": "Staking revenue (legacy)",
             "liquidityMiningError": "Your liquidity mining vesting contract holds more than {{count}} checkpoints worth of rewards. Please withdraw liquid rewards from your vesting contract to enable the 'Withdraw' button and claim additional rewards."
+        },
+        "liquidityMining": {
+            "rewardType": "Reward type",
+            "amount": "Amount",
+            "pool": "Pool",
+            "rewardTypeInfo": "Claiming will simultaneously claim all available liquidity mining rewards, both liquid and vested. For the vested rewards, claiming will automatically start a vesting period of 40 weeks with a maximum 4-week cliff. <0>Learn more</0>",
+            "rewardTypeInfoCTA": "Learn more",
+            "noRewards": "No rewards available",
+            "notConnected": "Connect wallet to check for rewards",
+            "types": {
+                "ammLPrewardsVested": "AMM LP rewards (vested)",
+                "ammLPrewardsLiquid": "AMM LP rewards (liquid)",
+                "lendingRewardsLiquid": "Lending rewards (liquid)",
+                "lendingRewardsVested": "Lending rewards (vested)",
+                "tradingFeeRebateLiquid": "Trading fee rebate (liquid)",
+                "tradingFeeRebateVested": "Trading fee rebate (vested)"
+            },
+            "actions": {
+                "claimAll": "Claim all"
+            }
         },
         "vesting": {
             "tx": {
@@ -971,6 +1322,137 @@
         },
         "apr": "APR"
     },
+
+    "marketMakingPage": {
+        "meta": {
+            "title": "Market Making - Sovryn"
+        },
+        "title": "Market making",
+        "subtitle": "Earn fees from AMM swaps on RSK",
+        "promotions": {
+            "p1": "Provide a 1:1 ratio of two assets to the AMM pool and instantly start accruing your share of weekly rewards.",
+            "p2": "Next rewards recalibration on {{recalibrationDate}}.",
+            "learnMoreLink": "Learn more"
+        },
+        "searchInputPlaceholder": "Filter pools by a symbol or symbols",
+        "newPairs": "New Pairs",
+        "allPairs": "All Pairs",
+        "rewards": "Rewards",
+        "poolsTable": {
+            "pair": "Pair",
+            "liquidity": "Liquidity",
+            "returnsRate": "Return rate",
+            "returnsInfo": "The return rate shown is based on swap fees, plus liquidity mining rewards (if applicable), earned by the given pool in the previous 24 hour period, extrapolated to show an estimated annual percentage rate of return.",
+            "volume": "24H volume",
+            "balance": "Balance"
+        },
+        "poolsTableReturns": {
+            "title": "Up to {{percent}}% APR",
+            "before": "Before liquidity mining rewards: {{percent}}%",
+            "after": "After liquidity mining rewards: {{percent}}%"
+        },
+        "poolStatistics": {
+            "lpFeeRate": "LP fee rate",
+            "lpFeeRateInfo": "The fee rate that is charged per swap and given to AMM LPs",
+            "bitocracyFeeRate": "Stakers fee rate",
+            "bitocracyFeeRateInfo": "The fee rate that is charged per swap and given to SOV stakers",
+            "totalSwapFeeRate": "Total fee rate",
+            "totalSwapFeeRateInfo": "The sum of the LP fee rate and Stakers fee rate"
+        },
+        "adjustAndDepositModal": {
+            "titles": {
+                "initialDeposit": "AMM pool deposit",
+                "adjust": "Adjust AMM pool balance"
+            },
+            "currentStatistics": {
+                "returnRate": "Return rate",
+                "currentBalance": "Current balance"
+            },
+            "newPoolStatistics": {
+                "newPoolBalance": "New pool balance",
+                "transferRewards": "Transfer rewards",
+                "weeklyRewardsEstimation": "Weekly rewards estimation",
+                "weeklyRewardsEstimationInfo": "Based on the current return rate, converting all eligible rewards to BTC at the current market price. You can earn more or less depending on the current value of rewards and the pool volume."
+            },
+            "initialDepositDisclaimer": "I understand that my deposit will be at risk of divergence loss as the price of each asset changes."
+        },
+        "marketMakingOperations": {
+            "deposit": "Deposit",
+            "withdraw": "Withdraw",
+            "depositNotAllowed": "Deposits to this pool are disabled"
+        },
+        "marketMakingTx": {
+            "deposit": "Deposit liquidity",
+            "withdraw": "Withdraw liquidity"
+        },
+        "form": {
+            "invalidAmountError": "Exceeds maximum amount"
+        },
+        "poolVolumeChart": {
+            "apr": "APR",
+            "volume": "Volume (BTC)",
+            "24hVolume": "24h volume (BTC)"
+        }
+    },
+
+    "bobMarketMakingPage": {
+        "depositModal": {
+            "title": "Deposit liquidity",
+            "returnRate": "Return rate",
+            "slippage": "Slippage",
+            "maximumSlippage": "Maximum slippage",
+            "depositDisclaimer": "I understand that my deposit will be at risk of divergence loss as the price of each asset changes",
+            "priceRange": "Price range",
+            "balanced": "Balanced",
+            "infinite": "Infinite",
+            "allowSurplus": "Allow Personal Reserve Vault Balances",
+            "newPoolStatistics": {
+                "newPoolBalance": "New pool balance",
+                "currentPrice": "Current {{token}} price",
+                "status": "Status",
+                "lpFeeRate": "LP fee rate"
+            },
+            "rangeWidth": "Range width",
+            "minPrice": "Min price",
+            "maxPrice": "Max price",
+            "form": {
+                "outOfRangeWarning": "The market is outside your specified range. Single-asset deposit only.",
+                "invalidPriceRange": "Invalid range selected. The min price must be lower than the max price."
+            }
+        },
+        "repositionModal": {
+            "title": "Reposition liquidity",
+            "reposition": "Reposition",
+            "currentBalance": "Current balance",
+            "newPoolStatistics": {
+                "newPoolBalance": "New pool balance",
+                "newStatus": "New status"
+            }
+        },
+        "withdrawModal": {
+            "title": "Withdraw liquidity",
+            "returnRate": "Return rate",
+            "currentBalance": "Current balance",
+            "newPoolStatistics": {
+                "newPoolBalance": "New pool balance",
+                "earnedRewards": "Earned rewards",
+                "slippage": "Slippage",
+                "status": "Status"
+            },
+            "form": {
+                "invalidAmountError": "Exceeds maximum amount"
+            }
+        },
+        "claimFeesModal": {
+            "title": "Claim confirmation",
+            "slippage": "Slippage",
+            "earnedToken": "Earned {{token}}",
+            "removalValue": "Removal value",
+            "claimFees": "Claim fees"
+        },
+        "loading": "Loading..."
+    },
+
     "borrowHistory": {
         "types": {
             "lineOfCredit": "Line of credit",
@@ -1034,11 +1516,13 @@
         },
         "type": "Convert",
         "swap": "Swap",
+        "swapMultihop": "Swap (multihop)",
         "mint": "Mint",
         "burn": "Burn",
         "redeem": "Redeem",
         "types": {
             "AMM": "AMM",
+            "BOB": "BOB",
             "MOC": "Money On Chain",
             "Mynt": "Mynt",
             "Zero": "Zero"
@@ -1054,9 +1538,19 @@
     "earnHistory": {
         "types": {
             "stabilityPool": "Stability pool",
-            "lending": "Lending"
+            "lending": "Lending",
+            "marketMaking": "Market making"
         },
         "lendingHistory": {
+            "columns": {
+                "balanceChange": "Balance change"
+            }
+        },
+        "marketMakingHistory": {
+            "types": {
+                "deposit": "Deposit",
+                "withdrawal": "Withdrawal"
+            },
             "columns": {
                 "balanceChange": "Balance change"
             }
@@ -1121,6 +1615,7 @@
             "transferGainToLineOfCredit": "Transfer gain to line of credit"
         },
         "stakingOperation": {
+            "liquidityMiningRewards": "Withdraw liquid reward",
             "stakingRevenue": "Withdraw staking revenue",
             "stakingSubsidies": "Withdraw staking subsidy"
         },
@@ -1130,6 +1625,7 @@
             "tokensStaked": "Tokens Staked"
         },
         "types": {
+            "liquidityMiningRewards": "Liquidity mining rewards",
             "stabilityPoolRewards": "Stability pool rewards",
             "stabilityPoolSubsidies": "Stability pool subsidies",
             "stakingRevenue": "Staking Revenue",
@@ -1142,6 +1638,7 @@
         "totalStaked": "Total Staked",
         "amount": "Amount",
         "stakeChange": "Stake change",
+        "unstakingPenalty": "Unstaking Penalty",
         "increase": "Increase stake",
         "unstake": "Unstake",
         "extend": "Extend staking duration",
@@ -1316,8 +1813,226 @@
         "votingPower": "Voting power",
         "votingPowerShare": "Voting power share"
     },
+    "promotion": {
+        "currentAPR": "Current APR",
+        "weeklyRewards": "Weekly rewards"
+    },
     "newProposalTx": {
         "title": "Submit Proposal",
         "description": "Submit a new proposal to the Bitocracy"
+    },
+    "portfolioPage": {
+        "meta": {
+            "title": "Portfolio - Sovryn"
+        },
+        "protocolSection": {
+            "marketMaking": "Market Making",
+            "stabilityPool": "Stability Pool",
+            "zeroLine": "Zero line of credit",
+            "lending": "Lending",
+            "staking": "Staking",
+            "deposit": "Deposit",
+            "openLoan": "Open loan",
+            "stakeSOV": "Stake SOV",
+            "depositValue": "Deposits",
+            "totalValue": "Total value",
+            "totalRewardsEarned": "Total rewards earned"
+        },
+        "assetSection": {
+            "totalAssets": "Total assets",
+            "fundWallet": "Fund wallet",
+            "convert": "Convert",
+            "withdraw": "Withdraw",
+            "asset": "Asset",
+            "balance": "Balance",
+            "usdValue": "USD Value",
+            "runeBridge": "Rune Bridge"
+        }
+    },
+    "protocolDataPage": {
+        "meta": {
+            "title": "Protocol data - Sovryn"
+        },
+        "title": "Protocol data",
+        "subtitle": "Cryptocurrency prices, yield and ecosystem statistics",
+        "sections": {
+            "ecosystemStatistics": "Ecosystem statistics"
+        },
+        "lendAndBorrow": {
+            "title": "Lend and borrow",
+            "asset": "Asset",
+            "borrowApr": "Borrow APR",
+            "lendApr": "Lend APR",
+            "availableSupply": "Available supply",
+            "lend": "Lend",
+            "borrow": "Borrow"
+        },
+        "pricesBy24hChange": {
+            "title": "Prices by 24h change",
+            "asset": "Asset",
+            "price": "Price",
+            "24h": "24h%",
+            "7d": "7d%",
+            "marketCap": "Market cap",
+            "marketCapTooltip": "Market cap is calculated as circulating supply * current USD price. <br /> <br /> For SOV, circulating supply = total supply (100m) - tokens in vesting contracts, <0>not including </0> tokens in adoption and development fund contracts. <br /> <br /> For RBTC, circulating supply = BTC locked in the RSK 2 Way Peg <br /> <br /> For all other tokens, circulating supply = total supply <br /> <br /> For tokens that have come across a bridge from another chain, the circulating supply is the supply of that token on the RSK chain. For example, the circulating supply of ETHs is not equal to the circulating supply of ETH on ethereum.",
+            "circulatingSupply": "Circulating supply",
+            "circulatingSupplyTooltip": "We have updated the circulating supply formula to show the amount of liquid SOV token in line with market standards. SOV that has been unlocked from the adoption and development funds is now counted as circulating, and SOV that has been staked (either through vesting or voluntary staking) is not counted as circulating.",
+            "convert": "Convert"
+        },
+        "ecosystemStatistics": {
+            "title": "Ecosystem statistics",
+            "protocolContracts": "Protocol contracts",
+            "lendingContracts": "Lending contracts",
+            "ammContracts": "AMM contracts",
+            "zeroContracts": "Zero contracts",
+            "subTotal": "Subtotal",
+            "myntAggregatorContract": "MYNT aggregator contract",
+            "bitocracyStakingContract": "Bitocracy staking contract",
+            "total": "Total"
+        },
+        "marketMaking": {
+            "title": "Market making",
+            "pool": "Pool",
+            "liquidity": "Liquidity",
+            "contractBalance": "Contract balance",
+            "returns": "Returns",
+            "volume": "24H volume",
+            "deposit": "Deposit"
+        }
+    },
+    "networkBanner": {
+        "content": "This feature hasn't arrived on {{currentNetwork}} yet, click here to switch to {{network}} if you would like to try it out!"
+    },
+    "marketMakingNetworkBanner": {
+        "content": "Check out more AMM pools on Sovryn by <0>switching to</0> {{network}}"
+    },
+    "ambientMarketMaking": {
+        "meta": {
+            "title": "Market Making - Sovryn"
+        },
+        "title": "Market making",
+        "subtitle": "Earn Spice points and fees from AMM swaps on BoB chain",
+        "poolsTable": {
+            "pair": "Pair",
+            "liquidity": "Liquidity",
+            "incentives": "Incentives",
+            "lpFeeRate": "LP fee rate",
+            "lpFeeRateInfo": "The fee rate that is charged per swap and given to AMM LPs",
+            "volume": "24H volume",
+            "lastPrice": "Last price",
+            "balance": "Balance"
+        },
+        "positionsTable": {
+            "positionID": "Position ID",
+            "minPrice": "Min price",
+            "maxPrice": "Max price",
+            "apr": "Estimated APR",
+            "aprInfo": "APR is estimated based on previous fees earned at the defined price range, if no trades were made previously or you have recently claimed fees/withdrawn liquidity, you may see 0 value",
+            "value": "Value (USD)",
+            "status": {
+                "title": "Status",
+                "inRange": "In range",
+                "outOfRange": "Out of range"
+            },
+            "balance": "Balance",
+            "withdraw": "Withdraw"
+        }
+    },
+    "claimLpPage": {
+        "meta": {
+            "title": "Claim LP - Sovryn"
+        },
+        "title": "Claim LP deposits",
+        "subtitle": "Claim your LP tokens from Sovryn & BOB liquidity campaign",
+        "aboutCampaign": "About Extra Spice and Runes campaign",
+        "leaderboard": "leaderboard",
+        "longDescription": "Your deposits were transferred into the Sovryn AMM pools on BOB. Deposit represents 50% of the value of your original token and 50% in SOV. Trading fees will begin accruing immediately.",
+        "eSovDescription": "For eSOV Depositors:<br/>If you deposited eSOV via Sovryn’s referral link and moved your eSOV to BOB, and staked them in Sovryn on BOB during the indicated period, you are also earning Spice points. Check it on our <0>leaderboard</0>.",
+        "checkLeaderboard": "Check Spice leaderboard",
+        "disclaimer": "I understand that by claiming deposits now I will lose eligibility for the additional rewards",
+        "descriptionValues": {
+            "amm": "Market Making page"
+        },
+        "originalDeposit": "Original deposit",
+        "claimableTitle": "AMM pool",
+        "claimable1": "50% original tokens",
+        "claimable2": "50% SOV",
+        "cta": "Claim deposits",
+        "readMore": "Read more about LP tokens",
+        "claimTx": {
+            "title": "Claim LP deposits",
+            "description": "Claim your LP tokens from Sovryn & BOB liquidity campaign"
+        },
+        "ammCta": "Claim LP tokens"
+    },
+    "unclaimedVestings": {
+        "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",
+        "cta": "Open Rewards page"
+    },
+    "bobGatewayPage": {
+        "meta": {
+            "title": "BOB Gateway"
+        },
+        "description": "New way earning in AMM",
+        "deposit": "Deposit",
+        "withdraw": "Withdraw",
+        "connectWalletCta": "Connect wallet",
+        "orderTable": {
+            "baseToken": "Base Token",
+            "outputToken": "Output Token",
+            "status": "Status",
+            "gatewayAddress": "Gateway Address",
+            "strategyAddress": "Strategy Address",
+            "txHash": "Tx Hash",
+            "amount": "Amount",
+            "confirmed": "Confirmed",
+            "pending": "Pending"
+        },
+        "amountInput": "Amount (BTC)",
+        "lst": "LST",
+        "selectStrategy": "Select strategy",
+        "strategyDetails": {
+            "title": "Strategy details",
+            "name": "Name",
+            "category": "Category",
+            "incentives": "Incentives",
+            "token": "Token",
+            "about": "About"
+        }
+    },
+    "runesPage": {
+        "meta": {
+            "title": "Runes - Sovryn"
+        },
+        "title": "Earn with Runes!",
+        "subtitle": "Earn Trading fees and BOB’s Spice with your Runes. Deposit into the trading pools and start earning from trades made on Sovryn. You can trade your rune to any asset available on Sovryn. Bridge in your runes to start earning.",
+        "bridgeRunes": "Bridge Runes",
+        "benefits": {
+            "title": "Benefits",
+            "list": {
+                "l1": "Trade Runes in DeFi",
+                "l2": "Lower fees",
+                "l3": "Earn Spice",
+                "l4": "Swap to any asset"
+            }
+        },
+        "availableRunes": "Available Runes",
+        "availableSoon": "Available soon",
+        "availableRunesInfo": "Interested in adding more Runes?",
+        "runesUseCases": {
+            "title": "Use your Runes in DeFi",
+            "convert": "Convert to any token",
+            "convertDescription": "Swap Runes to BTC, stablecoins or any other asset.",
+            "earn": "Earn passive Yield",
+            "earnDescription": "Earn fees by providing liquidity in the Sovryn AMM.",
+            "actions": {
+                "convert": "Convert",
+                "deposit": "Deposit"
+            }
+        },
+        "startEarning": {
+            "title": "Bridge your runes",
+            "subtitle": "Bridge your runes to start trading and earning with runes on Sovryn"
+        }
     }
 }

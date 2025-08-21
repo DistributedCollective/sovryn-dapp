@@ -1,15 +1,20 @@
-import { Contract, constants, providers } from 'ethers';
+import { BigNumber, Contract, constants, providers } from 'ethers';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenContract,
-} from '@sovryn/contracts';
+import { getAssetContract, getProtocolContract } from '@sovryn/contracts';
 import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
 
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
-import { areAddressesEqual } from '../../../internal/utils';
+import {
+  areAddressesEqual,
+  hasEnoughAllowance,
+  makeApproveRequest,
+} from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
+import {
+  PERMIT2_ADDRESS,
+  PermitTransferFrom,
+  SignatureTransfer,
+} from '@uniswap/permit2-sdk';
 
 // Supports converting DLLR to RBTC via getDocFromDllrAndRedeemRBTC function on the MoCIntegration contract.
 export const mocIntegrationSwapRoute: SwapRouteFunction = (
@@ -35,7 +40,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
     if (
       areAddressesEqual(
         entry,
-        (await getTokenContract(SupportedTokens.dllr, chainId)).address,
+        (await getAssetContract('DLLR', chainId)).address,
       ) &&
       areAddressesEqual(destination, constants.AddressZero)
     ) {
@@ -107,8 +112,8 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
 
   const getDocContract = async () => {
     if (!docContract) {
-      const { address, abi } = await getTokenContract(
-        SupportedTokens.doc,
+      const { address, abi } = await getAssetContract(
+        'DOC',
         await getChainId(),
       );
       docContract = new Contract(address, abi, provider);
@@ -118,6 +123,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
 
   return {
     name: 'MocIntegration',
+    chains: [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET],
     async pairs() {
       if (pairCache) {
         return pairCache;
@@ -126,7 +132,7 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
       const chainId = await getChainId();
 
       const dllr = (
-        await getTokenContract(SupportedTokens.dllr, chainId)
+        await getAssetContract('DLLR', chainId)
       ).address.toLowerCase();
       const rbtc = constants.AddressZero;
 
@@ -173,19 +179,20 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
     },
     async swap(entry, destination, amount, from, options, overrides) {
       if (await isValidPair(entry, destination)) {
-        if (!options?.permit) {
+        if (!options?.typedDataValue || !options?.typedDataSignature) {
           throw makeError(
-            `Permit is required for swap.`,
+            `Permit2 is required for swap.`,
             SovrynErrorCode.UNKNOWN_ERROR,
           );
         }
 
         const mocIntegration = await getMocIntegrationContract();
+
         return {
           to: mocIntegration.address,
           data: mocIntegration.interface.encodeFunctionData(
-            'getDocFromDllrAndRedeemRBTC',
-            [amount, options?.permit],
+            'getDocFromDllrAndRedeemRbtcWithPermit2',
+            [options?.typedDataValue, options?.typedDataSignature],
           ),
           value: '0',
           gasLimit: 800_000,
@@ -198,22 +205,59 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
         SovrynErrorCode.SWAP_PAIR_NOT_AVAILABLE,
       );
     },
-    async approve() {
-      return undefined;
-    },
-    async permit(entry, destination, amount, from, overrides) {
-      // DLLR needs to be permitted for the moc contract
-      if (await isValidPair(entry, destination)) {
-        const spender = await getMocIntegrationContract();
-        return {
-          token: entry,
-          spender: spender.address,
-          owner: from,
-          value: amount,
-          ...overrides,
-        };
+    async approve(entry, destination, amount, from, overrides) {
+      // native token is always approved
+      if (await isNativeToken(entry)) {
+        return undefined;
       }
-      return undefined;
+
+      if (
+        await hasEnoughAllowance(
+          provider,
+          entry,
+          from,
+          PERMIT2_ADDRESS,
+          amount ?? constants.MaxUint256,
+        )
+      ) {
+        return undefined;
+      }
+
+      return {
+        ...makeApproveRequest(
+          entry,
+          PERMIT2_ADDRESS,
+          amount ?? constants.MaxUint256,
+        ),
+        ...overrides,
+      };
+    },
+    permit: async (entry, destination, amount, from, overrides) => {
+      const mocIntegration = await getMocIntegrationContract();
+
+      const permit: PermitTransferFrom = {
+        permitted: {
+          token: entry,
+          amount: String(amount ?? constants.MaxUint256),
+        },
+        spender: mocIntegration.address,
+        nonce: BigNumber.from(Math.floor(Date.now() + Math.random() * 100)),
+        // 1 hour from now
+        deadline: Math.ceil((Date.now() + 3600_000) / 1000),
+      };
+
+      const typedData = SignatureTransfer.getPermitData(
+        permit,
+        PERMIT2_ADDRESS,
+        parseInt(await getChainId()),
+      );
+
+      return {
+        approvalRequired: true,
+        typedData,
+      };
     },
   };
 };
+
+const isNativeToken = async (token: string) => token === constants.AddressZero;

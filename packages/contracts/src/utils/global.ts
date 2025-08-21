@@ -1,8 +1,8 @@
 import type { Provider } from '@ethersproject/providers';
 
 import { ContractInterface, Contract, Signer } from 'ethers';
+import { set } from 'lodash';
 import get from 'lodash.get';
-import set from 'lodash.set';
 
 import {
   ChainId,
@@ -11,15 +11,13 @@ import {
   Network,
 } from '@sovryn/ethers-provider';
 
-import { SupportedTokenList } from '../tokenDetails';
 import {
+  AssetDetails,
+  AssetDetailsData,
   AsyncContractConfigData,
   ContractConfigData,
   ContractData,
   ContractGroup,
-  SupportedTokens,
-  TokenBaseInfo,
-  TokenDetailsData,
 } from '../types';
 
 const cacheByAddress = new Map<string, ContractData>();
@@ -27,9 +25,12 @@ const cacheByKey: Record<
   ChainId,
   Record<ContractGroup, Record<string, ContractConfigData>>
 > = {};
-const iconCache = new Map<SupportedTokens, string>();
+const iconCache = new Map<string, string>();
 
-export const findContract = async (address: string): Promise<ContractData> => {
+export const findContract = async (
+  address: string,
+  chainId?: ChainId, // todo: search by chainId if provided
+): Promise<ContractData> => {
   address = address.toLowerCase();
   if (cacheByAddress.has(address)) {
     return cacheByAddress.get(address)!;
@@ -44,19 +45,17 @@ export const findContract = async (address: string): Promise<ContractData> => {
     const networks = Object.keys(contracts[group]);
     for (const network of networks) {
       const obj = contracts[group][network];
-      let key = Object.keys(obj).find(k =>
-        typeof obj[k] === 'string'
-          ? obj[k].toLowerCase() === address
-          : obj[k].address.toLowerCase() === address,
+      let key = Object.keys(obj).find(
+        k => obj[k].address.toLowerCase() === address,
       );
       if (key) {
         contractData = {
           address,
           group: group as ContractGroup,
-          name: key,
+          name: group === 'assets' ? obj[key].symbol : key,
           chainId: getChainIdByNetwork(network as Network),
           abi:
-            typeof obj[key] === 'string'
+            group === 'assets'
               ? await getContractGroupAbi(group as ContractGroup)
               : await obj[key].getAbi(),
         };
@@ -83,26 +82,32 @@ export const getContract = async (
     return cached;
   }
 
-  const contracts = await import('../contracts').then(m => m.contracts);
-
-  const contract: string | AsyncContractConfigData = get(contracts, [
-    group,
-    getNetworkByChainId(chainId),
-    name,
-  ]);
-
-  if (!contract) {
-    throw new Error(`getContract: Unknown contract: ${name}`);
-  }
+  const contracts = await import('../contracts').then(m =>
+    get(m.contracts, [group, getNetworkByChainId(chainId)]),
+  );
 
   let contractData: Omit<ContractConfigData, 'contract'>;
 
-  if (typeof contract === 'string') {
+  if (group === 'assets' && Array.isArray(contracts)) {
+    const contract = (contracts as AssetDetails[]).find(
+      item => item.symbol.toLowerCase() === name.toLowerCase(),
+    );
+
+    if (!contract) {
+      throw new Error(`getContract: Unknown contract: ${name}`);
+    }
+
     contractData = {
-      address: contract.toLowerCase(),
+      address: contract.address.toLowerCase(),
       abi: await getContractGroupAbi(group),
     };
   } else {
+    const contract: AsyncContractConfigData = get(contracts, name);
+
+    if (!contract) {
+      throw new Error(`getContract: Unknown contract: ${name}`);
+    }
+
     contractData = {
       address: contract.address.toLowerCase(),
       abi: await contract.getAbi(),
@@ -125,7 +130,7 @@ export const getContractGroupAbi = async (
   group: ContractGroup,
 ): Promise<ContractInterface> => {
   switch (group) {
-    case 'tokens':
+    case 'assets':
       return (await import('../abis/erc20.json')).default;
     case 'loanTokens':
       return (await import('../abis/loanToken.json')).default;
@@ -134,69 +139,101 @@ export const getContractGroupAbi = async (
   }
 };
 
-export const resolveIcon = async (tokenBaseInfo: TokenBaseInfo) => {
-  const { symbol, getIcon } = tokenBaseInfo;
+export const resolveIcon = async (assetBaseDetails: AssetDetails) => {
+  const { address, symbol, getIcon } = assetBaseDetails;
 
-  if (iconCache.has(symbol)) {
-    return iconCache.get(symbol);
+  if (iconCache.has(address)) {
+    return iconCache.get(address);
   }
 
   const icon = await getIcon();
 
   if (!icon) {
-    throw new Error(`getTokenDetails: Icon not found for token: ${symbol}`);
+    throw new Error(
+      `resolveIcon: Icon not found for token: ${symbol} (${address})`,
+    );
   }
 
   iconCache.set(symbol, icon);
   return icon;
 };
 
-export const getTokenDetailsData = async (
-  name: SupportedTokens,
+export const getAsset = async (
+  symbol: string,
   chainId: ChainId,
-): Promise<TokenDetailsData> => {
-  const tokenBaseInfo = SupportedTokenList.find(token => token.symbol === name);
+): Promise<AssetDetails> => {
+  const items: AssetDetails[] = await import('../contracts').then(m =>
+    get(m.contracts, ['assets', getNetworkByChainId(chainId)]),
+  );
+
+  const tokenBaseInfo = items.find(
+    item => item.symbol.toLowerCase() === symbol.toLowerCase(),
+  );
 
   if (!tokenBaseInfo) {
-    throw new Error(`getTokenDetails: Unsupported token: ${name}`);
+    throw new Error(`getAssetDetails: Unsupported asset: ${symbol}`);
   }
 
-  const { address, abi } = await getContract(name, 'tokens', chainId);
+  tokenBaseInfo.address = tokenBaseInfo.address.toLowerCase();
+
+  return tokenBaseInfo;
+};
+
+export const getAssetData = async (
+  symbol: string,
+  chainId: ChainId,
+): Promise<AssetDetailsData> => {
+  const tokenBaseInfo = await getAsset(symbol, chainId);
+  const { abi, contract } = await getContract(symbol, 'assets', chainId);
 
   const icon = await resolveIcon(tokenBaseInfo);
 
-  const tokenDetails: TokenDetailsData = {
-    address,
-    abi,
-    symbol: tokenBaseInfo.symbol,
-    decimalPrecision: tokenBaseInfo.decimalPrecision,
+  const tokenDetails: AssetDetailsData = {
+    ...tokenBaseInfo,
     icon,
+    abi,
+    contract,
   };
 
   return tokenDetails;
 };
 
-export const getTokenDetailsDataByAddress = async (
+export const getAssetDataByAddress = async (
   address: string,
-): Promise<TokenDetailsData> => {
-  const contract = await findContract(address);
+  chainId: ChainId,
+): Promise<AssetDetailsData> => {
+  const items: AssetDetails[] = await import('../contracts').then(m =>
+    get(m.contracts, ['assets', getNetworkByChainId(chainId)]),
+  );
 
-  const tokenBaseInfo = SupportedTokenList.find(
-    token => token.symbol === contract.name,
+  const tokenBaseInfo = items.find(
+    item => item.address.toLowerCase() === address.toLowerCase(),
   );
 
   if (!tokenBaseInfo) {
-    throw new Error(`getTokenDetails: Unsupported token: ${address}`);
+    throw new Error(
+      `getTokenDetailsDataByAddress: Unsupported asset: ${address}`,
+    );
   }
+
+  tokenBaseInfo.address = tokenBaseInfo.address.toLowerCase();
 
   const icon = await resolveIcon(tokenBaseInfo);
 
-  const tokenDetails: TokenDetailsData = {
-    address,
-    abi: contract.abi,
-    symbol: tokenBaseInfo.symbol,
-    decimalPrecision: tokenBaseInfo.decimalPrecision,
+  const { abi } = await findContract(address);
+
+  if (!abi) {
+    throw new Error(
+      `getTokenDetailsDataByAddress: ABI not found for asset: ${address}`,
+    );
+  }
+
+  const tokenDetails: AssetDetailsData = {
+    ...tokenBaseInfo,
     icon,
+    abi,
+    contract: (signerOrProvider?: Signer | Provider) =>
+      new Contract(address, abi, signerOrProvider),
   };
 
   return tokenDetails;

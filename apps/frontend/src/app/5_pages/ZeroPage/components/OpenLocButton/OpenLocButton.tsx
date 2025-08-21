@@ -3,11 +3,11 @@ import React, { FC, useMemo } from 'react';
 import classNames from 'classnames';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { Button } from '@sovryn/ui';
 
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 export type OpenLocButtonProps = {
   openLOC: () => void;
@@ -18,7 +18,7 @@ export const OpenLocButton: FC<OpenLocButtonProps> = ({
   openLOC,
   className,
 }) => {
-  const { balance, loading } = useAssetBalance(SupportedTokens.rbtc);
+  const { balance, loading } = useAssetBalance(COMMON_SYMBOLS.BTC);
 
   const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
 

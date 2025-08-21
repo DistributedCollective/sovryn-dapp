@@ -1,52 +1,56 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { Decimal } from '@sovryn/utils';
+
 import { useAccount } from '../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { useGetProtocolContract } from '../../../../hooks/useGetContract';
-import { decimalic } from '../../../../utils/math';
 
 export const useGetLiquidSovClaimAmount = () => {
   const [value, setValue] = useState({
     lastWithdrawalInterval: 0,
-    amount: '0',
+    amount: Decimal.ZERO,
     loading: true,
   });
 
   const { account } = useAccount();
-  const staking = useGetProtocolContract('staking');
-  const stakingRewards = useGetProtocolContract('stakingRewards');
+  const chainId = useCurrentChain();
+  const staking = useGetProtocolContract('staking', chainId);
+  const stakingRewards = useGetProtocolContract('stakingRewards', chainId);
 
   const getRewards = useCallback(async () => {
     if (!account || !staking || !stakingRewards) {
       return {
         lastWithdrawalInterval: 0,
-        amount: '0',
+        amount: Decimal.ZERO,
         loading: false,
       };
     }
 
     const now = Math.ceil(Date.now() / 1000);
-    const lockDate = await staking.timestampToLockDate(now);
+    const startTime = await stakingRewards.startTime();
+    const maxDuration = await stakingRewards.maxDuration();
+    const result = await stakingRewards.getStakerCurrentReward(false, 0);
 
     let checks = 30;
-    let amount = 0;
+    let intervalAmount = 0;
     let lastWithdrawalInterval = 0;
-    let restartTime = 0;
+    let restartTime = Number(startTime);
 
-    // If lastWithdrawalInterval > 0 and amount = 0
-    // call getStakerCurrentReward(True, lastWithdrawalInterval)
-    // Stop when: a) Both lastWithdrawalInterval > 0 and amount > 0 OR b) lastWithdrawalInterval(returned) > currentTimeStamp
+    // Call getStakerCurrentReward(True, restartTime) until either
+    // a) lastWithdrawalInterval > 0 and amount > 0 OR b) restartTime >= now
     // as additional brake, run at maximum 30 checks
 
     while (
       !(
-        (lastWithdrawalInterval > 0 && amount > 0) ||
-        lastWithdrawalInterval === lockDate ||
+        (lastWithdrawalInterval > 0 && intervalAmount > 0) ||
+        restartTime >= now ||
         checks < 0
       )
     ) {
       try {
         const result = await stakingRewards
-          .getStakerCurrentReward(false, lastWithdrawalInterval)
+          .getStakerCurrentReward(true, restartTime)
           .then(response => ({
             lastWithdrawalInterval: Number(response.lastWithdrawalInterval),
             amount: Number(response.amount.toString()),
@@ -56,8 +60,12 @@ export const useGetLiquidSovClaimAmount = () => {
           restartTime = lastWithdrawalInterval;
         }
 
+        if (result.amount === 0) {
+          restartTime += Number(maxDuration);
+        }
+
         lastWithdrawalInterval = result.lastWithdrawalInterval;
-        amount = result.amount;
+        intervalAmount = result.amount;
         checks--;
       } catch (e) {
         console.error(e);
@@ -67,7 +75,10 @@ export const useGetLiquidSovClaimAmount = () => {
 
     return {
       lastWithdrawalInterval: restartTime,
-      amount: decimalic(amount).toString(),
+      amount:
+        !result?.amount || result.amount === '0'
+          ? Decimal.ZERO
+          : Decimal.fromBigNumberString(result.amount),
     };
   }, [account, staking, stakingRewards]);
 

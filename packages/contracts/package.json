@@ -1,6 +1,6 @@
 {
   "name": "@sovryn/contracts",
-  "version": "1.0.18",
+  "version": "1.2.5",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",
@@ -17,11 +17,11 @@
     "lint": "eslint ./src/**/*.ts"
   },
   "dependencies": {
-    "@sovryn-zero/contracts": "0.2.1",
+    "@sovryn-zero/contracts": "0.4.0",
     "@sovryn/ethers-provider": "*",
     "ethers": "5.7.1",
     "lodash.get": "4.4.2",
-    "lodash.set": "4.3.2"
+    "lodash": "4.17.21"
   },
   "devDependencies": {
     "@babel/preset-typescript": "7.18.6",

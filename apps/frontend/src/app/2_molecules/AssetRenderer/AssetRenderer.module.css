@@ -3,9 +3,9 @@
 }
 
 .assetLogo svg {
-  @apply mr-2 w-5 h-5;
+  @apply mr-2 w-5 h-5 bg-gray-80 rounded-full overflow-hidden;
 }
 
 .asset {
-  @apply uppercase font-semibold text-xs;
+  @apply font-semibold text-xs;
 }

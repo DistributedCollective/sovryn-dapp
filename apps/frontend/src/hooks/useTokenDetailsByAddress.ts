@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 
-import { getTokenDetailsByAddress, TokenDetailsData } from '@sovryn/contracts';
+import { AssetDetailsData, getAssetDataByAddress } from '@sovryn/contracts';
+
+import { useCurrentChain } from './useChainStore';
 
 export const useTokenDetailsByAddress = (address?: string) => {
-  const [token, setToken] = useState<TokenDetailsData | undefined>();
+  const chainId = useCurrentChain();
+  const [token, setToken] = useState<AssetDetailsData | undefined>();
 
   useEffect(() => {
     const getTokenDetails = () => {
-      getTokenDetailsByAddress(address!)
+      getAssetDataByAddress(address!, chainId)
         .then(setToken)
         .catch(e => {
           console.error('token not found?', e);
@@ -17,7 +20,7 @@ export const useTokenDetailsByAddress = (address?: string) => {
     if (address) {
       getTokenDetails();
     }
-  }, [address]);
+  }, [address, chainId]);
 
   return token;
 };

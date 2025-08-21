@@ -24,15 +24,13 @@ import {
   Tabs,
 } from '@sovryn/ui';
 
-import { defaultChainId } from '../../../../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../../../../config/chains';
 
 import { translations } from '../../../../../../../locales/i18n';
 import { validateURL } from '../../../../../../../utils/helpers';
+import styles from '../../../../../ProposalPage/components/ProposalInfo/ProposalInfo.module.css';
 import { useProposalContext } from '../../../../contexts/NewProposalContext';
-import {
-  ProposalCreationDetails,
-  ProposalCreationType,
-} from '../../../../contexts/ProposalContext.types';
+import { ProposalCreationType } from '../../../../contexts/ProposalContext.types';
 import { Governor } from '../../NewProposalForm.types';
 import {
   MAXIMUM_SUMMARY_LENGTH,
@@ -45,8 +43,6 @@ import { generateFormGroupLabel } from './ProposalDataForm.utils';
 const ACTIVE_CLASSNAME = 'text-primary-20';
 
 export type ProposalDataFormProps = {
-  value: ProposalCreationDetails;
-  onChange: (value: ProposalCreationDetails) => void;
   proposalType: ProposalCreationType;
   onBack: () => void;
   onSubmit: () => void;
@@ -55,24 +51,24 @@ export type ProposalDataFormProps = {
 };
 
 export const ProposalDataForm: FC<ProposalDataFormProps> = ({
-  value,
-  onChange,
   proposalType,
   onBack,
   onSubmit,
   onPreview,
   updateConfirmButtonState,
 }) => {
-  const [form, setForm] = useState<ProposalCreationDetails>(value);
-  const { setGovernor } = useProposalContext();
-  const [governorOwner, setGovernorOwner] = useState('');
+  const {
+    setGovernor,
+    details: form,
+    setDetails: setForm,
+  } = useProposalContext();
   const [index, setIndex] = useState(0);
   const handleInputChangeInput = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const { name, value } = event.target;
       setForm(prevForm => ({ ...prevForm, [name]: value }));
     },
-    [],
+    [setForm],
   );
 
   const handleInputChangeTextarea = useCallback(
@@ -80,7 +76,7 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
       const { name, value } = event.target;
       setForm(prevForm => ({ ...prevForm, [name]: value }));
     },
-    [],
+    [setForm],
   );
 
   const isValidUrl = useMemo(() => validateURL(form.link), [form.link]);
@@ -98,19 +94,16 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   }, [isSubmitDisabled, proposalType, updateConfirmButtonState]);
 
   const handleBack = useCallback(() => {
-    onChange(form);
     onBack();
-  }, [form, onBack, onChange]);
+  }, [onBack]);
 
   const handleSubmit = useCallback(() => {
-    onChange(form);
     onSubmit();
-  }, [form, onChange, onSubmit]);
+  }, [onSubmit]);
 
   const handlePreview = useCallback(() => {
-    onChange(form);
     onPreview();
-  }, [form, onChange, onPreview]);
+  }, [onPreview]);
 
   const tabs = useMemo(
     () => [
@@ -130,12 +123,21 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
       {
         label: t(translations.bitocracyPage.actions.preview),
         content: (
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            className="w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 mt-2 min-h-36 overflow-auto"
-          >
-            {form.text}
-          </ReactMarkdown>
+          <div className={styles.description}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                a: props => (
+                  <a href={props.href} target="_blank" rel="noreferrer">
+                    {props.children}
+                  </a>
+                ),
+              }}
+              className="w-full bg-gray-70 border border-gray-70 p-3 rounded focus:border-gray-60 mt-2 min-h-36 overflow-auto"
+            >
+              {form.text}
+            </ReactMarkdown>
+          </div>
         ),
         activeClassName: ACTIVE_CLASSNAME,
       },
@@ -144,17 +146,12 @@ export const ProposalDataForm: FC<ProposalDataFormProps> = ({
   );
 
   useEffect(() => {
-    setForm(value);
-  }, [value]);
-
-  useEffect(() => {
-    if (proposalType === ProposalCreationType.Proclamation && !governorOwner) {
-      getProtocolContract(Governor.Owner, defaultChainId).then(owner => {
-        setGovernorOwner(owner.address);
-        setGovernor(owner.address);
+    if (proposalType === ProposalCreationType.Proclamation) {
+      getProtocolContract(Governor.Admin, RSK_CHAIN_ID).then(admin => {
+        setGovernor(admin.address);
       });
     }
-  }, [governorOwner, proposalType, setGovernor, setGovernorOwner]);
+  }, [proposalType, setGovernor]);
 
   return (
     <div className="flex flex-col gap-8 relative pb-4">

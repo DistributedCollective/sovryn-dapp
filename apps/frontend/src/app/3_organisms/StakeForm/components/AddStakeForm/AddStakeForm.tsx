@@ -2,7 +2,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -29,8 +28,10 @@ import { useHandleStake } from '../../../../5_pages/StakePage/hooks/useHandleSta
 import { TOKEN_RENDER_PRECISION } from '../../../../../constants/currencies';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { decimalic, fromWei } from '../../../../../utils/math';
 import { StakeFormProps } from '../../StakeForm.types';
 import { StakeDatePicker } from '../StakeDatePicker/StakeDatePicker';
@@ -43,7 +44,8 @@ export const AddStakeForm: FC<StakeFormProps> = ({
   const [amount, setAmount] = useState('');
   const [unlockDate, setUnlockDate] = useState(0);
 
-  const { balance } = useAssetBalance(SupportedTokens.sov);
+  const chainId = useCurrentChain();
+  const { balance } = useAssetBalance(COMMON_SYMBOLS.SOV, chainId);
   const { balance: stakedValue } = useGetStakingBalanceOf(account);
   const totalVestingsBalance = useGetTotalVestingsBalance();
 
@@ -85,23 +87,29 @@ export const AddStakeForm: FC<StakeFormProps> = ({
     [amount, balance, stakingLocked, unlockDate],
   );
 
+  const isRenderValid = useMemo(
+    () =>
+      decimalic(amount).gt(0) && isValidAmount && unlockDate > 0 && weight > 0,
+    [amount, isValidAmount, unlockDate, weight],
+  );
+
   const renderNewStakedAmount = useCallback(
     () =>
-      decimalic(amount).isZero() || !isValidAmount ? (
+      !isRenderValid ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
           value={totalStakedValue.add(amount)}
-          suffix={SupportedTokens.sov}
+          suffix={COMMON_SYMBOLS.SOV}
           precision={TOKEN_RENDER_PRECISION}
         />
       ),
-    [amount, isValidAmount, totalStakedValue],
+    [amount, totalStakedValue, isRenderValid],
   );
 
   const renderVotingPowerReceived = useCallback(
     () =>
-      decimalic(amount).isZero() || !isValidAmount ? (
+      !isRenderValid ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -110,12 +118,12 @@ export const AddStakeForm: FC<StakeFormProps> = ({
           precision={TOKEN_RENDER_PRECISION}
         />
       ),
-    [amount, votingPowerReceived, isValidAmount],
+    [votingPowerReceived, isRenderValid],
   );
 
   const renderNewVotingPowerIncrease = useCallback(
     () =>
-      decimalic(amount).isZero() || !isValidAmount ? (
+      !isRenderValid ? (
         t(translations.common.na)
       ) : (
         <AmountRenderer
@@ -124,7 +132,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({
           precision={TOKEN_RENDER_PRECISION}
         />
       ),
-    [amount, votingPowerReceived, votingPower, isValidAmount],
+    [votingPower, votingPowerReceived, isRenderValid],
   );
 
   const onTransactionSuccess = useCallback(() => {
@@ -146,13 +154,17 @@ export const AddStakeForm: FC<StakeFormProps> = ({
   }, [isSubmitDisabled, handleSubmitStake]);
 
   useEffect(() => {
-    if (unlockDate === 0 || !isValidAmount) {
+    if (!isRenderValid) {
       setVotingPowerReceived(0);
+      return;
     }
-    if (weight !== 0) {
-      setVotingPowerReceived((Number(amount) * weight) / WEIGHT_FACTOR);
+
+    const newVotingPower = (Number(amount) * weight) / WEIGHT_FACTOR;
+
+    if (!isNaN(newVotingPower) && weight > 0) {
+      setVotingPowerReceived(newVotingPower);
     }
-  }, [amount, weight, unlockDate, isValidAmount]);
+  }, [amount, weight, isRenderValid]);
 
   return (
     <div>
@@ -168,7 +180,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({
             <div className="text-sm font-semibold">
               <AmountRenderer
                 value={totalStakedValue}
-                suffix={SupportedTokens.sov}
+                suffix={COMMON_SYMBOLS.SOV}
                 precision={TOKEN_RENDER_PRECISION}
                 dataAttribute="create-stake-staked-sov-amount"
               />
@@ -198,7 +210,7 @@ export const AddStakeForm: FC<StakeFormProps> = ({
         <MaxButton
           onClick={onMaximumAmountClick}
           value={balance}
-          token={SupportedTokens.sov}
+          token={COMMON_SYMBOLS.SOV}
           dataAttribute="create-stake-amount-max"
         />
       </div>

@@ -10,10 +10,9 @@ import React, {
 import { Contract } from 'ethers';
 import { t } from 'i18next';
 
-import { SupportedTokens, getTokenDetails } from '@sovryn/contracts';
 import { noop } from '@sovryn/ui';
 
-import { defaultChainId } from '../../../../config/chains';
+import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import {
   TransactionCallbacks,
@@ -29,6 +28,8 @@ import {
   ProposalCreationStep,
   ProposalCreationType,
 } from './ProposalContext.types';
+import { getAssetData } from '@sovryn/contracts';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 
 const defaultContextValue: ProposalContextValue = {
   step: ProposalCreationStep.SelectType,
@@ -92,9 +93,9 @@ export const ProposalContextProvider: FC<PropsWithChildren> = ({
 
       if (type === ProposalCreationType.Proclamation) {
         // make proclamation "non-executable" proposal.
-        const { address } = await getTokenDetails(
-          SupportedTokens.sov,
-          defaultChainId,
+        const { address } = await getAssetData(
+          COMMON_SYMBOLS.SOV,
+          RSK_CHAIN_ID,
         );
         actions = [
           {
@@ -181,11 +182,14 @@ export const ProposalContextProvider: FC<PropsWithChildren> = ({
       setIsOpen(true);
     },
     [
-      type,
-      details,
+      signer,
       governor,
       parameters,
-      signer,
+      type,
+      details.title,
+      details.link,
+      details.summary,
+      details.text,
       setTitle,
       setTransactions,
       setIsOpen,

@@ -3,6 +3,7 @@ import React, {
   isValidElement,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 
@@ -20,8 +21,10 @@ import { OrderDirectionIcon } from './components/OrderDirectionIcon/OrderDirecti
 // No React.FC, since doesn't support Generic PropTypes
 export const TableDesktop = <RowType extends RowObject>({
   className,
+  rowClassName,
   columns,
   rows,
+  rowComponent,
   rowKey,
   noData,
   loadingData,
@@ -35,6 +38,7 @@ export const TableDesktop = <RowType extends RowObject>({
   expandedClassNames = '',
   preventExpandOnClickClass,
   hideHeader = false,
+  expandedIndex,
 }: TableProps<RowType>) => {
   const [selectedIndex, setSelectedIndex] = useState<number>();
   useEffect(() => {
@@ -72,6 +76,8 @@ export const TableDesktop = <RowType extends RowObject>({
     },
     [onRowClick, rows],
   );
+
+  const Row = useMemo(() => rowComponent || Fragment, [rowComponent]);
 
   return (
     <table
@@ -121,21 +127,23 @@ export const TableDesktop = <RowType extends RowObject>({
         {rows &&
           rows.length >= 1 &&
           rows.map((row, index) => (
-            <TableRow
-              key={rowKey?.(row) || JSON.stringify(row)}
-              columns={columns}
-              row={row}
-              index={index}
-              onRowClick={handleRowClick}
-              isSelected={index === selectedIndex}
-              dataAttribute={dataAttribute}
-              isClickable={isClickable}
-              className={styles.row}
-              size={TableRowSize.large}
-              expandedContent={expandedContent}
-              expandedClassNames={expandedClassNames}
-              preventExpandOnClickClass={preventExpandOnClickClass}
-            />
+            <Row key={rowKey?.(row) || JSON.stringify(row)}>
+              <TableRow
+                columns={columns}
+                row={row}
+                index={index}
+                onRowClick={handleRowClick}
+                isSelected={index === selectedIndex}
+                dataAttribute={dataAttribute}
+                isClickable={isClickable}
+                className={classNames(styles.row, rowClassName)}
+                size={TableRowSize.large}
+                expandedContent={expandedContent}
+                expandedClassNames={expandedClassNames}
+                preventExpandOnClickClass={preventExpandOnClickClass}
+                expandedRow={expandedIndex === index}
+              />
+            </Row>
           ))}
         {(!rows || rows.length === 0) && (
           <>

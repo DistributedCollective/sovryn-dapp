@@ -8,13 +8,18 @@ export function parseProposalInfo(proposal: Proposal | undefined) {
       '\n',
     );
 
-    const description = sanitizeHtml(rest.join('\n').replace('---\n', ''));
+    const cleanedDescription = sanitizeHtml(
+      rest
+        .map(line => line.replace(/^\s{4,}/, ''))
+        .join('\n')
+        .replace('---\n', ''),
+    );
 
     return {
       title: title || '',
       link: link || '',
       summary: summary || '',
-      description: sanitizeHtml(description || ''),
+      description: cleanedDescription,
     };
   } else if (proposal?.description.startsWith('SIP')) {
     const [title, ...description] = (proposal?.description || '').split(',');

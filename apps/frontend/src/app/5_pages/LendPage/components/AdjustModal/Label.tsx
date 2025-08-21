@@ -7,6 +7,7 @@ import { TabType, Tabs } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
+import { TAB_ACTIVE_CLASSNAME } from '../../../../../constants/general';
 import { translations } from '../../../../../locales/i18n';
 import { FormType } from './LendingForm';
 
@@ -17,8 +18,6 @@ export type LabelProps = {
   onTabChanged: (value: FormType) => void;
   onMaxClicked: () => void;
 };
-
-const ACTIVE_CLASSNAME = 'bg-gray-70 text-primary-20';
 
 export const Label: FC<LabelProps> = ({
   balance,
@@ -33,12 +32,12 @@ export const Label: FC<LabelProps> = ({
       {
         type: FormType.Deposit,
         label: t(translations.lendingAdjust.deposit),
-        activeClassName: ACTIVE_CLASSNAME,
+        activeClassName: TAB_ACTIVE_CLASSNAME,
       },
       {
         amountType: FormType.Withdraw,
         label: t(translations.lendingAdjust.withdraw),
-        activeClassName: ACTIVE_CLASSNAME,
+        activeClassName: TAB_ACTIVE_CLASSNAME,
       },
     ],
     [],

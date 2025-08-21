@@ -1,4 +1,5 @@
 export enum RewardHistoryType {
+  liquidityMiningRewards = 'liquidityMiningRewards',
   stabilityPoolRewards = 'stabilityPoolRewards',
   stabilityPoolSubsidies = 'stabilityPoolSubsidies',
   stakingRevenue = 'stakingRevenue',

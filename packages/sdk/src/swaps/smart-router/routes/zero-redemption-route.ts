@@ -7,9 +7,8 @@ import {
   PopulatableEthersLiquity,
 } from '@sovryn-zero/lib-ethers';
 import {
-  SupportedTokens,
+  getAssetContract,
   getProtocolContract,
-  getTokenContract,
   getZeroContract,
 } from '@sovryn/contracts';
 import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
@@ -22,6 +21,9 @@ import {
   hasEnoughAllowance,
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
+import { prepareERC2612Permit, preparePermitResponse } from '../utils/permit';
+
+export const MINIMUM_AMOUNT = 200;
 
 export const zeroRedemptionSwapRoute: SwapRouteFunction = (
   provider: providers.Provider,
@@ -63,6 +65,7 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
 
   return {
     name: 'ZeroRedemption',
+    chains: [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET],
     async pairs() {
       if (pairCache) {
         return pairCache;
@@ -71,10 +74,10 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       const chainId = await getChainId();
 
       const dllr = (
-        await getTokenContract(SupportedTokens.dllr, chainId)
+        await getAssetContract('DLLR', chainId)
       ).address.toLowerCase();
       const zusd = (
-        await getTokenContract(SupportedTokens.zusd, chainId)
+        await getAssetContract('ZUSD', chainId)
       ).address.toLowerCase();
       const rbtc = constants.AddressZero;
 
@@ -94,6 +97,10 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
         );
       }
 
+      if (Decimal.fromBigNumberString(amount.toString()).lt(MINIMUM_AMOUNT)) {
+        return BigNumber.from(0);
+      }
+
       const readable = await ReadableEthersLiquity.connect(provider, {
         useStore: 'blockPolled',
       });
@@ -103,8 +110,8 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
         ethers.getFees(),
         ethers.getTotal(),
         getPriceFeedContract(),
-        getTokenContract(SupportedTokens.wrbtc, chainId),
-        getTokenContract(SupportedTokens.rusdt, chainId),
+        getAssetContract('WBTC', chainId),
+        getAssetContract('RUSDT', chainId),
       ]);
 
       const maxRedemptionRate = fees
@@ -139,24 +146,29 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       if (
         areAddressesEqual(
           entry,
-          (await getTokenContract(SupportedTokens.dllr, chainId)).address,
+          (await getAssetContract('DLLR', chainId)).address,
         )
       ) {
-        if (!options?.permit) {
+        if (!options?.typedDataValue || !options?.typedDataSignature) {
           throw makeError(
             `Permit is required for swap.`,
             SovrynErrorCode.UNKNOWN_ERROR,
           );
         }
 
+        const permit = preparePermitResponse(
+          options.typedDataValue,
+          options.typedDataSignature,
+        );
+
         const { rawPopulatedTransaction } =
           await populatable.redeemCollateralViaDLLR(
             Decimal.fromBigNumberString(amount.toString()),
-            options.permit,
+            permit,
           );
 
-        const gasLimit = rawPopulatedTransaction.gasLimit?.lt(800_000)
-          ? 800_000
+        const gasLimit = rawPopulatedTransaction.gasLimit?.lt(1_500_000)
+          ? 1_500_000
           : rawPopulatedTransaction.gasLimit;
 
         return {
@@ -171,7 +183,7 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       if (
         areAddressesEqual(
           entry,
-          (await getTokenContract(SupportedTokens.zusd, chainId)).address,
+          (await getAssetContract('ZUSD', chainId)).address,
         )
       ) {
         const { rawPopulatedTransaction } = await populatable.redeemZUSD(
@@ -201,7 +213,7 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       if (
         areAddressesEqual(
           entry,
-          (await getTokenContract(SupportedTokens.zusd, chainId)).address,
+          (await getAssetContract('ZUSD', chainId)).address,
         ) &&
         areAddressesEqual(destination, constants.AddressZero)
       ) {
@@ -211,8 +223,8 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
           await hasEnoughAllowance(
             provider,
             entry,
-            spender,
             from,
+            spender,
             amount ?? constants.MaxUint256,
           )
         ) {
@@ -232,16 +244,21 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       if (
         areAddressesEqual(
           entry,
-          (await getTokenContract(SupportedTokens.dllr, chainId)).address,
+          (await getAssetContract('DLLR', chainId)).address,
         ) &&
         areAddressesEqual(destination, constants.AddressZero)
       ) {
         return {
-          token: entry,
-          spender: (await getTroveManagerContract()).address,
-          owner: from,
-          value: amount,
-          ...overrides,
+          approvalRequired: false,
+          typedData: await prepareERC2612Permit(
+            provider,
+            entry,
+            from,
+            (
+              await getTroveManagerContract()
+            ).address,
+            amount.toString(),
+          ),
         };
       }
       return undefined;

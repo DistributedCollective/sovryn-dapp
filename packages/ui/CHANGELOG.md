@@ -1,5 +1,73 @@
 # @sovryn/ui
 
+## 1.0.31
+
+### Patch Changes
+
+- 88463a86: SOV-4444: Rune pools convert updates
+
+## 1.0.30
+
+### Patch Changes
+
+- d9898545: SOV-4411: Update Slider component with Ranged functionality
+- e9a94007: SOV-4406: Fix Tooltip arrow color
+
+## 1.0.29
+
+### Patch Changes
+
+- d0899e6c: feat: allow custom row wrapper in table component
+- b08b93dc: SOV-4297: add Slider variation of Tabs component
+
+## 1.0.28
+
+### Patch Changes
+
+- 8d41bc74: SOV-4302: add pagination page limit
+
+## 1.0.27
+
+### Patch Changes
+
+- ec0afb6b: SOV-4199: Fix mobile layout
+
+## 1.0.26
+
+### Patch Changes
+
+- 5fa0447b: SOV-3938: Fix tooltip positioning
+
+## 1.0.25
+
+### Patch Changes
+
+- 05ffbb51: SOV-4157: Fix maximum value in AmountInput
+
+## 1.0.24
+
+### Patch Changes
+
+- 0cfa22b0: Multiple minor updates to component props
+
+## 1.0.23
+
+### Patch Changes
+
+- 3d6870a1: SOV-3801: Add new icon, extend properties on Table component, prevent onClick events from propagating from Tooltip clicks
+
+## 1.0.22
+
+### Patch Changes
+
+- e24befac: SOV-3389: Context Link component
+
+## 1.0.21
+
+### Patch Changes
+
+- c67169ef: SOV-3392: update Table Row component styling
+
 ## 1.0.20
 
 ### Patch Changes

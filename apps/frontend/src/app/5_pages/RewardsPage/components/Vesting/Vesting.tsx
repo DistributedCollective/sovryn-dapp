@@ -10,6 +10,7 @@ import { translations } from '../../../../../locales/i18n';
 import { VestingContractType } from '../../../../../utils/graphql/rsk/generated';
 import { columnsConfig } from './Vestings.constants';
 import { generateRowTitle } from './Vestings.utils';
+import { VestingContextProvider } from './context/VestingContext';
 import { useGetVestingContracts } from './hooks/useGetVestingContracts';
 
 const pageSize = DEFAULT_PAGE_SIZE;
@@ -55,8 +56,9 @@ export const Vesting: FC = () => {
         }
         loadingData={t(translations.common.tables.loading)}
         isLoading={loading}
-        dataAttribute="funding-history-table"
+        dataAttribute="vesting-rewards-history-table"
         rowTitle={generateRowTitle}
+        rowComponent={VestingContextProvider}
       />
       <Pagination
         page={page}
@@ -64,7 +66,7 @@ export const Vesting: FC = () => {
         onChange={onPageChange}
         itemsPerPage={pageSize}
         isNextButtonDisabled={isNextButtonDisabled}
-        dataAttribute="funding-history-pagination"
+        dataAttribute="vesting-rewards-history-pagination"
       />
     </div>
   );

@@ -27,7 +27,9 @@ export const toWei = (
     }
 
     if (isBigNumberish(value)) {
-      return BigNumber.from(value).mul(BigNumber.from(10).pow(unitName));
+      return BigNumber.from(String(value)).mul(
+        BigNumber.from(10).pow(unitName),
+      );
     } else {
       //can't just reuse same logic above, as values in scientific notation are unrecognised by BigNumber
       //so need to convert to weis before passing
@@ -143,6 +145,17 @@ export const decimalic = (value: Decimalish | undefined | null): Decimal => {
     return Decimal.ZERO;
   }
   return value;
+};
+
+export const bigNumberic = (
+  value: BigNumberish | undefined | null,
+): BigNumber => {
+  if (String(value).search(/e[-+]?/) > 0) {
+    return BigNumber.from(
+      Number(value).toLocaleString('fullwide', { useGrouping: false }),
+    );
+  }
+  return BigNumber.from(String(value || 0));
 };
 
 export const isScientificNumber = (value: number) =>

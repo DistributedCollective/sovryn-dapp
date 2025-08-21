@@ -1,0 +1,133 @@
+{
+  "merkleRoot": "0x2e8710ed587cd97e8bf824acc02986acdfaedbe7c41ba906c7a864621200bd4a",
+  "claims": [
+    {
+      "index": 0,
+      "token": "0x0D7423380F4b6f96D8188CCCfB086aBEC84A0934",
+      "account": "0x2bD2201BFE156A71EB0D02837172ffc237218505",
+      "amount": "0xc8",
+      "proof": [
+        "0x4f80128816cee0a5a3b8476df7cf9688fb87efb7b8e0b852f9b58a36f11fab09",
+        "0x92e53a7fa1bd2e1cb7598f421008f89a492dcea84de293822c304dbe5a9e490b",
+        "0xa3169d0d2a7850219a373d37fedc44987f0fe5719f1b552ec2a0b553fac5fb23",
+        "0x753effa4913ea3a63d79b65f3aaeb669578f5481f9c233b78b0960d2ebe2c4a6"
+      ]
+    },
+    {
+      "index": 1,
+      "token": "0xEc025c3651308Ff67835Cf0F147315466932E15c",
+      "account": "0x2bD2201BFE156A71EB0D02837172ffc237218505",
+      "amount": "0xc8",
+      "proof": [
+        "0xf7a94c48613d20fdc8ae86d2bdf88f7556d5b3a2ff884543ca7c69ec100da70a",
+        "0x4b9476adde344d390f983849249e85cbac8069fde8fbf2562596f210e79667e7"
+      ]
+    },
+    {
+      "index": 2,
+      "token": "0x0D7423380F4b6f96D8188CCCfB086aBEC84A0934",
+      "account": "0xbF04473872a505280eB51745674Be78bdCbaf363",
+      "amount": "0xc8",
+      "proof": [
+        "0xf0574f59160b65b05d48fd7d45727a07b90f98de484cf1d967388bfb1ecdb5dc",
+        "0x4b9476adde344d390f983849249e85cbac8069fde8fbf2562596f210e79667e7"
+      ]
+    },
+    {
+      "index": 3,
+      "token": "0xEc025c3651308Ff67835Cf0F147315466932E15c",
+      "account": "0xbF04473872a505280eB51745674Be78bdCbaf363",
+      "amount": "0xc8",
+      "proof": [
+        "0xb846c1461892ee73701feb2a95106a6138209fcb1fccbdd3366bdf02734df7fa",
+        "0x1e6d20722de181d34e6c59cd07ed080fff49d514f88e38f7d2d0a8f25515612f",
+        "0xe65650980cb3fdfe165fd870485d5c75a24099e73e3ea2e0544ede96479df5de",
+        "0x753effa4913ea3a63d79b65f3aaeb669578f5481f9c233b78b0960d2ebe2c4a6"
+      ]
+    },
+    {
+      "index": 4,
+      "token": "0x0D7423380F4b6f96D8188CCCfB086aBEC84A0934",
+      "account": "0xB906B557850AC655e3d1063B6D6FD8BFF35A0fb6",
+      "amount": "0xc8",
+      "proof": [
+        "0x85ecc216e8eb4e964290f7ce35d991bf6f550a9b77ae66d6f082d92dd1dd2272",
+        "0x92e53a7fa1bd2e1cb7598f421008f89a492dcea84de293822c304dbe5a9e490b",
+        "0xa3169d0d2a7850219a373d37fedc44987f0fe5719f1b552ec2a0b553fac5fb23",
+        "0x753effa4913ea3a63d79b65f3aaeb669578f5481f9c233b78b0960d2ebe2c4a6"
+      ]
+    },
+    {
+      "index": 5,
+      "token": "0xEc025c3651308Ff67835Cf0F147315466932E15c",
+      "account": "0xaDbEE234896B1A53a80D113A7eceF5f2B4AeAED6",
+      "amount": "0xc8",
+      "proof": [
+        "0xd311458bad9476032f2f93e3cffa55934353174b35064196c3466ba7b25be715",
+        "0x97c1d7975fea5242cd1b6619b2bc60d47b66b81946dd669953ca7ee6f5849653",
+        "0xe65650980cb3fdfe165fd870485d5c75a24099e73e3ea2e0544ede96479df5de",
+        "0x753effa4913ea3a63d79b65f3aaeb669578f5481f9c233b78b0960d2ebe2c4a6"
+      ]
+    },
+    {
+      "index": 6,
+      "token": "0x0D7423380F4b6f96D8188CCCfB086aBEC84A0934",
+      "account": "0x3fF003142742d54E7c6A0c8dA2861dEAE392Dcce",
+      "amount": "0xc8",
+      "proof": [
+        "0xd2b01be9aadc31dc83bd68ad4d423ebf5bf71193c485c698e557032499b4b5de",
+        "0x97c1d7975fea5242cd1b6619b2bc60d47b66b81946dd669953ca7ee6f5849653",
+        "0xe65650980cb3fdfe165fd870485d5c75a24099e73e3ea2e0544ede96479df5de",
+        "0x753effa4913ea3a63d79b65f3aaeb669578f5481f9c233b78b0960d2ebe2c4a6"
+      ]
+    },
+    {
+      "index": 7,
+      "token": "0xEc025c3651308Ff67835Cf0F147315466932E15c",
+      "account": "0x3fF003142742d54E7c6A0c8dA2861dEAE392Dcce",
+      "amount": "0xc8",
+      "proof": [
+        "0x2f8519eda3102afd91793c5ed2c4175f016a0cd7e151e541fa1ec24cb7e4025e",
+        "0xc3b0eab316b2e96c419218bd473fe35c58bf89d93b61add560d330f4d6f8ad1d",
+        "0xa3169d0d2a7850219a373d37fedc44987f0fe5719f1b552ec2a0b553fac5fb23",
+        "0x753effa4913ea3a63d79b65f3aaeb669578f5481f9c233b78b0960d2ebe2c4a6"
+      ]
+    },
+    {
+      "index": 8,
+      "token": "0x0D7423380F4b6f96D8188CCCfB086aBEC84A0934",
+      "account": "0xbE81C9cf6938607041A5890672BC9BaFb453D2a1",
+      "amount": "0xc8",
+      "proof": [
+        "0x9ea05d116575d5b23ec5894a1246374c9543538ddc5f989ca5a6f2b5235acb5a",
+        "0x1e6d20722de181d34e6c59cd07ed080fff49d514f88e38f7d2d0a8f25515612f",
+        "0xe65650980cb3fdfe165fd870485d5c75a24099e73e3ea2e0544ede96479df5de",
+        "0x753effa4913ea3a63d79b65f3aaeb669578f5481f9c233b78b0960d2ebe2c4a6"
+      ]
+    },
+    {
+      "index": 9,
+      "token": "0xEc025c3651308Ff67835Cf0F147315466932E15c",
+      "account": "0xd75840DA28B87f7a0d0b7E4c2E5d39E19e68EA6f",
+      "amount": "0xc8",
+      "proof": [
+        "0x03e3efe73119fb6e00713d424dee705f3cf8b493ee9242a770be6994cd40350f",
+        "0xc3b0eab316b2e96c419218bd473fe35c58bf89d93b61add560d330f4d6f8ad1d",
+        "0xa3169d0d2a7850219a373d37fedc44987f0fe5719f1b552ec2a0b553fac5fb23",
+        "0x753effa4913ea3a63d79b65f3aaeb669578f5481f9c233b78b0960d2ebe2c4a6"
+      ]
+    },
+    {
+      "index": 10,
+      "token": "0xEc025c3651308Ff67835Cf0F147315466932E15c",
+      "account": "0x2bD2201BFE156A71EB0D02837172ffc237218505",
+      "amount": "0xc8",
+      "proof": [
+        "0x03e3efe73119fb6e00713d424dee705f3cf8b493ee9242a770be6994cd40350f",
+        "0xc3b0eab316b2e96c419218bd473fe35c58bf89d93b61add560d330f4d6f8ad1d",
+        "0xa3169d0d2a7850219a373d37fedc44987f0fe5719f1b552ec2a0b553fac5fb23",
+        "0x753effa4913ea3a63d79b65f3aaeb669578f5481f9c233b78b0960d2ebe2c4a6"
+      ]
+    }
+  ]
+}

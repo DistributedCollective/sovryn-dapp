@@ -2,12 +2,12 @@ import React from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { TransactionIdRenderer } from '../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
+import { getCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { dateFormat } from '../../../../../utils/helpers';
 import { StakingWithdrawItem } from './StakingWithdraws.types';
 
@@ -30,10 +30,21 @@ export const COLUMNS_CONFIG = [
       <AmountRenderer
         prefix="-"
         value={tx.amount || 0}
-        suffix={getTokenDisplayName(SupportedTokens.sov)}
+        suffix={getTokenDisplayName(COMMON_SYMBOLS.SOV)}
       />
     ),
     sortable: true,
+  },
+  {
+    id: 'slashedAmount',
+    title: t(translations.stakingHistory.unstakingPenalty),
+    cellRenderer: (tx: StakingWithdrawItem) => (
+      <AmountRenderer
+        prefix={Number(tx.slashedAmount) > 0 ? '-' : ''}
+        value={tx.slashedAmount || 0}
+        suffix={getTokenDisplayName(COMMON_SYMBOLS.SOV)}
+      />
+    ),
   },
   {
     id: 'until',
@@ -48,6 +59,7 @@ export const COLUMNS_CONFIG = [
       <TransactionIdRenderer
         hash={item.id.split('-')[0]}
         dataAttribute="staking-withdraw-tx-hash"
+        chainId={getCurrentChain()}
       />
     ),
   },

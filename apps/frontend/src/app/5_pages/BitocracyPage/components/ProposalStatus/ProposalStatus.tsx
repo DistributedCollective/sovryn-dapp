@@ -15,13 +15,15 @@ import { getStatusIcon } from '../Proposals/Proposals.utils';
 type ProposalStatusProps = ProposalProps & {
   className?: string;
   isProposalDetail?: boolean;
+  blockNumber: number;
 };
 export const ProposalStatus: FC<ProposalStatusProps> = ({
   proposal,
   className,
   isProposalDetail = false,
+  blockNumber,
 }) => {
-  const status = useProposalStatus(proposal);
+  const status = useProposalStatus(proposal, blockNumber);
   const isExecutableProposal = useIsExecutableProposal(proposal);
 
   const activeProposalDetailMessage = useMemo(() => {
@@ -56,7 +58,11 @@ export const ProposalStatus: FC<ProposalStatusProps> = ({
   }, [isExecutableProposal, status]);
 
   return (
-    <div className={classNames('flex items-start', className)}>
+    <div
+      className={classNames('flex items-start', className, {
+        invisible: !blockNumber,
+      })}
+    >
       {getStatusIcon(status)}
       <Paragraph
         className={`${

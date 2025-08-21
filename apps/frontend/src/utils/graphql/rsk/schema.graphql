@@ -2347,6 +2347,132 @@ enum CrossTransfer_orderBy {
   votes
 }
 
+type DebugItem {
+  amount: BigDecimal
+  emittedBy: Bytes!
+  formattedAmount: BigDecimal
+  id: ID!
+  timestamp: Int!
+  totalStaked: BigDecimal
+  totalVested: BigDecimal
+  transaction: Transaction!
+  type: String
+}
+
+input DebugItem_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
+  amount: BigDecimal
+  amount_gt: BigDecimal
+  amount_gte: BigDecimal
+  amount_in: [BigDecimal!]
+  amount_lt: BigDecimal
+  amount_lte: BigDecimal
+  amount_not: BigDecimal
+  amount_not_in: [BigDecimal!]
+  emittedBy: Bytes
+  emittedBy_contains: Bytes
+  emittedBy_in: [Bytes!]
+  emittedBy_not: Bytes
+  emittedBy_not_contains: Bytes
+  emittedBy_not_in: [Bytes!]
+  formattedAmount: BigDecimal
+  formattedAmount_gt: BigDecimal
+  formattedAmount_gte: BigDecimal
+  formattedAmount_in: [BigDecimal!]
+  formattedAmount_lt: BigDecimal
+  formattedAmount_lte: BigDecimal
+  formattedAmount_not: BigDecimal
+  formattedAmount_not_in: [BigDecimal!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  timestamp: Int
+  timestamp_gt: Int
+  timestamp_gte: Int
+  timestamp_in: [Int!]
+  timestamp_lt: Int
+  timestamp_lte: Int
+  timestamp_not: Int
+  timestamp_not_in: [Int!]
+  totalStaked: BigDecimal
+  totalStaked_gt: BigDecimal
+  totalStaked_gte: BigDecimal
+  totalStaked_in: [BigDecimal!]
+  totalStaked_lt: BigDecimal
+  totalStaked_lte: BigDecimal
+  totalStaked_not: BigDecimal
+  totalStaked_not_in: [BigDecimal!]
+  totalVested: BigDecimal
+  totalVested_gt: BigDecimal
+  totalVested_gte: BigDecimal
+  totalVested_in: [BigDecimal!]
+  totalVested_lt: BigDecimal
+  totalVested_lte: BigDecimal
+  totalVested_not: BigDecimal
+  totalVested_not_in: [BigDecimal!]
+  transaction: String
+  transaction_: Transaction_filter
+  transaction_contains: String
+  transaction_contains_nocase: String
+  transaction_ends_with: String
+  transaction_ends_with_nocase: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_contains_nocase: String
+  transaction_not_ends_with: String
+  transaction_not_ends_with_nocase: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_not_starts_with_nocase: String
+  transaction_starts_with: String
+  transaction_starts_with_nocase: String
+  type: String
+  type_contains: String
+  type_contains_nocase: String
+  type_ends_with: String
+  type_ends_with_nocase: String
+  type_gt: String
+  type_gte: String
+  type_in: [String!]
+  type_lt: String
+  type_lte: String
+  type_not: String
+  type_not_contains: String
+  type_not_contains_nocase: String
+  type_not_ends_with: String
+  type_not_ends_with_nocase: String
+  type_not_in: [String!]
+  type_not_starts_with: String
+  type_not_starts_with_nocase: String
+  type_starts_with: String
+  type_starts_with_nocase: String
+}
+
+enum DebugItem_orderBy {
+  amount
+  emittedBy
+  formattedAmount
+  id
+  timestamp
+  totalStaked
+  totalVested
+  transaction
+  type
+}
+
 type Deposit {
   amount: BigDecimal!
   emittedBy: Bytes!
@@ -2903,6 +3029,10 @@ type GovernorContract {
   staking: Bytes!
   timelock: Bytes!
 
+  "Timestamp when this contract has created a proposal and was loaded into the graph.\n"
+  timestamp: Int!
+  type: GovernorType!
+
   "The delay before voting on a proposal may take place, once proposed, in blocks.\n"
   votingDelay: Int!
 
@@ -2966,6 +3096,18 @@ input GovernorContract_filter {
   timelock_not: Bytes
   timelock_not_contains: Bytes
   timelock_not_in: [Bytes!]
+  timestamp: Int
+  timestamp_gt: Int
+  timestamp_gte: Int
+  timestamp_in: [Int!]
+  timestamp_lt: Int
+  timestamp_lte: Int
+  timestamp_not: Int
+  timestamp_not_in: [Int!]
+  type: GovernorType
+  type_in: [GovernorType!]
+  type_not: GovernorType
+  type_not_in: [GovernorType!]
   votingDelay: Int
   votingDelay_gt: Int
   votingDelay_gte: Int
@@ -2993,8 +3135,16 @@ enum GovernorContract_orderBy {
   quorumPercentageVotes
   staking
   timelock
+  timestamp
+  type
   votingDelay
   votingPeriod
+}
+
+enum GovernorType {
+  Admin
+  Other
+  Owner
 }
 
 "Candlesticks are for presentational purposes on the dapp. This entity supports the candlestick trading data on the trading view charts.\nTrading data is available for the following pairs:\n1. All tokens to RBTC\n2. All tokens to current usdStablecoin (see ProtocolStats entity for more information)\nThere is not candlestick data for other trading pairs as this would cause the amount of data stored to increase exponentially\n"
@@ -4082,6 +4232,13 @@ type LiquidityPool {
 
   "Divide by maxConversionFee to get percentage\n"
   conversionFee: BigInt
+  conversions(
+    first: Int = 100
+    orderBy: PoolVolumeItem_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: PoolVolumeItem_filter
+  ): [PoolVolumeItem!]
   createdAtBlockNumber: Int
   createdAtTimestamp: Int
   createdAtTransaction: Transaction!
@@ -4263,6 +4420,7 @@ input LiquidityPool_filter {
   conversionFee_lte: BigInt
   conversionFee_not: BigInt
   conversionFee_not_in: [BigInt!]
+  conversions_: PoolVolumeItem_filter
   createdAtBlockNumber: Int
   createdAtBlockNumber_gt: Int
   createdAtBlockNumber_gte: Int
@@ -4459,6 +4617,7 @@ enum LiquidityPool_orderBy {
   activated
   connectorTokens
   conversionFee
+  conversions
   createdAtBlockNumber
   createdAtTimestamp
   createdAtTransaction
@@ -5256,6 +5415,357 @@ enum MarginOrderFilled_orderBy {
   timestamp
   trader
   transaction
+}
+
+type MultisigConfirmation {
+  id: ID!
+  multisigTransaction: MultisigTransaction!
+  signer: User!
+  timestamp: Int!
+  transaction: Transaction!
+}
+
+input MultisigConfirmation_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  multisigTransaction: String
+  multisigTransaction_: MultisigTransaction_filter
+  multisigTransaction_contains: String
+  multisigTransaction_contains_nocase: String
+  multisigTransaction_ends_with: String
+  multisigTransaction_ends_with_nocase: String
+  multisigTransaction_gt: String
+  multisigTransaction_gte: String
+  multisigTransaction_in: [String!]
+  multisigTransaction_lt: String
+  multisigTransaction_lte: String
+  multisigTransaction_not: String
+  multisigTransaction_not_contains: String
+  multisigTransaction_not_contains_nocase: String
+  multisigTransaction_not_ends_with: String
+  multisigTransaction_not_ends_with_nocase: String
+  multisigTransaction_not_in: [String!]
+  multisigTransaction_not_starts_with: String
+  multisigTransaction_not_starts_with_nocase: String
+  multisigTransaction_starts_with: String
+  multisigTransaction_starts_with_nocase: String
+  signer: String
+  signer_: User_filter
+  signer_contains: String
+  signer_contains_nocase: String
+  signer_ends_with: String
+  signer_ends_with_nocase: String
+  signer_gt: String
+  signer_gte: String
+  signer_in: [String!]
+  signer_lt: String
+  signer_lte: String
+  signer_not: String
+  signer_not_contains: String
+  signer_not_contains_nocase: String
+  signer_not_ends_with: String
+  signer_not_ends_with_nocase: String
+  signer_not_in: [String!]
+  signer_not_starts_with: String
+  signer_not_starts_with_nocase: String
+  signer_starts_with: String
+  signer_starts_with_nocase: String
+  timestamp: Int
+  timestamp_gt: Int
+  timestamp_gte: Int
+  timestamp_in: [Int!]
+  timestamp_lt: Int
+  timestamp_lte: Int
+  timestamp_not: Int
+  timestamp_not_in: [Int!]
+  transaction: String
+  transaction_: Transaction_filter
+  transaction_contains: String
+  transaction_contains_nocase: String
+  transaction_ends_with: String
+  transaction_ends_with_nocase: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_contains_nocase: String
+  transaction_not_ends_with: String
+  transaction_not_ends_with_nocase: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_not_starts_with_nocase: String
+  transaction_starts_with: String
+  transaction_starts_with_nocase: String
+}
+
+enum MultisigConfirmation_orderBy {
+  id
+  multisigTransaction
+  signer
+  timestamp
+  transaction
+}
+
+type MultisigContract {
+  id: ID!
+  owners(
+    first: Int = 100
+    orderBy: User_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: User_filter
+  ): [User!]!
+  required: Int!
+  timestamp: Int!
+  transaction: Transaction!
+  transactions(
+    first: Int = 100
+    orderBy: MultisigTransaction_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: MultisigTransaction_filter
+  ): [MultisigTransaction!]!
+}
+
+input MultisigContract_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  owners: [String!]
+  owners_: User_filter
+  owners_contains: [String!]
+  owners_contains_nocase: [String!]
+  owners_not: [String!]
+  owners_not_contains: [String!]
+  owners_not_contains_nocase: [String!]
+  required: Int
+  required_gt: Int
+  required_gte: Int
+  required_in: [Int!]
+  required_lt: Int
+  required_lte: Int
+  required_not: Int
+  required_not_in: [Int!]
+  timestamp: Int
+  timestamp_gt: Int
+  timestamp_gte: Int
+  timestamp_in: [Int!]
+  timestamp_lt: Int
+  timestamp_lte: Int
+  timestamp_not: Int
+  timestamp_not_in: [Int!]
+  transaction: String
+  transaction_: Transaction_filter
+  transaction_contains: String
+  transaction_contains_nocase: String
+  transaction_ends_with: String
+  transaction_ends_with_nocase: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_contains_nocase: String
+  transaction_not_ends_with: String
+  transaction_not_ends_with_nocase: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_not_starts_with_nocase: String
+  transaction_starts_with: String
+  transaction_starts_with_nocase: String
+  transactions_: MultisigTransaction_filter
+}
+
+enum MultisigContract_orderBy {
+  id
+  owners
+  required
+  timestamp
+  transaction
+  transactions
+}
+
+type MultisigTransaction {
+  confirmations(
+    first: Int = 100
+    orderBy: MultisigConfirmation_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+    where: MultisigConfirmation_filter
+  ): [MultisigConfirmation!]!
+  data: Bytes!
+  destination: Bytes!
+  id: ID!
+  multisigContract: MultisigContract!
+  status: MultisigTransactionStatus!
+  submitter: User!
+  timestamp: Int!
+  transaction: Transaction!
+  transactionId: Int!
+  value: BigInt!
+}
+
+enum MultisigTransactionStatus {
+  EXECUTED
+  FAILED
+  SUBMITTED
+}
+
+input MultisigTransaction_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
+  confirmations_: MultisigConfirmation_filter
+  data: Bytes
+  data_contains: Bytes
+  data_in: [Bytes!]
+  data_not: Bytes
+  data_not_contains: Bytes
+  data_not_in: [Bytes!]
+  destination: Bytes
+  destination_contains: Bytes
+  destination_in: [Bytes!]
+  destination_not: Bytes
+  destination_not_contains: Bytes
+  destination_not_in: [Bytes!]
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  multisigContract: String
+  multisigContract_: MultisigContract_filter
+  multisigContract_contains: String
+  multisigContract_contains_nocase: String
+  multisigContract_ends_with: String
+  multisigContract_ends_with_nocase: String
+  multisigContract_gt: String
+  multisigContract_gte: String
+  multisigContract_in: [String!]
+  multisigContract_lt: String
+  multisigContract_lte: String
+  multisigContract_not: String
+  multisigContract_not_contains: String
+  multisigContract_not_contains_nocase: String
+  multisigContract_not_ends_with: String
+  multisigContract_not_ends_with_nocase: String
+  multisigContract_not_in: [String!]
+  multisigContract_not_starts_with: String
+  multisigContract_not_starts_with_nocase: String
+  multisigContract_starts_with: String
+  multisigContract_starts_with_nocase: String
+  status: MultisigTransactionStatus
+  status_in: [MultisigTransactionStatus!]
+  status_not: MultisigTransactionStatus
+  status_not_in: [MultisigTransactionStatus!]
+  submitter: String
+  submitter_: User_filter
+  submitter_contains: String
+  submitter_contains_nocase: String
+  submitter_ends_with: String
+  submitter_ends_with_nocase: String
+  submitter_gt: String
+  submitter_gte: String
+  submitter_in: [String!]
+  submitter_lt: String
+  submitter_lte: String
+  submitter_not: String
+  submitter_not_contains: String
+  submitter_not_contains_nocase: String
+  submitter_not_ends_with: String
+  submitter_not_ends_with_nocase: String
+  submitter_not_in: [String!]
+  submitter_not_starts_with: String
+  submitter_not_starts_with_nocase: String
+  submitter_starts_with: String
+  submitter_starts_with_nocase: String
+  timestamp: Int
+  timestamp_gt: Int
+  timestamp_gte: Int
+  timestamp_in: [Int!]
+  timestamp_lt: Int
+  timestamp_lte: Int
+  timestamp_not: Int
+  timestamp_not_in: [Int!]
+  transaction: String
+  transactionId: Int
+  transactionId_gt: Int
+  transactionId_gte: Int
+  transactionId_in: [Int!]
+  transactionId_lt: Int
+  transactionId_lte: Int
+  transactionId_not: Int
+  transactionId_not_in: [Int!]
+  transaction_: Transaction_filter
+  transaction_contains: String
+  transaction_contains_nocase: String
+  transaction_ends_with: String
+  transaction_ends_with_nocase: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_contains_nocase: String
+  transaction_not_ends_with: String
+  transaction_not_ends_with_nocase: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_not_starts_with_nocase: String
+  transaction_starts_with: String
+  transaction_starts_with_nocase: String
+  value: BigInt
+  value_gt: BigInt
+  value_gte: BigInt
+  value_in: [BigInt!]
+  value_lt: BigInt
+  value_lte: BigInt
+  value_not: BigInt
+  value_not_in: [BigInt!]
+}
+
+enum MultisigTransaction_orderBy {
+  confirmations
+  data
+  destination
+  id
+  multisigContract
+  status
+  submitter
+  timestamp
+  transaction
+  transactionId
+  value
 }
 
 enum Network {
@@ -6362,6 +6872,118 @@ enum PoolToken_orderBy {
   name
   symbol
   underlyingAssets
+}
+
+type PoolVolumeItem {
+  btcAmount: BigDecimal!
+  conversion: Conversion!
+  id: ID!
+  pool: LiquidityPool!
+  timestamp: Int!
+  transaction: Transaction!
+}
+
+input PoolVolumeItem_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
+  btcAmount: BigDecimal
+  btcAmount_gt: BigDecimal
+  btcAmount_gte: BigDecimal
+  btcAmount_in: [BigDecimal!]
+  btcAmount_lt: BigDecimal
+  btcAmount_lte: BigDecimal
+  btcAmount_not: BigDecimal
+  btcAmount_not_in: [BigDecimal!]
+  conversion: String
+  conversion_: Conversion_filter
+  conversion_contains: String
+  conversion_contains_nocase: String
+  conversion_ends_with: String
+  conversion_ends_with_nocase: String
+  conversion_gt: String
+  conversion_gte: String
+  conversion_in: [String!]
+  conversion_lt: String
+  conversion_lte: String
+  conversion_not: String
+  conversion_not_contains: String
+  conversion_not_contains_nocase: String
+  conversion_not_ends_with: String
+  conversion_not_ends_with_nocase: String
+  conversion_not_in: [String!]
+  conversion_not_starts_with: String
+  conversion_not_starts_with_nocase: String
+  conversion_starts_with: String
+  conversion_starts_with_nocase: String
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  pool: String
+  pool_: LiquidityPool_filter
+  pool_contains: String
+  pool_contains_nocase: String
+  pool_ends_with: String
+  pool_ends_with_nocase: String
+  pool_gt: String
+  pool_gte: String
+  pool_in: [String!]
+  pool_lt: String
+  pool_lte: String
+  pool_not: String
+  pool_not_contains: String
+  pool_not_contains_nocase: String
+  pool_not_ends_with: String
+  pool_not_ends_with_nocase: String
+  pool_not_in: [String!]
+  pool_not_starts_with: String
+  pool_not_starts_with_nocase: String
+  pool_starts_with: String
+  pool_starts_with_nocase: String
+  timestamp: Int
+  timestamp_gt: Int
+  timestamp_gte: Int
+  timestamp_in: [Int!]
+  timestamp_lt: Int
+  timestamp_lte: Int
+  timestamp_not: Int
+  timestamp_not_in: [Int!]
+  transaction: String
+  transaction_: Transaction_filter
+  transaction_contains: String
+  transaction_contains_nocase: String
+  transaction_ends_with: String
+  transaction_ends_with_nocase: String
+  transaction_gt: String
+  transaction_gte: String
+  transaction_in: [String!]
+  transaction_lt: String
+  transaction_lte: String
+  transaction_not: String
+  transaction_not_contains: String
+  transaction_not_contains_nocase: String
+  transaction_not_ends_with: String
+  transaction_not_ends_with_nocase: String
+  transaction_not_in: [String!]
+  transaction_not_starts_with: String
+  transaction_not_starts_with_nocase: String
+  transaction_starts_with: String
+  transaction_starts_with_nocase: String
+}
+
+enum PoolVolumeItem_orderBy {
+  btcAmount
+  conversion
+  id
+  pool
+  timestamp
+  transaction
 }
 
 "A Proposal is created each time a SIP (Sovryn Improvement Proposal) is proposed\nThe Proposal is created, voted on, and then executed if it passes\nTo see if a Proposal has been executed, see if the executed property is null or if it has a transaction\n"
@@ -7644,6 +8266,34 @@ type Query {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: CrossTransfer_filter
   ): [CrossTransfer!]!
+  debugItem(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): DebugItem
+  debugItems(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: DebugItem_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: DebugItem_filter
+  ): [DebugItem!]!
   deposit(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -8176,6 +8826,90 @@ type Query {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: MarginOrderFilled_filter
   ): [MarginOrderFilled!]!
+  multisigConfirmation(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): MultisigConfirmation
+  multisigConfirmations(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: MultisigConfirmation_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: MultisigConfirmation_filter
+  ): [MultisigConfirmation!]!
+  multisigContract(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): MultisigContract
+  multisigContracts(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: MultisigContract_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: MultisigContract_filter
+  ): [MultisigContract!]!
+  multisigTransaction(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): MultisigTransaction
+  multisigTransactions(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: MultisigTransaction_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: MultisigTransaction_filter
+  ): [MultisigTransaction!]!
   newBitcoinTransferIncoming(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -8428,6 +9162,34 @@ type Query {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: PoolToken_filter
   ): [PoolToken!]!
+  poolVolumeItem(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): PoolVolumeItem
+  poolVolumeItems(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: PoolVolumeItem_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: PoolVolumeItem_filter
+  ): [PoolVolumeItem!]!
   proposal(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -8708,6 +9470,34 @@ type Query {
     """
     subgraphError: _SubgraphErrorPolicy_! = deny
   ): Swap
+  swapSetting(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): SwapSetting
+  swapSettings(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: SwapSetting_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: SwapSetting_filter
+  ): [SwapSetting!]!
   swaps(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -9944,6 +10734,9 @@ enum StakeHistoryAction {
   Delegate
   DelegateVested
 
+  "When a user make an early unstake and the staked amount is slashed\n"
+  EarlyUnstakingPenalty
+
   "Extending an existing stake. The amount of the stake remains the same, but the lockedUntil date increases.\n"
   ExtendStake
 
@@ -10596,6 +11389,34 @@ type Subscription {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: CrossTransfer_filter
   ): [CrossTransfer!]!
+  debugItem(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): DebugItem
+  debugItems(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: DebugItem_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: DebugItem_filter
+  ): [DebugItem!]!
   deposit(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -11128,6 +11949,90 @@ type Subscription {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: MarginOrderFilled_filter
   ): [MarginOrderFilled!]!
+  multisigConfirmation(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): MultisigConfirmation
+  multisigConfirmations(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: MultisigConfirmation_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: MultisigConfirmation_filter
+  ): [MultisigConfirmation!]!
+  multisigContract(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): MultisigContract
+  multisigContracts(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: MultisigContract_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: MultisigContract_filter
+  ): [MultisigContract!]!
+  multisigTransaction(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): MultisigTransaction
+  multisigTransactions(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: MultisigTransaction_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: MultisigTransaction_filter
+  ): [MultisigTransaction!]!
   newBitcoinTransferIncoming(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -11380,6 +12285,34 @@ type Subscription {
     subgraphError: _SubgraphErrorPolicy_! = deny
     where: PoolToken_filter
   ): [PoolToken!]!
+  poolVolumeItem(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): PoolVolumeItem
+  poolVolumeItems(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: PoolVolumeItem_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: PoolVolumeItem_filter
+  ): [PoolVolumeItem!]!
   proposal(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -11660,6 +12593,34 @@ type Subscription {
     """
     subgraphError: _SubgraphErrorPolicy_! = deny
   ): Swap
+  swapSetting(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    id: ID!
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): SwapSetting
+  swapSettings(
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    first: Int = 100
+    orderBy: SwapSetting_orderBy
+    orderDirection: OrderDirection
+    skip: Int = 0
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+    where: SwapSetting_filter
+  ): [SwapSetting!]!
   swaps(
     """
     The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
@@ -12268,6 +13229,49 @@ type Swap {
 
   "If this swap was initiated by a contract (for example as part of a Margin Trade), User will be null.\nOtherwise, this is the user that initiated the transaction.\n"
   user: User
+}
+
+type SwapSetting {
+  id: ID!
+  protocolFee: Int!
+  timestamp: Int!
+}
+
+input SwapSetting_filter {
+  """
+  Filter for the block changed event.
+  """
+  _change_block: BlockChangedFilter
+  id: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_not: ID
+  id_not_in: [ID!]
+  protocolFee: Int
+  protocolFee_gt: Int
+  protocolFee_gte: Int
+  protocolFee_in: [Int!]
+  protocolFee_lt: Int
+  protocolFee_lte: Int
+  protocolFee_not: Int
+  protocolFee_not_in: [Int!]
+  timestamp: Int
+  timestamp_gt: Int
+  timestamp_gte: Int
+  timestamp_in: [Int!]
+  timestamp_lt: Int
+  timestamp_lte: Int
+  timestamp_not: Int
+  timestamp_not_in: [Int!]
+}
+
+enum SwapSetting_orderBy {
+  id
+  protocolFee
+  timestamp
 }
 
 enum SwapType {
@@ -14176,12 +15180,22 @@ enum User_orderBy {
   votes
 }
 
+"Event is emitted when stake owner delegates voting power to another user\n"
 type V2DelegateChanged {
+  "Address of the new delegatee\n"
   delegate: User
   id: ID!
+
+  "lockedUntil date of the stake\n"
   lockedUntil: Int!
+
+  "Address of the previous delegatee\n"
   previousDelegate: User
+
+  "Timestamp of the transaction\n"
   timestamp: Int!
+
+  "The user who staked the tokens\n"
   user: User!
 }
 
@@ -14288,12 +15302,22 @@ enum V2DelegateChanged_orderBy {
   user
 }
 
+"Event is emitted when voluntary staked token lockedUntil date is extended\n"
 type V2ExtendedStakingDuration {
+  "Amount that was moved to the new lockedUntil date\n"
   amountStaked: BigDecimal!
   id: ID!
+
+  "New lockedUntil date\n"
   newDate: Int!
+
+  "LockedUntil date of original stake\n"
   previousDate: Int!
+
+  "Timestamp of the transaction\n"
   timestamp: Int!
+
+  "The user who staked the tokens\n"
   user: User!
 }
 
@@ -14485,13 +15509,28 @@ enum V2Stake_orderBy {
   user
 }
 
+"Event is emitted when voluntary or vested staked tokens are withdrawn\n"
 type V2StakingWithdrawn {
+  "Amount of tokens withdrawn (does not include slashed amount)\n"
   amount: BigDecimal!
   id: ID!
+
+  "If this is true, tokens were withdrawn by governance (eg revoked vesting contract)\n"
   isGovernance: Boolean!
+
+  "Address who received the tokens\n"
   receiver: User
+
+  "Slashed amount when tokens are withdrawn before lockedUntil date\n"
+  slashedAmount: BigDecimal!
+
+  "Timestamp of the transaction\n"
   timestamp: Int!
+
+  "lockedUntil date of the stake from which tokens were withdrawn\n"
   until: Int!
+
+  "The user who staked the tokens (owner of tokens)\n"
   user: User!
 }
 
@@ -14541,6 +15580,14 @@ input V2StakingWithdrawn_filter {
   receiver_not_starts_with_nocase: String
   receiver_starts_with: String
   receiver_starts_with_nocase: String
+  slashedAmount: BigDecimal
+  slashedAmount_gt: BigDecimal
+  slashedAmount_gte: BigDecimal
+  slashedAmount_in: [BigDecimal!]
+  slashedAmount_lt: BigDecimal
+  slashedAmount_lte: BigDecimal
+  slashedAmount_not: BigDecimal
+  slashedAmount_not_in: [BigDecimal!]
   timestamp: Int
   timestamp_gt: Int
   timestamp_gte: Int
@@ -14585,17 +15632,28 @@ enum V2StakingWithdrawn_orderBy {
   id
   isGovernance
   receiver
+  slashedAmount
   timestamp
   until
   user
 }
 
+"This event is emitted when tokens are staked, either by a user or by a vesting contract.\n"
 type V2TokensStaked {
+  "Amount of SOV staked in this event\n"
   amount: BigDecimal!
   id: ID!
+
+  "The date when these tokens will unlock\n"
   lockedUntil: Int!
+
+  "Timestamp of the transaction\n"
   timestamp: Int!
+
+  "The total amount staked for this specific user until this specific lockedUntil date. As of the time of this event.\n"
   totalStaked: BigDecimal!
+
+  "The user who staked the tokens (if tokens were staked by a vesting contract, user will be staking contract)\n"
   user: User!
 }
 

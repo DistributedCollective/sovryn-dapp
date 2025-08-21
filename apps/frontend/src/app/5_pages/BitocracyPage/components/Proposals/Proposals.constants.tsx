@@ -16,12 +16,16 @@ import { ProposalTitle } from '../ProposalTitle/ProposalTitle';
 import { ProposalType } from '../ProposalType/ProposalType';
 import { ProposalViewButton } from '../ProposalViewButton/ProposalViewButton';
 
-export const columnsConfig = [
+export const columnsConfig = (blockNumber: number) => [
   {
     id: 'status',
     title: t(translations.bitocracyPage.table.status),
     cellRenderer: (proposal: Proposal) => (
-      <ProposalStatus proposal={proposal} />
+      <ProposalStatus
+        className="min-w-[13rem]"
+        proposal={proposal}
+        blockNumber={blockNumber}
+      />
     ),
   },
   {
@@ -67,4 +71,4 @@ export const StatusIcons: Record<ProposalState, string> = {
 
 export const GRACE_PERIOD_IN_SECONDS = 1209600; // 14 days
 
-export const SIGNATURE_SYMBOL = 'symbol()';
+export const SIGNATURE_SYMBOLS = ['symbol()', 'name()'];

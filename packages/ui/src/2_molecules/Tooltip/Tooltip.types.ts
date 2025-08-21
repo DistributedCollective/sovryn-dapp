@@ -29,3 +29,8 @@ export enum TooltipEvents {
   scroll = 'scroll',
   wheel = 'wheel',
 }
+
+export enum TooltipStyle {
+  primary = 'primary',
+  secondary = 'secondary',
+}

@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { Button, ButtonStyle } from '@sovryn/ui';
 
+import { useRequiredChain } from '../../../../../../../hooks/chain/useRequiredChain';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { LoanItem } from '../../OpenLoansTable.types';
@@ -18,6 +19,7 @@ export const ExtendLoanButton: FC<ExtendLoanButtonProps> = ({
   onClick,
 }) => {
   const { account } = useAccount();
+  const { invalidChain } = useRequiredChain();
 
   const onExtend = useCallback(() => onClick(loan.id), [loan, onClick]);
 
@@ -26,7 +28,7 @@ export const ExtendLoanButton: FC<ExtendLoanButtonProps> = ({
       text={t(translations.fixedInterestPage.openLoansTable.actions.extend)}
       style={ButtonStyle.secondary}
       onClick={onExtend}
-      disabled={!account}
+      disabled={!account || invalidChain}
       dataAttribute="extend-loan-button"
     />
   );

@@ -1,0 +1,42 @@
+{
+  "name": "@sovryn/sdex",
+  "version": "0.3.17",
+  "description": "🛠🐊🛠 An SDK for building applications on top of Sovryn dex",
+  "repository": "https://github.com/DistributedCollective/sovryn-dapp.git",
+  "license": "MIT",
+  "keywords": [
+    "web3",
+    "DEX",
+    "sdk"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
+    "clean": "rm -rf dist build package",
+    "ts-node": "ts-node",
+    "docs": "typedoc --entryPoints src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.0",
+    "@types/node": "^17.0.8",
+    "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "@typescript-eslint/parser": "^5.9.0",
+    "esbuild": "^0.14.11",
+    "eslint": "^8.6.0",
+    "jest": "^27.4.7",
+    "ts-jest": "^27.1.2",
+    "ts-node": "^10.4.0",
+    "typedoc": "^0.25.4",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@datadog/browser-logs": "^5.21.0",
+    "ethers": "^5.5.3"
+  }
+}

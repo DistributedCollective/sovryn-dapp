@@ -1,12 +1,19 @@
-import { SupportedTokens } from '@sovryn/contracts';
+import { ChainId } from '@sovryn/ethers-provider';
+import { prettyTx } from '@sovryn/ui';
 
-export const tokensDisplayName = {
-  [SupportedTokens.bnbs]: 'BNB',
-  [SupportedTokens.rbtc]: 'BTC',
-  [SupportedTokens.eths]: 'ETH',
-  [SupportedTokens.fish]: 'FISH',
-  [SupportedTokens.wrbtc]: 'BTC',
-};
+import { BOB_CHAIN_ID, RSK_CHAIN_ID } from '../config/chains';
 
-export const getTokenDisplayName = (token: SupportedTokens | string): string =>
-  tokensDisplayName[token?.toLowerCase()] || token?.toUpperCase();
+import { findAsset, findAssetByAddress } from '../utils/asset';
+
+export const getTokenDisplayName = (
+  token: string,
+  chainId: ChainId = RSK_CHAIN_ID,
+): string => findAsset(token, chainId)?.symbol || token.toUpperCase();
+
+export const getTokenDisplayNameByAddress = (
+  address: string,
+  chainId: ChainId = BOB_CHAIN_ID,
+  fallbackPrettified = true,
+): string =>
+  findAssetByAddress(address, chainId)?.symbol ||
+  (fallbackPrettified ? prettyTx(address) : address);

@@ -1,0 +1,7 @@
+.assetLogo.large svg {
+  @apply mr-0 w-8 h-8;
+}
+
+.assetLogo.small svg {
+  @apply mr-0 w-5 h-5;
+}

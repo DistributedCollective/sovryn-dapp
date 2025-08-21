@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import {
   ErrorBadge,
@@ -22,9 +22,10 @@ import {
 } from '../../../../../constants/general';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
-import { rskClient } from '../../../../../utils/clients';
+import { SubgraphType, getSubgraphClient } from '../../../../../utils/clients';
 import {
   useGetStakeHistoryLazyQuery,
   V2TokensStaked_OrderBy,
@@ -42,7 +43,7 @@ export const StakingHistory: FC<StakingHistoryProps> = ({
   onChangeHistoryType,
   selectedHistoryType,
 }) => {
-  const { t } = useTranslation();
+  const chainId = useCurrentChain();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
 
@@ -64,7 +65,7 @@ export const StakingHistory: FC<StakingHistoryProps> = ({
   );
 
   const [getStakes] = useGetStakeHistoryLazyQuery({
-    client: rskClient,
+    client: getSubgraphClient(SubgraphType.STAKING, chainId),
   });
 
   const onPageChange = useCallback(
@@ -119,7 +120,6 @@ export const StakingHistory: FC<StakingHistoryProps> = ({
     orderOptions.orderBy,
     orderOptions.orderDirection,
     addNotification,
-    t,
   ]);
 
   useEffect(() => {

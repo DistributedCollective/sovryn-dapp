@@ -23,6 +23,7 @@ import {
   TooltipPlacement,
   TooltipTrigger,
   TooltipEvents,
+  TooltipStyle,
 } from './Tooltip.types';
 import { CLOSE_DELAY, getTooltipPosition } from './Tooltip.utils';
 
@@ -41,6 +42,7 @@ type TooltipProps = {
   onHide?: () => void;
   disabled?: boolean;
   trigger?: TooltipTrigger;
+  style?: TooltipStyle;
 };
 
 export const Tooltip: FC<TooltipProps> = ({
@@ -55,6 +57,7 @@ export const Tooltip: FC<TooltipProps> = ({
   onHide,
   disabled = false,
   trigger = TooltipTrigger.hover,
+  style = TooltipStyle.secondary,
 }) => {
   const tooltipRef = useRef<HTMLDivElement>(null);
   const targetRef = useRef<HTMLElement>(null);
@@ -115,7 +118,12 @@ export const Tooltip: FC<TooltipProps> = ({
     const events = !disabled && {
       onMouseEnter: trigger === TooltipTrigger.hover ? handleShow : noop,
       onMouseLeave: trigger === TooltipTrigger.hover ? handleHide : noop,
-      onClick: trigger === TooltipTrigger.click ? handleShow : noop,
+      onClick: e => {
+        if (trigger === TooltipTrigger.click) {
+          e.stopPropagation();
+          handleShow();
+        }
+      },
       onFocus: trigger === TooltipTrigger.focus ? handleShow : noop,
       onBlur: trigger === TooltipTrigger.focus ? handleHide : noop,
     };
@@ -172,12 +180,14 @@ export const Tooltip: FC<TooltipProps> = ({
               styles.tooltip,
               styles[tooltipPosition?.arrowStyles],
               tooltipClassName,
+              styles[style],
             )}
             style={tooltipPosition?.positionStyles}
             ref={tooltipRef}
             role="tooltip"
             onMouseEnter={onMouseHover}
             onMouseLeave={onMouseHover}
+            onClick={e => e.stopPropagation()}
           >
             {content}
           </div>

@@ -1,0 +1,9 @@
+.dot {
+  @apply bottom-5;
+  button {
+    @apply bg-gray-60 h-2 w-2 mr-2 border-0;
+  }
+  :global(.react-multi-carousel-dot--active) button {
+    @apply bg-gray-30;
+  }
+}

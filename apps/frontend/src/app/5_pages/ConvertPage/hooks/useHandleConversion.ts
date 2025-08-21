@@ -3,14 +3,8 @@ import { useCallback } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import { t } from 'i18next';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenDetails,
-} from '@sovryn/contracts';
-import { PermitTransactionResponse, SwapRoute } from '@sovryn/sdk';
-
-import { defaultChainId } from '../../../../config/chains';
+import { getAssetData, getProtocolContract } from '@sovryn/contracts';
+import { SwapRoute } from '@sovryn/sdk';
 
 import {
   Transaction,
@@ -21,39 +15,42 @@ import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../hooks/useChainStore';
 import { translations } from '../../../../locales/i18n';
 import {
+  DEFAULT_SIGNATURE,
+  EMPTY_PERMIT_TRANSFER_FROM,
   permitHandler,
   prepareApproveTransaction,
-  preparePermitTransaction,
-  UNSIGNED_PERMIT,
+  prepareTypedDataTransaction,
 } from '../../../../utils/transactions';
 
 export const useHandleConversion = (
-  sourceToken: SupportedTokens,
-  destinationToken: SupportedTokens,
+  sourceToken: string,
+  destinationToken: string,
   weiAmount: BigNumber,
   route: SwapRoute | undefined,
   slippageTolerance: string,
   onComplete: () => void,
 ) => {
+  const currentChainId = useCurrentChain();
   const { account, signer } = useAccount();
 
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const getMassetManager = useCallback(async () => {
     const { address: massetManagerAddress, abi: massetManagerAbi } =
-      await getProtocolContract('massetManager', defaultChainId);
+      await getProtocolContract('massetManager', currentChainId);
 
     return new ethers.Contract(massetManagerAddress, massetManagerAbi, signer);
-  }, [signer]);
+  }, [currentChainId, signer]);
 
   const getWithdrawTokensTransactions = useCallback(async () => {
     const massetManager = await getMassetManager();
 
-    const { address: bassetAddress } = await getTokenDetails(
+    const { address: bassetAddress } = await getAssetData(
       destinationToken,
-      defaultChainId,
+      currentChainId,
     );
 
     return [
@@ -72,20 +69,21 @@ export const useHandleConversion = (
       },
     ] as Transaction[];
   }, [
-    account,
-    destinationToken,
     getMassetManager,
+    destinationToken,
+    currentChainId,
     sourceToken,
     weiAmount,
+    account,
     onComplete,
   ]);
 
   const getDepositTokenTransactions = useCallback(async () => {
     const massetManager = await getMassetManager();
 
-    const { address: bassetAddress, abi: bassetAbi } = await getTokenDetails(
+    const { address: bassetAddress, abi: bassetAbi } = await getAssetData(
       sourceToken,
-      defaultChainId,
+      currentChainId,
     );
 
     const bassetToken = new ethers.Contract(bassetAddress, bassetAbi, signer);
@@ -118,7 +116,15 @@ export const useHandleConversion = (
     });
 
     return transactions;
-  }, [account, getMassetManager, signer, sourceToken, weiAmount, onComplete]);
+  }, [
+    getMassetManager,
+    sourceToken,
+    currentChainId,
+    signer,
+    weiAmount,
+    account,
+    onComplete,
+  ]);
 
   const handleSubmit = useCallback(async () => {
     if (!route || !signer) {
@@ -126,34 +132,11 @@ export const useHandleConversion = (
     }
 
     const [sourceTokenDetails, destinationTokenDetails] = await Promise.all([
-      getTokenDetails(sourceToken, defaultChainId),
-      getTokenDetails(destinationToken, defaultChainId),
+      getAssetData(sourceToken, currentChainId),
+      getAssetData(destinationToken, currentChainId),
     ]);
 
-    const approveTxData = await route.approve(
-      sourceTokenDetails.address,
-      destinationTokenDetails.address,
-      weiAmount,
-      account,
-    );
-
     const transactions: Transaction[] = [];
-
-    if (approveTxData && approveTxData.to && approveTxData.data) {
-      transactions.push({
-        title: t(translations.convertPage.txDialog.approve, {
-          asset: getTokenDisplayName(sourceToken),
-        }),
-        request: {
-          type: TransactionType.signTransactionData,
-          signer: signer,
-          to: approveTxData.to,
-          data: approveTxData.data,
-          gasLimit: approveTxData.gasLimit ?? GAS_LIMIT.APPROVE,
-        },
-        onComplete,
-      });
-    }
 
     const permitTxData = await route.permit(
       sourceTokenDetails.address,
@@ -164,15 +147,33 @@ export const useHandleConversion = (
 
     if (permitTxData) {
       transactions.push(
-        await preparePermitTransaction({
-          token: sourceTokenDetails.symbol,
-          signer,
-          spender: permitTxData.spender,
-          value: permitTxData.value?.toString(),
-          deadline: permitTxData.deadline,
-          nonce: permitTxData.nonce,
-        }),
+        await prepareTypedDataTransaction(permitTxData, signer),
       );
+    }
+
+    if (!permitTxData || permitTxData.approvalRequired) {
+      const approveTxData = await route.approve(
+        sourceTokenDetails.address,
+        destinationTokenDetails.address,
+        weiAmount,
+        account,
+      );
+
+      if (approveTxData) {
+        transactions.push({
+          title: t(translations.convertPage.txDialog.approve, {
+            asset: getTokenDisplayName(sourceToken),
+          }),
+          request: {
+            type: TransactionType.signTransactionData,
+            signer: signer,
+            to: approveTxData.to!,
+            data: approveTxData.data!,
+            gasLimit: approveTxData.gasLimit ?? GAS_LIMIT.APPROVE,
+          },
+          onComplete,
+        });
+      }
     }
 
     const txData = await route.swap(
@@ -181,12 +182,15 @@ export const useHandleConversion = (
       weiAmount,
       account,
       {
-        permit: permitTxData ? UNSIGNED_PERMIT : undefined,
+        typedDataValue: permitTxData
+          ? permitTxData.typedData.values
+          : EMPTY_PERMIT_TRANSFER_FROM,
+        typedDataSignature: DEFAULT_SIGNATURE,
         slippage: Number(slippageTolerance) * 100,
       },
     );
 
-    if (txData && txData.to && txData.data) {
+    if (txData) {
       transactions.push({
         title: t(translations.convertPage.txDialog.convert, {
           asset: getTokenDisplayName(sourceToken),
@@ -194,26 +198,29 @@ export const useHandleConversion = (
         request: {
           type: TransactionType.signTransactionData,
           signer: signer,
-          to: txData.to,
-          data: txData.data,
+          to: txData.to!,
+          data: txData.data!,
           value: txData.value,
           gasLimit: txData?.gasLimit ?? GAS_LIMIT.CONVERT,
           gasPrice: txData?.gasPrice?.toString(),
         },
         onComplete,
         updateHandler: permitHandler(async (req, res) => {
-          if (isSignTransactionDataRequest(req) && !!permitTxData) {
-            const { data } = await route.swap(
-              sourceTokenDetails.address,
-              destinationTokenDetails.address,
-              weiAmount,
-              account,
-              {
-                permit: res as PermitTransactionResponse,
-                slippage: Number(slippageTolerance) * 100,
-              },
-            );
-            req.data = data!;
+          if (isSignTransactionDataRequest(req)) {
+            if (!!permitTxData) {
+              const { data } = await route.swap(
+                sourceTokenDetails.address,
+                destinationTokenDetails.address,
+                weiAmount,
+                account,
+                {
+                  typedDataValue: permitTxData.typedData.values,
+                  typedDataSignature: res as string,
+                  slippage: Number(slippageTolerance) * 100,
+                },
+              );
+              req.data = data!;
+            }
           }
           return req;
         }),
@@ -230,6 +237,7 @@ export const useHandleConversion = (
     setIsOpen(true);
   }, [
     account,
+    currentChainId,
     destinationToken,
     onComplete,
     route,

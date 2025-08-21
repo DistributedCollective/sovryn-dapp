@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import { t } from 'i18next';
 import { Trans } from 'react-i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -37,8 +36,10 @@ import {
 import { MS } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { areAddressesEqual } from '../../../../../utils/helpers';
 import { AdjustStakeFormProps } from '../../StakeForm.types';
 import { useGetPenaltyAmount } from '../../hooks/useGetPenaltyAmount';
@@ -59,7 +60,9 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
 }) => {
   const { account } = useAccount();
   const [amount, setAmount] = useState('');
-  const { balance } = useAssetBalance(SupportedTokens.sov);
+
+  const chainId = useCurrentChain();
+  const { balance } = useAssetBalance(COMMON_SYMBOLS.SOV, chainId);
   const [delegateToAddress, setDelegateToAddress] = useState('');
   const [votingPowerChanged, setVotingPowerChanged] = useState(0);
   const [unlockDate, setUnlockDate] = useState(0);
@@ -294,12 +297,22 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
       setVotingPowerChanged(0);
     }
     if (weight !== 0) {
-      setVotingPowerChanged(
-        (Number(!isExtendTab ? amount : stake.stakedAmount) * weight) /
-          WEIGHT_FACTOR,
-      );
+      if (isExtendTab) {
+        setVotingPowerChanged(
+          (Number(stake.stakedAmount) * weight) / WEIGHT_FACTOR - votingPower,
+        );
+      } else {
+        setVotingPowerChanged((Number(amount) * weight) / WEIGHT_FACTOR);
+      }
     }
-  }, [amount, weight, isValidAmount, isExtendTab, stake.stakedAmount]);
+  }, [
+    amount,
+    weight,
+    isValidAmount,
+    isExtendTab,
+    stake.stakedAmount,
+    votingPower,
+  ]);
 
   useEffect(() => {
     setAmount('');
@@ -324,7 +337,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
           <div className="text-sm font-semibold">
             <AmountRenderer
               value={stake.stakedAmount}
-              suffix={SupportedTokens.sov}
+              suffix={COMMON_SYMBOLS.SOV}
               precision={TOKEN_RENDER_PRECISION}
               dataAttribute="adjust-stake-staked-sov-amount"
               className="font-semibold"
@@ -385,7 +398,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
             <MaxButton
               onClick={onMaximumAmountClick}
               value={isDecreaseTab ? stake.stakedAmount : balance}
-              token={SupportedTokens.sov}
+              token={COMMON_SYMBOLS.SOV}
               dataAttribute="adjust-stake-amount-max"
             />
           </div>

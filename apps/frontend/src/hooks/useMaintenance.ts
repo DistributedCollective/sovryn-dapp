@@ -138,6 +138,24 @@ enum States {
   D2_BORROW_BPRO_EXTEND = 'd2BorrowBPROxExtend',
   D2_BORROW_BPRO_ADD_COLLATERAL = 'd2BorrowBPROxAddCollateral',
   D2_BORROW_BPRO_WITHDRAW_COLLATERAL = 'd2BorrowBPROxWithdrawCollateral',
+
+  D2_MARKET_MAKING_FULL = 'marketMakingFull',
+  D2_MARKET_MAKING_DLLR = 'marketMakingDLLR',
+  D2_MARKET_MAKING_SOV = 'marketMakingSOV',
+  D2_MARKET_MAKING_FISH = 'marketMakingFISH',
+  D2_MARKET_MAKING_MOC = 'marketMakingMOC',
+  D2_MARKET_MAKING_RIF = 'marketMakingRIF',
+  D2_MARKET_MAKING_MYNT = 'marketMakingMYNT',
+
+  D2_RUNE_BRIDGE_RSK = 'd2RuneBridgeRSK',
+  D2_RUNE_BRIDGE_BOB = 'd2RuneBridgeBOB',
+
+  // BOB chain states
+  BOB_FULL = 'fullD2Bob',
+  BOB_DEPOSIT_LIQUIDITY = 'd2BobDepositLiquidity',
+  BOB_WITHDRAW_LIQUIDITY = 'd2BobWithdrawLiquidity',
+  BOB_CLAIM_AMM_FEES = 'd2BobClaimAMMFees',
+  BOB_CLAIM_LP_DEPOSIT = 'd2BobClaimLPDeposit',
 }
 
 type MaintenanceResult = {

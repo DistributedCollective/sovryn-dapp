@@ -18,6 +18,10 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (await import('../../abis/btcWrapperProxy.json')).default,
   },
+  wrbtcMinter: {
+    address: '0x69FE5cEC81D5eF92600c1A0dB1F11986AB3758Ab',
+    getAbi: async () => (await import('../../abis/wrbtc.json')).default,
+  },
   massetManager: {
     address: '0xac2d05A148aB512EDEDc7280c00292ED33d31f1A',
     getAbi: async () => (await import('../../abis/massetManager.json')).default,
@@ -67,6 +71,11 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     getAbi: async () =>
       (await import('../../abis/stakingRewards.json')).default,
   },
+  stakingRewardsOs: {
+    address: '0x720bA758526E086EAe849063f3160F12a624A6f6',
+    getAbi: async () =>
+      (await import('../../abis/StakingRewardsOs.json')).default,
+  },
   multiCall: {
     address: '0x9e469e1fc7fb4c5d17897b68eaf1afc9df39f103',
     getAbi: async () => (await import('../../abis/multiCall2.json')).default,
@@ -97,6 +106,11 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     address: '0x69dB16Aa6EEf291Fec522581F4fc9c82dFE60beD',
     getAbi: async () => (await import('../../abis/governor.json')).default,
   },
+  fixedRateMynt: {
+    address: '0x36C6554EE2FcCAb1389aF309aB0793abce0E91F3',
+    getAbi: async () =>
+      (await import('../../abis/fixedRateConverter.json')).default,
+  },
   loanTokenLogicBeaconWrbtc: {
     address: '0x6EDEeC91f5C0A57248BF4D7dBce2c689c74F3c06',
     getAbi: async () =>
@@ -111,5 +125,14 @@ export const rskTestnet: Record<string, AsyncContractConfigData> = {
     address: '0x7cA151dc569fa88701f149fc81e960376C111203',
     getAbi: async () =>
       (await import('../../abis/LoanTokenSettingsLowerAdmin.json')).default,
+  },
+  runeBridge: {
+    address: '0x296EC9db115a352D3a43873b3814ec795441B8dd',
+    getAbi: async () => (await import('../../abis/RuneBridge.json')).default,
+  },
+  merkleDistributor: {
+    address: '0xcce97e181a355939248afe2aab9587b46de56396',
+    getAbi: async () =>
+      (await import('../../abis/merkleDistributor.json')).default,
   },
 };

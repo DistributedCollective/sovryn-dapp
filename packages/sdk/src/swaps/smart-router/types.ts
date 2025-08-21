@@ -1,6 +1,13 @@
 import type { TransactionRequest } from '@ethersproject/abstract-provider';
+import type { ChainId } from '@sovryn/ethers-provider';
 
-import type { BigNumber, BigNumberish, providers } from 'ethers';
+import type {
+  BigNumber,
+  BigNumberish,
+  TypedDataDomain,
+  TypedDataField,
+  providers,
+} from 'ethers';
 
 export type SwapPairs = Map<string, string[]>;
 
@@ -9,11 +16,13 @@ export type Options = {
 };
 
 export type SwapOptions = {
-  permit?: PermitTransactionResponse;
+  typedDataValue?: TypedDataTransactionRequest['typedData']['values'];
+  typedDataSignature?: string;
 } & Options;
 
 export type SwapRoute = {
   name: string;
+  chains: ChainId[];
 
   // List of token pairs available for swapping. Key is the base token, value is the list of quote tokens.
   // Example: { '0x': ['0x', '0x'] }
@@ -53,8 +62,8 @@ export type SwapRoute = {
     destination: string,
     amount: BigNumberish,
     from: string,
-    overrides?: Partial<PermitTransactionRequest>,
-  ) => Promise<PermitTransactionRequest | undefined>;
+    overrides?: Partial<TypedDataTransactionRequest>,
+  ) => Promise<TypedDataTransactionRequest | undefined>;
 
   // todo: add functions overriding some values (like changing zero address with wrbtc)
   onPrepareTransaction?: (
@@ -64,13 +73,13 @@ export type SwapRoute = {
 
 export type SwapRouteFunction = (provider: providers.Provider) => SwapRoute;
 
-export type PermitTransactionRequest = {
-  token: string;
-  spender: string;
-  owner: string;
-  value?: BigNumberish;
-  deadline?: number;
-  nonce?: number;
+export type TypedDataTransactionRequest = {
+  approvalRequired: boolean;
+  typedData: {
+    domain: TypedDataDomain;
+    types: Record<string, Array<TypedDataField>>;
+    values: Record<string, any>;
+  };
 };
 
 export type PermitTransactionResponse = {

@@ -1,0 +1,8 @@
+.link {
+  @apply text-gray-10 text-base font-semibold leading-5 cursor-pointer
+  underline-offset-[0.4rem] underline decoration-gray-30 decoration-dashed decoration-1;
+}
+
+.link:hover {
+  @apply text-gray-30;
+}

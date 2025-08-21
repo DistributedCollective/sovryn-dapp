@@ -8,7 +8,7 @@ import { VestingRewards } from './components/VestingRewards/VestingRewards';
 
 export const RewardHistory: FC = () => {
   const [selectedHistoryType, setSelectedHistoryType] = useState(
-    RewardHistoryType.stabilityPoolRewards,
+    RewardHistoryType.liquidityMiningRewards,
   );
 
   const onChangeRewardHistory = useCallback((value: RewardHistoryType) => {
@@ -30,6 +30,7 @@ export const RewardHistory: FC = () => {
         />
       )}
       {[
+        RewardHistoryType.liquidityMiningRewards,
         RewardHistoryType.stakingRevenue,
         RewardHistoryType.stakingSubsidies,
       ].includes(selectedHistoryType) && (

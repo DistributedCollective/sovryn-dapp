@@ -1,41 +1,32 @@
 import { Contract } from 'ethers';
 
-import {
-  SupportedTokens,
-  getProtocolContract,
-  getTokenContract,
-} from '@sovryn/contracts';
+import { getProtocolContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { defaultChainId } from '../config/chains';
+import { RSK_CHAIN_ID } from '../config/chains';
 
 import { asyncCall } from '../store/rxjs/provider-cache';
-
-const normalizeToken = (token: SupportedTokens) =>
-  token === SupportedTokens.rbtc ? SupportedTokens.wrbtc : token;
+import { findAsset } from './asset';
 
 export const queryReturn = async (
-  sourceToken: SupportedTokens,
-  destToken: SupportedTokens,
+  sourceToken: string,
+  destToken: string,
   sourceAmount: Decimal,
 ): Promise<Decimal> =>
   asyncCall<Decimal>(
     `priceFeed/return/${sourceToken}-${destToken}/${sourceAmount.toHexString()}`,
     async () => {
-      const { address: sourceTokenAddress } = await getTokenContract(
-        normalizeToken(sourceToken),
-        defaultChainId,
+      const { address: sourceTokenAddress } = findAsset(
+        sourceToken,
+        RSK_CHAIN_ID,
       );
-      const { address: destTokenAddress } = await getTokenContract(
-        normalizeToken(destToken),
-        defaultChainId,
-      );
+      const { address: destTokenAddress } = findAsset(destToken, RSK_CHAIN_ID);
       const { address, abi } = await getProtocolContract(
         'priceFeed',
-        defaultChainId,
+        RSK_CHAIN_ID,
       );
-      const contract = new Contract(address, abi, getProvider(defaultChainId));
+      const contract = new Contract(address, abi, getProvider(RSK_CHAIN_ID));
       const rate = await contract.queryReturn(
         sourceTokenAddress,
         destTokenAddress,
@@ -47,25 +38,22 @@ export const queryReturn = async (
   );
 
 export const queryRate = async (
-  sourceToken: SupportedTokens,
-  destToken: SupportedTokens,
+  sourceToken: string,
+  destToken: string,
 ): Promise<{ rate: Decimal; precision: Decimal }> =>
   asyncCall<{ rate: Decimal; precision: Decimal }>(
     `priceFeed/rate/${sourceToken}-${destToken}`,
     async () => {
-      const { address: sourceTokenAddress } = await getTokenContract(
-        normalizeToken(sourceToken),
-        defaultChainId,
+      const { address: sourceTokenAddress } = findAsset(
+        sourceToken,
+        RSK_CHAIN_ID,
       );
-      const { address: destTokenAddress } = await getTokenContract(
-        normalizeToken(destToken),
-        defaultChainId,
-      );
+      const { address: destTokenAddress } = findAsset(destToken, RSK_CHAIN_ID);
       const { address, abi } = await getProtocolContract(
         'priceFeed',
-        defaultChainId,
+        RSK_CHAIN_ID,
       );
-      const contract = new Contract(address, abi, getProvider(defaultChainId));
+      const contract = new Contract(address, abi, getProvider(RSK_CHAIN_ID));
       const rate = await contract.queryRate(
         sourceTokenAddress,
         destTokenAddress,

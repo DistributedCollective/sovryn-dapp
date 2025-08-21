@@ -2,7 +2,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -20,6 +19,7 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
 import { convertLoanTokenToSupportedAssets } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
 import { useGetMinCollateralRatio } from '../../../../5_pages/BorrowPage/hooks/useGetMinCollateralRatio';
@@ -32,6 +32,7 @@ import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInpu
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { areValuesIdentical } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import {
@@ -45,6 +46,7 @@ import { useGetBorrowingAPR } from '../../hooks/useGetBorrowingAPR';
 import { useGetMaintenanceStates } from '../../hooks/useGetMaintenanceStates';
 import { useGetOriginationFee } from '../../hooks/useGetOriginationFee';
 import { CurrentLoanData } from '../CurrentLoanData/CurrentLoanData';
+import { useBorrow } from '../NewLoanForm/hooks/useBorrow';
 import { useGetMaximumCollateralAmount } from '../NewLoanForm/hooks/useGetMaximumCollateralAmount';
 import {
   COLLATERAL_TABS,
@@ -56,9 +58,9 @@ import {
   calculateDebtRepaidPercentage,
   calculateRepayCollateralWithdrawn,
 } from './AdjustLoanForm.utils';
-import { Label } from './components/Label';
 import { useCloseWithDepositIsTinyPosition } from './hooks/useCloseWithDepositIsTinyPosition';
 import { useDepositCollateral } from './hooks/useDepositCollateral';
+import { useDrawdown } from './hooks/useDrawdown';
 import { useGetInterestRefund } from './hooks/useGetInterestRefund';
 import { useGetMaxCollateralWithdrawal } from './hooks/useGetMaxCollateralWithdrawal';
 import { useGetMaxRepayAmount } from './hooks/useGetMaxRepayAmount';
@@ -77,9 +79,9 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   const [collateralAmount, setCollateralAmount, collateralSize] =
     useDecimalAmountInput('');
 
-  const [debtTab, setDebtTab] = useState(DebtTabAction.Repay);
+  const [debtTab, setDebtTab] = useState(DebtTabAction.Borrow);
   const [collateralTab, setCollateralTab] = useState(
-    CollateralTabAction.WithdrawCollateral,
+    CollateralTabAction.AddCollateral,
   );
 
   const isCloseTab = useMemo(() => debtTab === DebtTabAction.Close, [debtTab]);
@@ -174,9 +176,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
   const { borrowApr } = useGetBorrowingAPR(debtToken, debtSize);
 
-  const { balance: debtTokenBalance } = useMaxAssetBalance(
-    debtToken as SupportedTokens,
-  );
+  const { balance: debtTokenBalance } = useMaxAssetBalance(debtToken);
 
   const { maximumCollateralAmount, loading: isMaximumCollateralAmountLoading } =
     useGetMaximumCollateralAmount(collateralToken);
@@ -308,7 +308,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
   const minimumCollateralRatio = useMemo(
     () =>
-      collateralToken === SupportedTokens.sov
+      collateralToken === COMMON_SYMBOLS.SOV
         ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
         : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
     [collateralToken],
@@ -392,7 +392,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   }, [setCollateralAmount, setDebtAmount]);
 
   const handleRepay = useRepayLoan();
-  // const handleBorrow = useBorrow();
+  const handleBorrow = useBorrow();
   const handleWithdrawCollateral = useWithdrawCollateral();
   const handleDepositCollateral = useDepositCollateral();
 
@@ -416,53 +416,60 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       return;
     }
 
+    if (isBorrowTab) {
+      if (debtSize.isZero()) {
+        handleDepositCollateral(collateralAmount, collateralToken, loan.id);
+      } else {
+        handleBorrow(
+          debtToken,
+          debtAmount,
+          loan.rolloverDate,
+          collateralSize.toString(),
+          collateralToken,
+          loan.id,
+        );
+      }
+      return;
+    }
+
     if (isAddCollateralTab) {
       handleDepositCollateral(collateralAmount, collateralToken, loan.id);
       return;
     }
-
-    // if (isBorrowTab) {
-    //   if (debtSize.isZero()) {
-    //     handleDepositCollateral(collateralAmount, collateralToken, loan.id);
-    //   } else {
-    //     handleBorrow(
-    //       debtToken,
-    //       debtAmount,
-    //       loan.rolloverDate,
-    //       collateralSize.toString(),
-    //       collateralToken,
-    //       loan.id,
-    //     );
-    //   }
-    // }
 
     if (isCollateralWithdrawMode) {
       handleWithdrawCollateral(collateralAmount, loan.id);
     }
   }, [
     collateralAmount,
+    collateralSize,
     collateralToken,
+    debtAmount,
     debtSize,
+    debtToken,
+    handleBorrow,
     handleDepositCollateral,
     handleRepay,
     handleWithdrawCollateral,
     isAddCollateralTab,
+    isBorrowTab,
     isCloseTab,
     isCollateralWithdrawMode,
     isRepayTab,
     loan.debt,
     loan.debtAsset,
     loan.id,
+    loan.rolloverDate,
   ]);
 
   const onDebtTabChange = useCallback(
     (value: DebtTabAction) => {
       switch (value) {
-        // case DebtTabAction.Borrow:
-        //   setCollateralTab(CollateralTabAction.AddCollateral);
-        //   setDebtTab(value);
-        //   resetCloseDebtTabValues();
-        //   return;
+        case DebtTabAction.Borrow:
+          setCollateralTab(CollateralTabAction.AddCollateral);
+          setDebtTab(value);
+          resetCloseDebtTabValues();
+          return;
         case DebtTabAction.Repay:
           if (isCloseTab) {
             setIsTinyPosition(false);
@@ -487,11 +494,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     (value: CollateralTabAction) => {
       switch (value) {
         case CollateralTabAction.AddCollateral:
-          // if (!isBorrowTab) {
-          //   setDebtTab(DebtTabAction.Borrow);
-          // }
+          if (!isBorrowTab) {
+            setDebtTab(DebtTabAction.Borrow);
+          }
 
-          setDebtTab(DebtTabAction.None);
           setDebtAmount(loan.debt.toString());
 
           setCollateralTab(value);
@@ -674,6 +680,8 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     [isValidDebtAmount],
   );
 
+  const { maxBorrow } = useDrawdown(loan, collateralSize, isAddCollateralTab);
+
   return (
     <>
       <CurrentLoanData
@@ -686,7 +694,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
 
       <FormGroup
         label={
-          <Label
+          <LabelWithTabsAndMaxButton
             token={loan.debtAsset}
             maxAmount={maxDebtAmount}
             tabs={DEBT_TABS}
@@ -695,6 +703,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             isDisabled={isCloseTab || isCollateralWithdrawMode}
             index={debtTab}
             setIndex={setDebtTab}
+            dataAttributePrefix="adjust-loan"
           />
         }
         labelElement="div"
@@ -712,10 +721,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             invalid={!isValidDebtAmount}
             placeholder="0"
             disabled={
-              isCloseTab ||
-              isCollateralWithdrawMode ||
-              isDebtAmountDisabled ||
-              isAddCollateralTab
+              isCloseTab || isCollateralWithdrawMode || isDebtAmountDisabled
             }
           />
           <AssetRenderer
@@ -734,7 +740,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       </FormGroup>
       <FormGroup
         label={
-          <Label
+          <LabelWithTabsAndMaxButton
             token={collateralToken}
             maxAmount={maxCollateralAmount}
             tabs={COLLATERAL_TABS}
@@ -745,6 +751,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             index={collateralTab}
             setIndex={setCollateralTab}
             isDisabled={isCloseTab || isRepayTab}
+            dataAttributePrefix="adjust-loan"
           />
         }
         labelElement="div"
@@ -766,7 +773,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           <AssetRenderer
             dataAttribute="adjust-loan-collateral-asset"
             showAssetLogo
-            asset={SupportedTokens[collateralToken]}
+            asset={collateralToken}
             className="min-w-24 h-10 rounded bg-gray-60 items-center px-4 mr-0"
           />
         </div>
@@ -921,7 +928,9 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           className="w-full"
           onClick={handleFormSubmit}
           dataAttribute="adjust-loan-confirm-button"
-          disabled={submitButtonDisabled}
+          disabled={
+            submitButtonDisabled || (isBorrowTab && debtSize.gt(maxBorrow))
+          }
         />
       </div>
     </>

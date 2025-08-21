@@ -7,6 +7,9 @@
     &.primary {
       @apply border border-b-0 border-gray-50 bg-gray-90;
     }
+    &.slider {
+      @apply bg-gray-80 p-1 rounded;
+    }
   }
 
   .content {

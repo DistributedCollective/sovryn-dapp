@@ -7,14 +7,14 @@ import {
   _normalizeTroveAdjustment,
   _normalizeTroveCreation,
 } from '@sovryn-zero/lib-base';
-import { SupportedTokens } from '@sovryn/contracts';
 
 import { decimalic } from '../../../../utils/math';
 import { getLiquityBaseParams } from './';
 import { getZeroProvider } from './zero-provider';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 
 export const openTrove = async (
-  token: SupportedTokens,
+  token: string,
   params: Partial<TroveCreationParams<Decimalish>>,
   maxBorrowingRate?: string,
 ) => {
@@ -39,13 +39,16 @@ export const openTrove = async (
 
   return {
     value: value.hex,
-    fn: token === SupportedTokens.dllr ? 'openNueTrove' : 'openTrove',
+    fn:
+      token.toUpperCase() === COMMON_SYMBOLS.DLLR
+        ? 'openNueTrove'
+        : 'openTrove',
     args: [borrowingRate, borrowZUSD.hex, ...hints],
   };
 };
 
 export const adjustTrove = async (
-  token: SupportedTokens,
+  token: string,
   address: string,
   params: Partial<TroveAdjustmentParams<Decimalish>>,
   maxBorrowingRate?: string,
@@ -76,7 +79,10 @@ export const adjustTrove = async (
 
   return {
     value: value.hex,
-    fn: token === SupportedTokens.dllr ? 'adjustNueTrove' : 'adjustTrove',
+    fn:
+      token.toUpperCase() === COMMON_SYMBOLS.DLLR && repayZUSD
+        ? 'adjustNueTroveWithPermit2'
+        : 'adjustTrove',
     args: [
       borrowingRate,
       (withdrawCollateral ?? Decimal.ZERO).hex,

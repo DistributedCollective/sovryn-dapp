@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import {
   ErrorBadge,
@@ -21,9 +21,10 @@ import {
 } from '../../../../../constants/general';
 import { useNotificationContext } from '../../../../../contexts/NotificationContext';
 import { useAccount } from '../../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
-import { rskClient } from '../../../../../utils/clients';
+import { SubgraphType, getSubgraphClient } from '../../../../../utils/clients';
 import {
   useGetDelegateChangesForVestingsLazyQuery,
   VestingHistoryItem_OrderBy,
@@ -41,7 +42,6 @@ export const VestingDelegateChanges: FC<StakingHistoryProps> = ({
   onChangeHistoryType,
   selectedHistoryType,
 }) => {
-  const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
 
@@ -62,8 +62,9 @@ export const VestingDelegateChanges: FC<StakingHistoryProps> = ({
     orderOptions,
   );
 
+  const chainId = useCurrentChain();
   const [getStakes] = useGetDelegateChangesForVestingsLazyQuery({
-    client: rskClient,
+    client: getSubgraphClient(SubgraphType.STAKING, chainId),
   });
 
   const onPageChange = useCallback(
@@ -116,7 +117,6 @@ export const VestingDelegateChanges: FC<StakingHistoryProps> = ({
     orderOptions.orderBy,
     orderOptions.orderDirection,
     addNotification,
-    t,
   ]);
 
   useEffect(() => {

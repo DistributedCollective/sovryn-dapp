@@ -2,7 +2,6 @@ import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   Button,
   ErrorBadge,
@@ -27,11 +26,12 @@ import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { Row } from './Row';
 import { useZeroData } from './hooks/useZeroData';
+import { COMMON_SYMBOLS } from '../../../utils/asset';
 
 type CloseCreditLineProps = {
   collateralValue: Decimal;
   creditValue: Decimal;
-  onSubmit: (token: SupportedTokens) => void;
+  onSubmit: (token: string) => void;
   rbtcPrice: Decimal;
 };
 
@@ -42,9 +42,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   rbtcPrice,
 }) => {
   const { isRecoveryMode } = useZeroData(rbtcPrice);
-  const [creditToken, setCreditToken] = useState<SupportedTokens>(
-    SupportedTokens.dllr,
-  );
+  const [creditToken, setCreditToken] = useState<string>(COMMON_SYMBOLS.ZUSD);
 
   const { checkMaintenance, States } = useMaintenance();
   const closeLocked = checkMaintenance(States.ZERO_CLOSE_LOC);
@@ -78,7 +76,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   );
 
   const isInMaintenance = useMemo(
-    () => closeLocked || (dllrLocked && creditToken === SupportedTokens.dllr),
+    () => closeLocked || (dllrLocked && creditToken === COMMON_SYMBOLS.DLLR),
     [closeLocked, dllrLocked, creditToken],
   );
 
@@ -89,7 +87,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
 
   const tokenOptions = useMemo(
     () =>
-      [SupportedTokens.zusd, SupportedTokens.dllr].map(token => ({
+      [COMMON_SYMBOLS.ZUSD, COMMON_SYMBOLS.DLLR].map(token => ({
         value: token,
         label: (
           <AssetRenderer
@@ -130,7 +128,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
                 <AssetRenderer
                   dataAttribute="close-credit-line-credit-asset"
                   showAssetLogo
-                  asset={SupportedTokens[value]}
+                  asset={value}
                 />
               )}
               className="w-full"

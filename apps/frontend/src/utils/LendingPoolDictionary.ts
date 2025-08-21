@@ -1,86 +1,72 @@
-import { SupportedTokens } from '@sovryn/contracts';
-
 import { LendingPool } from './LendingPool';
+import { COMMON_SYMBOLS } from './asset';
 
 export class LendingPoolDictionary {
-  public static pools: Map<SupportedTokens, LendingPool> = new Map<
-    SupportedTokens,
-    LendingPool
-  >([
+  public static pools: Map<string, LendingPool> = new Map<string, LendingPool>([
     [
-      SupportedTokens.dllr,
+      COMMON_SYMBOLS.DLLR,
       new LendingPool(
-        'DLLR',
-        SupportedTokens.dllr,
-        [SupportedTokens.rbtc, SupportedTokens.bpro, SupportedTokens.sov],
+        COMMON_SYMBOLS.DLLR,
+        [COMMON_SYMBOLS.BTC, 'BPRO', COMMON_SYMBOLS.SOV],
         false,
         false,
       ),
     ],
     [
-      SupportedTokens.rbtc,
+      COMMON_SYMBOLS.BTC,
       new LendingPool(
-        'RBTC',
-        SupportedTokens.rbtc,
+        COMMON_SYMBOLS.BTC,
         [
-          SupportedTokens.dllr,
-          SupportedTokens.xusd,
-          SupportedTokens.sov,
-          SupportedTokens.bpro,
-          SupportedTokens.doc,
+          COMMON_SYMBOLS.DLLR,
+          COMMON_SYMBOLS.XUSD,
+          COMMON_SYMBOLS.SOV,
+          'BPRO',
+          COMMON_SYMBOLS.DOC,
         ],
         false,
         false,
       ),
     ],
-    /*[
-      SupportedTokens.xusd,
+    [
+      COMMON_SYMBOLS.XUSD,
       new LendingPool(
-        'XUSD',
-        SupportedTokens.xusd,
-        [SupportedTokens.rbtc, SupportedTokens.bpro, SupportedTokens.sov],
+        COMMON_SYMBOLS.XUSD,
+        [COMMON_SYMBOLS.BTC, 'BPRO', COMMON_SYMBOLS.SOV],
         true,
         false,
       ),
     ],
     [
-      SupportedTokens.doc,
+      COMMON_SYMBOLS.DOC,
       new LendingPool(
-        'DoC',
-        SupportedTokens.doc,
-        [
-          SupportedTokens.rbtc,
-          SupportedTokens.xusd,
-          SupportedTokens.bpro,
-          SupportedTokens.sov,
-        ],
+        COMMON_SYMBOLS.DOC,
+        [COMMON_SYMBOLS.BTC, COMMON_SYMBOLS.XUSD, 'BPRO', COMMON_SYMBOLS.SOV],
         false,
         false,
       ),
     ],
     [
-      SupportedTokens.rusdt,
-      new LendingPool('USDT', SupportedTokens.rusdt, [], false, true),
+      COMMON_SYMBOLS.RUSDT,
+      new LendingPool(COMMON_SYMBOLS.RUSDT, [], false, true),
     ],
     [
-      SupportedTokens.bpro,
+      'BPRO',
       new LendingPool(
         'BPRO',
-        SupportedTokens.bpro,
         [
-          SupportedTokens.dllr,
-          SupportedTokens.rbtc,
-          SupportedTokens.xusd,
-          SupportedTokens.doc,
-          SupportedTokens.sov,
+          COMMON_SYMBOLS.DLLR,
+          COMMON_SYMBOLS.BTC,
+          COMMON_SYMBOLS.XUSD,
+          COMMON_SYMBOLS.DOC,
+          COMMON_SYMBOLS.SOV,
         ],
         false,
         false,
       ),
-    ],*/
+    ],
   ]);
 
-  public static get(asset: SupportedTokens): LendingPool {
+  public static get(asset: string): LendingPool {
     return this.pools.get(asset) as LendingPool;
   }
 
@@ -88,11 +74,11 @@ export class LendingPoolDictionary {
     return Array.from(this.pools.values());
   }
 
-  public static assetList(): Array<SupportedTokens> {
+  public static assetList(): Array<string> {
     return Array.from(this.pools.keys());
   }
 
-  public static find(assets: Array<SupportedTokens>): Array<LendingPool> {
+  public static find(assets: Array<string>): Array<LendingPool> {
     return assets.map(asset => this.get(asset));
   }
 

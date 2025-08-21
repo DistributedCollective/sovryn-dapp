@@ -5,7 +5,7 @@ import { ContractInterface, ethers } from 'ethers';
 import { ContractGroup, getContract } from '@sovryn/contracts';
 import { ChainId, getProvider } from '@sovryn/ethers-provider';
 
-import { defaultChainId } from '../config/chains';
+import { RSK_CHAIN_ID } from '../config/chains';
 
 import { useAccount } from './useAccount';
 import { useIsMounted } from './useIsMounted';
@@ -13,7 +13,7 @@ import { useIsMounted } from './useIsMounted';
 export const useLoadContract = (
   contractName: string,
   group: ContractGroup,
-  chain: ChainId = defaultChainId,
+  chain: ChainId = RSK_CHAIN_ID,
   customSigner?: ethers.providers.JsonRpcSigner,
 ) => {
   const isMounted = useIsMounted();
@@ -25,12 +25,19 @@ export const useLoadContract = (
   const provider = useMemo(() => getProvider(chain), [chain]);
 
   useEffect(() => {
-    getContract(contractName, group, chain).then(result => {
-      if (isMounted()) {
-        setAddress(result.address);
-        setAbi(result.abi);
-      }
-    });
+    getContract(contractName, group, chain)
+      .then(result => {
+        if (isMounted()) {
+          setAddress(result.address);
+          setAbi(result.abi);
+        }
+      })
+      .catch(e => {
+        console.warn(
+          `Failed to load contract ${contractName} from group ${group} on chain ${chain}`,
+          e,
+        );
+      });
   }, [chain, contractName, group, isMounted]);
 
   return useMemo(() => {

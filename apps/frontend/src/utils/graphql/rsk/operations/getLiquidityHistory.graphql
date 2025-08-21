@@ -1,0 +1,29 @@
+query getLiquidityHistory(
+  $user: String
+  $skip: Int!
+  $pageSize: Int!
+  $orderDirection: OrderDirection
+) {
+  liquidityHistoryItems(
+    where: { user: $user }
+    first: $pageSize
+    skip: $skip
+    orderBy: timestamp
+    orderDirection: $orderDirection
+  ) {
+    amount
+    type
+    emittedBy
+    timestamp
+    reserveToken {
+      id
+      symbol
+    }
+    transaction {
+      id
+    }
+    liquidityPool {
+      id
+    }
+  }
+}

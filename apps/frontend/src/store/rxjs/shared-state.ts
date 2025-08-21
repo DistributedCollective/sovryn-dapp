@@ -10,24 +10,36 @@ import {
 export type EventDriverState = {
   fastBtcDialog: FastBtcDialogState;
   emailNotificationSettingsDialog: EmailNotificationSettingsDialogState;
+  runeBridgeDialog: RuneBridgeDialogState;
 };
 
 export type FastBtcDialogState = {
   isOpen: boolean;
   shouldHideSend: boolean;
+  step?: number;
 };
 
 export type EmailNotificationSettingsDialogState = {
   isOpen: boolean;
 };
 
+export type RuneBridgeDialogState = {
+  isOpen: boolean;
+  step?: number;
+};
+
 const INITIAL_STATE = {
   fastBtcDialog: {
     isOpen: false,
     shouldHideSend: false,
+    step: 0,
   },
   emailNotificationSettingsDialog: {
     isOpen: false,
+  },
+  runeBridgeDialog: {
+    isOpen: false,
+    step: 0,
   },
 };
 
@@ -64,12 +76,13 @@ function select<T extends keyof EventDriverState>(
 const get = (): EventDriverState => store.getValue();
 
 // Actions
-const openFastBtcDialog = (shouldHideSend: boolean = false) =>
+const openFastBtcDialog = (shouldHideSend: boolean = false, step: number = 0) =>
   dispatch(state => ({
     ...state,
     fastBtcDialog: {
       isOpen: true,
       shouldHideSend,
+      step,
     },
   }));
 
@@ -78,6 +91,23 @@ const closeFastBtcDialog = () =>
     ...state,
     fastBtcDialog: {
       ...state.fastBtcDialog,
+      isOpen: false,
+    },
+  }));
+const openRuneBridgeDialog = (step: number = 0) =>
+  dispatch(state => ({
+    ...state,
+    runeBridgeDialog: {
+      isOpen: true,
+      step,
+    },
+  }));
+
+const closeRuneBridgeDialog = () =>
+  dispatch(state => ({
+    ...state,
+    runeBridgeDialog: {
+      ...state.runeBridgeDialog,
       isOpen: false,
     },
   }));
@@ -106,5 +136,7 @@ export const sharedState = {
     closeFastBtcDialog,
     openEmailNotificationSettingsDialog,
     closeEmailNotificationSettingsDialog,
+    openRuneBridgeDialog,
+    closeRuneBridgeDialog,
   },
 };

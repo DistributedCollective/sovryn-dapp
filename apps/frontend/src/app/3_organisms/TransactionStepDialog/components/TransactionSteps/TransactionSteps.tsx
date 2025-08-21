@@ -1,11 +1,11 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
+import { nanoid } from 'nanoid';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   Button,
   ErrorBadge,
@@ -17,11 +17,12 @@ import {
 
 import { APPROVAL_FUNCTION } from '../../../../../constants/general';
 import { useAccount } from '../../../../../hooks/useAccount';
-import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
+import { useNativeAssetBalance } from '../../../../../hooks/useNativeAssetBalance';
 import { translations } from '../../../../../locales/i18n';
+import { findNativeAsset } from '../../../../../utils/asset';
 import { sleep } from '../../../../../utils/helpers';
 import { fromWei, toWei } from '../../../../../utils/math';
-import { signERC2612Permit } from '../../../../../utils/permit/permit';
 import {
   Transaction,
   TransactionReceiptStatus,
@@ -31,7 +32,6 @@ import {
 } from '../../TransactionStepDialog.types';
 import {
   isMessageSignatureRequest,
-  isPermitRequest,
   isSignTransactionDataRequest,
   isTransactionRequest,
   isTypedDataRequest,
@@ -45,6 +45,7 @@ export type TransactionStepsProps = {
   onClose?: () => void;
   gasPrice: string;
   onTxStatusChange?: (status: StatusType) => void;
+  setTxTrigger: (id: string) => void;
 };
 
 export const TransactionSteps: FC<TransactionStepsProps> = ({
@@ -53,20 +54,22 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   onClose,
   gasPrice,
   onTxStatusChange,
+  setTxTrigger,
 }) => {
+  const chainId = useCurrentChain();
   const [stepData, setStepData] = useState<TransactionStepData[]>([]);
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
   const [estimatedGasFee, setEstimatedGasFee] = useState(0);
-  const { balance: rbtcBalance, loading } = useAssetBalance(
-    SupportedTokens.rbtc,
-  );
+  const { balance: nativeBalance, loading } = useNativeAssetBalance(chainId);
   const { account } = useAccount();
 
   const hasEnoughBalance = useMemo(
-    () => account && !loading && rbtcBalance.sub(estimatedGasFee).gt(0),
-    [account, loading, rbtcBalance, estimatedGasFee],
+    () => account && !loading && nativeBalance.sub(estimatedGasFee).gt(0),
+    [account, loading, nativeBalance, estimatedGasFee],
   );
+
+  const nativeAsset = useMemo(() => findNativeAsset(chainId), [chainId]);
 
   useEffect(() => {
     const initialize = async () => {
@@ -84,16 +87,25 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         };
 
         if (isTransactionRequest(request)) {
-          const { contract, fnName, args: requestArgs, gasLimit } = request;
+          const {
+            contract,
+            fnName,
+            args: requestArgs,
+            gasLimit,
+            value,
+          } = request;
           const args = [...requestArgs];
           if (fnName === APPROVAL_FUNCTION) {
             args[1] = ethers.constants.MaxUint256;
           }
+
           item.config.gasLimit =
             gasLimit ??
-            (await contract.estimateGas[fnName](...args).then(gas =>
-              gas.toString(),
-            ));
+            (await contract.estimateGas[fnName](
+              ...[...args, { value: value ?? 0 }],
+            )
+              .then(gas => gas.toString())
+              .catch(() => BigNumber.from(6_000_000).toString()));
 
           item.config.gasLimit &&
             setEstimatedGasFee(
@@ -111,15 +123,18 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             fnName === APPROVAL_FUNCTION ? false : undefined;
           item.config.gasPrice = request.gasPrice ?? gasPrice;
         } else if (isSignTransactionDataRequest(request)) {
-          const { signer, data, to, gasLimit } = request;
+          const { signer, data, to, gasLimit, value } = request;
 
           item.config.gasLimit =
             gasLimit ??
             (
-              await signer.estimateGas({
-                to,
-                data,
-              })
+              await signer
+                .estimateGas({
+                  to,
+                  data,
+                  value: value ?? 0,
+                })
+                .catch(() => BigNumber.from(6_000_000))
             ).toString();
 
           item.config.gasPrice = request.gasPrice ?? gasPrice;
@@ -253,8 +268,22 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           const signature = await request.signer._signTypedData(
             request.domain,
             request.types,
-            request.value,
+            request.values,
           );
+
+          const verifiedAddress = ethers.utils.verifyTypedData(
+            request.domain,
+            request.types,
+            request.values,
+            signature,
+          );
+
+          if (
+            verifiedAddress.toLowerCase() !==
+            (await request.signer.getAddress()).toLowerCase()
+          ) {
+            throw new Error('Failed to verify signature. ');
+          }
 
           transactions[i].onChangeStatus?.(StatusType.success);
           transactions[i].onComplete?.(signature);
@@ -266,27 +295,6 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           });
 
           await handleUpdates();
-        } else if (isPermitRequest(request)) {
-          const response = await signERC2612Permit(
-            request.signer,
-            request.token,
-            request.owner,
-            request.spender,
-            request.value,
-            request.deadline,
-            request.nonce,
-          );
-
-          transactions[i].onChangeStatus?.(StatusType.success);
-          transactions[i].onComplete?.(response);
-
-          updateReceipt(i, {
-            status: TransactionReceiptStatus.success,
-            request,
-            response,
-          });
-
-          await handleUpdates();
         } else if (isSignTransactionDataRequest(request)) {
           const gasLimit = config.gasLimit
             ? config.gasLimit?.toString()
@@ -295,12 +303,17 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             ? parseUnits(config.gasPrice?.toString() || '0', 9)
             : undefined;
 
+          const from = await request.signer.getAddress();
+          const nonce = await request.signer.getTransactionCount();
+
           const tx = await request.signer.sendTransaction({
             data: request.data,
             to: request.to,
             value: request.value,
             gasLimit,
             gasPrice,
+            from,
+            nonce,
           });
 
           updateReceipt(i, {
@@ -338,9 +351,11 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
       }
 
       setStep(transactions.length);
+
+      setTimeout(() => setTxTrigger(nanoid()), 1000);
     } catch (error) {
       onTxStatusChange?.(StatusType.error);
-      console.log('error:', error);
+      console.error('error:', error);
 
       transactions[0].onChangeStatus?.(StatusType.error);
 
@@ -354,8 +369,9 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     step,
     stepData,
     updateReceipt,
-    handleUpdates,
     onTxStatusChange,
+    handleUpdates,
+    setTxTrigger,
   ]);
 
   const getStatus = useCallback(
@@ -429,7 +445,9 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           {!hasEnoughBalance && (
             <ErrorBadge
               level={ErrorLevel.Critical}
-              message={t(translations.transactionStep.notEnoughBalance)}
+              message={t(translations.transactionStep.notEnoughBalance, {
+                asset: nativeAsset.symbol,
+              })}
             />
           )}
         </>

@@ -1,3 +1,4 @@
+import bitgetModule from '@sovryn/onboard-bitget';
 import Onboard from '@sovryn/onboard-core';
 import { Asset, BasePath } from '@sovryn/onboard-hw-common';
 import injectedModule from '@sovryn/onboard-injected';
@@ -5,7 +6,7 @@ import ledgerModule from '@sovryn/onboard-ledger';
 import trezorModule from '@sovryn/onboard-trezor';
 import walletConnectModule from '@sovryn/onboard-walletconnect';
 
-import { chains } from '../config/chains';
+import { APP_CHAIN_LIST } from '../config/chains';
 
 const basePaths: BasePath[] = [
   { label: 'RSK Mainnet', value: "m/44'/137'/0'/0" },
@@ -14,6 +15,7 @@ const basePaths: BasePath[] = [
 const assets: Asset[] = [{ label: 'RBTC' }, { label: 'ETH' }];
 
 const injected = injectedModule();
+const bitget = bitgetModule();
 const ledger = ledgerModule({
   basePaths,
   assets,
@@ -29,10 +31,16 @@ const walletConnect = walletConnectModule({
   projectId: 'd3483196fbaa8259ab4191347c67f973',
 });
 
+const chainList = APP_CHAIN_LIST.map(item => ({
+  ...item,
+  rpcUrl: typeof item.rpcUrl === 'string' ? item.rpcUrl : item.rpcUrl[0],
+  indexer: undefined,
+})).map(item => {
+  delete item.indexer;
+  return item;
+});
+
 export const onboard = Onboard({
-  wallets: [injected, walletConnect, ledger, trezor],
-  chains: chains.map(item => ({
-    ...item,
-    rpcUrl: typeof item.rpcUrl === 'string' ? item.rpcUrl : item.rpcUrl[0],
-  })),
+  wallets: [injected, bitget, walletConnect, ledger, trezor],
+  chains: chainList,
 });

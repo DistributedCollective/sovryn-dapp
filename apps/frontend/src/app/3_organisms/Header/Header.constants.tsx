@@ -45,6 +45,11 @@ export const menuItemsMapping: MenuItem[] = [
         url: '/earn/lend',
       },
       {
+        text: t(translations.header.nav.earn.subMenu.marketMaking),
+        label: t(translations.header.nav.earn.subMenu.marketMakingDescription),
+        url: '/earn/market-making',
+      },
+      {
         text: t(translations.header.nav.earn.subMenu.stabilityPool),
         label: t(translations.header.nav.earn.subMenu.stabilityPoolDescription),
         url: '/earn/stability-pool',
@@ -63,5 +68,9 @@ export const menuItemsMapping: MenuItem[] = [
   {
     text: t(translations.header.nav.bitocracy),
     url: '/bitocracy',
+  },
+  {
+    text: t(translations.header.nav.bobGateway),
+    url: '/bob-gateway',
   },
 ];

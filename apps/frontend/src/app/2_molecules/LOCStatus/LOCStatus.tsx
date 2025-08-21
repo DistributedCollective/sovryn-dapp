@@ -7,6 +7,7 @@ import CountUp from 'react-countup';
 import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { RedemptionDialogButton } from '../../5_pages/ZeroPage/components/RedemptionDialog/RedemptionDialogButton';
 import {
   BITCOIN,
   BTC_RENDER_PRECISION,
@@ -42,7 +43,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
   const hasWithdrawalSurplus = withdrawalSurplus.gt(0);
   const showOpenLOC = !hasWithdrawalSurplus && collateral.gt(0);
 
-  const ratio = useMemo(() => cRatio.toNumber(), [cRatio]);
+  const ratio = useMemo(() => parseInt(cRatio.toString()), [cRatio]);
 
   return (
     <div
@@ -128,6 +129,8 @@ export const LOCStatus: FC<LOCStatusProps> = ({
             />
           </>
         )}
+
+        <RedemptionDialogButton size={ButtonSize.large} />
       </div>
     </div>
   );

@@ -1,5 +1,121 @@
 # @sovryn/contracts
 
+## 1.2.5
+
+### Patch Changes
+
+- 8f1c3ff1: fix: asset symbol
+
+## 1.2.4
+
+### Patch Changes
+
+- d3d711eb: SOV-4532: add PUPS pools
+
+## 1.2.3
+
+### Patch Changes
+
+- 0bc23cc0: chore: update rune symbols
+- 52b7c4fe: chore: add new pools
+
+## 1.2.2
+
+### Patch Changes
+
+- 750f7473: SOV-4496: add new pools
+
+## 1.2.1
+
+### Patch Changes
+
+- ef2f1abe: SOV-4457: rebrand SAT token
+
+## 1.2.0
+
+### Minor Changes
+
+- f8c2f1e4: Update BOB Testnet addresses
+
+### Patch Changes
+
+- Updated dependencies [ee1cbe42]
+  - @sovryn/ethers-provider@1.0.3
+
+## 1.1.8
+
+### Patch Changes
+
+- ab40c983: feat: add SAT token to list
+
+## 1.1.7
+
+### Patch Changes
+
+- c7b7d38e: SOV-4286: allow WRBTC to be traded on smart router
+- 9ed0c28d: SOV-4264: update MoneyOnChain tokens logo
+
+## 1.1.6
+
+### Patch Changes
+
+- 5992d6e1: SOV-4243: Update merkle distributor for POWA claim page
+
+## 1.1.5
+
+### Patch Changes
+
+- f599ddcc: SOV-4259: Migrate from lodash.set to lodash
+
+## 1.1.4
+
+### Patch Changes
+
+- 54bcf1e2: SOV-4193: Add POWA testnet address for RSK
+
+## 1.1.3
+
+### Patch Changes
+
+- e3348041: Add StakingRewardsOS contract on BOB
+
+## 1.1.2
+
+### Patch Changes
+
+- b702399f: SOV-4057: POWA Claim Page
+- 312a7f0d: SOV-4075: POWA/RBTC Pool
+
+## 1.1.1
+
+### Patch Changes
+
+- 309ce36e: chore: add merkle distributor
+
+## 1.1.0
+
+### Minor Changes
+
+- 0cfa22b0: Major refactoring for BOB chain launch
+- 0cfa22b0: Major refactoring to support multichain functionality
+  BoB chain contract definitions
+
+### Patch Changes
+
+- a65dbc6f: SOV-4023: Rune Bridge BOB support
+
+## 1.0.20
+
+### Patch Changes
+
+- e76f1662: SOV-3871: Staking Rewards OS contracts and UI
+
+## 1.0.19
+
+### Patch Changes
+
+- f9006e45: SOV-3283: add fixed rate mynt converter
+
 ## 1.0.18
 
 ### Patch Changes

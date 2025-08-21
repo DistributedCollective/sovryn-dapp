@@ -5,9 +5,11 @@ import {
   sharedState,
   FastBtcDialogState,
   EmailNotificationSettingsDialogState,
+  RuneBridgeDialogState,
 } from '../../../store/rxjs/shared-state';
 import { EmailNotificationSettingsDialog } from '../EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
 import { FastBtcDialog } from '../FastBtcDialog/FastBtcDialog';
+import { RuneBridgeDialog } from '../RuneBridgeDialog/RuneBridgeDialog';
 
 export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
   children,
@@ -17,6 +19,9 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
   const [fastBtcDialog, setFastBtcDialog] = useState<FastBtcDialogState>(
     sharedState.get().fastBtcDialog,
   );
+
+  const [runeBridgeDialog, setRuneBridgeDialog] =
+    useState<RuneBridgeDialogState>(sharedState.get().runeBridgeDialog);
 
   const [emailNotificationSettingsDialog, setEmailNotificationSettingsDialog] =
     useState<EmailNotificationSettingsDialogState>(
@@ -43,6 +48,16 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
     };
   }, []);
 
+  useEffect(() => {
+    const runeBridgeDialogSubscription = sharedState
+      .select('runeBridgeDialog')
+      .subscribe(setRuneBridgeDialog);
+
+    return () => {
+      runeBridgeDialogSubscription.unsubscribe();
+    };
+  }, []);
+
   const handleFastBtcDialogClose = useCallback(
     () => sharedState.actions.closeFastBtcDialog(),
     [],
@@ -50,6 +65,11 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
 
   const handleEmailNotificationSettingsDialogClose = useCallback(
     () => sharedState.actions.closeEmailNotificationSettingsDialog(),
+    [],
+  );
+
+  const handleRuneBridgeDialogClose = useCallback(
+    () => sharedState.actions.closeRuneBridgeDialog(),
     [],
   );
 
@@ -68,11 +88,18 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
         isOpen={fastBtcDialog.isOpen}
         shouldHideSend={fastBtcDialog.shouldHideSend}
         onClose={handleFastBtcDialogClose}
+        step={fastBtcDialog.step}
       />
 
       <EmailNotificationSettingsDialog
         isOpen={emailNotificationSettingsDialog.isOpen}
         onClose={handleEmailNotificationSettingsDialogClose}
+      />
+
+      <RuneBridgeDialog
+        isOpen={runeBridgeDialog.isOpen}
+        onClose={handleRuneBridgeDialogClose}
+        step={runeBridgeDialog.step}
       />
     </>
   );

@@ -1,0 +1,6 @@
+query getConversionFee($smartToken: String) {
+  liquidityPools(where: { smartToken_contains: $smartToken }) {
+    conversionFee
+    maxConversionFee
+  }
+}

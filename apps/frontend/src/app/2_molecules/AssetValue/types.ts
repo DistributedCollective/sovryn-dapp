@@ -1,10 +1,5 @@
-import { SupportedTokens } from '@sovryn/contracts';
+import { ChainId } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
-
-import {
-  BTC_RENDER_PRECISION,
-  TOKEN_RENDER_PRECISION,
-} from '../../../constants/currencies';
 
 export type AssetValueProps = {
   /**
@@ -14,7 +9,7 @@ export type AssetValueProps = {
   /**
    * an enum value that represents the supported token for the asset. The enum values are defined elsewhere in the codebase.
    */
-  asset?: SupportedTokens;
+  asset?: string;
   /**
    * a boolean value that indicates whether or not to display the asset value in a tooltip.
    */
@@ -63,25 +58,7 @@ export type AssetValueProps = {
    * a string that represents a custom data attribute to apply to the component.
    */
   dataAttribute?: string;
-};
-
-export const AssetDecimals: { [key in SupportedTokens]: number } = {
-  [SupportedTokens.rbtc]: BTC_RENDER_PRECISION,
-  [SupportedTokens.zusd]: TOKEN_RENDER_PRECISION,
-  [SupportedTokens.xusd]: TOKEN_RENDER_PRECISION,
-  [SupportedTokens.dllr]: TOKEN_RENDER_PRECISION,
-  [SupportedTokens.sov]: TOKEN_RENDER_PRECISION,
-  [SupportedTokens.doc]: TOKEN_RENDER_PRECISION,
-  [SupportedTokens.mynt]: TOKEN_RENDER_PRECISION,
-  [SupportedTokens.wrbtc]: BTC_RENDER_PRECISION,
-  [SupportedTokens.rdoc]: TOKEN_RENDER_PRECISION,
-  [SupportedTokens.fish]: TOKEN_RENDER_PRECISION,
-  [SupportedTokens.rif]: TOKEN_RENDER_PRECISION,
-  [SupportedTokens.bpro]: BTC_RENDER_PRECISION,
-  [SupportedTokens.rusdt]: TOKEN_RENDER_PRECISION,
-  [SupportedTokens.eths]: TOKEN_RENDER_PRECISION,
-  [SupportedTokens.bnbs]: TOKEN_RENDER_PRECISION,
-  [SupportedTokens.moc]: TOKEN_RENDER_PRECISION,
+  chainId?: ChainId;
 };
 
 export enum AssetValueMode {

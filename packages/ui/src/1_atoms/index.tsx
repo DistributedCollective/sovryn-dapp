@@ -14,4 +14,7 @@ export * from './DynamicValue';
 export * from './Lottie';
 export * from './ErrorBadge';
 export * from './Toggle';
+export * from './Slider';
 export * from './Bar/Bar';
+export * from './Slider/Slider';
+export * from './FilterPill';

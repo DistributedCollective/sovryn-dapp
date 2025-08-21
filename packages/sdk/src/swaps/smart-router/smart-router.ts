@@ -1,6 +1,7 @@
 import { BigNumber, BigNumberish, providers } from 'ethers';
 
-import { TokenDetailsData, getTokenDetailsByAddress } from '@sovryn/contracts';
+import { AssetDetailsData, getAssetDataByAddress } from '@sovryn/contracts';
+import { ChainId } from '@sovryn/ethers-provider';
 
 import { DEFAULT_SWAP_ROUTES } from './config';
 import { SwapRoute, SwapRouteFunction } from './types';
@@ -20,17 +21,18 @@ export class SmartRouter {
   }
 
   // return all available routes
-  public getAvailableRoutes(): SwapRoute[] {
-    return this.routes;
+  public getAvailableRoutes(chain: ChainId): SwapRoute[] {
+    return this.routes.filter(route => route.chains.includes(chain));
   }
 
   // return available routes for given assets
   public async getAvailableRoutesForAssets(
+    chain: ChainId,
     base: string,
     quote: string,
   ): Promise<SwapRoute[]> {
     const routes = await Promise.all(
-      this.routes.map(async route => {
+      this.getAvailableRoutes(chain).map(async route => {
         const pairs = await route.pairs();
         if (pairs.has(base)) {
           const quoteTokens = pairs.get(base);
@@ -45,22 +47,35 @@ export class SmartRouter {
 
   // get list of quotes for available routes sorted by best quote
   public async getQuotes(
+    chain: ChainId,
     entry: string,
     destination: string,
     amount: BigNumberish,
   ): Promise<BestRouteQuote[]> {
-    const routes = await this.getAvailableRoutesForAssets(entry, destination);
+    const routes = await this.getAvailableRoutesForAssets(
+      chain,
+      entry,
+      destination,
+    );
 
-    const quotes = await Promise.all(
-      routes.map(async route => {
-        const quote = await route
+    const quotes = await Promise.allSettled(
+      routes.map(route =>
+        route
           .quote(entry, destination, amount)
-          .catch(console.error);
-        if (!quote) {
-          return { route, quote: BigNumber.from(0) };
-        }
-        return { route, quote };
-      }),
+          .then(quote => ({ route, quote })),
+      ),
+    ).then(results =>
+      results
+        .filter(result => result.status === 'fulfilled')
+        .map(
+          result =>
+            (
+              result as PromiseFulfilledResult<{
+                route: SwapRoute;
+                quote: BigNumber;
+              }>
+            ).value,
+        ),
     );
 
     const sortedQuotes = quotes.sort((a, b) =>
@@ -72,11 +87,12 @@ export class SmartRouter {
 
   // return best quote and route for given assets and amount
   public async getBestQuote(
+    chain: ChainId,
     base: string,
     quote: string,
     amount: BigNumberish,
   ): Promise<BestRouteQuote> {
-    const routes = await this.getQuotes(base, quote, amount);
+    const routes = await this.getQuotes(chain, base, quote, amount);
 
     if (routes.length === 0) {
       throw new Error('No routes available');
@@ -86,10 +102,10 @@ export class SmartRouter {
   }
 
   // return all available pairs on enabled routes
-  public async getPairs(): Promise<Map<string, string[]>> {
+  public async getPairs(chain: ChainId): Promise<Map<string, string[]>> {
     const pairs = new Map<string, string[]>();
     await Promise.all(
-      this.routes.map(async route => {
+      this.getAvailableRoutes(chain).map(async route => {
         const routePairs = await route.pairs();
         routePairs.forEach((quoteTokens, baseToken) => {
           const existingQuoteTokens = pairs.get(baseToken);
@@ -112,16 +128,22 @@ export class SmartRouter {
   }
 
   // return all available entries
-  public async getEntries(): Promise<string[]> {
-    return Array.from((await this.getPairs()).keys());
+  public async getEntries(chain: ChainId): Promise<string[]> {
+    return Array.from((await this.getPairs(chain)).keys());
   }
 
   // return all available destinations for entry token
-  public async getDestination(entry: string): Promise<string[]> {
-    return (await this.getPairs()).get(entry) ?? [];
+  public async getDestination(
+    chain: ChainId,
+    entry: string,
+  ): Promise<string[]> {
+    return (await this.getPairs(chain)).get(entry) ?? [];
   }
 
-  public async getTokenDetails(token: string): Promise<TokenDetailsData> {
-    return getTokenDetailsByAddress(token);
+  public async getTokenDetails(
+    token: string,
+    chain: ChainId,
+  ): Promise<AssetDetailsData> {
+    return getAssetDataByAddress(token, chain);
   }
 }

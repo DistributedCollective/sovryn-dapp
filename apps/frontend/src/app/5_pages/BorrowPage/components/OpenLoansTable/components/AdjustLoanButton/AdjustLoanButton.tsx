@@ -4,6 +4,7 @@ import { t } from 'i18next';
 
 import { Button, ButtonStyle } from '@sovryn/ui';
 
+import { useRequiredChain } from '../../../../../../../hooks/chain/useRequiredChain';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { LoanItem } from '../../OpenLoansTable.types';
@@ -18,6 +19,7 @@ export const AdjustLoanButton: FC<AdjustLoanButtonProps> = ({
   onClick,
 }) => {
   const { account } = useAccount();
+  const { invalidChain } = useRequiredChain();
 
   const onAdjust = useCallback(() => onClick(loan.id), [loan, onClick]);
 
@@ -26,7 +28,7 @@ export const AdjustLoanButton: FC<AdjustLoanButtonProps> = ({
       text={t(translations.fixedInterestPage.openLoansTable.actions.adjust)}
       style={ButtonStyle.primary}
       onClick={onAdjust}
-      disabled={!account}
+      disabled={!account || invalidChain}
       dataAttribute="adjust-loan-button"
     />
   );

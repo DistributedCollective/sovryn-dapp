@@ -7,6 +7,7 @@ import { HelperButton } from '@sovryn/ui';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { LendingPool } from '../../../../../utils/LendingPool';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { AcceptedCollateral } from '../../../LendPage/components/AcceptedCollateral/AcceptedCollateral';
 import { normalizeToken } from '../../BorrowPage.utils';
 import { AvailableSupply } from './components/AvailableSupply/AvailableSupply';
@@ -15,6 +16,8 @@ import { NewLoanButton } from './components/NewLoanButton/NewLoanButton';
 import { NextBorrowInterestRate } from './components/NextBorrowInterestRate/NextBorrowInterestRate';
 
 const translation = translations.fixedInterestPage.borrowAssetsTable.columns;
+
+export const EXCLUDED_ASSETS = [COMMON_SYMBOLS.RUSDT];
 
 export const COLUMNS_CONFIG = [
   {

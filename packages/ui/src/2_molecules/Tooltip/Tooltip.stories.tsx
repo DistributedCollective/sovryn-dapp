@@ -4,7 +4,11 @@ import React, { ComponentProps } from 'react';
 
 import { Button, Icon, Link } from '../../1_atoms';
 import { Tooltip } from './Tooltip';
-import { TooltipPlacement, TooltipTrigger } from './Tooltip.types';
+import {
+  TooltipPlacement,
+  TooltipStyle,
+  TooltipTrigger,
+} from './Tooltip.types';
 
 export default {
   title: 'Molecule/Tooltip',
@@ -40,6 +44,7 @@ Basic.args = {
   placement: TooltipPlacement.top,
   disabled: false,
   trigger: TooltipTrigger.hover,
+  style: TooltipStyle.primary,
 };
 Basic.argTypes = {
   content: {
@@ -96,6 +101,12 @@ Basic.argTypes = {
     },
     description: 'The tooltip trigger behavior',
     defaultValue: TooltipTrigger.hover,
+  },
+  style: {
+    control: 'select',
+    options: Object.values(TooltipStyle),
+    defaultValue: TooltipStyle.primary,
+    description: 'The style to apply to the tooltip',
   },
 };
 

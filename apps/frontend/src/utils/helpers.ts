@@ -1,23 +1,31 @@
+import { RefObject } from 'react';
+
+import { Network } from 'bitcoin-address-validation';
 import dayjs from 'dayjs';
-import { providers } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 import resolveConfig from 'tailwindcss/resolveConfig';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import { EIP1193Provider } from '@sovryn/onboard-common';
 import tailwindConfig from '@sovryn/tailwindcss-config';
 import { Decimalish } from '@sovryn/utils';
 import { Decimal } from '@sovryn/utils';
 
-import { BITCOIN } from '../constants/currencies';
+import { RSK_CHAIN_ID } from '../config/chains';
+
 import { MS } from '../constants/general';
 import {
-  BTC_EXPLORER,
+  AMM_SERVICE,
   GRAPH_WRAPPER,
-  RSK_EXPLORER,
+  INDEXER_SERVICE,
+  ORIGINS_URL,
   SERVICES_CONFIG,
 } from '../constants/infrastructure';
+import { BOB } from '../constants/infrastructure/bob';
+import { BTC } from '../constants/infrastructure/btc';
+import { RSK } from '../constants/infrastructure/rsk';
 import { ALPHA_LINKS, BITOCRACY_LINKS, GITHUB_LINKS } from '../constants/links';
 import { Environments } from '../types/global';
+import { COMMON_SYMBOLS, findAsset } from './asset';
 import { decimalic } from './math';
 
 export const prettyTx = (
@@ -34,6 +42,9 @@ export const currentNetwork: Environments = !!process.env.REACT_APP_NETWORK
   ? (process.env.REACT_APP_NETWORK as Environments)
   : Environments.Mainnet;
 
+export const currentBtcNetwork: Network =
+  currentNetwork === Environments.Mainnet ? Network.mainnet : Network.testnet;
+
 export const isMainnet = () =>
   process.env.REACT_APP_NETWORK === Environments.Mainnet;
 
@@ -48,10 +59,13 @@ export const getServicesConfig = () =>
   SERVICES_CONFIG[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
 export const getRskExplorerUrl = () =>
-  RSK_EXPLORER[isMainnet() ? 'mainnet' : 'testnet'];
+  RSK.explorer[isMainnet() ? 'mainnet' : 'testnet'];
+
+export const getBobExplorerUrl = () =>
+  BOB.explorer[isMainnet() ? 'mainnet' : 'testnet'];
 
 export const getBtcExplorerUrl = () =>
-  BTC_EXPLORER[isMainnet() ? 'mainnet' : 'testnet'];
+  BTC.explorer[isMainnet() ? 'mainnet' : 'testnet'];
 
 export const getD1Url = () =>
   isStaging()
@@ -69,9 +83,26 @@ export const getBitocracyUrl = () =>
 export const getGraphWrapperUrl = () =>
   GRAPH_WRAPPER[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
+export const getIndexerUrl = () =>
+  INDEXER_SERVICE[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+
+export const getAmmServiceUrl = () =>
+  AMM_SERVICE[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+
+export const getOriginsUrl = () =>
+  ORIGINS_URL[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * MS, 'UTC');
-  return stamp.format(`YYYY-MM-DD HH:MM:ss +UTC`);
+  return stamp.format(`YYYY-MM-DD HH:mm:ss +UTC`);
+};
+
+export const getNextDay = (day: number) => {
+  if (day < 1 || day > 7) {
+    throw new Error('Invalid day, must be integer in range 1-7');
+  }
+
+  return dayjs().utc().startOf('week').add(1, 'week').day(day).format('MMMM D');
 };
 
 export const signMessage = async (
@@ -160,14 +191,12 @@ export const removeTrailingZerosFromString = (value: string) =>
   value.includes('.') ? value.replace(/\.?0+$/, '') : value;
 
 export const isBtcBasedAsset = (asset: string) =>
-  asset.toLowerCase() === SupportedTokens.rbtc ||
-  asset.toLowerCase() === SupportedTokens.wrbtc ||
-  asset.toUpperCase() === BITCOIN;
+  [COMMON_SYMBOLS.BTC, COMMON_SYMBOLS.WBTC, 'RBTC', 'WRBTC'].includes(
+    asset.toUpperCase(),
+  );
 
 export const isBitpro = (asset: string) =>
-  asset.toLowerCase() === 'bitpro' ||
-  asset.toLowerCase() === 'bitp' ||
-  asset.toLowerCase() === SupportedTokens.bpro;
+  [COMMON_SYMBOLS.BPRO, 'BITPRO', 'BITP'].includes(asset.toUpperCase());
 
 export const areValuesIdentical = (
   firstValue: Decimal,
@@ -176,4 +205,19 @@ export const areValuesIdentical = (
   const epsilon = 0.0000000000001;
 
   return Math.abs(firstValue.sub(secondValue).toNumber()) < epsilon;
+};
+
+export const renderTokenSymbol = (token: string) =>
+  findAsset(token, RSK_CHAIN_ID).symbol;
+
+export const generateNonce = () =>
+  BigNumber.from(Math.floor(Date.now() + Math.random() * 100));
+
+export const scrollToElement = (ref: RefObject<any>) => {
+  if (ref.current) {
+    ref.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
 };

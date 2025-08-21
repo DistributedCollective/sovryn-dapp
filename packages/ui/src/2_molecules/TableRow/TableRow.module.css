@@ -1,5 +1,6 @@
 .row {
-  @apply cursor-pointer sm:cursor-auto outline outline-1 outline-gray-70 rounded text-xs font-medium;
+  @apply cursor-pointer sm:cursor-auto outline outline-1 outline-gray-70 rounded text-xs font-medium transition-colors;
+  transition-property: outline-color;
 
   &.small > td {
     @apply py-2.5 px-4;
@@ -29,7 +30,7 @@
 }
 
 .active {
-  @apply outline-gray-50 bg-gray-70;
+  @apply outline-positive/50;
 }
 
 .expanded {

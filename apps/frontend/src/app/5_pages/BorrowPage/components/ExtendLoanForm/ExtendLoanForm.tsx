@@ -3,7 +3,6 @@ import React, { FC, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { t } from 'i18next';
 
-import { SupportedTokens } from '@sovryn/contracts';
 import {
   AmountInput,
   Button,
@@ -30,9 +29,10 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
-import { useMaintenance } from '../../../../../hooks/useMaintenance';
+import { useIsDappLocked } from '../../../../../hooks/maintenances/useIsDappLocked';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { dateFormat } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import {
@@ -51,8 +51,7 @@ type ExtendLoanFormProps = {
 };
 
 export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
-  const { checkMaintenance, States } = useMaintenance();
-  const dappLocked = checkMaintenance(States.FULLD2);
+  const dappLocked = useIsDappLocked();
 
   const minRollOverDate = useMemo(
     () =>
@@ -111,7 +110,7 @@ export const ExtendLoanForm: FC<ExtendLoanFormProps> = ({ loan }) => {
 
   const minimumCollateralRatio = useMemo(
     () =>
-      collateralToken === SupportedTokens.sov
+      collateralToken === COMMON_SYMBOLS.SOV
         ? MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV
         : MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
     [collateralToken],

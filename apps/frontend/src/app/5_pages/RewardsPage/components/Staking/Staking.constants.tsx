@@ -4,7 +4,7 @@ import { t } from 'i18next';
 
 import { translations } from '../../../../../locales/i18n';
 
-export const MAX_LIQUID_STAKES = 44;
+export const MAX_LIQUID_STAKES = 33;
 
 export const columns = [
   {

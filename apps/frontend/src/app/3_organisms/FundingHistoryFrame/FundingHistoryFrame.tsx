@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { t } from 'i18next';
 import { nanoid } from 'nanoid';
-import { useTranslation } from 'react-i18next';
 
 import {
   NotificationType,
@@ -40,7 +40,6 @@ import { useGetFundingHistory } from './hooks/useGetFundingHistory';
 const pageSize = DEFAULT_HISTORY_FRAME_PAGE_SIZE;
 
 export const FundingHistoryFrame: FC = () => {
-  const { t } = useTranslation();
   const { account } = useAccount();
   const { addNotification } = useNotificationContext();
   const { value: block } = useBlockNumber();
@@ -123,7 +122,6 @@ export const FundingHistoryFrame: FC = () => {
 
     const fundingData = funding.reduce((acc: FundingHistoryType[], item) => {
       const rows = parseData(item as BitcoinTransfer);
-
       // make sure rows has at least 2 elements before using spread operator
       if (rows.length >= 2) {
         acc.push(
@@ -152,7 +150,7 @@ export const FundingHistoryFrame: FC = () => {
       token: BITCOIN,
       txHash: item.txHash,
     }));
-  }, [t, account, addNotification, getFundingHistory, orderOptions]);
+  }, [account, addNotification, getFundingHistory, orderOptions]);
 
   useEffect(() => {
     setPage(0);

@@ -27,17 +27,23 @@ type FastBtcDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   shouldHideSend?: boolean;
+  step?: number;
 };
 
 export const FastBtcDialog: React.FC<FastBtcDialogProps> = ({
   isOpen,
   onClose,
   shouldHideSend = false,
+  step = 0,
 }) => {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(step);
   const { account } = useAccount();
 
   const { isMobile } = useIsMobile();
+
+  useEffect(() => {
+    setIndex(step);
+  }, [step]);
 
   const onChangeIndex = useCallback((index: number | null) => {
     index !== null ? setIndex(index) : setIndex(0);

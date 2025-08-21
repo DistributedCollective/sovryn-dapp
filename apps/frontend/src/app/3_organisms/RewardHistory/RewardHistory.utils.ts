@@ -5,6 +5,10 @@ import { RewardHistoryType } from './RewardHistory.types';
 
 export const rewardHistoryOptions = [
   {
+    value: RewardHistoryType.liquidityMiningRewards,
+    label: t(translations.rewardHistory.types.liquidityMiningRewards),
+  },
+  {
     value: RewardHistoryType.stabilityPoolRewards,
     label: t(translations.rewardHistory.types.stabilityPoolRewards),
   },

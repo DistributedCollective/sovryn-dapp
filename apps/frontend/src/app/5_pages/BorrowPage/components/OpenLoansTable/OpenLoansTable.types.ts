@@ -13,4 +13,6 @@ export type LoanItem = {
   rolloverDate: number;
   interestOwedPerDay: number;
   startMargin: Decimal;
+  currentMargin: Decimal;
+  maintenanceMargin: Decimal;
 };

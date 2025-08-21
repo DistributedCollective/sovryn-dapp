@@ -8,6 +8,7 @@ import {
   ethers,
 } from 'ethers';
 
+import { AssetDetailsData } from '@sovryn/contracts';
 import { PermitTransactionResponse } from '@sovryn/sdk';
 import { StatusType } from '@sovryn/ui';
 
@@ -49,6 +50,9 @@ export enum TransactionType {
   signTypedData = 'signTypedData',
   signTransaction = 'signTransaction',
   signTransactionData = 'signTransactionData',
+  /**
+   * @deprecated Use `signTypedData` instead.
+   */
   signPermit = 'signPermit',
 }
 
@@ -63,9 +67,12 @@ export type SignTypedDataRequest = {
   signer: JsonRpcSigner;
   domain: TypedDataDomain;
   types: Record<string, Array<TypedDataField>>;
-  value: Record<string, any>;
+  values: Record<string, any>;
 };
 
+/**
+ * @deprecated Use TypedDataTransactionRequest instead
+ */
 export type SignPermitRequest = {
   type: TransactionType.signPermit;
   signer: JsonRpcSigner;
@@ -80,6 +87,7 @@ export type SignPermitRequest = {
 export type SignTransactionRequest = {
   type: TransactionType.signTransaction;
   contract: ethers.Contract;
+  assetDetailsData?: AssetDetailsData;
   fnName: string;
   args: any[];
   value?: BigNumberish;
@@ -113,5 +121,5 @@ export enum TransactionReceiptStatus {
 export type TransactionReceipt = {
   status: TransactionReceiptStatus;
   request: TransactionRequest;
-  response?: string | PermitTransactionResponse;
+  response?: string;
 };

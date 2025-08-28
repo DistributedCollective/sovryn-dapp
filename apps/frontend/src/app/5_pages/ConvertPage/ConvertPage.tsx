@@ -665,6 +665,20 @@ const ConvertPage: FC = () => {
     quote !== '' ? toWei(renderDestinationAmount).toString() : '0',
   );
 
+  // Set destination token if not already set and there is only one option
+  useEffect(() => {
+    if (
+      sourceToken &&
+      (!destinationToken ||
+        !destinationTokenOptions.find(
+          option => option.value === destinationToken,
+        )) &&
+      destinationTokenOptions.length === 1
+    ) {
+      setDestinationToken(destinationTokenOptions[0].value);
+    }
+  }, [sourceToken, destinationTokenOptions, destinationToken]);
+
   return (
     <>
       <Helmet>

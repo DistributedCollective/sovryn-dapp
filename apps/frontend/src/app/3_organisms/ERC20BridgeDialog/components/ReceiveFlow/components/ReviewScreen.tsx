@@ -27,7 +27,7 @@ export const ReviewScreen: React.FC = () => {
   const bridgeService = useBridgeService();
   const { data: limits } = useBridgeLimits(chainId, RSK_CHAIN_ID, token);
   const assetDetails = useTokenDetailsByAsset(token, chainId);
-  const { handleSubmit, transaction } = useBridge({
+  const { handleSubmit, transaction, isAmountValid } = useBridge({
     sourceChain: chainId!,
     targetChain: RSK_CHAIN_ID,
     asset: token!,
@@ -114,7 +114,7 @@ export const ReviewScreen: React.FC = () => {
               : handleSubmit
           }
           loading={isLoading}
-          disabled={isLoading}
+          disabled={isLoading || !isAmountValid}
           className="w-full"
           dataAttribute="erc20-receive-confirm"
         />

@@ -29,13 +29,16 @@ export const Limits: React.FC<LimitsProps> = ({
   const { data: limits } = useBridgeLimits(sourceChain, targetChain, asset);
   const onClick = useCallback((toOpen: boolean) => setOpen(toOpen), []);
 
+  if (!asset) {
+    return null;
+  }
   return (
     <>
       <Accordion
         label={t(translation.title)}
         disabled={!asset || !sourceChain || !targetChain}
         children={
-          limits && asset ? (
+          limits ? (
             <SimpleTable border>
               <SimpleTableRow
                 label={t(translation.minimumAmount)}
@@ -68,7 +71,9 @@ export const Limits: React.FC<LimitsProps> = ({
                 )} ${getTokenDisplayName(asset)}`}
               />
             </SimpleTable>
-          ) : null
+          ) : (
+            <span className="h-10 w-full block bg-gray-50 rounded animate-pulse" />
+          )
         }
         className={className}
         open={open}

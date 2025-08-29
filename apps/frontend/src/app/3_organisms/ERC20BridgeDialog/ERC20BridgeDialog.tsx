@@ -118,7 +118,7 @@ export const ERC20BridgeDialog: React.FC<ERC20BridgeDialogProps> = ({
               <div className="rounded bg-gray-60 px-2 py-1 w-fit mb-9">
                 <AddressBadge address={account} />
               </div>
-              <Heading className="mb-6">{t(translation.title)}</Heading>
+              <Heading className="mb-20">{t(translation.title)}</Heading>
             </>
           )}
           footer={() => (

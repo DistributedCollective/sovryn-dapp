@@ -19,7 +19,7 @@ export const Instructions: React.FC<InstructionsProps> = () => {
         {t(translations.erc20Bridge.instructions.title)}:
       </Heading>
 
-      <ul className="list-disc list-inside text-xs leading-5 font-medium text-gray-30 mt-4 mb-12">
+      <ul className="list-disc list-inside text-xs leading-5 font-medium text-gray-30 mt-6 mb-12">
         <li className="mb-2">
           {t(translations.erc20Bridge.instructions['1'])}
         </li>

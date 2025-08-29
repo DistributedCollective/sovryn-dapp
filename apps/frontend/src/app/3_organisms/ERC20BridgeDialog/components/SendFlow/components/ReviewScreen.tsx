@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 
-import classNames from 'classnames';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
@@ -9,6 +8,7 @@ import { Button, prettyTx } from '@sovryn/ui';
 
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
+import { TransactionIdRenderer } from '../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
 import { getTokenDisplayName } from '../../../../../../constants/tokens';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { translations } from '../../../../../../locales/i18n';
@@ -86,18 +86,27 @@ export const ReviewScreen: React.FC = () => {
     <div className="text-center">
       <TxStatusTitle step={transaction.step} />
 
-      <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30">
+      <div className="bg-gray-80 border rounded border-gray-50 p-3 text-xs text-gray-30 flex flex-col gap-3">
         {items.map(({ label, value }, index) => (
-          <div
-            className={classNames('flex justify-between', {
-              'mb-3': index !== items.length - 1,
-            })}
-            key={label}
-          >
+          <div className="flex justify-between" key={label}>
             <span>{label} </span>
             <span>{value}</span>
           </div>
         ))}
+
+        {transaction.transferHash && (
+          <div className="flex justify-between">
+            <span>{t(translation.rootstockTxId)} </span>
+            <span>
+              {
+                <TransactionIdRenderer
+                  hash={transaction.transferHash}
+                  chainId={RSK_CHAIN_ID}
+                />
+              }
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="mt-8">

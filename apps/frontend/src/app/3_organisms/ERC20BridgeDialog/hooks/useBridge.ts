@@ -13,9 +13,8 @@ import {
 } from '@sovryn/sdk';
 
 import { useAccount } from '../../../../hooks';
-import { useBridgeLimits } from './useBridgeLimits';
+import { useBridgeAmountValidation } from './useBridgeAmountValidation';
 import { useBridgeService } from './useBridgeService';
-import { useTokenBalance } from './useTokenBalance';
 
 export function useBridge({
   sourceChain,
@@ -71,9 +70,6 @@ export function useBridge({
       !assetConfig?.isNative,
   });
 
-  const { data: balance } = useTokenBalance(asset, sourceChain);
-  const { data: limits } = useBridgeLimits(sourceChain, targetChain, asset);
-
   const requiresApproval = useMemo(() => {
     if (!assetConfig || assetConfig.isNative) return false;
     if (!allowance || !amount) return false;
@@ -87,26 +83,12 @@ export function useBridge({
     }
   }, [assetConfig, allowance, amount]);
 
-  const isAmountValid = useMemo(() => {
-    if (!balance || !limits || !amount) return false;
-
-    try {
-      const amountBN = ethers.BigNumber.from(amount);
-      const balanceBN = ethers.BigNumber.from(balance);
-      const minBN = ethers.BigNumber.from(limits.minPerToken);
-      const maxBN = ethers.BigNumber.from(limits.maxTokensAllowed);
-
-      return (
-        amountBN.gt(0) &&
-        amountBN.lte(balanceBN) &&
-        amountBN.gte(minBN) &&
-        amountBN.lte(maxBN)
-      );
-    } catch (error) {
-      console.log('Error in isAmountValid calculation:', error);
-      return false;
-    }
-  }, [balance, limits, amount]);
+  const isAmountValid = useBridgeAmountValidation({
+    sourceChain,
+    targetChain,
+    asset,
+    amount,
+  });
 
   const handleApproval = useCallback(async (): Promise<void> => {
     if (!bridgeService || !signer || !spenderAddress) {
@@ -201,9 +183,6 @@ export function useBridge({
         signer,
       });
 
-      console.log({
-        tx,
-      });
       setTransaction(prev => ({
         ...prev,
         step: TxStep.PENDING,

@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 
-import { formatUnits, isAddress } from 'ethers/lib/utils';
+import { formatUnits, isAddress, parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import {
@@ -24,6 +24,7 @@ import { useAccount } from '../../../../../../hooks';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { translations } from '../../../../../../locales/i18n';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
+import { useBridgeAmountValidation } from '../../../hooks/useBridgeAmountValidation';
 import { useBridgeService } from '../../../hooks/useBridgeService';
 import { useTokenBalance } from '../../../hooks/useTokenBalance';
 
@@ -63,11 +64,12 @@ export const AmountScreen: React.FC = () => {
   }, []);
 
   const isValidAddress = Boolean(receiver && isAddress(receiver));
-
-  const isValidAmount =
-    !isNaN(Number(amount)) &&
-    Number(amount) > 0 &&
-    Number(amount) <= Number(balance || '0');
+  const isValidAmount = useBridgeAmountValidation({
+    sourceChain: RSK_CHAIN_ID,
+    targetChain: chainId!,
+    asset: token!,
+    amount: parseUnits(amount || '0', assetDetails?.decimals).toString(),
+  });
 
   return (
     <div>

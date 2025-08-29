@@ -2060,7 +2060,7 @@
             "statusTitleProcessing": "Transfer processing...",
             "statusTitleComplete": "Transfer complete",
             "statusTitleFailed": "Process failed",
-            "hash": "{{chainName}} TXID",
+            "transactionID": "TXID",
             "rootstockTxId": "Rootstock TXID",
             "switchNetwork": "Switch network"
         },

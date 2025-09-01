@@ -1,18 +1,22 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 
+import dayjs from 'dayjs';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import { TxStep } from '@sovryn/sdk';
-import { Button, prettyTx } from '@sovryn/ui';
+import { Button } from '@sovryn/ui';
 
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { TransactionIdRenderer } from '../../../../../2_molecules/TransactionIdRenderer/TransactionIdRenderer';
+import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { getTokenDisplayName } from '../../../../../../constants/tokens';
+import { useAccount } from '../../../../../../hooks';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { translations } from '../../../../../../locales/i18n';
 import { sharedState } from '../../../../../../store/rxjs/shared-state';
+import { getChainById } from '../../../../../../utils/chain';
 import { formatValue } from '../../../../../../utils/math';
 import { ReceiveFlowContext } from '../../../contexts/receiveflow';
 import { useBridge } from '../../../hooks/useBridge';
@@ -24,6 +28,9 @@ const translation = translations.erc20Bridge.confirmationScreens;
 
 export const ReviewScreen: React.FC = () => {
   const { token, chainId, amount, receiver } = useContext(ReceiveFlowContext);
+  const { account } = useAccount();
+  const sourceChain = getChainById(chainId!);
+  const targetChain = getChainById(RSK_CHAIN_ID);
   const bridgeService = useBridgeService();
   const { data: limits } = useBridgeLimits(chainId, RSK_CHAIN_ID, token);
   const assetDetails = useTokenDetailsByAsset(token, chainId);
@@ -40,31 +47,71 @@ export const ReviewScreen: React.FC = () => {
     [],
   );
 
-  const items = useMemo(
-    () => [
+  const items = useMemo(() => {
+    if (transaction.step === TxStep.IDLE) {
+      return [
+        {
+          label: t(translation.amount),
+          value: <>{formatValue(Number(amount), 8)}</>,
+        },
+        {
+          label: t(translation.token),
+          value: (
+            <>
+              {token} {'->'} {token}
+            </>
+          ),
+        },
+        {
+          label: t(translation.originNetwork),
+          value: chainId ? bridgeService.getNetworkConfig(chainId)?.name : '',
+        },
+        {
+          label: t(translation.destinationNetwork),
+          value: bridgeService.getNetworkConfig(RSK_CHAIN_ID)?.name,
+        },
+        {
+          label: t(translation.date),
+          value: dayjs().format('M/D/YYYY'),
+        },
+        {
+          label: t(translation.serviceFee),
+          value:
+            limits && token
+              ? `${formatUnits(limits.feePerToken)} ${getTokenDisplayName(
+                  token,
+                )}`
+              : '-',
+        },
+        {
+          label: t(translation.receiver),
+          value: (
+            <TxIdWithNotification
+              href={`${targetChain?.blockExplorerUrl}/address/${receiver}`}
+              value={receiver}
+            />
+          ),
+        },
+      ];
+    }
+    return [
       {
-        label: t(translation.amount),
-        value: <>{formatValue(Number(amount), 8)}</>,
-      },
-      {
-        label: t(translation.token),
+        label: t(translation.from),
         value: (
-          <>
-            {token} {'->'} {token}
-          </>
+          <TxIdWithNotification
+            href={`${sourceChain?.blockExplorerUrl}/address/${account}`}
+            value={account}
+          />
         ),
       },
       {
-        label: t(translation.originNetwork),
-        value: chainId ? bridgeService.getNetworkConfig(chainId)?.name : '',
-      },
-      {
-        label: t(translation.destinationNetwork),
-        value: bridgeService.getNetworkConfig(RSK_CHAIN_ID)?.name,
-      },
-      {
-        label: t(translation.receiver),
-        value: prettyTx(receiver),
+        label: t(translation.to),
+        value: (
+          <TxIdWithNotification
+            href={`${targetChain?.blockExplorerUrl}/address/${receiver}`}
+            value={receiver}
+          />
+        ),
       },
       {
         label: t(translation.serviceFee),
@@ -73,9 +120,51 @@ export const ReviewScreen: React.FC = () => {
             ? `${formatUnits(limits.feePerToken)} ${getTokenDisplayName(token)}`
             : '-',
       },
-    ],
-    [amount, bridgeService, chainId, limits, receiver, token],
-  );
+      {
+        label: t(translation.sendingAmount),
+        value: (
+          <>
+            {formatValue(Number(amount), 8)} {getTokenDisplayName(token!)}
+          </>
+        ),
+      },
+      {
+        label: t(translation.receivingAmount),
+        value: (
+          <>
+            {formatValue(
+              Number(amount) - Number(formatUnits(limits?.feePerToken || '0')),
+              8,
+            )}{' '}
+            {getTokenDisplayName(token!)}
+          </>
+        ),
+      },
+      {
+        label: t(translation.transactionID),
+        value: transaction.transferHash ? (
+          <TransactionIdRenderer
+            hash={transaction.transferHash}
+            chainId={chainId}
+          />
+        ) : (
+          ''
+        ),
+      },
+    ];
+  }, [
+    account,
+    amount,
+    bridgeService,
+    chainId,
+    limits,
+    receiver,
+    sourceChain?.blockExplorerUrl,
+    targetChain?.blockExplorerUrl,
+    token,
+    transaction.step,
+    transaction.transferHash,
+  ]);
 
   const isLoading = [
     TxStep.APPROVING,
@@ -94,23 +183,9 @@ export const ReviewScreen: React.FC = () => {
             <span>{value}</span>
           </div>
         ))}
-
-        {transaction.transferHash && (
-          <div className="flex justify-between">
-            <span>{t(translation.transactionID)} </span>
-            <span>
-              {
-                <TransactionIdRenderer
-                  hash={transaction.transferHash}
-                  chainId={chainId}
-                />
-              }
-            </span>
-          </div>
-        )}
       </div>
 
-      <div className="mt-8">
+      <div className="mt-12">
         <Button
           text={
             transaction.step === TxStep.CONFIRMED

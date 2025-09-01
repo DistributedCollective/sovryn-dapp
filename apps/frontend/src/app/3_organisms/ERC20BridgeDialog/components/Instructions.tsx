@@ -41,6 +41,7 @@ export const Instructions: React.FC<InstructionsProps> = () => {
                 text={t(
                   translations.erc20Bridge.instructions.createSupportTicketCta,
                 )}
+                className="md:ml-4"
                 href={HELPDESK_LINK}
               />,
             ]}

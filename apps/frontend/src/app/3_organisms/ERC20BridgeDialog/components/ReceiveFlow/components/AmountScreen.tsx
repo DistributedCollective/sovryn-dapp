@@ -14,7 +14,6 @@ import {
   Input,
   InputSize,
   Paragraph,
-  ParagraphSize,
 } from '@sovryn/ui';
 
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
@@ -82,7 +81,7 @@ export const AmountScreen: React.FC = () => {
   return (
     <div>
       {chainId && (
-        <Paragraph className="flex text-base font-medium items-center mb-6 gap-2">
+        <Paragraph className="flex text-base font-medium items-center mb-12 gap-2">
           <>
             Sending {bridgeService.getNetworkConfig(chainId)?.name}
             <Icon icon={IconNames.ARROW_RIGHT} size={12} />
@@ -92,7 +91,7 @@ export const AmountScreen: React.FC = () => {
       )}
 
       <div className="w-full flex flex-row justify-between items-center mb-1">
-        <Paragraph size={ParagraphSize.small}>Send</Paragraph>
+        <Paragraph className="text-sm font-medium">Send</Paragraph>
 
         {token && balance && (
           <MaxButton

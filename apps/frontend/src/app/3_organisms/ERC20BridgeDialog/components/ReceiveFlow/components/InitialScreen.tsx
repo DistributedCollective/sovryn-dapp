@@ -17,7 +17,6 @@ export const InitialScreen: React.FC = () => {
   const { set } = useContext(ReceiveFlowContext);
   const erc20BridgeLocked = false;
   const onContinueClick = useCallback(() => {
-    console.log('Continue clicked');
     set(prevState => ({ ...prevState, step: ReceiveFlowStep.MAIN }));
   }, [set]);
 

@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 
+import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { BridgeTransaction } from '@sovryn/sdk';
@@ -15,7 +16,13 @@ export const TxStatusTitle: FC<Pick<BridgeTransaction, 'step'>> = ({
 
   return (
     <>
-      <Heading type={HeadingType.h2} className="font-medium mb-8">
+      <Heading
+        type={HeadingType.h2}
+        className={classNames('font-medium', {
+          'mb-12': !!status,
+          'mb-8': !status,
+        })}
+      >
         {t(title)}
       </Heading>
 

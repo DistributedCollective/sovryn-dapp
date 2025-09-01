@@ -14,7 +14,6 @@ import {
   Input,
   InputSize,
   Paragraph,
-  ParagraphSize,
 } from '@sovryn/ui';
 
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
@@ -83,8 +82,8 @@ export const AmountScreen: React.FC = () => {
         </Paragraph>
       )}
 
-      <div className="w-full flex flex-row justify-between items-center mb-1">
-        <Paragraph size={ParagraphSize.small}>Send</Paragraph>
+      <div className="w-full flex flex-row justify-between items-center mb-6">
+        <Paragraph className="text-sm">Send</Paragraph>
 
         {token && balance && (
           <MaxButton
@@ -107,7 +106,9 @@ export const AmountScreen: React.FC = () => {
         placeholder="0"
       />
 
-      <Paragraph className="mb-1 text-sm">Receiving Ethereum address</Paragraph>
+      <Paragraph className="mb-1 text-sm">
+        Receiving {bridgeService.getNetworkConfig(chainId!)?.name} address
+      </Paragraph>
       <Input
         value={receiver}
         onChangeText={setReceiver}

@@ -25,7 +25,7 @@ import { prepareERC2612Permit, preparePermitResponse } from '../utils/permit';
 
 export const MINIMUM_AMOUNT = 200;
 
-const DEFAULT_ZUSD_REDEEM_GAS_LIMIT = 800_000;
+const DEFAULT_ZUSD_REDEEM_GAS_LIMIT = 1_000_000;
 
 export const zeroRedemptionSwapRoute: SwapRouteFunction = (
   provider: providers.Provider,

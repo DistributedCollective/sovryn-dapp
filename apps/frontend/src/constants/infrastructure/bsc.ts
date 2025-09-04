@@ -1,13 +1,15 @@
 import { Environments } from '../../types/global';
 
+const rpc = {
+  [Environments.Mainnet]: 'wss://bsc.sovryn.app/mainnet/websocket',
+  [Environments.Testnet]: 'wss://bsc.sovryn.app/testnet/websocket',
+};
+
 export const BSC = {
-  rpc: {
-    [Environments.Testnet]: ['https://bsc-testnet-rpc.publicnode.com'],
-  },
-  publicRpc: {
-    [Environments.Testnet]: 'https://bsc-testnet-rpc.publicnode.com',
-  },
+  rpc,
+  publicRpc: rpc,
   explorer: {
-    [Environments.Testnet]: 'https://testnet.bscscan.com/',
+    [Environments.Mainnet]: 'https://bscscan.com',
+    [Environments.Testnet]: 'https://testnet.bscscan.com',
   },
 };

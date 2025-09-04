@@ -34,7 +34,7 @@ export const ReviewScreen: React.FC = () => {
   const sourceChain = getChainById(RSK_CHAIN_ID);
   const targetChain = getChainById(chainId!);
   const assetDetails = useTokenDetailsByAsset(token, RSK_CHAIN_ID);
-  const { handleSubmit, transaction, isAmountValid } = useBridge({
+  const { handleSubmit, transaction } = useBridge({
     sourceChain: RSK_CHAIN_ID,
     targetChain: chainId!,
     asset: token!,
@@ -142,7 +142,7 @@ export const ReviewScreen: React.FC = () => {
         ),
       },
       {
-        label: t(translation.transactionID),
+        label: t(translation.rootstockTxId),
         value: transaction.transferHash ? (
           <TransactionIdRenderer
             hash={transaction.transferHash}
@@ -184,20 +184,6 @@ export const ReviewScreen: React.FC = () => {
             <span>{value}</span>
           </div>
         ))}
-
-        {transaction.transferHash && (
-          <div className="flex justify-between">
-            <span>{t(translation.rootstockTxId)} </span>
-            <span>
-              {
-                <TransactionIdRenderer
-                  hash={transaction.transferHash}
-                  chainId={RSK_CHAIN_ID}
-                />
-              }
-            </span>
-          </div>
-        )}
       </div>
 
       <div className="mt-12">
@@ -213,7 +199,7 @@ export const ReviewScreen: React.FC = () => {
               : handleSubmit
           }
           loading={isLoading}
-          disabled={isLoading || !isAmountValid}
+          disabled={isLoading}
           className="w-full"
           dataAttribute="erc20-send-confirm"
         />

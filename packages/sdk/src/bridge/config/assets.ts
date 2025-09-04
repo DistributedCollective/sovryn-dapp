@@ -142,7 +142,6 @@ export const rskToEthMainnetAssets: AssetConfig[] = [
     isBase: false,
     usesAggregator: false,
     aggregatorContractAddress: undefined,
-    bridgeTokenAddress: '0xefc78fc7d48b64958315949279ba181c2114abbd',
   },
   {
     symbol: 'DLLR',
@@ -151,7 +150,6 @@ export const rskToEthMainnetAssets: AssetConfig[] = [
     isBase: true,
     usesAggregator: false,
     aggregatorContractAddress: undefined,
-    bridgeTokenAddress: '0xc1411567d2670e24d9c4daaa7cda95686e1250aa',
   },
   {
     symbol: 'ETH',
@@ -160,7 +158,7 @@ export const rskToEthMainnetAssets: AssetConfig[] = [
     isBase: false,
     usesAggregator: true,
     aggregatorContractAddress: '0x4bf113905d7f69202106f613308bb02c84aadf2f',
-    bridgeTokenAddress: '0xfe878227c8f334038dab20a99fc3b373ffe0a755',
+    bridgeTokenAddress: '0xFe878227c8F334038DAb20a99fC3B373fFe0a755',
   },
 ];
 

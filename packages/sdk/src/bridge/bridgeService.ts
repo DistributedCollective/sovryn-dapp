@@ -129,7 +129,6 @@ export class BridgeService {
 
     const assetDetails = await getAssetData(asset, sourceChain);
     const provider = this.getProvider(sourceChain);
-
     const bridgeContract = new ethers.Contract(
       bridge.bridgeContractAddress.toLowerCase(),
       BRIDGE_ABI,

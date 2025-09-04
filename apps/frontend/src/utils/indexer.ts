@@ -2,7 +2,7 @@ import { ChainId } from '@sovryn/ethers-provider';
 
 import { SOVRYN_INDEXER } from '../constants/infrastructure';
 import { BOB } from '../constants/infrastructure/bob';
-import { SEPOLIA } from '../constants/infrastructure/sepolia';
+import { ETHEREUM } from '../constants/infrastructure/eth';
 import { Environments } from '../types/global';
 import { isBobChain, isRskChain } from './chain';
 import { isMainnet } from './helpers';
@@ -17,5 +17,5 @@ export const getSovrynIndexerUri = (chainId: ChainId) => {
     ];
   }
 
-  return SEPOLIA.indexer.testnet;
+  return ETHEREUM.indexer.testnet;
 };

@@ -697,16 +697,6 @@ const ConvertPage: FC = () => {
     }
   }, [account, setAmount]);
 
-  const { usdValue: sourceUsdValue } = useDollarValue(
-    sourceToken,
-    weiAmount.toString(),
-  );
-
-  const { usdValue: destinationUsdValue } = useDollarValue(
-    destinationToken,
-    quote !== '' ? toWei(renderDestinationAmount).toString() : '0',
-  );
-
   // Set destination token if not already set and there is only one option
   useEffect(() => {
     if (

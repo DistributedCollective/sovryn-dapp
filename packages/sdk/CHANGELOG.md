@@ -1,5 +1,12 @@
 # @sovryn/sdk
 
+## 2.0.7
+
+### Patch Changes
+
+- 0f30438c: chore: do not refetch pool and token list from sdk
+- fd201403: SOV-5105: Fix gas estimation error
+
 ## 2.0.6
 
 ### Patch Changes

@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useEffect } from 'react';
 
+import classNames from 'classnames';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
@@ -17,6 +18,7 @@ import {
   Button,
   ButtonStyle,
   ButtonType,
+  Checkbox,
   ErrorBadge,
   ErrorLevel,
   Heading,
@@ -54,9 +56,12 @@ import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei, toWei } from '../../../utils/math';
 import {
   CATEGORY_TOKENS,
+  DEFAULT_SLIPPAGE_TOLERANCE,
   DEFAULT_SWAP_DESTINATIONS,
   FIXED_MYNT_RATE,
   FIXED_RATE_ROUTES,
+  MAXIMUM_ALLOWED_SLIPPAGE,
+  MYNT_TOKEN,
 } from './ConvertPage.constants';
 import {
   DEFAULT_SWAP_ENTRIES,
@@ -72,8 +77,6 @@ import { useHandleConversion } from './hooks/useHandleConversion';
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
 
-const MYNT_TOKEN = 'MYNT';
-
 const ConvertPage: FC = () => {
   const currentChainId = useCurrentChain();
 
@@ -83,6 +86,8 @@ const ConvertPage: FC = () => {
     () => new SmartRouter(getProvider(currentChainId), SWAP_ROUTES),
     [currentChainId],
   );
+
+  const [slippageWarningAccepted, setSlippageWarningAccepted] = useState(false);
 
   const [sourceCategories, setSourceCategories] = useState<CategoryType[]>([
     CategoryType.All,
@@ -169,7 +174,9 @@ const ConvertPage: FC = () => {
     [categoryToToken],
   );
 
-  const [slippageTolerance, setSlippageTolerance] = useState('0.5');
+  const [slippageTolerance, setSlippageTolerance] = useState(
+    DEFAULT_SLIPPAGE_TOLERANCE,
+  );
 
   const [priceInQuote, setPriceQuote] = useState(false);
   const hasMyntBalance = useMemo(() => myntBalance.gt(0), [myntBalance]);
@@ -486,6 +493,38 @@ const ConvertPage: FC = () => {
     route,
   );
 
+  const { usdValue: sourceUsdValue } = useDollarValue(
+    sourceToken,
+    weiAmount.toString(),
+  );
+
+  const renderDestinationAmount = useMemo(
+    () => quote || t(commonTranslations.na),
+    [quote],
+  );
+
+  const { usdValue: destinationUsdValue } = useDollarValue(
+    destinationToken,
+    quote !== '' ? toWei(renderDestinationAmount).toString() : '0',
+  );
+
+  const slippagePercent = useMemo(() => {
+    if (
+      !sourceUsdValue ||
+      !destinationUsdValue ||
+      Number(sourceUsdValue) === 0
+    ) {
+      return 0;
+    }
+    const diff = Number(sourceUsdValue) - Number(destinationUsdValue);
+    return (diff / Number(sourceUsdValue)) * 100;
+  }, [sourceUsdValue, destinationUsdValue]);
+
+  const isSlippageHigh = useMemo(
+    () => slippagePercent > MAXIMUM_ALLOWED_SLIPPAGE,
+    [slippagePercent],
+  );
+
   const isSubmitDisabled = useMemo(
     () =>
       isInMaintenance ||
@@ -494,7 +533,8 @@ const ConvertPage: FC = () => {
       Number(amount) <= 0 ||
       Number(amount) > Number(maximumAmountToConvert) ||
       !destinationToken ||
-      !route,
+      !route ||
+      (isSlippageHigh && !slippageWarningAccepted),
     [
       isInMaintenance,
       account,
@@ -502,12 +542,9 @@ const ConvertPage: FC = () => {
       maximumAmountToConvert,
       destinationToken,
       route,
+      isSlippageHigh,
+      slippageWarningAccepted,
     ],
-  );
-
-  const renderDestinationAmount = useMemo(
-    () => quote || t(commonTranslations.na),
-    [quote],
   );
 
   const { usdValue: priceUsdValue } = useDollarValue(
@@ -549,6 +586,11 @@ const ConvertPage: FC = () => {
   const togglePriceQuote = useCallback(
     () => setPriceQuote(value => !value),
     [],
+  );
+
+  const isSlippageWarningVisible = useMemo(
+    () => isSlippageHigh && quote,
+    [isSlippageHigh, quote],
   );
 
   useEffect(() => {
@@ -655,16 +697,6 @@ const ConvertPage: FC = () => {
     }
   }, [account, setAmount]);
 
-  const { usdValue: sourceUsdValue } = useDollarValue(
-    sourceToken,
-    weiAmount.toString(),
-  );
-
-  const { usdValue: destinationUsdValue } = useDollarValue(
-    destinationToken,
-    quote !== '' ? toWei(renderDestinationAmount).toString() : '0',
-  );
-
   return (
     <>
       <Helmet>
@@ -769,8 +801,14 @@ const ConvertPage: FC = () => {
                     className="w-full flex-grow-0 flex-shrink"
                     dataAttribute="convert-to-amount"
                   />
-
-                  <div className="flex justify-end text-tiny text-gray-30 mt-1">
+                  <div
+                    className={classNames(
+                      {
+                        'text-warning': isSlippageWarningVisible,
+                      },
+                      'flex justify-end text-tiny text-gray-30 mt-1',
+                    )}
+                  >
                     <AmountRenderer value={destinationUsdValue} suffix={USD} />
                   </div>
                 </div>
@@ -795,7 +833,7 @@ const ConvertPage: FC = () => {
               onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
               dataAttribute="convert-settings"
             >
-              <div className="mt-2 mb-4">
+              <div className="mt-2">
                 <AmountInput
                   value={slippageTolerance}
                   onChange={e => setSlippageTolerance(e.target.value)}
@@ -835,6 +873,19 @@ const ConvertPage: FC = () => {
               />
             )}
 
+            {isSlippageWarningVisible && (
+              <div className="mt-4 bg-gray-80 rounded p-3 gap-3">
+                <ErrorBadge
+                  level={ErrorLevel.Warning}
+                  message={t(pageTranslations.form.swapValueWarning)}
+                />
+                <Checkbox
+                  checked={slippageWarningAccepted}
+                  onChangeValue={setSlippageWarningAccepted}
+                  label={t(pageTranslations.form.slippageWarning)}
+                />
+              </div>
+            )}
             <Button
               type={ButtonType.reset}
               style={ButtonStyle.primary}

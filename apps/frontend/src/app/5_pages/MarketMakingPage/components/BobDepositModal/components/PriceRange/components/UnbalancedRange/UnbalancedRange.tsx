@@ -3,17 +3,17 @@ import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import { t } from 'i18next';
 
 import { toDisplayPrice } from '@sovryn/sdex';
+import { Pool } from '@sovryn/sdk';
 
 import { translations } from '../../../../../../../../../locales/i18n';
 import { adjustPriceByPercentage } from '../../../../../AmbientMarketMaking/components/AmbientPoolPositions/AmbientPoolPositions.utils';
-import { AmbientLiquidityPool } from '../../../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useGetTokenDecimals } from '../../../../../BobWIthdrawModal/hooks/useGetTokenDecimals';
 import { useDepositContext } from '../../../../contexts/BobDepositModalContext';
 import { useGetPoolInfo } from '../../../../hooks/useGetPoolInfo';
 import { Input } from './components/Input/Input';
 
 type UnbalancedRangeProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
 };
 
 export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
@@ -30,10 +30,7 @@ export const UnbalancedRange: FC<UnbalancedRangeProps> = ({ pool }) => {
     setIsSecondAssetOutOfRange,
   } = useDepositContext();
 
-  const { spotPrice: currentPrice, poolTokens } = useGetPoolInfo(
-    pool.base,
-    pool.quote,
-  );
+  const { spotPrice: currentPrice, poolTokens } = useGetPoolInfo(pool);
   const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
     poolTokens?.tokenA,
     poolTokens?.tokenB,

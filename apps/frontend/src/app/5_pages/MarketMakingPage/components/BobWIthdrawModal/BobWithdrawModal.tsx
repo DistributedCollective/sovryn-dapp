@@ -3,6 +3,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
 import {
   Button,
   ButtonStyle,
@@ -30,7 +31,6 @@ import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.type
 import { AmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionBalance/AmbientPositionBalance';
 import { useAmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/hooks/useAmbientPositionBalance';
 import { useGetLpTokenBalance } from '../AmbientMarketMaking/hooks/useGetLpTokenBalance';
-import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { useGetPoolInfo } from '../BobDepositModal/hooks/useGetPoolInfo';
 import { AmountForm } from './components/AmountForm/AmountForm';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
@@ -42,7 +42,7 @@ const pageTranslations = translations.bobMarketMakingPage.withdrawModal;
 type BobWithdrawModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  pool: AmbientLiquidityPool;
+  pool: Pool;
   position: AmbientPosition;
 };
 
@@ -69,10 +69,10 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   const [secondaryWithdrawAmount, setSecondaryWithdrawAmount] = useState(
     Decimal.ZERO,
   );
-  const { spotPrice: price } = useGetPoolInfo(pool.base, pool.quote);
+  const { spotPrice: price } = useGetPoolInfo(pool);
   const [sqrtPrice, setSqrtPrice] = useState(0);
   const [withdrawLiquidity, setWithdrawLiquidity] = useState(Decimal.ZERO);
-  const { poolTokens } = useGetPool(pool.base, pool.quote);
+  const { poolTokens } = useGetPool(pool);
   const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
     poolTokens?.tokenA,
     poolTokens?.tokenB,
@@ -88,15 +88,15 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
         position.base,
         position.quote,
         account,
-        pool.poolIndex,
+        pool.extra.poolIdx,
       );
 
       let liquidity;
 
       if (position.positionType === PoolPositionType.ambient) {
-        if (pool.lpTokenAddress) {
+        if (pool.extra.lpToken) {
           const walletBalance = await croc
-            .token(pool.lpTokenAddress)
+            .token(pool.extra.lpToken)
             .wallet(account);
           liquidity = walletBalance.gt(0)
             ? walletBalance
@@ -136,13 +136,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
     [withdrawLiquidity, isFullWithdrawal, totalLiquidity],
   );
 
-  const handleSubmit = useHandleSubmit(
-    withdraw,
-    isFullWithdrawal,
-    pool,
-    position,
-    onClose,
-  );
+  const handleSubmit = useHandleSubmit(withdraw, pool, position, onClose);
 
   const isValidAmount = useMemo(
     () => Number(withdrawAmount) <= Number(depositedAmountBase),
@@ -257,8 +251,8 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
       <DialogBody>
         <div className="bg-gray-90 p-4 rounded">
           <CurrentStatistics
-            symbol={pool.base}
-            symbol2={pool.quote}
+            symbol={pool.base.symbol}
+            symbol2={pool.quote.symbol}
             label1={
               <>
                 {t(pageTranslations.returnRate)}

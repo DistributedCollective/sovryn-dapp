@@ -34,6 +34,10 @@ export function useDollarValue(
   );
 
   const entry = useMemo(() => {
+    if (asset.toUpperCase() === COMMON_SYMBOLS.OSSOV) {
+      return COMMON_SYMBOLS.SOV;
+    }
+
     if (isRskChain(chain)) {
       if (asset.toUpperCase() === COMMON_SYMBOLS.ZUSD) {
         return COMMON_SYMBOLS.XUSD;
@@ -63,6 +67,7 @@ export function useDollarValue(
         STABLECOINS[chain]?.includes(destination))
     ) {
       const amount = Number(fromWei(weiAmount, assetDetails?.decimals || 18));
+
       return toDisplayPrice(
         amount,
         destinationDetails?.decimals || 18,
@@ -71,22 +76,18 @@ export function useDollarValue(
     } else {
       const amount = Decimal.fromBigNumberString(weiAmount)
         .mul(usdPrice)
-        .toNumber();
+        .toString();
 
-      return toDisplayPrice(
-        amount,
-        destinationDetails?.decimals || 18,
-        assetDetails?.decimals || 18,
-      ).toString();
+      return amount;
     }
   }, [
     entry,
     destination,
     chain,
     weiAmount,
-    usdPrice,
     assetDetails?.decimals,
     destinationDetails?.decimals,
+    usdPrice,
   ]);
 
   return {

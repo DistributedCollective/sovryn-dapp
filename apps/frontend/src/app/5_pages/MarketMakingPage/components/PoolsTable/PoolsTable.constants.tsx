@@ -2,11 +2,13 @@ import React from 'react';
 
 import { t } from 'i18next';
 
+import { ChainIds } from '@sovryn/ethers-provider';
 import { HelperButton } from '@sovryn/ui';
 
 import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { translations } from '../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
+import { BlockedPoolConfig } from './PoolsTable.types';
 import { CurrentBalanceRenderer } from './components/CurrentBalanceRenderer/CurrentBalanceRenderer';
 import { PoolsTableAction } from './components/PoolsTableAction/PoolsTableAction';
 import { PoolsTableLiquidity } from './components/PoolsTableLiquidity/PoolsTableLiquidity';
@@ -65,5 +67,23 @@ export const COLUMNS_CONFIG = [
     title: '',
     cellRenderer: (pool: AmmLiquidityPool) => <PoolsTableAction pool={pool} />,
     className: 'table-cell',
+  },
+];
+
+// Configuration for pools that have deposits locked.
+export const BLOCKED_POOLS: BlockedPoolConfig[] = [
+  {
+    poolAssetA: 'MYNT',
+    poolAssetB: 'BTC',
+    chainId: ChainIds.RSK_MAINNET,
+    message: t(
+      translations.marketMakingPage.marketMakingOperations.depositNotAllowed,
+    ),
+  },
+  {
+    poolAssetA: 'SOV',
+    poolAssetB: 'BTC',
+    chainId: ChainIds.RSK_TESTNET,
+    message: 'SOV pool deposits are under maintenance for testing purposes',
   },
 ];

@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 
 import { t } from 'i18next';
 import Carousel from 'react-multi-carousel';
@@ -7,23 +7,19 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
 
+import { LAUNCHPAD_LINKS } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
 import styles from './Banner.module.css';
 import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard';
 
 export const Banner: FC = () => {
   const navigate = useNavigate();
-  const handleRunesClick = useCallback(() => {
-    window.open(
-      'https://sovryn.com/all-things-sovryn/bitcoin-runes-tokens',
-      '_blank',
-    );
-  }, []);
+
   return (
     <div className="w-full relative pb-16">
       <Carousel
         arrows={false}
-        draggable={true} // Needs to be true when we have more than 1 promo
+        draggable
         partialVisible={false}
         focusOnSelect={false}
         responsive={{
@@ -37,28 +33,35 @@ export const Banner: FC = () => {
         swipeable
         className="static"
         renderDotsOutside
-        showDots={true} // Needs to be true when we have more than 1 promo
-        autoPlay={true} // Needs to be true when we have more than 1 promo
+        showDots
+        autoPlay={false} // Needs to be true when we have more than 1 promo
         dotListClass={styles.dot}
         autoPlaySpeed={15000}
         infinite
       >
         <LandingPromoCard
-          heading={t(
-            translations.landingPage.promotions.sovrynIsLiveOnBob.title,
-          )}
+          heading={t(translations.landingPage.promotions.originsLaunch.title)}
           description={t(
-            translations.landingPage.promotions.sovrynIsLiveOnBob.description,
+            translations.landingPage.promotions.originsLaunch.description,
           )}
           actions={
             <>
               <Button
                 style={ButtonStyle.secondary}
                 size={ButtonSize.large}
+                text={t(translations.landingPage.promotions.originsLaunch.cta)}
+                href={LAUNCHPAD_LINKS.ORIGINS}
+                hrefExternal
+              />
+              <Button
+                style={ButtonStyle.ghost}
+                size={ButtonSize.large}
+                className="text-sm"
                 text={t(
-                  translations.landingPage.promotions.sovrynIsLiveOnBob.cta,
+                  translations.landingPage.promotions.originsLaunch
+                    .secondaryCta,
                 )}
-                onClick={() => navigate('/earn/market-making')}
+                href={LAUNCHPAD_LINKS.LEARN_MORE}
                 hrefExternal
               />
             </>
@@ -66,22 +69,22 @@ export const Banner: FC = () => {
           className="border-primary"
         />
         <LandingPromoCard
-          heading={t(translations.landingPage.promotions.runesBridge.title)}
+          heading={t(translations.landingPage.promotions.bosLaunch.title)}
           description={t(
-            translations.landingPage.promotions.runesBridge.description,
+            translations.landingPage.promotions.bosLaunch.description,
           )}
           actions={
             <>
               <Button
                 style={ButtonStyle.secondary}
                 size={ButtonSize.large}
-                text={t(translations.landingPage.promotions.runesBridge.cta)}
-                onClick={handleRunesClick}
+                text={t(translations.landingPage.promotions.bosLaunch.cta)}
+                onClick={() => navigate('/earn/staking')}
                 hrefExternal
               />
             </>
           }
-          className="border-sovryn-blue"
+          className="border-primary"
         />
       </Carousel>
     </div>

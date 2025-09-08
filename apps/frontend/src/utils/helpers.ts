@@ -17,6 +17,7 @@ import {
   AMM_SERVICE,
   GRAPH_WRAPPER,
   INDEXER_SERVICE,
+  ORIGINS_URL,
   SERVICES_CONFIG,
 } from '../constants/infrastructure';
 import { BOB } from '../constants/infrastructure/bob';
@@ -87,6 +88,9 @@ export const getIndexerUrl = () =>
 
 export const getAmmServiceUrl = () =>
   AMM_SERVICE[isMainnet() ? Environments.Mainnet : Environments.Testnet];
+
+export const getOriginsUrl = () =>
+  ORIGINS_URL[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
 export const dateFormat = (timestamp: number) => {
   const stamp = dayjs.tz(Number(timestamp) * MS, 'UTC');

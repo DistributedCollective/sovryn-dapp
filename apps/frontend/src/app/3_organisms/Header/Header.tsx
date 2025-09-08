@@ -18,6 +18,7 @@ import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
 import { isBobChain } from '../../../utils/chain';
+import { getOriginsUrl } from '../../../utils/helpers';
 import { menuItemsMapping } from './Header.constants';
 import { BridgeMenuItem } from './components/BridgeMenuItem/BridgeMenuItem';
 import { NavItem } from './components/NavItem/NavItem';
@@ -68,6 +69,16 @@ export const Header: FC = () => {
                 <NavItem item={item} onClick={toggle} />
               </li>
             ))}
+            <li>
+              <a
+                href={getOriginsUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-10 font-normal text-sm text-opacity-75 hover:text-gray-10 no-underline px-2 py-3"
+              >
+                {t(translations.header.nav.origins)}
+              </a>
+            </li>
             <ProductLinks />
             {isBobChain(chainId) && (
               <>
@@ -101,11 +112,9 @@ export const Header: FC = () => {
         }
         extraContent={
           <div className="flex lg:space-x-4 items-center flex-wrap lg:flex-nowrap flex-col-reverse lg:flex-row lg:justify-start">
-            {account && (
-              <div className="w-full lg:w-auto mt-2 lg:mt-0">
-                <BridgeMenuItem dataAttribute="dapp-header-bridges" />
-              </div>
-            )}
+            <div className="w-full lg:w-auto mt-2 lg:mt-0">
+              <BridgeMenuItem dataAttribute="dapp-header-bridges" />
+            </div>
           </div>
         }
       />

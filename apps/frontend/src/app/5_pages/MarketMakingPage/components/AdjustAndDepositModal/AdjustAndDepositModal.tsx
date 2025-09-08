@@ -27,7 +27,9 @@ import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { decimalic, toWei } from '../../../../../utils/math';
+import { useCheckPoolBlocked } from '../../hooks/useCheckPoolBlocked';
 import { useGetExpectedTokenAmount } from '../../hooks/useGetExpectedTokenAmount';
 import { useGetUserInfo } from '../../hooks/useGetUserInfo';
 import { useHandleMarketMaking } from '../../hooks/useHandleMarketMaking';
@@ -43,7 +45,6 @@ import {
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
 import { useGetMaxDeposit } from './hooks/useGetMaxDeposit';
 import { useGetPoolBalance } from './hooks/useGetPoolBalance';
-import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 
 const pageTranslations = translations.marketMakingPage.adjustAndDepositModal;
 
@@ -64,6 +65,16 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
   const [selectedAsset, setSelectedAsset] = useState(pool.assetA);
   const [value, setValue, amount] = useWeiAmountInput('');
   const { account } = useAccount();
+
+  const poolBlocked = useCheckPoolBlocked(pool);
+
+  const adjustTabs = useMemo(() => {
+    if (poolBlocked.isBlocked) {
+      return TABS.filter(tab => tab.tabAction !== AdjustType.Deposit);
+    }
+
+    return TABS;
+  }, [poolBlocked.isBlocked]);
 
   const assetSelectOptions = useMemo(
     () => [
@@ -283,7 +294,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
                     <LabelWithTabsAndMaxButton
                       token={selectedAsset}
                       maxAmount={maxBalance}
-                      tabs={TABS}
+                      tabs={adjustTabs}
                       onTabChange={setAdjustType}
                       onMaxAmountClicked={handleMaxClick}
                       index={adjustType}
@@ -296,7 +307,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
                     {!isInitialDeposit && (
                       <Tabs
                         index={adjustType}
-                        items={TABS}
+                        items={adjustTabs}
                         onChange={onChangeIndex}
                         type={TabType.secondary}
                       />

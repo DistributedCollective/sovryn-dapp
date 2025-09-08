@@ -4,14 +4,15 @@ import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { ChainIds } from '@sovryn/ethers-provider';
-import { Menu, MenuItem } from '@sovryn/ui';
+import { Menu, MenuItem, Tooltip } from '@sovryn/ui';
 
-import { RSK_FAUCET } from '../../../../../constants/general';
+import { POWPEG, RSK_FAUCET } from '../../../../../constants/general';
 import { BOB } from '../../../../../constants/infrastructure/bob';
 import {
   BABELFISH_APP_LINK,
   SEPOLIA_FAUCET_LINK,
 } from '../../../../../constants/links';
+import { useWalletConnect } from '../../../../../hooks';
 import { useAssetBalance } from '../../../../../hooks/useAssetBalance';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
@@ -36,6 +37,7 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
     isRskChain(chainId) ? COMMON_SYMBOLS.BTC : COMMON_SYMBOLS.ETH,
     chainId,
   );
+  const { account } = useWalletConnect();
   const hasRbtcBalance = useMemo(() => Number(balance) !== 0, [balance]);
 
   const enableFastBtc = useMemo(
@@ -88,78 +90,104 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
   }, [chainId]);
 
   return (
-    <NavDropdown
-      text={t('header.nav.bridges.title')}
-      className={classNames(
-        'text-gray-30 font-normal text-sm hover:bg-gray-70 hover:text-gray-10 min-w-auto w-full lg:w-auto rounded bg-gray-70 border-gray-50',
-      )}
-      closeOnClick={!isMobile}
-      dataAttribute={dataAttribute}
+    <Tooltip
+      disabled={!!account}
+      content={<span>{t('header.nav.bridges.connectWallet')}</span>}
     >
-      <Menu className="rounded-t-none rounded-b px-2 py-3 lg:rounded lg:p-1">
-        {isRskChain(chainId) && (
-          <MenuItem
-            key={t('header.nav.bridges.subMenu.ethBridge')}
-            text={t('header.nav.bridges.subMenu.ethBridge')}
-            label={
-              !isMobile && t('header.nav.bridges.subMenu.ethBridgeDescription')
-            }
-            dataAttribute={`dapp-menu-ethBridge`}
-            className={classNames('no-underline', {
-              hidden: isRskChain(chainId),
-            })}
-            onClick={handleEthClicked}
-          />
-        )}
-        <MenuItem
-          key={t('header.nav.bridges.subMenu.btcBridge')}
-          text={t('header.nav.bridges.subMenu.btcBridge')}
-          label={
-            !isMobile && isRskChain(chainId)
-              ? t('header.nav.bridges.subMenu.btcBridgeDescription')
-              : t('header.nav.bridges.subMenu.ethBridgeDescription')
-          }
-          dataAttribute={`dapp-menu-btcBridge`}
-          className={classNames('no-underline', {
-            hidden: !isRskChain(chainId),
-          })}
-          onClick={handleBtcClicked}
-        />
-        <MenuItem
-          key={t('header.nav.bridges.subMenu.runeBridge')}
-          text={t('header.nav.bridges.subMenu.runeBridge')}
-          label={
-            !isMobile && t('header.nav.bridges.subMenu.runeBridgeDescription')
-          }
-          dataAttribute={`dapp-menu-runeBridge`}
-          className="no-underline"
-          onClick={handleRunesClick}
-        />
-        <MenuItem
-          key={t('header.nav.bridges.subMenu.tokenBridge')}
-          text={t('header.nav.bridges.subMenu.tokenBridge')}
-          label={
-            !isMobile && t('header.nav.bridges.subMenu.tokenBridgeDescription')
-          }
-          dataAttribute={`dapp-menu-tokenBridge`}
-          className={classNames('no-underline', {
-            hidden: !isRskChain(chainId),
-          })}
-          onClick={handleStablecoinsClick}
-        />
-        <MenuItem
-          key={t('header.nav.bridges.subMenu.ercBridge')}
-          text={t('header.nav.bridges.subMenu.ercBridge')}
-          label={
-            !isMobile && t('header.nav.bridges.subMenu.ercBridgeDescription')
-          }
-          dataAttribute={`dapp-menu-ercBridge`}
-          className={classNames('no-underline', {
-            hidden: isRskChain(chainId),
-          })}
-          onClick={handleErcClick}
-        />
-      </Menu>
-    </NavDropdown>
+      <div>
+        <NavDropdown
+          text={t('header.nav.bridges.title')}
+          className={classNames(
+            'text-gray-30 font-normal text-sm min-w-auto w-full lg:w-auto rounded bg-gray-70 border-gray-50',
+            {
+              'opacity-30': !account,
+              'hover:bg-gray-70 hover:text-gray-10': !!account,
+            },
+          )}
+          disabled={!account}
+          closeOnClick={!isMobile}
+          dataAttribute={dataAttribute}
+        >
+          <Menu className="rounded-t-none rounded-b px-2 py-3 lg:rounded lg:p-1">
+            <MenuItem
+              key={t('header.nav.bridges.subMenu.powPeg')}
+              text={t('header.nav.bridges.subMenu.powPeg')}
+              label={
+                !isMobile && t('header.nav.bridges.subMenu.powPegDescription')
+              }
+              dataAttribute={`dapp-menu-powPeg`}
+              className={classNames('no-underline', {
+                hidden: !isRskChain(chainId),
+              })}
+              href={POWPEG}
+              hrefExternal
+            />
+            <MenuItem
+              key={t('header.nav.bridges.subMenu.ethBridge')}
+              text={t('header.nav.bridges.subMenu.ethBridge')}
+              label={
+                !isMobile &&
+                t('header.nav.bridges.subMenu.ethBridgeDescription')
+              }
+              dataAttribute={`dapp-menu-ethBridge`}
+              className={classNames('no-underline', {
+                hidden: isRskChain(chainId) || isBobChain(chainId),
+              })}
+              onClick={handleEthClicked}
+            />
+            <MenuItem
+              key={t('header.nav.bridges.subMenu.btcBridge')}
+              text={t('header.nav.bridges.subMenu.btcBridge')}
+              label={
+                !isMobile &&
+                t('header.nav.bridges.subMenu.btcBridgeDescription')
+              }
+              dataAttribute={`dapp-menu-btcBridge`}
+              className={classNames('no-underline', {
+                hidden: !isRskChain(chainId),
+              })}
+              onClick={handleBtcClicked}
+            />
+            <MenuItem
+              key={t('header.nav.bridges.subMenu.runeBridge')}
+              text={t('header.nav.bridges.subMenu.runeBridge')}
+              label={
+                !isMobile &&
+                t('header.nav.bridges.subMenu.runeBridgeDescription')
+              }
+              dataAttribute={`dapp-menu-runeBridge`}
+              className="no-underline"
+              onClick={handleRunesClick}
+            />
+            <MenuItem
+              key={t('header.nav.bridges.subMenu.tokenBridge')}
+              text={t('header.nav.bridges.subMenu.tokenBridge')}
+              label={
+                !isMobile &&
+                t('header.nav.bridges.subMenu.tokenBridgeDescription')
+              }
+              dataAttribute={`dapp-menu-tokenBridge`}
+              className={classNames('no-underline', {
+                hidden: !isRskChain(chainId),
+              })}
+              onClick={handleStablecoinsClick}
+            />
+            <MenuItem
+              key={t('header.nav.bridges.subMenu.ercBridge')}
+              text={t('header.nav.bridges.subMenu.ercBridge')}
+              label={
+                !isMobile &&
+                t('header.nav.bridges.subMenu.ercBridgeDescription')
+              }
+              dataAttribute={`dapp-menu-ercBridge`}
+              className={classNames('no-underline', {
+                hidden: isRskChain(chainId),
+              })}
+              onClick={handleErcClick}
+            />
+          </Menu>
+        </NavDropdown>
+      </div>
+    </Tooltip>
   );
 };

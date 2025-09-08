@@ -1,5 +1,100 @@
 # frontend
 
+## 1.1.36
+
+### Patch Changes
+
+- aa5eaecf: Update conversion history
+- a7c02de3: SOV-5023: Add PowPeg link
+- 2fccce5a: SOV-5075: Fix osSOV USD value
+- 3168a484: SOV-4922: Margin inconsistency in the header across pages
+- 5d750838: SOV-5052: PowPeg Portfolio adjustments
+- b9024a6c: SOV-4874: Fix naming on BOB Gateway page
+- Updated dependencies [eb1b4502]
+  - @sovryn/sdex@0.3.17
+
+## 1.1.35
+
+### Patch Changes
+
+- 8f1c3ff1: fix: asset symbol
+- c9a4e660: chore: banner update
+- 3fd94d7c: SOV-4921: Refactors stake form validation logic and improves date han…
+- Updated dependencies [8f1c3ff1]
+  - @sovryn/contracts@1.2.5
+  - @sovryn/sdk@2.0.6
+
+## 1.1.34
+
+### Patch Changes
+
+- 0cf9109f: SOV-4868: Fix dollar values
+
+## 1.1.33
+
+### Patch Changes
+
+- 7ff2088f: SOV-4820: staking-subsidies-incorrect-os-sov-withdrawal-amount
+- 08a37a7e: SOV-4723: fix liquidity withdraw on bob chain
+
+## 1.1.32
+
+### Patch Changes
+
+- 756c9249: chore: add origins link
+- 5d389b6f: chore: change bob testnet rpc address
+- 0c3563ec: SOV-4753: fix-start-time-calculation-for-staking-reward-retrieval
+- Updated dependencies [5d389b6f]
+  - @sovryn/sdex@0.3.16
+
+## 1.1.31
+
+### Patch Changes
+
+- c73f791c: SOV-4656: Add search functionality to Market making page
+- add37ff7: SOV-4639: Fix maximum deposit value on Market making page
+- 36b941bf: chore: change bob testnet rpc address
+- 881d4164: SOV-4514: Changes for "Transfer Assets" Button
+- Updated dependencies [36b941bf]
+- Updated dependencies [36b941bf]
+  - @sovryn/sdk@2.0.5
+  - @sovryn/sdex@0.3.15
+
+## 1.1.30
+
+### Patch Changes
+
+- 27d0a760: SOV-4618: Adjust governor in proclamation proposals
+- ca6d0643: SOV-4569: Adjust convert gas limit
+
+## 1.1.29
+
+### Patch Changes
+
+- 08fa89a4: Update spiceInfo.json
+- e3c19dae: SOV-4609: fix display ambient liq balance
+
+## 1.1.28
+
+### Patch Changes
+
+- c760d5c0: Fix Spice multipliers
+
+## 1.1.27
+
+### Patch Changes
+
+- 58350fd0: Adjust homepage banners
+
+## 1.1.26
+
+### Patch Changes
+
+- 5dcc907d: chore: fix asset icon styles
+- 29852f48: [SOV-4525] - Display LP Fee Rate Without Wallet Connection
+- 5dcc907d: SOV-4524: Show USD values on Convert page
+- 9579578f: SOV-4537: Add incentives column to market making
+
 ## 1.1.25
 
 ### Patch Changes

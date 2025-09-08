@@ -365,17 +365,17 @@ const EarnPage: FC = () => {
           requiredChainId={RSK_CHAIN_ID}
           childClassName="flex flex-col items-center text-gray-10"
         >
-          <Heading className="text-base sm:text-2xl">
+          <Heading className="text-center mb-4 lg:text-2xl">
             {t(pageTranslations.title)}
           </Heading>
           <Paragraph
+            className="text-center mb-6 lg:mb-10"
             size={ParagraphSize.base}
-            className="mt-2.5 sm:mt-4 sm:text-base"
           >
             {t(pageTranslations.subtitle)}
           </Paragraph>
 
-          <div className="mt-12 w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
+          <div className="w-full p-0 sm:border sm:border-gray-50 sm:rounded sm:w-[28rem] sm:p-6 sm:bg-gray-90">
             <div className="w-full flex flex-row justify-between items-center mb-4">
               <Tabs
                 size={TabSize.small}

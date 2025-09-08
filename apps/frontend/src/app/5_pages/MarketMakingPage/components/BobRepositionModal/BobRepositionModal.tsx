@@ -2,6 +2,7 @@ import React, { FC, useEffect, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
 import {
   Button,
   ButtonStyle,
@@ -19,7 +20,6 @@ import {
   calculateBoundedPrice,
 } from '../AmbientMarketMaking/components/AmbientPoolPositions/AmbientPoolPositions.utils';
 import { AmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionBalance/AmbientPositionBalance';
-import { AmbientLiquidityPool } from '../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { BalancedRange } from '../BobDepositModal/components/PriceRange/components/BalancedRange/BalancedRange';
 import { useDepositContext } from '../BobDepositModal/contexts/BobDepositModalContext';
 import { useGetPoolInfo } from '../BobDepositModal/hooks/useGetPoolInfo';
@@ -32,7 +32,7 @@ const pageTranslations = translations.bobMarketMakingPage.repositionModal;
 type BobRepositionModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  pool: AmbientLiquidityPool;
+  pool: Pool;
   position: AmbientPosition;
 };
 
@@ -55,9 +55,9 @@ export const BobRepositionModal: FC<BobRepositionModalProps> = ({
   } = useDepositContext();
   const { base, quote } = useMemo(() => pool, [pool]);
 
-  const { spotPrice: currentPrice } = useGetPoolInfo(pool.base, pool.quote);
+  const { spotPrice: currentPrice } = useGetPoolInfo(pool);
 
-  const handleSubmit = useHandleSubmit(base, quote, position, onClose);
+  const handleSubmit = useHandleSubmit(pool, position, onClose);
 
   const [baseValue, quoteValue] = useGetBalances(pool, position, rangeWidth);
 
@@ -103,8 +103,8 @@ export const BobRepositionModal: FC<BobRepositionModalProps> = ({
         <DialogBody>
           <div className="bg-gray-90 p-4 rounded mb-4">
             <CurrentStatistics
-              symbol={base}
-              symbol2={quote}
+              symbol={base.symbol}
+              symbol2={quote.symbol}
               className="flex justify-between"
               label1={t(pageTranslations.currentBalance)}
               value1={

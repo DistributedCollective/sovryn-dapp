@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useEffect } from 'react';
 
+import classNames from 'classnames';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
@@ -17,6 +18,7 @@ import {
   Button,
   ButtonStyle,
   ButtonType,
+  Checkbox,
   ErrorBadge,
   ErrorLevel,
   Heading,
@@ -37,11 +39,12 @@ import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer'
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { TradingChart } from '../../2_molecules/TradingChart/TradingChart';
-import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
+import { TOKEN_RENDER_PRECISION, USD } from '../../../constants/currencies';
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useCurrentChain } from '../../../hooks/useChainStore';
+import { useDollarValue } from '../../../hooks/useDollarValue';
 import { useWeiAmountInput } from '../../../hooks/useWeiAmountInput';
 import { translations } from '../../../locales/i18n';
 import {
@@ -50,12 +53,15 @@ import {
   listAssetsOfChain,
 } from '../../../utils/asset';
 import { removeTrailingZerosFromString } from '../../../utils/helpers';
-import { decimalic, fromWei } from '../../../utils/math';
+import { decimalic, fromWei, toWei } from '../../../utils/math';
 import {
   CATEGORY_TOKENS,
+  DEFAULT_SLIPPAGE_TOLERANCE,
   DEFAULT_SWAP_DESTINATIONS,
   FIXED_MYNT_RATE,
   FIXED_RATE_ROUTES,
+  MAXIMUM_ALLOWED_SLIPPAGE,
+  MYNT_TOKEN,
 } from './ConvertPage.constants';
 import {
   DEFAULT_SWAP_ENTRIES,
@@ -71,8 +77,6 @@ import { useHandleConversion } from './hooks/useHandleConversion';
 const commonTranslations = translations.common;
 const pageTranslations = translations.convertPage;
 
-const MYNT_TOKEN = 'MYNT';
-
 const ConvertPage: FC = () => {
   const currentChainId = useCurrentChain();
 
@@ -82,6 +86,8 @@ const ConvertPage: FC = () => {
     () => new SmartRouter(getProvider(currentChainId), SWAP_ROUTES),
     [currentChainId],
   );
+
+  const [slippageWarningAccepted, setSlippageWarningAccepted] = useState(false);
 
   const [sourceCategories, setSourceCategories] = useState<CategoryType[]>([
     CategoryType.All,
@@ -168,7 +174,9 @@ const ConvertPage: FC = () => {
     [categoryToToken],
   );
 
-  const [slippageTolerance, setSlippageTolerance] = useState('0.5');
+  const [slippageTolerance, setSlippageTolerance] = useState(
+    DEFAULT_SLIPPAGE_TOLERANCE,
+  );
 
   const [priceInQuote, setPriceQuote] = useState(false);
   const hasMyntBalance = useMemo(() => myntBalance.gt(0), [myntBalance]);
@@ -329,6 +337,36 @@ const ConvertPage: FC = () => {
       .toString();
   }, [quote, route, slippageTolerance]);
 
+  const { usdValue: minimumReceivedUsdValue } = useDollarValue(
+    destinationToken,
+    minimumReceived !== ''
+      ? toWei(minimumReceived).toString()
+      : Decimal.ZERO.toString(),
+  );
+
+  const renderMinimumReceived = useMemo(
+    () => (
+      <>
+        <AmountRenderer
+          value={minimumReceived}
+          suffix={getTokenDisplayName(destinationToken)}
+          precision={TOKEN_RENDER_PRECISION}
+        />
+
+        <span className="opacity-75">
+          {' ('}
+          <AmountRenderer
+            value={minimumReceivedUsdValue}
+            suffix={USD}
+            showRoundingPrefix={false}
+          />
+          {')'}
+        </span>
+      </>
+    ),
+    [destinationToken, minimumReceived, minimumReceivedUsdValue],
+  );
+
   const priceToken = useMemo<string>(() => {
     if (!destinationToken) {
       return sourceToken;
@@ -455,6 +493,38 @@ const ConvertPage: FC = () => {
     route,
   );
 
+  const { usdValue: sourceUsdValue } = useDollarValue(
+    sourceToken,
+    weiAmount.toString(),
+  );
+
+  const renderDestinationAmount = useMemo(
+    () => quote || t(commonTranslations.na),
+    [quote],
+  );
+
+  const { usdValue: destinationUsdValue } = useDollarValue(
+    destinationToken,
+    quote !== '' ? toWei(renderDestinationAmount).toString() : '0',
+  );
+
+  const slippagePercent = useMemo(() => {
+    if (
+      !sourceUsdValue ||
+      !destinationUsdValue ||
+      Number(sourceUsdValue) === 0
+    ) {
+      return 0;
+    }
+    const diff = Number(sourceUsdValue) - Number(destinationUsdValue);
+    return (diff / Number(sourceUsdValue)) * 100;
+  }, [sourceUsdValue, destinationUsdValue]);
+
+  const isSlippageHigh = useMemo(
+    () => slippagePercent > MAXIMUM_ALLOWED_SLIPPAGE,
+    [slippagePercent],
+  );
+
   const isSubmitDisabled = useMemo(
     () =>
       isInMaintenance ||
@@ -463,7 +533,8 @@ const ConvertPage: FC = () => {
       Number(amount) <= 0 ||
       Number(amount) > Number(maximumAmountToConvert) ||
       !destinationToken ||
-      !route,
+      !route ||
+      (isSlippageHigh && !slippageWarningAccepted),
     [
       isInMaintenance,
       account,
@@ -471,12 +542,14 @@ const ConvertPage: FC = () => {
       maximumAmountToConvert,
       destinationToken,
       route,
+      isSlippageHigh,
+      slippageWarningAccepted,
     ],
   );
 
-  const renderDestinationAmount = useMemo(
-    () => quote || t(commonTranslations.na),
-    [quote],
+  const { usdValue: priceUsdValue } = useDollarValue(
+    priceToken,
+    price !== '' ? toWei(price).toString() : Decimal.ZERO.toString(),
   );
 
   const renderPriceAmount = useMemo(() => {
@@ -489,11 +562,21 @@ const ConvertPage: FC = () => {
             precision={TOKEN_RENDER_PRECISION}
             trigger={TooltipTrigger.hover}
           />
+
+          <span className="opacity-75">
+            {' ('}
+            <AmountRenderer
+              value={priceUsdValue}
+              suffix={USD}
+              showRoundingPrefix={false}
+            />
+            {')'}
+          </span>
         </>
       );
     }
     return t(commonTranslations.na);
-  }, [price, priceToken]);
+  }, [price, priceToken, priceUsdValue]);
 
   const renderPair = useMemo(
     () => `${sourceToken}/${destinationToken}/${currentChainId}`,
@@ -503,6 +586,11 @@ const ConvertPage: FC = () => {
   const togglePriceQuote = useCallback(
     () => setPriceQuote(value => !value),
     [],
+  );
+
+  const isSlippageWarningVisible = useMemo(
+    () => isSlippageHigh && quote,
+    [isSlippageHigh, quote],
   );
 
   useEffect(() => {
@@ -614,21 +702,21 @@ const ConvertPage: FC = () => {
       <Helmet>
         <title>{t(pageTranslations.meta.title)}</title>
       </Helmet>
-      <div className="w-full flex flex-col items-center text-gray-10 my-9 sm:my-24">
-        <Heading className="text-base sm:text-2xl font-medium">
+      <div className="w-full flex flex-col items-center text-gray-10 container mx-auto">
+        <Heading className="text-center mb-4 lg:text-2xl">
           {t(pageTranslations.title)}
         </Heading>
         <Paragraph
+          className="text-center mb-6 lg:mb-10"
           size={ParagraphSize.base}
-          className="mt-2.5 sm:mt-4 sm:text-base font-medium"
         >
           {t(pageTranslations.subtitle)}
         </Paragraph>
 
-        <div className="flex flex-col-reverse lg:flex-row lg:space-x-6 xl:w-9/12 w-full h-full mt-6 lg:mt-12">
+        <div className="flex flex-col-reverse items-center lg:items-stretch lg:flex-row lg:space-x-6 xl:w-9/12 w-full">
           <TradingChart pair={renderPair} />
 
-          <div className="p-0 sm:border sm:border-gray-50 sm:rounded lg:min-w-[28rem] sm:p-6 sm:bg-gray-90 self-start h-full">
+          <div className="p-0 sm:border sm:border-gray-50 sm:rounded lg:min-w-[28rem] sm:p-6 sm:bg-gray-90 lg:self-start h-full w-full sm:w-auto mb-6 lg:mb-0">
             <div className="bg-gray-80 rounded p-6">
               <div className="w-full flex flex-row justify-between items-center">
                 <Paragraph size={ParagraphSize.base} className="font-medium">
@@ -644,18 +732,25 @@ const ConvertPage: FC = () => {
                 />
               </div>
 
-              <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
-                <AmountInput
-                  value={amount}
-                  onChangeText={setAmount}
-                  label={t(commonTranslations.amount)}
-                  min={0}
-                  invalid={!isValidAmount}
-                  disabled={!account}
-                  className="w-full flex-grow-0 flex-shrink"
-                  dataAttribute="convert-from-amount"
-                  placeholder="0"
-                />
+              <div className="w-full flex flex-row justify-between items-start gap-3 mt-3.5">
+                <div>
+                  <AmountInput
+                    value={amount}
+                    onChangeText={setAmount}
+                    label={t(commonTranslations.amount)}
+                    min={0}
+                    invalid={!isValidAmount}
+                    disabled={!account}
+                    className="w-full flex-grow-0 flex-shrink"
+                    dataAttribute="convert-from-amount"
+                    placeholder="0"
+                  />
+
+                  <div className="flex justify-end text-tiny text-gray-30 mt-1">
+                    <AmountRenderer value={sourceUsdValue} suffix={USD} />
+                  </div>
+                </div>
+
                 <AssetDropdownWithFilters
                   token={sourceToken}
                   selectedCategories={sourceCategories}
@@ -696,15 +791,28 @@ const ConvertPage: FC = () => {
                 {t(pageTranslations.form.convertTo)}
               </Paragraph>
 
-              <div className="w-full flex flex-row justify-between items-center gap-3 mt-3.5">
-                <AmountInput
-                  value={renderDestinationAmount}
-                  label={t(commonTranslations.amount)}
-                  readOnly
-                  placeholder={t(commonTranslations.na)}
-                  className="w-full flex-grow-0 flex-shrink"
-                  dataAttribute="convert-to-amount"
-                />
+              <div className="w-full flex flex-row justify-between items-start gap-3 mt-3.5">
+                <div>
+                  <AmountInput
+                    value={renderDestinationAmount}
+                    label={t(commonTranslations.amount)}
+                    readOnly
+                    placeholder={t(commonTranslations.na)}
+                    className="w-full flex-grow-0 flex-shrink"
+                    dataAttribute="convert-to-amount"
+                  />
+                  <div
+                    className={classNames(
+                      {
+                        'text-warning': isSlippageWarningVisible,
+                      },
+                      'flex justify-end text-tiny text-gray-30 mt-1',
+                    )}
+                  >
+                    <AmountRenderer value={destinationUsdValue} suffix={USD} />
+                  </div>
+                </div>
+
                 <AssetDropdownWithFilters
                   token={destinationToken}
                   selectedCategories={destinationCategories}
@@ -725,7 +833,7 @@ const ConvertPage: FC = () => {
               onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
               dataAttribute="convert-settings"
             >
-              <div className="mt-2 mb-4">
+              <div className="mt-2">
                 <AmountInput
                   value={slippageTolerance}
                   onChange={e => setSlippageTolerance(e.target.value)}
@@ -745,13 +853,7 @@ const ConvertPage: FC = () => {
                 <SimpleTableRow
                   label={t(pageTranslations.minimumReceived)}
                   valueClassName="text-primary-10"
-                  value={
-                    <AmountRenderer
-                      value={minimumReceived}
-                      suffix={getTokenDisplayName(destinationToken)}
-                      precision={TOKEN_RENDER_PRECISION}
-                    />
-                  }
+                  value={renderMinimumReceived}
                 />
                 <SimpleTableRow
                   label={t(pageTranslations.maximumPrice)}
@@ -771,6 +873,19 @@ const ConvertPage: FC = () => {
               />
             )}
 
+            {isSlippageWarningVisible && (
+              <div className="mt-4 bg-gray-80 rounded p-3 gap-3">
+                <ErrorBadge
+                  level={ErrorLevel.Warning}
+                  message={t(pageTranslations.form.swapValueWarning)}
+                />
+                <Checkbox
+                  checked={slippageWarningAccepted}
+                  onChangeValue={setSlippageWarningAccepted}
+                  label={t(pageTranslations.form.slippageWarning)}
+                />
+              </div>
+            )}
             <Button
               type={ButtonType.reset}
               style={ButtonStyle.primary}

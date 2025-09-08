@@ -1,7 +1,8 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import classNames from 'classnames';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { t } from 'i18next';
 
 import { ErrorBadge, ErrorLevel, Select } from '@sovryn/ui';
@@ -14,6 +15,8 @@ import { MaxDuration } from '../MaxDuration/MaxDuration';
 import styles from './StakeDatePicker.module.css';
 import { Month, StakeDatePickerProps } from './StakeDatePicker.types';
 import { getAvailableDates } from './StakeDatePicker.utils';
+
+dayjs.extend(utc);
 
 const MAX_PERIODS = 78;
 
@@ -28,11 +31,6 @@ export const StakeDatePicker: FC<StakeDatePickerProps> = ({
   const [filteredDates, setFilteredDates] = useState<FilteredDate[]>([]);
 
   const { kickoffTs } = useGetKickoffTs();
-  const currentDate = useMemo(() => new Date(), []);
-  const currentUserOffset = useMemo(
-    () => currentDate.getTimezoneOffset() / 60,
-    [currentDate],
-  );
 
   const { availableYears, availableMonths, availableDays } = getAvailableDates(
     filteredDates,
@@ -47,27 +45,22 @@ export const StakeDatePicker: FC<StakeDatePickerProps> = ({
       setSelectedDay(day);
 
       if (selectedYear !== '' && selectedMonth !== '') {
-        const monthIndex = Month[selectedMonth];
         const selectedDate = new Date(
           Number(selectedYear),
-          monthIndex,
+          Month[selectedMonth],
           Number(day),
         );
-        const selectedDateString = selectedDate.toLocaleDateString();
-        const date = filteredDates.find(
-          date => date.date.toLocaleDateString() === selectedDateString,
-        )?.key;
 
-        const timestamp = date
-          ? Number(
-              dayjs(date).subtract(currentUserOffset, 'hour').add(1, 'hour'),
-            ) / MS
-          : 0;
+        const match = filteredDates.find(d =>
+          dayjs(d.date).isSame(selectedDate, 'day'),
+        );
+
+        const timestamp = match ? dayjs.utc(match.key).unix() : 0;
 
         onChange(timestamp);
       }
     },
-    [selectedYear, selectedMonth, filteredDates, onChange, currentUserOffset],
+    [selectedYear, selectedMonth, filteredDates, onChange],
   );
 
   const handleSelectYear = useCallback(
@@ -92,16 +85,13 @@ export const StakeDatePicker: FC<StakeDatePickerProps> = ({
   const onMaxDurationClick = useCallback(() => {
     const maxDate = filteredDates[filteredDates.length - 1];
     if (maxDate) {
-      const timestamp =
-        Number(
-          dayjs(maxDate.key).subtract(currentUserOffset, 'hour').add(1, 'hour'),
-        ) / MS;
-      setSelectedYear(timestamp ? maxDate.date.getFullYear().toString() : '');
-      setSelectedMonth(timestamp ? Month[maxDate.date.getMonth()] : '');
-      setSelectedDay(timestamp ? maxDate.date.getDate().toString() : '');
+      const timestamp = dayjs.utc(maxDate.key).unix();
+      setSelectedYear(maxDate.date.getFullYear().toString());
+      setSelectedMonth(Month[maxDate.date.getMonth()]);
+      setSelectedDay(maxDate.date.getDate().toString());
       onChange(timestamp);
     }
-  }, [currentUserOffset, filteredDates, onChange]);
+  }, [filteredDates, onChange]);
 
   useEffect(() => {
     setFilteredDates(
@@ -116,49 +106,40 @@ export const StakeDatePicker: FC<StakeDatePickerProps> = ({
   useEffect(() => {
     if (!kickoffTs) return;
 
-    const contractDate = dayjs(kickoffTs * MS).toDate();
-    const contractOffset = contractDate.getTimezoneOffset() / 60;
-    const contractDateDeployed = dayjs(kickoffTs * MS).add(
-      contractOffset,
-      'hour',
-    );
-    const userDateUTC = dayjs(currentDate).add(currentUserOffset, 'hour');
+    const kickoffDate = dayjs.utc(kickoffTs * MS);
+    const now = dayjs.utc();
 
     const dates: Date[] = [];
     const datesFutures: Date[] = [];
 
-    let intervalDate = contractDateDeployed;
+    let interval = kickoffDate;
 
-    while (intervalDate.unix() < userDateUTC.unix()) {
-      intervalDate = intervalDate.add(2, 'week');
+    while (interval.unix() < now.unix()) {
+      interval = interval.add(2, 'week');
     }
 
     for (let i = 1; i < MAX_PERIODS; i++) {
-      if (intervalDate.unix() > userDateUTC.unix()) {
-        const date = intervalDate.add(2, 'week');
-        intervalDate = date;
+      if (interval.unix() > now.unix()) {
+        interval = interval.add(2, 'week');
+
+        const nextDate = interval.toDate();
 
         if (!previouslySelectedDate) {
-          dates.push(date.toDate());
+          dates.push(nextDate);
         }
 
         if (
           previouslySelectedDate &&
-          dayjs(previouslySelectedDate * MS)
-            .add(contractOffset, 'hour')
-            .toDate()
-            .getTime() /
-            MS <
-            date.unix()
+          dayjs.utc(previouslySelectedDate * MS).unix() < interval.unix()
         ) {
-          datesFutures.push(date.toDate());
+          datesFutures.push(nextDate);
         }
       }
     }
 
     setDates(datesFutures.length ? datesFutures : dates);
     setIsDateAvailable(datesFutures.length > 0 || !previouslySelectedDate);
-  }, [kickoffTs, currentDate, currentUserOffset, previouslySelectedDate]);
+  }, [kickoffTs, previouslySelectedDate]);
 
   return (
     <div className="relative w-full flex lg:flex-row flex-col justify-between items-center gap-3 mt-3.5 mb-6">
@@ -180,7 +161,6 @@ export const StakeDatePicker: FC<StakeDatePickerProps> = ({
                 : selectedYear
             }
           />
-
           <Select
             value={selectedMonth}
             onChange={handleSelectMonth}
@@ -197,7 +177,6 @@ export const StakeDatePicker: FC<StakeDatePickerProps> = ({
                 : selectedMonth
             }
           />
-
           <Select
             value={selectedDay}
             onChange={handleSelectDay}

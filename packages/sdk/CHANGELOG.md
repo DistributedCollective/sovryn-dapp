@@ -1,5 +1,21 @@
 # @sovryn/sdk
 
+## 2.0.6
+
+### Patch Changes
+
+- 8f1c3ff1: fix: asset symbol
+- Updated dependencies [8f1c3ff1]
+  - @sovryn/contracts@1.2.5
+
+## 2.0.5
+
+### Patch Changes
+
+- 36b941bf: SOV-4539: fetch pools from indexer
+- Updated dependencies [36b941bf]
+  - @sovryn/sdex@0.3.15
+
 ## 2.0.4
 
 ### Patch Changes

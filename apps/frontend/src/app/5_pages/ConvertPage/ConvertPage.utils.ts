@@ -6,8 +6,8 @@ import { getContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { SmartRouter, SwapRoute } from '@sovryn/sdk';
 
-import { SWAP_ROUTES } from './ConvertPage.constants';
 import { getCurrentChain } from '../../../hooks/useChainStore';
+import { SWAP_ROUTES } from './ConvertPage.constants';
 
 export const getRouteContract = async (
   route: SwapRoute,

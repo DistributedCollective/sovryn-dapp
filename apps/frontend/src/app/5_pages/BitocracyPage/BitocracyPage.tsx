@@ -64,12 +64,12 @@ const BitocracyPage: FC = () => {
           childClassName="flex flex-col items-center text-gray-10"
           outerClassName="w-full"
         >
-          <Heading className="text-center lg:mb-10 lg:text-2xl mt-9">
+          <Heading className="text-center mb-4 lg:text-2xl">
             {t(pageTranslations.title)}
           </Heading>
           <Paragraph
+            className="text-center mb-6 lg:mb-10"
             size={ParagraphSize.base}
-            className="mt-2.5 sm:mt-4 sm:text-base font-medium mb-9"
           >
             {t(pageTranslations.subtitle)}
           </Paragraph>

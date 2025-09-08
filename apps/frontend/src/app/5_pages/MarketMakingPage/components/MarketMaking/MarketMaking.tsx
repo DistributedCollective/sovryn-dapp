@@ -3,7 +3,13 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 
-import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
+import {
+  Heading,
+  Input,
+  InputSize,
+  Paragraph,
+  ParagraphSize,
+} from '@sovryn/ui';
 
 import { BOB_CHAIN_ID } from '../../../../../config/chains';
 
@@ -18,6 +24,7 @@ export const MarketMaking: FC = () => {
   const { isMobile } = useIsMobile();
   const [activePool, setActivePool] = useState('');
   const [isPromoCardClicked, setIsPromoCardClicked] = useState(false);
+  const [searchInputValue, setSearchInputValue] = useState('');
 
   const setActivePoolKey = useCallback(
     (poolKey: string) => setActivePool(activePool === poolKey ? '' : poolKey),
@@ -42,13 +49,13 @@ export const MarketMaking: FC = () => {
           requiredChainId={BOB_CHAIN_ID}
           storageKey={RSK_STORAGE_KEY}
         />
-        <div className="flex flex-col items-center text-gray-10 mt-6 mb-4 sm:mt-9">
-          <Heading className="text-center mb-1 lg:mb-3 text-base lg:text-2xl">
+        <div className="flex flex-col items-center text-gray-10">
+          <Heading className="text-center mb-4 lg:text-2xl">
             {t(translations.marketMakingPage.title)}
           </Heading>
 
           <Paragraph
-            className="text-center mb-5 lg:mb-10"
+            className="text-center mb-6 lg:mb-10"
             size={ParagraphSize.base}
           >
             {t(translations.marketMakingPage.subtitle)}
@@ -59,29 +66,22 @@ export const MarketMaking: FC = () => {
             onClick={setIsPromoCardClicked}
           />
 
-          {/* <Paragraph
-            className="pl-2 w-full text-base font-medium text-left mb-4 mt-8"
-            size={ParagraphSize.base}
-          >
-            {t(translations.marketMakingPage.newPairs)}
-          </Paragraph>
+          <div className="w-full my-4">
+            <Input
+              value={searchInputValue}
+              className="w-full"
+              onChangeText={setSearchInputValue}
+              size={InputSize.large}
+              placeholder={t(
+                translations.marketMakingPage.searchInputPlaceholder,
+              )}
+            />
+          </div>
           <PoolsTable
             setActivePool={setActivePoolKey}
             shouldScroll={isPromoCardClicked}
             activePool={activePool}
-            showHighlightedPools
-          />
-
-          <Paragraph
-            className="pl-2 w-full text-base font-medium text-left mb-4 mt-8"
-            size={ParagraphSize.base}
-          >
-            {t(translations.marketMakingPage.allPairs)}
-          </Paragraph> */}
-          <PoolsTable
-            setActivePool={setActivePoolKey}
-            shouldScroll={isPromoCardClicked}
-            activePool={activePool}
+            filter={searchInputValue}
           />
         </div>
       </div>

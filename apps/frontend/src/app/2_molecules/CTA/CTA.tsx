@@ -11,6 +11,7 @@ type CTAProps = {
   navigateTo: () => void;
   badges?: string[];
   disableCTA?: boolean;
+  href?: string;
 };
 
 export const CTA: FC<CTAProps> = ({
@@ -22,6 +23,7 @@ export const CTA: FC<CTAProps> = ({
   navigateTo,
   badges,
   disableCTA = false,
+  href,
 }) => (
   <div
     key={index}
@@ -55,7 +57,9 @@ export const CTA: FC<CTAProps> = ({
     <Button
       className="w-full sm:w-auto"
       text={action}
-      onClick={navigateTo}
+      href={!disableCTA ? href : undefined}
+      onClick={!disableCTA && !href ? navigateTo : undefined}
+      hrefExternal={Boolean(href)}
       style={ButtonStyle.secondary}
       disabled={disableCTA}
     />

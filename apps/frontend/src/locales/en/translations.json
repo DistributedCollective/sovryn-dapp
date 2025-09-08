@@ -75,6 +75,7 @@
     },
     "connectWalletButton": {
         "connect": "Get started",
+        "connectBTC": "Connect BTC wallet",
         "rewards": "Rewards",
         "notifications": "Notifications",
         "history": "History",
@@ -111,22 +112,27 @@
             "convert": "Convert",
             "stake": "Stake",
             "bitocracy": "Bitocracy",
+            "origins": "Origins",
             "bob": "Go BoB",
             "runes": "Runes",
             "spicePoints": "Spice Points",
+            "bobGateway": "Bob Gateway",
             "bridges": {
-                "title": "Transfer Assets",
+                "title": "Bridges",
+                "connectWallet": "Connect a wallet to use the bridges.",
                 "subMenu": {
                     "runeBridge": "Runes",
                     "runeBridgeDescription": "Transfer between Bitcoin and Sovryn",
                     "tokenBridge": "Stablecoins",
                     "tokenBridgeDescription": "Transfer between RSK and other chains",
-                    "btcBridge": "BTC",
+                    "btcBridge": "Fast BTC",
                     "btcBridgeDescription": "Transfer between Bitcoin and RSK",
                     "ethBridge": "ETH",
                     "ethBridgeDescription": "Transfer between BOB and other chains",
                     "ercBridge": "ERC-20",
-                    "ercBridgeDescription": "Transfer between BOB and other chains"
+                    "ercBridgeDescription": "Transfer between BOB and other chains",
+                    "powPeg": "PowPeg",
+                    "powPegDescription": "Transfer between Bitcoin and RSK"
                 }
             }
         }
@@ -425,7 +431,9 @@
             "convertTo": "To",
             "invalidAmountError": "Exceeds maximum amount",
             "quoteError": "No route found, please try another asset or a lower amount",
-            "noAvailableTokens": "No available tokens"
+            "noAvailableTokens": "No available tokens",
+            "swapValueWarning": "The swap value is significantly lower than expected due to market conditions or slippage.",
+            "slippageWarning": "I acknowledge the risk and confirm to proceed"
         },
         "txDialog": {
             "convertTitle": "Convert {{from}} to {{to}}",
@@ -442,7 +450,7 @@
     "landingPage": {
         "meta": {
             "title": "Welcome to Sovryn",
-            "description": "The Decentralized Bitcoin Trading And Lending Platform"
+            "description": "The largest Bitcoin DeFi dapp - trading, lending, yield farming and home to the Origins cross-chain launchpad."
         },
         "getStarted": {
             "title": "Get started",
@@ -533,6 +541,11 @@
                 "title": "Soon on BOB",
                 "description": "Lending, Borrowing, Bitocracy voting & more.",
                 "action": "Coming soon"
+            },
+            "originsLaunchpad": {
+                "title": "Join $BOS Presale – Phase 2 Live",
+                "description": "Deposit from any chain. Get bonuses for $SOV staking. BTC and ADA deposits.",
+                "action": "Join Presale"
             }
         },
         "promotions": {
@@ -561,11 +574,22 @@
                 "title": "Hello, BOB!",
                 "description": "The Sovryn DEX is now live on BOB. Enjoy passive yield, Spice, runes trading & more on the new chain.",
                 "cta": "Deposit in AMM"
+            },
+            "bosLaunch": {
+                "title": "Launching BOS!",
+                "description": "Sovryn to lead BitcoinOS launch & retain 10% of $BOS. $SOV stakers decide allocation.",
+                "cta": "Stake SOV"
+            },
+            "originsLaunch": {
+                "title": "Origins is live!",
+                "description": "Join the $BOS Phase 2 presale on Sovryn’s multichain launchpad. $SOV stakers earn bonuses!",
+                "cta": "Join Presale",
+                "secondaryCta": "Learn more"
             }
         },
         "titleSection": {
             "title": "Welcome to Sovryn",
-            "description": "The decentralized bitcoin trading and lending platform",
+            "description": "The largest Bitcoin DeFi dapp - trading, lending, yield farming and home to the Origins cross-chain launchpad.",
             "cta": "<0>New to Sovryn?</0>",
             "ctaText": "New to Sovryn?"
         },
@@ -1312,6 +1336,7 @@
             "p2": "Next rewards recalibration on {{recalibrationDate}}.",
             "learnMoreLink": "Learn more"
         },
+        "searchInputPlaceholder": "Filter pools by a symbol or symbols",
         "newPairs": "New Pairs",
         "allPairs": "All Pairs",
         "rewards": "Rewards",
@@ -1382,6 +1407,7 @@
             "priceRange": "Price range",
             "balanced": "Balanced",
             "infinite": "Infinite",
+            "allowSurplus": "Allow Personal Reserve Vault Balances",
             "newPoolStatistics": {
                 "newPoolBalance": "New pool balance",
                 "currentPrice": "Current {{token}} price",
@@ -1891,6 +1917,7 @@
         "poolsTable": {
             "pair": "Pair",
             "liquidity": "Liquidity",
+            "incentives": "Incentives",
             "lpFeeRate": "LP fee rate",
             "lpFeeRateInfo": "The fee rate that is charged per swap and given to AMM LPs",
             "volume": "24H volume",
@@ -1944,6 +1971,37 @@
         "text": "You have {{value}} LM SOV rewards vested stakes that you need to withdraw before claiming more.",
         "cta": "Open Rewards page"
     },
+    "bobGatewayPage": {
+        "meta": {
+            "title": "BOB Gateway"
+        },
+        "description": "New way earning in AMM",
+        "deposit": "Deposit",
+        "withdraw": "Withdraw",
+        "connectWalletCta": "Connect wallet",
+        "orderTable": {
+            "baseToken": "Base Token",
+            "outputToken": "Output Token",
+            "status": "Status",
+            "gatewayAddress": "Gateway Address",
+            "strategyAddress": "Strategy Address",
+            "txHash": "Tx Hash",
+            "amount": "Amount",
+            "confirmed": "Confirmed",
+            "pending": "Pending"
+        },
+        "amountInput": "Amount (BTC)",
+        "lst": "LST",
+        "selectStrategy": "Select strategy",
+        "strategyDetails": {
+            "title": "Strategy details",
+            "name": "Name",
+            "category": "Category",
+            "incentives": "Incentives",
+            "token": "Token",
+            "about": "About"
+        }
+    },
     "runesPage": {
         "meta": {
             "title": "Runes - Sovryn"
@@ -1963,7 +2021,7 @@
         "availableRunes": "Available Runes",
         "availableSoon": "Available soon",
         "availableRunesInfo": "Interested in adding more Runes?",
-        "runesUseCases":{
+        "runesUseCases": {
             "title": "Use your Runes in DeFi",
             "convert": "Convert to any token",
             "convertDescription": "Swap Runes to BTC, stablecoins or any other asset.",

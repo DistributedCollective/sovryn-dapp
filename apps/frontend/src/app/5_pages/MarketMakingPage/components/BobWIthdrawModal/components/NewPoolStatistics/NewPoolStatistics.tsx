@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
 import { SimpleTable, SimpleTableRow } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
@@ -9,7 +10,6 @@ import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/Amo
 import { translations } from '../../../../../../../locales/i18n';
 import { AmbientPosition } from '../../../AmbientMarketMaking/AmbientMarketMaking.types';
 import { AmbientPositionStatus } from '../../../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionStatus/AmbientPositionStatus';
-import { AmbientLiquidityPool } from '../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 import { DEFAULT_SLIPPAGE } from '../../../BobDepositModal/BobDepositModal.constants';
 
 const pageTranslations =
@@ -18,7 +18,7 @@ const pageTranslations =
 type NewPoolStatisticsProps = {
   baseAmount: Decimal;
   quoteAmount: Decimal;
-  pool: AmbientLiquidityPool;
+  pool: Pool;
   position: AmbientPosition;
 };
 
@@ -31,13 +31,13 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
   <SimpleTable className="mt-6">
     <SimpleTableRow
       label={t(pageTranslations.newPoolBalance)}
-      value={<AmountRenderer value={baseAmount} suffix={pool.base} />}
+      value={<AmountRenderer value={baseAmount} suffix={pool.base.symbol} />}
       className="mb-1"
       valueClassName="text-primary-10"
     />
     <SimpleTableRow
       label=""
-      value={<AmountRenderer value={quoteAmount} suffix={pool.quote} />}
+      value={<AmountRenderer value={quoteAmount} suffix={pool.quote.symbol} />}
       valueClassName="text-primary-10"
     />
     <SimpleTableRow

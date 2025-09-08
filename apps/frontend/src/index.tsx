@@ -27,6 +27,23 @@ import './locales/i18n';
 import { router } from './router';
 import './styles/tailwindcss/index.css';
 import { rskClient } from './utils/clients';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './lib/query-client';
+
+const checkAndRemoveQueryParam = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  if (urlParams.has('trezor-connect-src')) {
+    urlParams.delete('trezor-connect-src');
+
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+
+    window.history.replaceState({}, document.title, newUrl);
+    window.location.reload();
+  }
+};
+
+checkAndRemoveQueryParam();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -34,28 +51,30 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <NetworkProvider>
-      <TransactionProvider>
-        <NotificationProvider>
-          <ServiceWorkerProvider>
-            <TokenPricesProvider>
-              <ApolloProvider client={rskClient}>
-                <HelmetProvider>
-                  <MaintenanceModeContextProvider>
-                    <LoaderProvider>
-                      <SharedStateProvider>
-                        <RouterProvider router={router} />
-                        <OnboardProvider dataAttribute="dapp-onboard" />
-                      </SharedStateProvider>
-                    </LoaderProvider>
-                  </MaintenanceModeContextProvider>
-                </HelmetProvider>
-              </ApolloProvider>
-            </TokenPricesProvider>
-            <TransactionStepDialog disableFocusTrap />
-          </ServiceWorkerProvider>
-        </NotificationProvider>
-      </TransactionProvider>
-    </NetworkProvider>
+    <QueryClientProvider client={queryClient}>
+      <NetworkProvider>
+        <TransactionProvider>
+          <NotificationProvider>
+            <ServiceWorkerProvider>
+              <TokenPricesProvider>
+                <ApolloProvider client={rskClient}>
+                  <HelmetProvider>
+                    <MaintenanceModeContextProvider>
+                      <LoaderProvider>
+                        <SharedStateProvider>
+                          <RouterProvider router={router} />
+                          <OnboardProvider dataAttribute="dapp-onboard" />
+                        </SharedStateProvider>
+                      </LoaderProvider>
+                    </MaintenanceModeContextProvider>
+                  </HelmetProvider>
+                </ApolloProvider>
+              </TokenPricesProvider>
+              <TransactionStepDialog disableFocusTrap />
+            </ServiceWorkerProvider>
+          </NotificationProvider>
+        </TransactionProvider>
+      </NetworkProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
 );

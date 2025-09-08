@@ -1,5 +1,23 @@
 # @sovryn/sdex
 
+## 0.3.17
+
+### Patch Changes
+
+- eb1b4502: SOV-4798: update testnet contract address
+
+## 0.3.16
+
+### Patch Changes
+
+- 5d389b6f: chore: change bob testnet rpc address
+
+## 0.3.15
+
+### Patch Changes
+
+- 36b941bf: chore: change bob testnet rpc address
+
 ## 0.3.14
 
 ### Patch Changes

@@ -1,22 +1,24 @@
+import { Pool } from '@sovryn/sdk';
+
 import { useCacheCall } from '../../../../../../../../hooks';
 import { useCurrentChain } from '../../../../../../../../hooks/useChainStore';
 import { useGetPool } from '../../../../../hooks/useGetPool';
 
-export const usePoolSpotPrice = (assetA: string, assetB: string) => {
+export const usePoolSpotPrice = (pool: Pool) => {
   const chainId = useCurrentChain();
-  const { pool } = useGetPool(assetA, assetB);
+  const { pool: crocPool } = useGetPool(pool);
 
   return useCacheCall(
-    `pool/${assetA}/${assetB}/spotPrice`,
+    `pool/${pool.base.address}/${pool.quote.address}/spotPrice`,
     chainId,
     async () => {
-      if (!pool) {
+      if (!crocPool) {
         return;
       }
 
-      return await pool.spotPrice();
+      return await crocPool.spotPrice();
     },
-    [pool],
+    [crocPool],
     0,
   );
 };

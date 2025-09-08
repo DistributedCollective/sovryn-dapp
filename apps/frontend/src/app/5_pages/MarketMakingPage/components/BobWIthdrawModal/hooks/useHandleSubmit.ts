@@ -3,6 +3,8 @@ import { useCallback } from 'react';
 import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
+
 import {
   Transaction,
   TransactionType,
@@ -11,46 +13,36 @@ import { GAS_LIMIT } from '../../../../../../constants/gasLimits';
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useTransactionContext } from '../../../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
-import { useCurrentChain } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
 import { PoolPositionType } from '../../../MarketMakingPage.types';
 import { useGetPool } from '../../../hooks/useGetPool';
 import { AmbientPosition } from '../../AmbientMarketMaking/AmbientMarketMaking.types';
-import { AmbientLiquidityPool } from '../../AmbientMarketMaking/utils/AmbientLiquidityPool';
-import { AmbientLiquidityPoolDictionary } from '../../AmbientMarketMaking/utils/AmbientLiquidityPoolDictionary';
 import { DEFAULT_SLIPPAGE } from '../../BobDepositModal/BobDepositModal.constants';
+import { bigNumberic } from './../../../../../../utils/math';
 
 export const useHandleSubmit = (
   withdrawAmount: BigNumber,
-  isFullWithdrawal: boolean,
-  pool: AmbientLiquidityPool,
+  pool: Pool,
   position: AmbientPosition,
   onComplete: () => void,
 ) => {
   const { signer } = useAccount();
   const { croc } = useCrocContext();
-  const { poolTokens } = useGetPool(pool.base, pool.quote);
+  const { poolTokens } = useGetPool(pool);
 
-  const chainId = useCurrentChain();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   const onSubmit = useCallback(async () => {
-    if (!croc || !poolTokens || !signer) {
+    if (!croc || !poolTokens || !signer || !pool || !position || !pool.extra) {
       return;
     }
 
     const transactions: Transaction[] = [];
 
-    const ambientPool = AmbientLiquidityPoolDictionary.get(
-      pool.base,
-      pool.quote,
-      chainId,
-    );
-
     const crocPool = croc.pool(
       poolTokens.tokenA.tokenAddr,
       poolTokens.tokenB.tokenAddr,
-      ambientPool.poolIndex,
+      pool.extra.poolIdx,
     );
 
     const poolPrice = await crocPool.displayPrice();
@@ -64,19 +56,13 @@ export const useHandleSubmit = (
 
     try {
       if (position.positionType === PoolPositionType.ambient) {
-        if (isFullWithdrawal && !ambientPool?.lpTokenAddress) {
-          calldata = await crocPool.burnAmbientAll([price.min, price.max], {
-            lpConduit: ambientPool?.lpTokenAddress,
-          });
-        } else {
-          calldata = await crocPool.burnAmbientLiq(
-            withdrawAmount,
-            [price.min, price.max],
-            {
-              lpConduit: ambientPool?.lpTokenAddress,
-            },
-          );
-        }
+        calldata = await crocPool.burnAmbientLiq(
+          bigNumberic(withdrawAmount),
+          [price.min, price.max],
+          {
+            lpConduit: pool.extra.lpToken,
+          },
+        );
       } else if (position.positionType === PoolPositionType.concentrated) {
         calldata = await crocPool.burnRangeLiq(
           withdrawAmount,
@@ -114,10 +100,8 @@ export const useHandleSubmit = (
     setIsOpen,
     setTitle,
     withdrawAmount,
-    isFullWithdrawal,
     position,
     onComplete,
-    chainId,
     pool,
   ]);
 

@@ -1,4 +1,5 @@
 import { Environments, Services } from '../types/global';
+import { INDEXER_URL, INDEXER_URL_TESTNET } from '@sovryn/sdk';
 
 export const SERVICES_CONFIG = {
   [Environments.Testnet]: {
@@ -30,13 +31,18 @@ export const AMM_SERVICE = {
 };
 
 export const INDEXER_SERVICE = {
-  [Environments.Mainnet]: 'https://indexer.sovryn.app/',
-  [Environments.Testnet]: 'https://indexer.test.sovryn.app/',
+  [Environments.Mainnet]: INDEXER_URL,
+  [Environments.Testnet]: INDEXER_URL_TESTNET,
 };
 
 export const ESTIMATOR_URI = process.env.REACT_APP_ESTIMATOR_URI;
 
 export const SOVRYN_INDEXER = {
-  [Environments.Mainnet]: 'https://indexer.sovryn.app',
-  [Environments.Testnet]: 'https://indexer.test.sovryn.app',
+  [Environments.Mainnet]: INDEXER_URL,
+  [Environments.Testnet]: INDEXER_URL_TESTNET,
+};
+
+export const ORIGINS_URL = {
+  [Environments.Mainnet]: 'https://origins.sovryn.app',
+  [Environments.Testnet]: 'https://develop--crowdforge.netlify.app',
 };

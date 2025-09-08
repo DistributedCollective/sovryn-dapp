@@ -2,6 +2,7 @@ import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -14,11 +15,10 @@ import { getTokenDisplayName } from '../../../../../../../constants/tokens';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
 import { AmmLiquidityPool } from '../../../../utils/AmmLiquidityPool';
-import { AmbientLiquidityPool } from '../../../AmbientMarketMaking/utils/AmbientLiquidityPool';
 
 type CurrentBalanceProps = {
   pool: AmmLiquidityPool | null;
-  poolAmbient?: AmbientLiquidityPool;
+  poolAmbient?: Pool;
   balanceA: Decimal;
   balanceB: Decimal;
   showLabel?: boolean;
@@ -43,16 +43,20 @@ export const CurrentBalance: FC<CurrentBalanceProps> = ({
       <div className="flex-col flex font-medium gap-0.5">
         <AmountRenderer
           value={balanceA}
-          suffix={getTokenDisplayName(
-            poolAmbient ? poolAmbient.base : pool?.assetA,
-          )}
+          suffix={
+            poolAmbient
+              ? poolAmbient.base.symbol
+              : getTokenDisplayName(pool?.assetA!)
+          }
           precision={TOKEN_RENDER_PRECISION}
         />
         <AmountRenderer
           value={balanceB}
-          suffix={getTokenDisplayName(
-            poolAmbient ? poolAmbient.quote : BITCOIN,
-          )}
+          suffix={
+            poolAmbient
+              ? poolAmbient.quote.symbol
+              : getTokenDisplayName(BITCOIN)
+          }
           precision={
             poolAmbient ? TOKEN_RENDER_PRECISION : BTC_RENDER_PRECISION
           }

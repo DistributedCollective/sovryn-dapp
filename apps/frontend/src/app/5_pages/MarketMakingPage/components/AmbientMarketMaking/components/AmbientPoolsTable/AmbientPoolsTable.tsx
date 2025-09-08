@@ -3,40 +3,62 @@ import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
 import { t } from 'i18next';
 import { Link } from 'react-router-dom';
 
+import { numberToChainId } from '@sovryn/ethers-provider';
+import { Pool } from '@sovryn/sdk';
 import { Table, TableBreakpoint } from '@sovryn/ui';
 
 import { AssetPairRenderer } from '../../../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { AssetPairSize } from '../../../../../../2_molecules/AssetPairRenderer/AssetPairRenderer.types';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { translations } from '../../../../../../../locales/i18n';
-import { AmbientLiquidityPool } from '../../utils/AmbientLiquidityPool';
 import { AmbientPoolPositions } from '../AmbientPoolPositions/AmbientPoolPositions';
 import { COLUMNS_CONFIG } from './AmbientPoolsTable.constants';
 import styles from './AmbientPoolsTable.module.css';
 
 type AmbientPoolsProps = {
-  items: AmbientLiquidityPool[];
+  items: Pool[];
+  filter?: string;
 };
 
-export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items }) => {
+export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items, filter }) => {
   const { account } = useAccount();
   const [activePool, setActivePool] = useState('');
   const tableRef = useRef<HTMLDivElement>(null);
+
+  const filteredPools = useMemo(() => {
+    if (!filter || filter === '') {
+      return items;
+    }
+
+    // split by comma, slash and space
+    const symbols = filter.toLowerCase().split(/,| |\//);
+
+    return items.filter(pool =>
+      symbols.find(
+        symbol =>
+          pool.base.symbol.toLowerCase().includes(symbol) ||
+          pool.quote.symbol.toLowerCase().includes(symbol) ||
+          pool.base.name.toLowerCase().includes(symbol) ||
+          pool.quote.name.toLowerCase().includes(symbol),
+      ),
+    );
+  }, [filter, items]);
+
   const expandedIndex = useMemo(
-    () => items.findIndex(pool => pool.key === activePool),
-    [activePool, items],
+    () => filteredPools.findIndex(pool => pool.identifier === activePool),
+    [activePool, filteredPools],
   );
 
   const generateRowTitle = useCallback(
-    (pool: AmbientLiquidityPool) => (
+    (pool: Pool) => (
       <div
         className="flex items-center justify-between w-full"
-        data-pool-key={pool.key}
+        data-pool-key={pool.identifier}
       >
         <AssetPairRenderer
-          asset1={pool.quote}
-          asset2={pool.base}
-          chainId={pool.chainId}
+          asset1={pool.quote.symbol}
+          asset2={pool.base.symbol}
+          chainId={numberToChainId(pool.chainId)}
           size={AssetPairSize.small}
         />
       </div>
@@ -45,18 +67,20 @@ export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items }) => {
   );
 
   const generateExpandedContent = useCallback(
-    (pool: AmbientLiquidityPool) => <AmbientPoolPositions pool={pool} />,
+    (pool: Pool) => <AmbientPoolPositions pool={pool} />,
     [],
   );
 
   const onPoolClick = useCallback(
-    (pool: AmbientLiquidityPool) =>
-      setActivePool(activePool => (activePool === pool.key ? '' : pool.key)),
+    (pool: Pool) =>
+      setActivePool(activePool =>
+        activePool === pool.identifier ? '' : pool.identifier,
+      ),
     [setActivePool],
   );
 
   return (
-    <div ref={tableRef} className="bg-gray-90 py-4 px-4 rounded w-full mt-8">
+    <div ref={tableRef} className="bg-gray-90 py-4 px-4 rounded w-full mt-10">
       <div className="flex justify-end mb-4">
         <Link
           to="/claim-lp"
@@ -67,10 +91,10 @@ export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items }) => {
       </div>
       <Table
         columns={COLUMNS_CONFIG}
-        rows={items}
+        rows={filteredPools}
         noData={t(translations.common.tables.noData)}
         loadingData={t(translations.common.tables.loading)}
-        rowKey={row => row.key}
+        rowKey={row => row.identifier}
         dataAttribute="ambient-pool-table"
         expandedClassNames="border border-gray-70 border-t-0"
         preventExpandOnClickClass="prevent-row-click"

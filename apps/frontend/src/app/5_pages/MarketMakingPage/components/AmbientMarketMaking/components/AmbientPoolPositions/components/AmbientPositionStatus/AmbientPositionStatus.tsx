@@ -2,13 +2,14 @@ import React, { FC, useMemo } from 'react';
 
 import { t } from 'i18next';
 
+import { Pool } from '@sovryn/sdk';
+
 import { translations } from '../../../../../../../../../locales/i18n';
 import { AmbientPosition } from '../../../../AmbientMarketMaking.types';
-import { AmbientLiquidityPool } from '../../../../utils/AmbientLiquidityPool';
 import { usePositionStatus } from '../../hooks/usePositionStatus';
 
 type AmbientPositionStatusProps = {
-  pool: AmbientLiquidityPool;
+  pool: Pool;
   position?: AmbientPosition;
   className?: string;
 };

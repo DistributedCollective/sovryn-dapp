@@ -1,5 +1,20 @@
 # frontend
 
+## 1.1.37
+
+### Patch Changes
+
+- 0f30438c: chore: do not refetch pool and token list from sdk
+- 56cf43f8: SOV-4813: update text on main page
+- 87150496: SOV-5102: Set destination token if there is only one option
+- d10e9c79: SOV-5095: Disable deposits general solution
+- Updated dependencies [0f30438c]
+- Updated dependencies [fd201403]
+- Updated dependencies [d98acd12]
+- Updated dependencies [306befb1]
+  - @sovryn/sdk@2.0.7
+  - @sovryn/ui@1.0.32
+
 ## 1.1.36
 
 ### Patch Changes

@@ -1,53 +1,22 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 import { Pool } from '@sovryn/sdk';
 
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
-import { getIndexerUri } from '../../../../../../utils/indexer';
 import { useGetPool } from '../../../hooks/useGetPool';
+import { useQuery } from '@tanstack/react-query';
+import { loadIndexer } from '../../../../../../lib/indexer';
 
 export const useGetPoolInfo = (pool: Pool) => {
   const chainId = useCurrentChain();
   const { pool: crocPool, poolTokens } = useGetPool(pool);
 
-  const [price, setPrice] = useState(0);
-  const [spotPrice, setSpotPrice] = useState(0);
-  const [feeRate, setFeeRate] = useState('0');
-  const [loading, setLoading] = useState(true);
-  const getPoolPrice = useCallback(async () => {
-    if (!crocPool) {
-      return;
-    }
-
-    return crocPool.displayPrice().then(result => {
-      if (isFinite(result)) {
-        setPrice(result);
-      } else {
-        setPrice(0.000001); // fake price for non existing pools, to prevent ui crashes.
-      }
-    });
-  }, [crocPool]);
-
-  const getSpotPrice = useCallback(async () => {
-    if (!crocPool) {
-      return;
-    }
-
-    return crocPool.spotPrice().then(result => {
-      if (isFinite(result)) {
-        setSpotPrice(result);
-      } else {
-        setSpotPrice(0.000001); // fake price for non existing pools, to prevent ui crashes.
-      }
-    });
-  }, [crocPool]);
-
   const getLiquidityFee = useCallback(async () => {
     if (!crocPool || !poolTokens) {
-      return;
+      return '0';
     }
 
-    const poolStatsFreshEndpoint = getIndexerUri(chainId) + '/pool_stats?';
+    const poolStatsFreshEndpoint = loadIndexer(chainId).url + '/pool_stats?';
 
     return fetch(
       poolStatsFreshEndpoint +
@@ -61,27 +30,48 @@ export const useGetPoolInfo = (pool: Pool) => {
       .then(response => response?.json())
       .then(json => {
         if (!json?.data) {
-          return undefined;
+          return '0';
         }
-
         const payload = json.data;
-
-        setFeeRate((payload.feeRate * 100).toString());
+        return (payload.feeRate * 100).toString();
       })
       .catch(error => {
-        return undefined;
+        return '0';
       });
   }, [chainId, crocPool, poolTokens]);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    await Promise.all([getPoolPrice(), getSpotPrice(), getLiquidityFee()]);
-    setLoading(false);
-  }, [getPoolPrice, getSpotPrice, getLiquidityFee]);
+  const { data = { price: 0, spotPrice: 0, feeRate: '0' }, isPending } =
+    useQuery({
+      queryKey: ['useGetPoolInfo', { pool }],
+      // queryFn: () => Promise.all([getPoolPrice(), getSpotPrice(), getLiquidityFee()]),
+      queryFn: async () => {
+        if (!crocPool) {
+          return;
+        }
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+        const price = await crocPool
+          ?.displayPrice()
+          .then(result => (isFinite(result) ? result : 0.000001));
 
-  return { poolTokens, price, feeRate, pool: crocPool, spotPrice, loading };
+        const spotPrice = await crocPool
+          .spotPrice()
+          .then(result => (isFinite(result) ? result : 0.000001));
+
+        const feeRate = await getLiquidityFee();
+
+        return { price, spotPrice, feeRate };
+      },
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      enabled: !!crocPool,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    });
+
+  return {
+    poolTokens,
+    pool: crocPool,
+    loading: isPending,
+    ...data,
+  };
 };

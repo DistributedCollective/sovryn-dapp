@@ -141,6 +141,11 @@ Basic.argTypes = {
     description:
       'Callback which gets fired when order options need to be updated.',
   },
+  breakpoint: {
+    control: 'TableBreakpoint',
+    description:
+      'The breakpoint on which Table switches from mobile device to desktop',
+  },
 };
 
 export const NoData = Template.bind({});

@@ -25,6 +25,8 @@ import { prepareERC2612Permit, preparePermitResponse } from '../utils/permit';
 
 export const MINIMUM_AMOUNT = 200;
 
+const DEFAULT_ZUSD_REDEEM_GAS_LIMIT = 1_000_000;
+
 export const zeroRedemptionSwapRoute: SwapRouteFunction = (
   provider: providers.Provider,
 ) => {
@@ -188,17 +190,15 @@ export const zeroRedemptionSwapRoute: SwapRouteFunction = (
       ) {
         const { rawPopulatedTransaction } = await populatable.redeemZUSD(
           Decimal.fromBigNumberString(amount.toString()),
+          undefined,
+          { gasLimit: DEFAULT_ZUSD_REDEEM_GAS_LIMIT }, // hardcoded because of a gas estimation error, see https://sovryn.atlassian.net/browse/SOV-5105
         );
-
-        const gasLimit = rawPopulatedTransaction.gasLimit?.lt(800_000)
-          ? 800_000
-          : rawPopulatedTransaction.gasLimit;
 
         return {
           to: rawPopulatedTransaction.to,
           data: rawPopulatedTransaction.data,
           value: '0',
-          gasLimit,
+          gasLimit: DEFAULT_ZUSD_REDEEM_GAS_LIMIT, // hardcoded because of a gas estimation error, see https://sovryn.atlassian.net/browse/SOV-5105
           ...overrides,
         };
       }

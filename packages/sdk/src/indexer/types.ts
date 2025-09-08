@@ -1,6 +1,7 @@
 export enum IndexerEnv {
   mainnet = 'mainnet',
   testnet = 'testnet',
+  staging = 'staging',
 }
 
 export type TokenData = {

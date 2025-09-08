@@ -9,8 +9,14 @@ import { FORK } from '../constants/infrastructure/fork';
 import { RSK } from '../constants/infrastructure/rsk';
 import { SEPOLIA } from '../constants/infrastructure/sepolia';
 import { Environments } from '../types/global';
+import {
+  INDEXER_URL,
+  INDEXER_URL_STAGING,
+  INDEXER_URL_TESTNET,
+} from '@sovryn/sdk';
 
 const IS_MAINNET = process.env.REACT_APP_NETWORK === Environments.Mainnet;
+const IS_STAGING = process.env.REACT_APP_STAGING === 'true';
 
 export enum Chains {
   RSK = 'rsk',
@@ -43,7 +49,8 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           rpcUrl: RSK.rpc[Environments.Mainnet],
           blockExplorerUrl: RSK.explorer[Environments.Mainnet],
           icon: rskLogo,
-          indexer: 'https://indexer.sovryn.app/v2/rootstock',
+          indexer:
+            (IS_STAGING ? INDEXER_URL_STAGING : INDEXER_URL) + '/v2/rootstock',
         },
         {
           id: ChainIds.BOB_MAINNET,
@@ -53,7 +60,8 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           rpcUrl: BOB.rpc[Environments.Mainnet],
           blockExplorerUrl: BOB.explorer[Environments.Mainnet],
           icon: bobLogo,
-          indexer: 'https://indexer.sovryn.app/v2/gobob',
+          indexer:
+            (IS_STAGING ? INDEXER_URL_STAGING : INDEXER_URL) + '/v2/gobob',
         },
       ]
     : [
@@ -65,7 +73,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           rpcUrl: RSK.rpc[Environments.Testnet],
           blockExplorerUrl: RSK.explorer[Environments.Testnet],
           icon: rskLogo,
-          indexer: 'https://indexer.test.sovryn.app/v2/rootstock',
+          indexer: INDEXER_URL_TESTNET + '/v2/rootstock',
         },
         {
           id: ChainIds.BOB_TESTNET,
@@ -75,7 +83,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           rpcUrl: BOB.rpc[Environments.Testnet],
           blockExplorerUrl: BOB.explorer[Environments.Testnet],
           icon: bobLogo,
-          indexer: 'https://indexer.test.sovryn.app/v2/gobob',
+          indexer: INDEXER_URL_TESTNET + '/v2/gobob',
         },
         {
           id: ChainIds.SEPOLIA,

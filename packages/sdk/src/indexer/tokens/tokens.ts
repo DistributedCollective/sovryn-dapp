@@ -12,6 +12,12 @@ export class TokenList {
   #queried = false;
   #tokens = new Map<string, Token>();
 
+  #abortController: AbortController | null = null;
+  #request: Promise<PaginatorResponse<Token>> | null = null;
+
+  #abortControllerAll: AbortController | null = null;
+  #requestAll: Promise<PaginatorResponse<Token>> | null = null;
+
   constructor(context: Indexer) {
     this.#context = context;
     this.queryAll({ limit: 1000 }).catch(console.error);
@@ -45,31 +51,55 @@ export class TokenList {
   public async query(
     options?: PaginatorQuery,
   ): Promise<PaginatorResponse<Token>> {
-    const res = await fetch(
+    if (this.#request) {
+      return this.#request;
+    }
+
+    if (this.#abortController) {
+      this.#abortController.abort();
+    }
+
+    this.#abortController = new AbortController();
+
+    this.#request = fetch(
       makePaginatedUrl(
         `${this.#context.url}/v2/${this.#context.chainId}/tokens`,
         options,
       ),
-    );
-    return await res.json().then(data => {
-      return {
-        data: data.data.map((item: TokenData) => this.addToken(item)),
-        cursor: data.cursor,
-      };
-    });
+      { signal: this.#abortController.signal },
+    )
+      .then(res => res.json())
+      .then(data => {
+        return {
+          data: data.data.map((item: TokenData) => this.addToken(item)),
+          cursor: data.cursor,
+        };
+      });
+
+    return this.#request;
   }
 
   public async queryAll(
     options?: PaginatorQuery,
   ): Promise<PaginatorResponse<Token>> {
-    const res = await fetch(
+    if (this.#requestAll) {
+      return this.#requestAll;
+    }
+
+    if (this.#abortControllerAll) {
+      this.#abortControllerAll.abort();
+    }
+
+    this.#abortControllerAll = new AbortController();
+
+    this.#requestAll = fetch(
       makePaginatedUrl(
         `${this.#context.url}/v2/${this.#context.chainId}/tokens/all`,
         options,
       ),
-    );
-    return await res
-      .json()
+      { signal: this.#abortControllerAll.signal },
+    )
+      .then(res => res.json())
       .then(data => {
         return {
           data: data.data.map((item: TokenData) => this.addToken(item)),
@@ -79,5 +109,7 @@ export class TokenList {
       .finally(() => {
         this.#queried = true;
       });
+
+    return this.#requestAll;
   }
 }

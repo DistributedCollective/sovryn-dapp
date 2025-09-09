@@ -1,4 +1,5 @@
 import { ApolloProvider } from '@apollo/client';
+import { QueryClientProvider } from '@tanstack/react-query';
 
 import './wdyr';
 
@@ -22,6 +23,7 @@ import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContex
 import { NotificationProvider } from './contexts/NotificationContext';
 import { TokenPricesProvider } from './contexts/TokenPricesContext';
 import { TransactionProvider } from './contexts/TransactionContext';
+import { queryClient } from './lib/query-client';
 import './locales/dayjs';
 import './locales/i18n';
 import { router } from './router';
@@ -49,28 +51,30 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <NetworkProvider>
-      <TransactionProvider>
-        <NotificationProvider>
-          <ServiceWorkerProvider>
-            <TokenPricesProvider>
-              <ApolloProvider client={rskClient}>
-                <HelmetProvider>
-                  <MaintenanceModeContextProvider>
-                    <LoaderProvider>
-                      <SharedStateProvider>
-                        <RouterProvider router={router} />
-                        <OnboardProvider dataAttribute="dapp-onboard" />
-                      </SharedStateProvider>
-                    </LoaderProvider>
-                  </MaintenanceModeContextProvider>
-                </HelmetProvider>
-              </ApolloProvider>
-            </TokenPricesProvider>
-            <TransactionStepDialog disableFocusTrap />
-          </ServiceWorkerProvider>
-        </NotificationProvider>
-      </TransactionProvider>
-    </NetworkProvider>
+    <QueryClientProvider client={queryClient}>
+      <NetworkProvider>
+        <TransactionProvider>
+          <NotificationProvider>
+            <ServiceWorkerProvider>
+              <TokenPricesProvider>
+                <ApolloProvider client={rskClient}>
+                  <HelmetProvider>
+                    <MaintenanceModeContextProvider>
+                      <LoaderProvider>
+                        <SharedStateProvider>
+                          <RouterProvider router={router} />
+                          <OnboardProvider dataAttribute="dapp-onboard" />
+                        </SharedStateProvider>
+                      </LoaderProvider>
+                    </MaintenanceModeContextProvider>
+                  </HelmetProvider>
+                </ApolloProvider>
+              </TokenPricesProvider>
+              <TransactionStepDialog disableFocusTrap />
+            </ServiceWorkerProvider>
+          </NotificationProvider>
+        </TransactionProvider>
+      </NetworkProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
 );

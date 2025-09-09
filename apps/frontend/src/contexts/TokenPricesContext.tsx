@@ -7,11 +7,9 @@ import React, {
   ReactNode,
 } from 'react';
 
-import axios from 'axios';
-
 import { DATA_REFRESH_INTERVAL } from '../constants/general';
 import { useCurrentChain } from '../hooks/useChainStore';
-import { getSovrynIndexerUri } from '../utils/indexer';
+import { loadIndexer } from '../lib/indexer';
 import { decimalic } from '../utils/math';
 
 interface TokenPricesContextType {
@@ -46,12 +44,7 @@ export const TokenPricesProvider: React.FC<TokenPricesProviderProps> = ({
   const fetchTokenPrices = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${getSovrynIndexerUri(
-          currentChainId,
-        )}/tokens?chainId=${currentChainId}`,
-      );
-      const { data } = response.data;
+      const data = await loadIndexer(currentChainId).tokens.list();
 
       if (data) {
         const prices = data.reduce(

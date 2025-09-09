@@ -1,5 +1,12 @@
 # @sovryn/ui
 
+## 1.0.32
+
+### Patch Changes
+
+- d98acd12: SOV-4642: table mobile layout issue
+- 306befb1: SOV-4570: Extend Table component
+
 ## 1.0.31
 
 ### Patch Changes

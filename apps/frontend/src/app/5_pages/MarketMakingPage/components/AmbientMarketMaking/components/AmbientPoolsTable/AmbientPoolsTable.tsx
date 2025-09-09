@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import { numberToChainId } from '@sovryn/ethers-provider';
 import { Pool } from '@sovryn/sdk';
-import { Table } from '@sovryn/ui';
+import { Table, TableBreakpoint } from '@sovryn/ui';
 
 import { AssetPairRenderer } from '../../../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { AssetPairSize } from '../../../../../../2_molecules/AssetPairRenderer/AssetPairRenderer.types';
@@ -103,6 +103,7 @@ export const AmbientPoolsTable: FC<AmbientPoolsProps> = ({ items, filter }) => {
         expandedIndex={expandedIndex}
         className={styles.table}
         rowTitle={generateRowTitle}
+        breakpoint={TableBreakpoint.xl}
       />
     </div>
   );

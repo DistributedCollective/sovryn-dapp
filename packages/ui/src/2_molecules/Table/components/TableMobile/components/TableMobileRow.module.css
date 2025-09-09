@@ -5,3 +5,11 @@
 .accordion {
   @apply justify-between;
 }
+
+.tableRow {
+  @apply flex items-center;
+}
+
+.value {
+  @apply flex-1;
+}

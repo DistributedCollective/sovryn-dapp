@@ -9,6 +9,11 @@ import { CategoryType } from './ConvertPage.types';
 
 export const FIXED_RATE_ROUTES = ['MyntBasset', 'MyntFixedRate'];
 
+export const MYNT_TOKEN = 'MYNT';
+
+export const DEFAULT_SLIPPAGE_TOLERANCE = '0.5';
+export const MAXIMUM_ALLOWED_SLIPPAGE = 1.5;
+
 export const FIXED_MYNT_RATE = '0.004723550439442834'; // We need it here as well because ConvertPage slightly rounds maximum price
 
 export const SWAP_ROUTES = [

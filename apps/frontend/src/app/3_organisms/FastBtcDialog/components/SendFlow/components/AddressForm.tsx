@@ -70,7 +70,7 @@ export const AddressForm: React.FC = () => {
   );
 
   const validateAddress = useCallback(
-    (address: string) => {
+    async (address: string) => {
       setAddressValidationState(AddressValidationState.LOADING);
       const isValidBtcAddress = validate(address);
 
@@ -78,7 +78,7 @@ export const AddressForm: React.FC = () => {
         return;
       }
 
-      const isValid = fastBtcBridgeContract.isValidBtcAddress(address);
+      const isValid = await fastBtcBridgeContract.isValidBtcAddress(address);
 
       if (isValidBtcAddress && isValid) {
         const { type, network } = getAddressInfo(address);

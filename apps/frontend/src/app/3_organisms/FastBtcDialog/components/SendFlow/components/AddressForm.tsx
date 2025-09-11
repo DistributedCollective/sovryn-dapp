@@ -82,6 +82,7 @@ export const AddressForm: React.FC = () => {
 
       if (isValidBtcAddress && isValid) {
         const { type, network } = getAddressInfo(address);
+
         const isNetworkValid =
           network.toLowerCase() === currentNetwork.toLowerCase();
         const isTypeValid = type.toLowerCase() !== AddressType.p2tr;

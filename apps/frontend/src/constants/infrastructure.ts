@@ -1,5 +1,6 @@
-import { Environments, Services } from '../types/global';
 import { INDEXER_URL, INDEXER_URL_TESTNET } from '@sovryn/sdk';
+
+import { Environments, Services } from '../types/global';
 
 export const SERVICES_CONFIG = {
   [Environments.Testnet]: {
@@ -30,6 +31,7 @@ export const AMM_SERVICE = {
   [Environments.Testnet]: 'https://amm-apy.test.sovryn.app/',
 };
 
+/** @deprecated */
 export const INDEXER_SERVICE = {
   [Environments.Mainnet]: INDEXER_URL,
   [Environments.Testnet]: INDEXER_URL_TESTNET,

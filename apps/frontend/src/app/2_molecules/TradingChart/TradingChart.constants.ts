@@ -57,8 +57,8 @@ export const config = {
 
 export const SOVRYN_INDEXER_MAINNET = `${
   INDEXER_SERVICE[Environments.Mainnet]
-}/chart`;
+}chart`;
 
 export const SOVRYN_INDEXER_TESTNET = `${
   INDEXER_SERVICE[Environments.Testnet]
-}/chart`;
+}chart`;

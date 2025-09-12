@@ -33,8 +33,7 @@ export const DEFAULT_VOLUME_DATA: VolumeDataResult = {
   usd: 0,
 };
 
-/** @deprecated */
-const indexer = getIndexerUrl() + '/';
+const indexer = getIndexerUrl();
 
 export const LOCKED_DATA_URL = `${indexer}legacy/cmc/tvl`;
 export const VOLUME_DATA_URL = `${indexer}legacy/cmc/summary`;

@@ -47,7 +47,7 @@ export const SendFlow: React.FC<SendFlowProps> = () => {
         <Stepper className="mt-6" steps={4} activeStep={step} />
       )}
 
-      <div className="mt-0 md:mt-20">
+      <div className="mt-0 md:mt-10">
         {step === SendFlowStep.INITIAL && <InitialScreen />}
         {step === SendFlowStep.MAIN && <MainScreen />}
         {step === SendFlowStep.AMOUNT && <AmountScreen />}

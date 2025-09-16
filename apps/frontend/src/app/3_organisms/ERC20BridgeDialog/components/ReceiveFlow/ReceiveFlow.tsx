@@ -50,7 +50,7 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = () => {
         <Stepper className="mt-6" steps={4} activeStep={step} />
       )}
 
-      <div className="mt-0 md:mt-20">
+      <div className="mt-0 md:mt-10">
         {step === ReceiveFlowStep.INITIAL && <InitialScreen />}
         {step === ReceiveFlowStep.MAIN && <MainScreen />}
         {step === ReceiveFlowStep.AMOUNT && <AmountScreen />}

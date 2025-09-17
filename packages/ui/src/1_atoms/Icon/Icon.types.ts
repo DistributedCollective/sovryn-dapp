@@ -48,6 +48,7 @@ export enum IconNames {
   MAIL = 'mail',
   CALENDAR = 'calendar',
   TOP_RIGHT_ARROW = 'topRightArrow',
+  FILTER = 'filter',
 }
 
 export type IconName = typeof IconNames[keyof typeof IconNames];

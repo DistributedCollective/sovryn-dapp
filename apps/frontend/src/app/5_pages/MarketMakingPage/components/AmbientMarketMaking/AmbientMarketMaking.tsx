@@ -5,6 +5,8 @@ import { Helmet } from 'react-helmet-async';
 
 import {
   Heading,
+  Icon,
+  IconNames,
   Input,
   InputSize,
   Paragraph,
@@ -20,6 +22,7 @@ import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { loadIndexer } from '../../../../../lib/indexer';
 import { translations } from '../../../../../locales/i18n';
 import { AmbientPoolsTable } from './components/AmbientPoolsTable/AmbientPoolsTable';
+import { BOBMigrationBanner } from './components/BOBMigrationBanner/BOBMigrationBanner';
 
 export const AmbientMarketMaking: FC = () => {
   const chainId = useCurrentChain();
@@ -61,16 +64,27 @@ export const AmbientMarketMaking: FC = () => {
             {t(translations.ambientMarketMaking.title)}
           </Heading>
 
+          <BOBMigrationBanner />
+
           <div className="w-full my-4">
-            <Input
-              value={searchInputValue}
-              className="w-full"
-              onChangeText={setSearchInputValue}
-              size={InputSize.large}
-              placeholder={t(
-                translations.marketMakingPage.searchInputPlaceholder,
-              )}
-            />
+            <div className="relative flex items-center">
+              <Icon
+                className="absolute left-1.5 z-10"
+                icon={IconNames.FILTER}
+                size={16}
+                viewBox="0 0 16 16"
+              />
+              <Input
+                value={searchInputValue}
+                className="w-full"
+                classNameInput="pl-8"
+                onChangeText={setSearchInputValue}
+                size={InputSize.large}
+                placeholder={t(
+                  translations.marketMakingPage.searchInputPlaceholder,
+                )}
+              />
+            </div>
           </div>
 
           {newPools.length > 0 && (

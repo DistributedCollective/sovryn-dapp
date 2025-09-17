@@ -19,3 +19,5 @@ export const DEPOSITS_PATH = 'deposits';
 export const RUNES_RSK_BRIDGE_NAME = 'runes';
 
 export const RUNES_BOB_BRIDGE_NAME = 'runesbob';
+
+export const BOB_MIGRATION_LINK = 'https://app.gobob.xyz/en/migrate';

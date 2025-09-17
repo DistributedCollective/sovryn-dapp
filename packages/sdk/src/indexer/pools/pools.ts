@@ -20,7 +20,7 @@ export class PoolList {
   }
 
   public addPool(details: PoolData): Pool {
-    const id = details.identifier.toLowerCase();
+    const id = (details.identifier ?? details.legacyIdentifier).toLowerCase();
     if (!this.#pools.has(id)) {
       this.#pools.set(id, new Pool(details, this.#context));
     } else {

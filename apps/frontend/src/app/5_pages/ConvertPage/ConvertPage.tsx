@@ -39,8 +39,12 @@ import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer'
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { TradingChart } from '../../2_molecules/TradingChart/TradingChart';
+import { BOB_MIGRATION_LINK } from '../../3_organisms/RuneBridgeDialog/constants';
 import { TOKEN_RENDER_PRECISION, USD } from '../../../constants/currencies';
-import { getTokenDisplayName } from '../../../constants/tokens';
+import {
+  getBobDeprecatedAssetTooltips,
+  getTokenDisplayName,
+} from '../../../constants/tokens';
 import { useAccount } from '../../../hooks/useAccount';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useCurrentChain } from '../../../hooks/useChainStore';
@@ -52,6 +56,7 @@ import {
   findAsset,
   listAssetsOfChain,
 } from '../../../utils/asset';
+import { isBobChain } from '../../../utils/chain';
 import { removeTrailingZerosFromString } from '../../../utils/helpers';
 import { decimalic, fromWei, toWei } from '../../../utils/math';
 import {
@@ -593,6 +598,11 @@ const ConvertPage: FC = () => {
     [isSlippageHigh, quote],
   );
 
+  const deprecatedTooltips =
+    isBobChain(currentChainId) &&
+    (getBobDeprecatedAssetTooltips(sourceToken) ||
+      getBobDeprecatedAssetTooltips(destinationToken));
+
   useEffect(() => {
     if (fromToken) {
       setSourceToken(fromToken);
@@ -897,6 +907,23 @@ const ConvertPage: FC = () => {
                   checked={slippageWarningAccepted}
                   onChangeValue={setSlippageWarningAccepted}
                   label={t(pageTranslations.form.slippageWarning)}
+                />
+              </div>
+            )}
+            {deprecatedTooltips && (
+              <div className="flex flex-col items-center mt-4 bg-gray-80 rounded p-3 gap-1">
+                {deprecatedTooltips && (
+                  <ErrorBadge
+                    className="lg:max-w-80"
+                    level={ErrorLevel.Warning}
+                    message={t(deprecatedTooltips.convert)}
+                  />
+                )}
+                <Button
+                  text={t(translations.common.learnMore)}
+                  style={ButtonStyle.ghost}
+                  href={BOB_MIGRATION_LINK}
+                  hrefExternal
                 />
               </div>
             )}

@@ -192,7 +192,6 @@
         "resetValues": "Reset values",
         "notEnoughBalance": "Estimated gas fee exceeds {{asset}} balance"
     },
-
     "zeroPage": {
         "meta": {
             "title": "Zero line of credit - Sovryn",
@@ -392,7 +391,6 @@
         "inputLabel": "Maximum origination fee rate",
         "errorMessage": "Value entered must be between {{min}} and {{max}}"
     },
-
     "earnPage": {
         "meta": {
             "title": "Stability pool - Sovryn",
@@ -418,7 +416,6 @@
         },
         "apr": "APR"
     },
-
     "convertPage": {
         "meta": {
             "title": "Sovryn - DeFi for bitcoin",
@@ -446,7 +443,6 @@
         "minimumReceived": "Minimum received",
         "maximumPrice": "Maximum price"
     },
-
     "landingPage": {
         "meta": {
             "title": "Welcome to Sovryn",
@@ -605,7 +601,6 @@
             "dataComingSoon": "Data coming soon"
         }
     },
-
     "stakePage": {
         "meta": {
             "title": "Staking - Sovryn"
@@ -700,7 +695,6 @@
             "signUp": "Sign up"
         }
     },
-
     "fixedInterestPage": {
         "meta": {
             "title": "Fixed-interest loans - Sovryn",
@@ -816,7 +810,6 @@
         },
         "collateralRatio": "collateral ratio"
     },
-
     "bitocracyPage": {
         "meta": {
             "title": "Bitocracy - Sovryn",
@@ -891,7 +884,6 @@
             "accountBalance": "Account balance:"
         }
     },
-
     "proposalPage": {
         "meta": {
             "title": "Bitocracy - Sovryn"
@@ -957,7 +949,6 @@
             "calldata": "Calldata"
         }
     },
-
     "leaderboardPointsPage": {
         "meta": {
             "title": "Spice Leaderboard - Sovryn"
@@ -1079,7 +1070,6 @@
             }
         }
     },
-
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -1163,7 +1153,6 @@
             }
         }
     },
-
     "rewardPage": {
         "meta": {
             "title": "Rewards - Sovryn",
@@ -1276,7 +1265,6 @@
             }
         }
     },
-
     "historyPage": {
         "meta": {
             "title": "History - Sovryn",
@@ -1324,7 +1312,6 @@
         },
         "apr": "APR"
     },
-
     "marketMakingPage": {
         "meta": {
             "title": "Market Making - Sovryn"
@@ -1396,7 +1383,6 @@
             "24hVolume": "24h volume (BTC)"
         }
     },
-
     "bobMarketMakingPage": {
         "depositModal": {
             "title": "Deposit liquidity",
@@ -1454,7 +1440,6 @@
         },
         "loading": "Loading..."
     },
-
     "borrowHistory": {
         "types": {
             "lineOfCredit": "Line of credit",
@@ -1938,6 +1923,19 @@
             },
             "balance": "Balance",
             "withdraw": "Withdraw"
+        },
+        "migrationBanner": "There is migration of assets happening on BOB network. Some pools are deprecated ",
+        "deprecated": "Deprecated",
+        "migrate": "Migrate",
+        "deprecatedTooltips": {
+            "usdt": {
+                "pool": "USDT is migrating to oUSDT. This pool is deprecated. Please remove liquidity and swap USDT to oUSDT.",
+                "convert": "The USDT liquidity pool is deprecated due to the migration to oUSDT. Trading in this pool may result in price impacts or reduced liquidity."
+            },
+            "wbtc": {
+                "pool": "WBTC is migrating to a new version. The old version was renamed to WBTC.OLD. This pool is deprecated. Please remove liquidity and swap WBTC.OLD to WBTC.",
+                "convert": "WBTC is migrating to a new version. The old version was renamed to WBTC.OLD. The WBTC.OLD liquidity pool is deprecated, which may impact pricing and liquidity."
+            }
         }
     },
     "claimLpPage": {

@@ -1,3 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
+
 import React, { FC, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
@@ -5,6 +7,8 @@ import { Helmet } from 'react-helmet-async';
 
 import {
   Heading,
+  Icon,
+  IconNames,
   Input,
   InputSize,
   Paragraph,
@@ -15,25 +19,24 @@ import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { MarketMakingNetworkBanner } from '../../../../2_molecules/MarketMakingNetworkBanner/MarketMakingNetworkBanner';
 import { BOB_STORAGE_KEY } from '../../../../2_molecules/MarketMakingNetworkBanner/MarketMakingNetworkBanner.constants';
-import { useCacheCall } from '../../../../../hooks';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { loadIndexer } from '../../../../../lib/indexer';
 import { translations } from '../../../../../locales/i18n';
 import { AmbientPoolsTable } from './components/AmbientPoolsTable/AmbientPoolsTable';
+import { BOBMigrationBanner } from './components/BOBMigrationBanner/BOBMigrationBanner';
 
 export const AmbientMarketMaking: FC = () => {
   const chainId = useCurrentChain();
-  const { value } = useCacheCall(
-    'mm',
-    chainId,
-    async () => {
+
+  const { data: value } = useQuery({
+    queryKey: ['mm', chainId],
+    initialData: [],
+    queryFn: async () => {
       return (await loadIndexer(chainId).pools.list()).sort((a, b) =>
         a.base.symbol < b.base.symbol ? -1 : 1,
       );
     },
-    [chainId],
-    [],
-  );
+  });
 
   const newPools = useMemo(
     () => (value ?? []).filter(pool => pool.featured),
@@ -61,16 +64,27 @@ export const AmbientMarketMaking: FC = () => {
             {t(translations.ambientMarketMaking.title)}
           </Heading>
 
+          <BOBMigrationBanner />
+
           <div className="w-full my-4">
-            <Input
-              value={searchInputValue}
-              className="w-full"
-              onChangeText={setSearchInputValue}
-              size={InputSize.large}
-              placeholder={t(
-                translations.marketMakingPage.searchInputPlaceholder,
-              )}
-            />
+            <div className="relative flex items-center">
+              <Icon
+                className="absolute left-1.5 z-10"
+                icon={IconNames.FILTER}
+                size={16}
+                viewBox="0 0 16 16"
+              />
+              <Input
+                value={searchInputValue}
+                className="w-full"
+                classNameInput="pl-8"
+                onChangeText={setSearchInputValue}
+                size={InputSize.large}
+                placeholder={t(
+                  translations.marketMakingPage.searchInputPlaceholder,
+                )}
+              />
+            </div>
           </div>
 
           {newPools.length > 0 && (

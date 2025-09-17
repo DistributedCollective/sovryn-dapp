@@ -35,6 +35,8 @@ export const COMMON_SYMBOLS = {
   BPRO: 'BPRO',
   RUSDT: 'RUSDT',
   ETH: 'ETH',
+  WBTC_OLD: 'WBTC.OLD',
+  USDT: 'USDT',
 };
 
 export const compareAssets = (asset1?: string | null, asset2?: string | null) =>

@@ -1,5 +1,5 @@
 .assetLogo svg {
-  @apply lg:w-8 lg:h-8;
+  @apply lg:w-8 lg:h-8 !important;
 }
 
 .asset {

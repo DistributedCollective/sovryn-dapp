@@ -18,6 +18,7 @@ export type PoolData = {
   id: number;
   featured: boolean;
   identifier: string;
+  legacyIdentifier?: string;
   type: string;
   base: TokenData;
   quote: TokenData;

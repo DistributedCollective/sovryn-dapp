@@ -1,16 +1,11 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-  ReactNode,
-} from 'react';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+
+import React, { createContext, useContext, ReactNode } from 'react';
 
 import { DATA_REFRESH_INTERVAL } from '../constants/general';
 import { useCurrentChain } from '../hooks/useChainStore';
-import { decimalic } from '../utils/math';
 import { loadIndexer } from '../lib/indexer';
+import { decimalic } from '../utils/math';
 
 interface TokenPricesContextType {
   prices: Record<string, string>;
@@ -37,13 +32,14 @@ const TokenPricesContext = createContext<TokenPricesContextType | undefined>(
 export const TokenPricesProvider: React.FC<TokenPricesProviderProps> = ({
   children,
 }) => {
-  const [prices, setPrices] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState<boolean>(true);
   const currentChainId = useCurrentChain();
 
-  const fetchTokenPrices = useCallback(async () => {
-    setLoading(true);
-    try {
+  const { data, isFetching } = useQuery({
+    queryKey: ['tokenPrices', currentChainId],
+    initialData: {},
+    placeholderData: keepPreviousData,
+    refetchInterval: DATA_REFRESH_INTERVAL,
+    queryFn: async () => {
       const data = await loadIndexer(currentChainId).tokens.list();
 
       if (data) {
@@ -56,26 +52,14 @@ export const TokenPricesProvider: React.FC<TokenPricesProviderProps> = ({
           },
           {},
         );
-        setPrices(prices);
-      } else {
-        setPrices({});
+        return prices;
       }
-    } catch (error) {
-      console.error('Failed to fetch token prices:', error);
-      setPrices({});
-    } finally {
-      setLoading(false);
-    }
-  }, [currentChainId]);
-
-  useEffect(() => {
-    fetchTokenPrices();
-    const intervalId = setInterval(fetchTokenPrices, DATA_REFRESH_INTERVAL);
-    return () => clearInterval(intervalId);
-  }, [fetchTokenPrices]);
+      throw new Error('No token prices data');
+    },
+  });
 
   return (
-    <TokenPricesContext.Provider value={{ prices, loading }}>
+    <TokenPricesContext.Provider value={{ prices: data, loading: isFetching }}>
       {children}
     </TokenPricesContext.Provider>
   );

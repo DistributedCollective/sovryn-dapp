@@ -1,3 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
+
 import React, { FC, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
@@ -17,7 +19,6 @@ import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { MarketMakingNetworkBanner } from '../../../../2_molecules/MarketMakingNetworkBanner/MarketMakingNetworkBanner';
 import { BOB_STORAGE_KEY } from '../../../../2_molecules/MarketMakingNetworkBanner/MarketMakingNetworkBanner.constants';
-import { useCacheCall } from '../../../../../hooks';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { loadIndexer } from '../../../../../lib/indexer';
 import { translations } from '../../../../../locales/i18n';
@@ -26,17 +27,16 @@ import { BOBMigrationBanner } from './components/BOBMigrationBanner/BOBMigration
 
 export const AmbientMarketMaking: FC = () => {
   const chainId = useCurrentChain();
-  const { value } = useCacheCall(
-    'mm',
-    chainId,
-    async () => {
+
+  const { data: value } = useQuery({
+    queryKey: ['mm', chainId],
+    initialData: [],
+    queryFn: async () => {
       return (await loadIndexer(chainId).pools.list()).sort((a, b) =>
         a.base.symbol < b.base.symbol ? -1 : 1,
       );
     },
-    [chainId],
-    [],
-  );
+  });
 
   const newPools = useMemo(
     () => (value ?? []).filter(pool => pool.featured),

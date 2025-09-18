@@ -59,7 +59,7 @@ export const bob: Array<AssetDetails> = [
     address: '0x1217BfE6c773EEC6cc4A38b5Dc45B92292B6E189',
     name: 'Open USDT',
     decimals: 6,
-    getIcon: async () => (await import('./icons/bob/usdt')).default,
+    getIcon: async () => (await import('./icons/bob/ousdt')).default,
   },
   {
     symbol: 'USDC',

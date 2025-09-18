@@ -9,6 +9,7 @@ import {
   Button,
   Tooltip,
   TooltipTrigger,
+  TooltipStyle,
 } from '@sovryn/ui';
 
 import { getBobDeprecatedAssetTooltips } from '../../../../../../../../../constants/tokens';
@@ -50,6 +51,7 @@ export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {
             ? deprecatedAssetTooltips.pool
             : t(translations.maintenanceMode.featureDisabled)
         }
+        style={TooltipStyle.primary}
         disabled={!isLocked && !deprecatedAssetTooltips}
       >
         <div className="md:w-auto w-full">

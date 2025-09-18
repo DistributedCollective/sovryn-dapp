@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
 
-import { formatUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import { ChainId } from '@sovryn/ethers-provider';
 import { Accordion, SimpleTable, SimpleTableRow } from '@sovryn/ui';
 
+import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
 import { getTokenDisplayName } from '../../../../constants/tokens';
 import { translations } from '../../../../locales/i18n';
 import { useBridgeLimits } from '../hooks/useBridgeLimits';
@@ -32,6 +32,7 @@ export const Limits: React.FC<LimitsProps> = ({
   if (!asset) {
     return null;
   }
+
   return (
     <>
       <Accordion
@@ -42,33 +43,53 @@ export const Limits: React.FC<LimitsProps> = ({
             <SimpleTable border>
               <SimpleTableRow
                 label={t(translation.minimumAmount)}
-                value={`${formatUnits(
-                  limits.minPerToken,
-                )} ${getTokenDisplayName(asset)}`}
+                value={
+                  <AmountRenderer
+                    value={limits.minPerToken}
+                    decimals={0}
+                    suffix={getTokenDisplayName(asset)}
+                  />
+                }
               />
               <SimpleTableRow
                 label={t(translation.maximumAmount)}
-                value={`${formatUnits(
-                  limits.maxTokensAllowed,
-                )} ${getTokenDisplayName(asset)}`}
+                value={
+                  <AmountRenderer
+                    value={limits.maxTokensAllowed}
+                    decimals={0}
+                    suffix={getTokenDisplayName(asset)}
+                  />
+                }
               />
               <SimpleTableRow
                 label={t(translation.dailyLimit)}
-                value={`${formatUnits(limits.dailyLimit)} ${getTokenDisplayName(
-                  asset,
-                )}`}
+                value={
+                  <AmountRenderer
+                    value={limits.dailyLimit}
+                    decimals={0}
+                    suffix={getTokenDisplayName(asset)}
+                  />
+                }
               />
               <SimpleTableRow
                 label={t(translation.dailyLimitSpent)}
-                value={`${formatUnits(limits.spentToday)} ${getTokenDisplayName(
-                  asset,
-                )}`}
+                value={
+                  <AmountRenderer
+                    value={limits.spentToday}
+                    decimals={0}
+                    suffix={getTokenDisplayName(asset)}
+                  />
+                }
               />
               <SimpleTableRow
                 label={t(translation.fee)}
-                value={`${formatUnits(
-                  limits.feePerToken,
-                )} ${getTokenDisplayName(asset)}`}
+                value={
+                  <AmountRenderer
+                    value={limits.feePerToken}
+                    decimals={0}
+                    suffix={getTokenDisplayName(asset)}
+                  />
+                }
               />
             </SimpleTable>
           ) : (

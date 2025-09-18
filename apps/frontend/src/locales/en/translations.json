@@ -2077,7 +2077,8 @@
             "statusTitleFailed": "Process failed",
             "transactionID": "TXID",
             "rootstockTxId": "Rootstock TXID",
-            "switchNetwork": "Switch network"
+            "switchNetwork": "Switch network",
+            "avaiaibleLiquidity": "Avaiaible liquidity"
         },
         "limits": {
             "title": "Daily bridge limits",

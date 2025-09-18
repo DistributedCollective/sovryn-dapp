@@ -104,6 +104,7 @@ export const AmountScreen: React.FC = () => {
         min={0}
         className="w-full mb-6 max-w-full"
         placeholder="0"
+        invalid={!!amount && !isValidAmount}
       />
 
       <Paragraph className="mb-1 text-sm">

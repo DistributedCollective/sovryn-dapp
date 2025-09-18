@@ -191,6 +191,8 @@ export const ReviewScreen: React.FC = () => {
           text={
             transaction.step === TxStep.CONFIRMED
               ? t(translations.common.buttons.done)
+              : [TxStep.USER_DENIED, TxStep.FAILED].includes(transaction.step)
+              ? t(translations.common.buttons.retry)
               : t(translations.common.buttons.confirm)
           }
           onClick={

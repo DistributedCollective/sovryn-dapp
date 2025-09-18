@@ -14,6 +14,7 @@ import {
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { AssetRenderer } from '../../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { useChainStore } from '../../../../../../hooks/useChainStore';
 import { translations } from '../../../../../../locales/i18n';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useBridgeAggregatorBalance } from '../../../hooks/useBridgeAggregatorBalance';
@@ -29,6 +30,8 @@ export const MainScreen: React.FC = () => {
     chainId,
     token,
   );
+  const { currentChainId, setCurrentChainId } = useChainStore();
+  const isWrongChain = currentChainId !== RSK_CHAIN_ID;
 
   const uniqueAssets = assets.filter(
     (asset, index, arr) =>
@@ -114,22 +117,41 @@ export const MainScreen: React.FC = () => {
 
       <AmountInput
         className="w-full max-w-full mb-6"
-        label="Avaiaible liquidity"
+        label={t(
+          translations.erc20Bridge.confirmationScreens.avaiaibleLiquidity,
+        )}
         value={formatUnits(aggregatorBalance || '0')}
         readOnly
+        decimalPrecision={4}
         unit={token}
       />
 
       <Limits sourceChain={RSK_CHAIN_ID} targetChain={chainId} asset={token} />
 
-      <Button
-        onClick={onContinueClick}
-        text={t(translations.common.buttons.continue)}
-        className="w-full mt-12"
-        style={ButtonStyle.secondary}
-        dataAttribute="funding-send-instructions-confirm"
-        disabled={!token || !chainId}
-      />
+      {isWrongChain ? (
+        <Button
+          onClick={() => setCurrentChainId(RSK_CHAIN_ID)}
+          text={t(translations.erc20Bridge.confirmationScreens.switchNetwork)}
+          className="w-full mt-12"
+          style={ButtonStyle.secondary}
+          dataAttribute="switch-network-button"
+          disabled={!token}
+        />
+      ) : (
+        <Button
+          onClick={onContinueClick}
+          text={t(translations.common.buttons.continue)}
+          className="w-full mt-12"
+          style={ButtonStyle.secondary}
+          dataAttribute="funding-send-instructions-confirm"
+          disabled={
+            !token ||
+            !chainId ||
+            !aggregatorBalance ||
+            Number(aggregatorBalance) === 0
+          }
+        />
+      )}
     </div>
   );
 };

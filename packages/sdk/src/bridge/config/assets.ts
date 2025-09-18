@@ -23,9 +23,9 @@ export const bscToRskMainnetAssets: AssetConfig[] = [
     isBase: false,
     usesAggregator: true,
     aggregatorContractAddress: aggregators.mainnet.bnbs,
+    bridgeTokenAddress: '0xB6C313a427fa911A4C9a119e80Feea0fe20E69F0',
     allowedTargets: [CrossBridgeAsset.BNBS],
   },
-
   {
     symbol: 'ETH',
     minDecimals: 4,
@@ -93,7 +93,7 @@ export const ethToRskMainnetAssets: AssetConfig[] = [
     isNative: true,
     isBase: false,
     usesAggregator: true,
-    aggregatorContractAddress: '0x4bf113905d7f69202106f613308bb02c84aadf2f',
+    aggregatorContractAddress: aggregators.mainnet.eths,
     bridgeTokenAddress: '0xd412acd34a832a09c80c8a4895ff46d733f09538',
   },
 ];
@@ -122,7 +122,7 @@ export const rskToEthMainnetAssets: AssetConfig[] = [
     isNative: false,
     isBase: false,
     usesAggregator: true,
-    aggregatorContractAddress: '0x4bf113905d7f69202106f613308bb02c84aadf2f',
+    aggregatorContractAddress: aggregators.mainnet.eths,
     bridgeTokenAddress: '0xFe878227c8F334038DAb20a99fC3B373fFe0a755',
   },
 ];

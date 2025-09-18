@@ -83,6 +83,7 @@ export const getBitocracyUrl = () =>
 export const getGraphWrapperUrl = () =>
   GRAPH_WRAPPER[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 
+/** @deprecated */
 export const getIndexerUrl = () =>
   INDEXER_SERVICE[isMainnet() ? Environments.Mainnet : Environments.Testnet];
 

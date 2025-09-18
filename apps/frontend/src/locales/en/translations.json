@@ -1926,6 +1926,19 @@
             },
             "balance": "Balance",
             "withdraw": "Withdraw"
+        },
+        "migrationBanner": "There is migration of assets happening on BOB network. Some pools are deprecated ",
+        "deprecated": "Deprecated",
+        "migrate": "Migrate",
+        "deprecatedTooltips": {
+            "usdt": {
+                "pool": "USDT is migrating to oUSDT. This pool is deprecated. Please remove liquidity and swap USDT to oUSDT.",
+                "convert": "The USDT liquidity pool is deprecated due to the migration to oUSDT. Trading in this pool may result in price impacts or reduced liquidity."
+            },
+            "wbtc": {
+                "pool": "WBTC is migrating to a new version. The old version was renamed to WBTC.OLD. This pool is deprecated. Please remove liquidity and swap WBTC.OLD to WBTC.",
+                "convert": "WBTC is migrating to a new version. The old version was renamed to WBTC.OLD. The WBTC.OLD liquidity pool is deprecated, which may impact pricing and liquidity."
+            }
         }
     },
     "claimLpPage": {

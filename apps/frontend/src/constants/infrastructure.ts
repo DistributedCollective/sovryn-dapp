@@ -31,17 +31,13 @@ export const AMM_SERVICE = {
   [Environments.Testnet]: 'https://amm-apy.test.sovryn.app/',
 };
 
+/** @deprecated */
 export const INDEXER_SERVICE = {
-  [Environments.Mainnet]: INDEXER_URL,
-  [Environments.Testnet]: INDEXER_URL_TESTNET,
+  [Environments.Mainnet]: INDEXER_URL + '/',
+  [Environments.Testnet]: INDEXER_URL_TESTNET + '/',
 };
 
 export const ESTIMATOR_URI = process.env.REACT_APP_ESTIMATOR_URI;
-
-export const SOVRYN_INDEXER = {
-  [Environments.Mainnet]: INDEXER_URL,
-  [Environments.Testnet]: INDEXER_URL_TESTNET,
-};
 
 export const ORIGINS_URL = {
   [Environments.Mainnet]: 'https://origins.sovryn.app',

@@ -9,8 +9,10 @@ import {
   Button,
   Tooltip,
   TooltipTrigger,
+  TooltipStyle,
 } from '@sovryn/ui';
 
+import { getBobDeprecatedAssetTooltips } from '../../../../../../../../../constants/tokens';
 import { useAccount } from '../../../../../../../../../hooks/useAccount';
 import { useMaintenance } from '../../../../../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../../../../../locales/i18n';
@@ -32,30 +34,39 @@ export const AmbientPoolDeposit: FC<AmbientPoolDepositProps> = ({ pool }) => {
   const depositLocked = checkMaintenance(States.BOB_DEPOSIT_LIQUIDITY);
   const poolBlocked = useCheckAmbientPoolBlocked(pool);
 
+  const deprecatedAssetTooltips =
+    getBobDeprecatedAssetTooltips(pool.base.symbol) ||
+    getBobDeprecatedAssetTooltips(pool.quote.symbol);
+
   const isLocked = depositLocked || poolBlocked.isBlocked;
 
   return (
     <>
       <Tooltip
-        trigger={TooltipTrigger.click}
+        trigger={TooltipTrigger.hover}
         content={
           poolBlocked.isBlocked && poolBlocked.message
             ? poolBlocked.message
+            : deprecatedAssetTooltips
+            ? deprecatedAssetTooltips.pool
             : t(translations.maintenanceMode.featureDisabled)
         }
-        disabled={!isLocked}
+        style={TooltipStyle.primary}
+        disabled={!isLocked && !deprecatedAssetTooltips}
       >
-        <Button
-          className="md:w-auto w-full"
-          style={ButtonStyle.primary}
-          size={ButtonSize.small}
-          text={t(translations.common.deposit)}
-          onClick={e => {
-            e.stopPropagation();
-            onClick();
-          }}
-          disabled={!account || isLocked}
-        />
+        <div className="md:w-auto w-full">
+          <Button
+            className="md:w-auto w-full"
+            style={ButtonStyle.primary}
+            size={ButtonSize.small}
+            text={t(translations.common.deposit)}
+            onClick={e => {
+              e.stopPropagation();
+              onClick();
+            }}
+            disabled={!account || isLocked || !!deprecatedAssetTooltips}
+          />
+        </div>
       </Tooltip>
 
       <DepositContextProvider>

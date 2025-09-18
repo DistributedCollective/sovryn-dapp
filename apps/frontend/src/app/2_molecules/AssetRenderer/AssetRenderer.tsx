@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, PropsWithChildren, useState } from 'react';
 import { useEffect } from 'react';
 
 import classNames from 'classnames';
@@ -50,17 +50,21 @@ type AssetRendererProps = {
   assetLongNameClassName?: string;
 };
 
-export const AssetRenderer: FC<AssetRendererProps> = ({
+export const AssetRenderer: FC<PropsWithChildren<AssetRendererProps>> = ({
   asset,
   chainId = ChainIds.RSK_MAINNET,
   address,
   showAssetLogo,
+  showLongName,
+  assetLongNameClassName,
   assetClassName,
   className,
   dataAttribute,
   logoClassName,
+  children,
 }) => {
   const [token, setToken] = useState(asset);
+  const [longName, setLongName] = useState<string | undefined>();
   const [logo, setLogo] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -69,6 +73,7 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
         .then(item => {
           setLogo(item.icon);
           setToken(item.symbol);
+          setLongName(item.name);
         })
         .catch(() => setLogo(''));
     }
@@ -96,11 +101,23 @@ export const AssetRenderer: FC<AssetRendererProps> = ({
           dangerouslySetInnerHTML={{ __html: logo }}
         />
       )}
-      {token && (
-        <span className={classNames(styles.asset, assetClassName)}>
-          {token}
-        </span>
-      )}
+      <div className="flex flex-col gap-0.5">
+        <div className="flex items-center gap-2">
+          {token && (
+            <span className={classNames(styles.asset, assetClassName)}>
+              {token}
+            </span>
+          )}
+          {showLongName && longName && (
+            <span
+              className={classNames(styles.longName, assetLongNameClassName)}
+            >
+              {longName}
+            </span>
+          )}
+        </div>
+        {children}
+      </div>
     </div>
   );
 };

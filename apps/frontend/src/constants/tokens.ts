@@ -1,9 +1,12 @@
+import { t } from 'i18next';
+
 import { ChainId } from '@sovryn/ethers-provider';
 import { prettyTx } from '@sovryn/ui';
 
 import { BOB_CHAIN_ID, RSK_CHAIN_ID } from '../config/chains';
 
-import { findAsset, findAssetByAddress } from '../utils/asset';
+import { translations } from '../locales/i18n';
+import { COMMON_SYMBOLS, findAsset, findAssetByAddress } from '../utils/asset';
 
 export const getTokenDisplayName = (
   token: string,
@@ -17,3 +20,22 @@ export const getTokenDisplayNameByAddress = (
 ): string =>
   findAssetByAddress(address, chainId)?.symbol ||
   (fallbackPrettified ? prettyTx(address) : address);
+
+export const getBobDeprecatedAssetTooltips = (asset: string) => {
+  if (asset.toUpperCase() === COMMON_SYMBOLS.USDT) {
+    return {
+      pool: t(translations.ambientMarketMaking.deprecatedTooltips.usdt.pool),
+      convert: t(
+        translations.ambientMarketMaking.deprecatedTooltips.usdt.convert,
+      ),
+    };
+  }
+  if (asset.toUpperCase() === COMMON_SYMBOLS.WBTC_OLD) {
+    return {
+      pool: t(translations.ambientMarketMaking.deprecatedTooltips.wbtc.pool),
+      convert: t(
+        translations.ambientMarketMaking.deprecatedTooltips.wbtc.convert,
+      ),
+    };
+  }
+};

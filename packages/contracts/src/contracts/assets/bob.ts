@@ -13,8 +13,15 @@ export const bob: Array<AssetDetails> = [
     description: 'BOB Ether',
   },
   {
-    symbol: 'WBTC',
+    symbol: 'WBTC.OLD',
     address: '0x03C7054BCB39f7b2e5B2c7AcB37583e32D70Cfa3',
+    name: 'Wrapped Bitcoin',
+    decimals: 8,
+    getIcon: async () => (await import('./icons/bob/wbtc')).default,
+  },
+  {
+    symbol: 'WBTC',
+    address: '0x0555E30da8f98308EdB960aa94C0Db47230d2B9c',
     name: 'Wrapped Bitcoin',
     decimals: 8,
     getIcon: async () => (await import('./icons/bob/wbtc')).default,
@@ -46,6 +53,13 @@ export const bob: Array<AssetDetails> = [
     name: 'Tether USD',
     decimals: 6,
     getIcon: async () => (await import('./icons/bob/usdt')).default,
+  },
+  {
+    symbol: 'oUSDT',
+    address: '0x1217BfE6c773EEC6cc4A38b5Dc45B92292B6E189',
+    name: 'Open USDT',
+    decimals: 6,
+    getIcon: async () => (await import('./icons/bob/ousdt')).default,
   },
   {
     symbol: 'USDC',

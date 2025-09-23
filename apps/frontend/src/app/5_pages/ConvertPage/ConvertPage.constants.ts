@@ -40,6 +40,7 @@ export const SMART_ROUTER_STABLECOINS = [
   'USDT',
   'USDC',
   'DAI',
+  'OUSDT',
 ];
 
 export const BASSETS = [COMMON_SYMBOLS.ZUSD, COMMON_SYMBOLS.DOC];

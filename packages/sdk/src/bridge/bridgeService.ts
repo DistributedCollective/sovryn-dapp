@@ -94,12 +94,13 @@ export class BridgeService {
     sourceChain: ChainId,
     targetChain: ChainId,
     asset: string,
+    account: string,
   ) {
     const bridge = this.getBridgeConfig(sourceChain, targetChain);
     const assetConfig = this.getAssetConfig(sourceChain, targetChain, asset);
     const assetDetails = await getAsset(asset, sourceChain);
 
-    if (!bridge || !assetConfig || !assetConfig.aggregatorContractAddress) {
+    if (!bridge || !assetConfig) {
       return;
     }
 
@@ -109,8 +110,11 @@ export class BridgeService {
       ERC20_ABI,
       provider,
     );
+
     return (
-      await token.balanceOf(assetConfig.aggregatorContractAddress.toLowerCase())
+      await token.balanceOf(
+        (assetConfig.aggregatorContractAddress || account).toLowerCase(),
+      )
     ).toString();
   }
 
@@ -119,6 +123,7 @@ export class BridgeService {
     sourceChain: ChainId,
     targetChain: ChainId,
     asset: string,
+    allowTokens: string,
   ): Promise<BridgeLimits> {
     const bridge = this.getBridgeConfig(sourceChain, targetChain);
     const assetConfig = this.getAssetConfig(sourceChain, targetChain, asset);
@@ -135,7 +140,7 @@ export class BridgeService {
       provider,
     );
     const allowTokensContract = new ethers.Contract(
-      bridge.allowTokensContractAddress.toLowerCase(),
+      allowTokens.toLowerCase(),
       ALLOW_TOKENS_ABI,
       provider,
     );
@@ -160,6 +165,31 @@ export class BridgeService {
       feePerToken: feePerToken.toString(),
       maxTokensAllowed: maxTokensAllowed.toString(),
     };
+  }
+
+  // Get bridge Allow token address
+  async getBridgeAllowTokens(
+    sourceChain: ChainId,
+    targetChain: ChainId,
+  ): Promise<string> {
+    const bridge = this.getBridgeConfig(sourceChain, targetChain);
+
+    if (!bridge) {
+      throw new Error('Bridge or asset configuration not found');
+    }
+
+    const provider = this.getProvider(sourceChain);
+    const bridgeContract = new ethers.Contract(
+      bridge.bridgeContractAddress.toLowerCase(),
+      BRIDGE_ABI,
+      provider,
+    );
+
+    const address: string = await bridgeContract
+      .allowTokens()
+      .catch(() => bridge.allowTokensContractAddress);
+
+    return address;
   }
 
   // Approve tokens
@@ -279,18 +309,31 @@ export class BridgeService {
         assetConfig.aggregatorContractAddress.toLowerCase(),
         MASSET_ABI,
         provider,
-      );
+      ).connect(signer);
 
       const bridgeTokenAddress =
         assetConfig.bridgeTokenAddress || assetData.address;
 
-      return aggregatorContract
-        .connect(signer)
-        .redeemToBridge(
+      const txRequest =
+        await aggregatorContract.populateTransaction.redeemToBridge(
           bridgeTokenAddress.toLowerCase(),
           amount,
           receiverAddress,
         );
+
+      console.log('Prepared aggregator tx:', {
+        to: txRequest.to,
+        value: txRequest.value?.toString() || '0',
+        data: txRequest.data,
+        function: 'redeemToBridge',
+        args: {
+          bridgeToken: bridgeTokenAddress.toLowerCase(),
+          amount: amount.toString(),
+          receiver: receiverAddress,
+        },
+      });
+
+      return signer.sendTransaction(txRequest);
     }
 
     // For transfers between non-RSK chains or from non-RSK to RSK
@@ -318,19 +361,51 @@ export class BridgeService {
 
     // For native assets
     if (assetConfig.isNative) {
-      return bridgeContract.receiveEthAt(actualReceiver, extraData, {
-        value: amount,
+      const txRequest = await bridgeContract.populateTransaction.receiveEthAt(
+        actualReceiver,
+        extraData,
+        { value: amount },
+      );
+
+      console.log('Prepared native tx:', {
+        to: txRequest.to,
+        value: txRequest.value?.toString() || '0',
+        data: txRequest.data,
+        function: 'receiveEthAt',
+        args: {
+          receiver: actualReceiver,
+          extraData,
+          value: amount.toString(),
+        },
       });
+
+      return signer.sendTransaction(txRequest);
     }
 
     // For token transfers
     const tokenAddress = assetConfig.bridgeTokenAddress || assetData.address;
-    return bridgeContract.receiveTokensAt(
+
+    const txRequest = await bridgeContract.populateTransaction.receiveTokensAt(
       tokenAddress.toLowerCase(),
       amount,
       actualReceiver,
       extraData,
     );
+
+    console.log('Prepared token tx:', {
+      to: txRequest.to,
+      value: txRequest.value?.toString() || '0',
+      data: txRequest.data,
+      function: 'receiveTokensAt',
+      args: {
+        token: tokenAddress.toLowerCase(),
+        amount: amount.toString(),
+        receiver: actualReceiver,
+        extraData,
+      },
+    });
+
+    return signer.sendTransaction(txRequest);
   }
 
   // Bridge tokens

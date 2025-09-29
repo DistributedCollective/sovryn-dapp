@@ -44,6 +44,17 @@ export const ProtocolTotalSection: FC<ProtocolTotalSectionProps> = ({
     [selectedCurrency],
   );
 
+  const convertedTotalValue = useMemo(
+    () =>
+      getConvertedValue(
+        totalValue,
+        selectedCurrency,
+        nativeTokenPrice,
+        chainId,
+      ),
+    [totalValue, selectedCurrency, nativeTokenPrice, chainId],
+  );
+
   return (
     <div className={classNames(className, 'flex flex-col gap-3')}>
       <div className="flex justify-between items-center">
@@ -64,12 +75,7 @@ export const ProtocolTotalSection: FC<ProtocolTotalSectionProps> = ({
 
       <div className="rounded md:bg-gray-80 text-gray-10 font-medium md:text-[2.25rem] md:p-3 mb-4 truncate">
         <AmountRenderer
-          value={getConvertedValue(
-            totalValue,
-            selectedCurrency,
-            nativeTokenPrice,
-            chainId,
-          )}
+          value={convertedTotalValue}
           suffix={selectedCurrency}
           precision={getCurrencyPrecision(selectedCurrency)}
           dataAttribute="portfolio-total-value"

@@ -25,5 +25,5 @@ export const getConvertedValue = (
   chainId: string,
 ) =>
   selectedCurrency === getNativeToken(chainId)
-    ? btcAmount
-    : convertedValue(btcAmount, btcPrice);
+    ? btcAmount.toString() // Return the BTC amount as a string if it's the native token
+    : convertedValue(btcAmount, btcPrice); // Otherwise, return the converted value

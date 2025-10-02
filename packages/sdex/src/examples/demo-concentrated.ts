@@ -7,8 +7,7 @@ import { CrocEnv } from '../croc';
 //import { priceToTick, tickToPrice } from '../utils';
 //import { CrocPositionView } from '../position';
 import {
-  //createPositionConcentratedLiquidity,
-  burnConcentratedLiquidity, //createPositionAmbientLiquidity, //, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
+  createPositionConcentratedLiquidity, //burnConcentratedLiquidity, //createPositionAmbientLiquidity, //, //createPositionConcentratedLiquidity, //burnAmbientLiquidity,
 } from './helper';
 
 let configPath = '';
@@ -136,7 +135,7 @@ async function demo() {
   //   .encodeMintAmbientQuote(amountParam, [1.8, 2.5], usdt2LpConduit);
   // console.log('Encoded data to deposit', amountParam, ' USDT:', encodedData);
 
-  const slippageTolerancePercentage = 1000; // due to a huge disbalance
+  const slippageTolerancePercentage = 1; // due to a huge disbalance
 
   // for (const poolConfig of bobMainnetConcentratedPoolConfigs) {
   //   console.log(
@@ -155,40 +154,40 @@ async function demo() {
   // }
 
   // CONCENTRATED LIQUIDITY
-  const user = '0x4ff3D7a244fE5094b38baFA49290E0CC5fCbc172'; // Treasury Multisig on BOB
-  console.log('WITHDRAW CONCENTRATED');
+  //const user = '0x4ff3D7a244fE5094b38baFA49290E0CC5fCbc172'; // Treasury Multisig on BOB
+  console.log('CREATE CONCENTRATED LIQUIDITY POSITION');
   for (const poolConfig of bobMainnetConcentratedPoolConfigs) {
-    // console.log(
-    //   `Processing concentrated pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
-    // );
-    // const price = poolConfig.price;
-    // console.log('DEPOSIT CONCENTRATED');
-    // await createPositionConcentratedLiquidity(croc, {
-    //   base: poolConfig.baseToken.tokenAddress,
-    //   quote: poolConfig.quoteToken.tokenAddress,
-    //   poolIndex: poolConfig.poolIdx,
-    //   amountInBase: poolConfig.amountInBase, // decimal not yet considered here
-    //   price: price, // price
-    //   slippageTolerancePercentage,
-    //   rangeMultipliers: poolConfig.rangeMultipliers,
-    // });
+    console.log(
+      `Processing concentrated pool ${poolConfig.poolIdx} ${poolConfig.baseToken.tokenSymbol} - ${poolConfig.quoteToken.tokenSymbol} `,
+    );
+    const price = poolConfig.price;
+    console.log('DEPOSIT CONCENTRATED');
+    await createPositionConcentratedLiquidity(croc, {
+      base: poolConfig.baseToken.tokenAddress,
+      quote: poolConfig.quoteToken.tokenAddress,
+      poolIndex: poolConfig.poolIdx,
+      amountInBase: poolConfig.amountInBase, // decimal not yet considered here
+      price: price, // price
+      slippageTolerancePercentage,
+      rangeMultipliers: poolConfig.rangeMultipliers,
+    });
 
     //await pos.queryRangePos()
     //const price = await pool.displayPrice();
     BigNumber.from('0');
-    console.log(
-      `##### ${poolConfig.baseToken.tokenSymbol}/${poolConfig.quoteToken.tokenSymbol} #####`,
-    );
-    await burnConcentratedLiquidity(croc, user, {
-      base: poolConfig.baseToken.tokenAddress,
-      quote: poolConfig.quoteToken.tokenAddress,
-      amountSqrtXY: poolConfig.amountSqrtXY,
-      poolIndex: poolConfig.poolIdx,
-      rangeMultipliers: poolConfig.rangeMultipliers,
-      tickRange: poolConfig.tickRange,
-      price: poolConfig.price,
-      slippageTolerancePercentage,
-    });
+    // console.log(
+    //   `##### ${poolConfig.baseToken.tokenSymbol}/${poolConfig.quoteToken.tokenSymbol} #####`,
+    // );
+    // await burnConcentratedLiquidity(croc, user, {
+    //   base: poolConfig.baseToken.tokenAddress,
+    //   quote: poolConfig.quoteToken.tokenAddress,
+    //   amountSqrtXY: poolConfig.amountSqrtXY,
+    //   poolIndex: poolConfig.poolIdx,
+    //   rangeMultipliers: poolConfig.rangeMultipliers,
+    //   tickRange: poolConfig.tickRange,
+    //   price: poolConfig.price,
+    //   slippageTolerancePercentage,
+    // });
   }
 
   // await burnAmbientLiquidity(croc, {
@@ -519,4 +518,6 @@ async function demo() {
 // provide --path PATH/TO/CONCENTRATED/POOL/DEPOSIT/CONFIG to run the demo
 // use --tx param to print raw encoded tx:
 // yarn ts-node packages/sdex/src/examples/demo-concentrated.ts --path PATH/TO/CONCENTRATED/POOL/DEPOSIT/CONFIG --tx
+// example to burn:
+// yarn ts-node packages/sdex/src/examples/demo-concentrated.ts --path packages/sdex/src/examples/config-burn.ts --tx
 demo();

@@ -146,7 +146,7 @@ export const bobMainnetMockAmbientPoolConfigs = [
   // },
 ];
 
-const stablesRangeMultipliers = [0.99044, 1.01288];
+// const stablesRangeMultipliers = [0.9815, 1.01];
 export const bobMainnetMockConcentratedPoolConfigs = [
   // Additional pairs
   // {
@@ -389,77 +389,95 @@ export const bobMainnetAmbientPoolConfigs = [
 ];
 
 export const bobMainnetConcentratedPoolConfigs = [
-  // Additional pairs
   {
     baseToken: {
-      tokenSymbol: 'DLLR',
-      tokenDeploymentName: 'DLLR',
+      tokenSymbol: 'oUSDT',
+      tokenDeploymentName: 'oUSDT',
       isNativeToken: false,
-      tokenAddress: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
+      tokenAddress: '0x1217BfE6c773EEC6cc4A38b5Dc45B92292B6E189',
     },
     quoteToken: {
-      tokenSymbol: 'SOV',
-      tokenDeploymentName: 'SOV',
-      isNativeToken: false,
-      tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
-    },
-    price: 0.56,
-    poolIdx: 400,
-    amountInBase: 100000,
-    rangeMultipliers: [0.2, 5], // [-80%, + 5X]
-  },
-  {
-    baseToken: {
       tokenSymbol: 'USDC',
       tokenDeploymentName: 'USDC',
       isNativeToken: false,
       tokenAddress: '0xe75D0fB2C24A55cA1e3F96781a2bCC7bdba058F0',
     },
-    quoteToken: {
-      tokenSymbol: 'USDT',
-      tokenDeploymentName: 'USDT',
-      isNativeToken: false,
-      tokenAddress: '0x05d032ac25d322df992303dca074ee7392c117b9',
-    },
     price: 1,
     poolIdx: 400,
-    amountInBase: 2000,
-    rangeMultipliers: [0.995, 1.005], //make it symmetric
+    amountInBase: 63353.144465,
+    rangeMultipliers: [0.9815, 1.01], //[(0.995, 1.005)], //make it symmetric
   },
-  {
-    baseToken: {
-      tokenSymbol: 'USDT',
-      tokenDeploymentName: 'USDT',
-      isNativeToken: false,
-      tokenAddress: '0x05d032ac25d322df992303dca074ee7392c117b9',
-    },
-    quoteToken: {
-      tokenSymbol: 'DLLR',
-      tokenDeploymentName: 'DLLR',
-      isNativeToken: false,
-      tokenAddress: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
-    },
-    price: 1,
-    poolIdx: 400,
-    amountInBase: 50000,
-    rangeMultipliers: stablesRangeMultipliers,
-  },
-  {
-    baseToken: {
-      tokenSymbol: 'WBTC',
-      tokenDeploymentName: 'WBTC',
-      isNativeToken: false,
-      tokenAddress: '0x03c7054bcb39f7b2e5b2c7acb37583e32d70cfa3',
-    },
-    quoteToken: {
-      tokenSymbol: 'TBTC',
-      tokenDeploymentName: 'tBTC',
-      isNativeToken: false,
-      tokenAddress: '0xBBa2eF945D523C4e2608C9E1214C2Cc64D4fc2e2',
-    },
-    price: 1,
-    poolIdx: 400,
-    amountInBase: 0.8636,
-    rangeMultipliers: [0.995, 1.005], //make it symmetric
-  },
+  // Additional pairs
+  // {
+  //   baseToken: {
+  //     tokenSymbol: 'DLLR',
+  //     tokenDeploymentName: 'DLLR',
+  //     isNativeToken: false,
+  //     tokenAddress: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
+  //   },
+  //   quoteToken: {
+  //     tokenSymbol: 'SOV',
+  //     tokenDeploymentName: 'SOV',
+  //     isNativeToken: false,
+  //     tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+  //   },
+  //   price: 0.56,
+  //   poolIdx: 400,
+  //   amountInBase: 100000,
+  //   rangeMultipliers: [0.2, 5], // [-80%, + 5X]
+  // },
+  // {
+  //   baseToken: {
+  //     tokenSymbol: 'USDC',
+  //     tokenDeploymentName: 'USDC',
+  //     isNativeToken: false,
+  //     tokenAddress: '0xe75D0fB2C24A55cA1e3F96781a2bCC7bdba058F0',
+  //   },
+  //   quoteToken: {
+  //     tokenSymbol: 'USDT',
+  //     tokenDeploymentName: 'USDT',
+  //     isNativeToken: false,
+  //     tokenAddress: '0x05d032ac25d322df992303dca074ee7392c117b9',
+  //   },
+  //   price: 1,
+  //   poolIdx: 400,
+  //   amountInBase: 2000,
+  //   rangeMultipliers: [0.995, 1.005], //make it symmetric
+  // },
+  // {
+  //   baseToken: {
+  //     tokenSymbol: 'USDT',
+  //     tokenDeploymentName: 'USDT',
+  //     isNativeToken: false,
+  //     tokenAddress: '0x05d032ac25d322df992303dca074ee7392c117b9',
+  //   },
+  //   quoteToken: {
+  //     tokenSymbol: 'DLLR',
+  //     tokenDeploymentName: 'DLLR',
+  //     isNativeToken: false,
+  //     tokenAddress: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
+  //   },
+  //   price: 1,
+  //   poolIdx: 400,
+  //   amountInBase: 50000,
+  //   rangeMultipliers: stablesRangeMultipliers,
+  // },
+  // {
+  //   baseToken: {
+  //     tokenSymbol: 'WBTC',
+  //     tokenDeploymentName: 'WBTC',
+  //     isNativeToken: false,
+  //     tokenAddress: '0x03c7054bcb39f7b2e5b2c7acb37583e32d70cfa3',
+  //   },
+  //   quoteToken: {
+  //     tokenSymbol: 'TBTC',
+  //     tokenDeploymentName: 'tBTC',
+  //     isNativeToken: false,
+  //     tokenAddress: '0xBBa2eF945D523C4e2608C9E1214C2Cc64D4fc2e2',
+  //   },
+  //   price: 1,
+  //   poolIdx: 400,
+  //   amountInBase: 0.8636,
+  //   rangeMultipliers: [0.995, 1.005], //make it symmetric
+  // },
 ];

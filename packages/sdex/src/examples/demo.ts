@@ -95,10 +95,10 @@ async function demo() {
 
   // ----- AMBIENT LIQUIDITY -----
   // USDT/SOV
-  // let spotPrice = await croc.pool(USDT, SOV, 410).spotPrice();
-  // console.log(`USDT/SOV Spot Price: ${spotPrice.toString()}`);
-  // spotPrice = await croc.pool(SOV, USDT, 410).spotPrice();
-  // console.log(`SOV/USDT Spot Price: ${spotPrice.toString()}`);
+  let spotPrice = await croc.pool(USDT, SOV, 410).spotPrice();
+  console.log(`USDT/SOV Spot Price: ${spotPrice.toString()}`);
+  spotPrice = await croc.pool(SOV, USDT, 410).spotPrice();
+  console.log(`SOV/USDT Spot Price: ${spotPrice.toString()}`);
 
   // const usdt2LpConduit = '0x1e894177d9f28CC3150ECB30E458bD9438D6C46e'; // SOV/USDT
   // let amountParam = 28231.073;

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { BigNumber } from 'ethers';
+//import { BigNumber } from 'ethers';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 //import { priceToTick } from '../utils/price';
@@ -78,65 +78,65 @@ export const bobMainnetAmbientPoolConfigs = [
 //   tickToPrice(-276196),
 // ]);
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-const stablesRangeMultipliers = [0.99044, 1.01288]; // [0.1, 10000]; - to play around with the price range - hasn't worked though
+//const stablesRangeMultipliers = [0.99044, 1.01288]; // [0.1, 10000]; - to play around with the price range - hasn't worked though
 export const bobMainnetConcentratedPoolConfigs = [
-  {
-    //   baseToken: {
-    //     tokenSymbol: 'DLLR',
-    //     tokenDeploymentName: 'DLLR',
-    //     isNativeToken: false,
-    //     tokenAddress: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
-    //   },
-    //   quoteToken: {
-    //     tokenSymbol: 'SOV',
-    //     tokenDeploymentName: 'SOV',
-    //     isNativeToken: false,
-    //     tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
-    //   },
-    //   price: 0.56,
-    //   poolIdx: 400,
-    //   amountSqrtXY: 0,
-    //   rangeMultipliers: [0.2, 5], // [-80%, + 5X]
-    //   tickRange: [-21896, 10296],
-    // },
-    // {
-    baseToken: {
-      tokenSymbol: 'USDT',
-      tokenDeploymentName: 'USDT',
-      isNativeToken: false,
-      tokenAddress: '0x05d032ac25d322df992303dca074ee7392c117b9',
-    },
-    quoteToken: {
-      tokenSymbol: 'DLLR',
-      tokenDeploymentName: 'DLLR',
-      isNativeToken: false,
-      tokenAddress: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
-    },
-    price: 0.00009219475707, //1,
-    poolIdx: 400,
-    amountSqrtXY: BigNumber.from(0), // 0 - will be queried from the tickRange //BigNumber.from('10028165608911452160') SqrtXY amount - from SdexQuery queryRangePosition func https://explorer.gobob.xyz/address/0x1dff4Ff93dF17Ad6F44E23368341CcFb8fB8B675?tab=read_write_contract
-    rangeMultipliers: stablesRangeMultipliers,
-    tickRange: [-276424, -276196], //[(priceToTick(0.9), priceToTick(1.01))], //[303042, 304942], //[-276424, -276196], - previous, didn't work
-  },
-  // {
+  //{
   //   baseToken: {
-  //     tokenSymbol: 'USDC',
-  //     tokenDeploymentName: 'USDC',
+  //     tokenSymbol: 'DLLR',
+  //     tokenDeploymentName: 'DLLR',
   //     isNativeToken: false,
-  //     tokenAddress: '0xe75D0fB2C24A55cA1e3F96781a2bCC7bdba058F0',
+  //     tokenAddress: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
   //   },
   //   quoteToken: {
+  //     tokenSymbol: 'SOV',
+  //     tokenDeploymentName: 'SOV',
+  //     isNativeToken: false,
+  //     tokenAddress: '0xba20a5e63eeEFfFA6fD365E7e540628F8fC61474',
+  //   },
+  //   price: 0.56,
+  //   poolIdx: 400,
+  //   amountSqrtXY: 0,
+  //   rangeMultipliers: [0.2, 5], // [-80%, + 5X]
+  //   tickRange: [-21896, 10296],
+  // },
+  // {
+  //   baseToken: {
   //     tokenSymbol: 'USDT',
   //     tokenDeploymentName: 'USDT',
   //     isNativeToken: false,
   //     tokenAddress: '0x05d032ac25d322df992303dca074ee7392c117b9',
   //   },
-  //   price: 1,
+  //   quoteToken: {
+  //     tokenSymbol: 'DLLR',
+  //     tokenDeploymentName: 'DLLR',
+  //     isNativeToken: false,
+  //     tokenAddress: '0xf3107eEC1e6F067552C035FD87199e1A5169CB20',
+  //   },
+  //   price: 0.00009219475707, //1,
   //   poolIdx: 400,
-  //   amountSqrtXY: 0,
-  //   rangeMultipliers: [0.995, 1.005], //make it symmetric
-  //   tickRange: [-52, 52],
+  //   amountSqrtXY: BigNumber.from(0), // 0 - will be queried from the tickRange //BigNumber.from('10028165608911452160') SqrtXY amount - from SdexQuery queryRangePosition func https://explorer.gobob.xyz/address/0x1dff4Ff93dF17Ad6F44E23368341CcFb8fB8B675?tab=read_write_contract
+  //   rangeMultipliers: stablesRangeMultipliers,
+  //   tickRange: [-276424, -276196], //[(priceToTick(0.9), priceToTick(1.01))], //[303042, 304942], //[-276424, -276196], - previous, didn't work
   // },
+  {
+    baseToken: {
+      tokenSymbol: 'USDC',
+      tokenDeploymentName: 'USDC',
+      isNativeToken: false,
+      tokenAddress: '0xe75D0fB2C24A55cA1e3F96781a2bCC7bdba058F0',
+    },
+    quoteToken: {
+      tokenSymbol: 'USDT',
+      tokenDeploymentName: 'USDT',
+      isNativeToken: false,
+      tokenAddress: '0x05d032ac25d322df992303dca074ee7392c117b9',
+    },
+    price: 1,
+    poolIdx: 400,
+    amountSqrtXY: 0,
+    rangeMultipliers: [0.995, 1.005], //make it symmetric
+    tickRange: [-52, 52],
+  },
   // {
   //   baseToken: {
   //     tokenSymbol: 'WBTC',

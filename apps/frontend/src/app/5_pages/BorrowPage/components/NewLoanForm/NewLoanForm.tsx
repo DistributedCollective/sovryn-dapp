@@ -269,7 +269,8 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     [collateralToken],
   );
 
-  const { isBorrowLocked } = useGetMaintenanceStates(borrowToken);
+  const { isBorrowLocked, isNewLoanLocked } =
+    useGetMaintenanceStates(borrowToken);
 
   const submitButtonDisabled = useMemo(() => {
     const isFormValid =
@@ -282,7 +283,8 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
       !isFormValid ||
       !hasDisclaimerBeenChecked ||
       !isValidCollateralRatio ||
-      isBorrowLocked
+      isBorrowLocked ||
+      isNewLoanLocked
     );
   }, [
     collateralSize,
@@ -292,6 +294,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     hasDisclaimerBeenChecked,
     isValidCollateralRatio,
     isBorrowLocked,
+    isNewLoanLocked,
   ]);
 
   return (
@@ -338,6 +341,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
         <ErrorBadge
           level={ErrorLevel.Warning}
           message={t(translations.maintenanceMode.featureDisabled)}
+          dataAttribute="new-loan-borrow-amount-error"
         />
       )}
 
@@ -395,6 +399,13 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
           level={ErrorLevel.Critical}
           message={t(pageTranslations.newLoanDialog.invalidAmountError)}
           dataAttribute="new-loan-collateral-amount-error"
+        />
+      )}
+
+      {isNewLoanLocked && (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.newLoanFeatureDisabled)}
         />
       )}
 

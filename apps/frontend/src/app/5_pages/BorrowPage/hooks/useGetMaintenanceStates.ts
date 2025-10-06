@@ -35,6 +35,14 @@ export const useGetMaintenanceStates = (poolToken: SupportedTokens) => {
     [checkMaintenance, isFullyLocked, maintenanceStates.CLOSE],
   );
 
+  const isNewLoanLocked = useMemo(
+    () =>
+      isFullyLocked ||
+      (maintenanceStates.NEW_LOANS &&
+        checkMaintenance(maintenanceStates.NEW_LOANS)),
+    [checkMaintenance, isFullyLocked, maintenanceStates.NEW_LOANS],
+  );
+
   const isExtendLocked = useMemo(
     () =>
       isFullyLocked ||
@@ -62,6 +70,7 @@ export const useGetMaintenanceStates = (poolToken: SupportedTokens) => {
     isFullyLocked,
     isBorrowLocked,
     isRepayLocked,
+    isNewLoanLocked,
     isCloseLocked,
     isExtendLocked,
     isAddCollateralLocked,

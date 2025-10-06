@@ -88,20 +88,28 @@ export const fromWeiFixed = (
   unitName: BigNumberish = DEFAULT_UNIT,
 ): string => Number(fromWei(value, unitName)).toFixed(decimals);
 
-// todo: refactor to make sure it handles really big bignumber
 export const formatValue = (
   value: Decimalish,
   precision: number = 0,
   roundUp: boolean = false,
-) =>
-  decimalic(value)
-    .toNumber()
-    .toLocaleString(navigator.language, {
-      maximumFractionDigits: precision,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-ignore
-      roundingMode: roundUp ? 'ceil' : 'trunc', // This is an experimental feature with the default value of 'trunc', see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat for more information
-    });
+) => {
+  let formattedValue = decimalic(value).toNumber();
+
+  // Manual rounding logic
+  if (roundUp) {
+    formattedValue =
+      Math.ceil(formattedValue * Math.pow(10, precision)) /
+      Math.pow(10, precision);
+  } else {
+    formattedValue =
+      Math.floor(formattedValue * Math.pow(10, precision)) /
+      Math.pow(10, precision);
+  }
+
+  return formattedValue.toLocaleString(navigator.language, {
+    maximumFractionDigits: precision,
+  });
+};
 
 export const formatCompactValue = (value: number, precision: number = 0) =>
   value.toLocaleString(navigator.language, {

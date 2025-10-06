@@ -178,7 +178,8 @@
         "fullD2": {
             "title": "Sovryn is in maintenance mode.",
             "description": "Follow the social channels linked in the footer for further updates."
-        }
+        },
+        "newLoanFeatureDisabled": "Opening new lines of credit is currently disabled"
     },
     "transactionStep": {
         "customAmount": "Custom amount",

@@ -1,5 +1,12 @@
 # @sovryn/ui
 
+## 1.0.33
+
+### Patch Changes
+
+- 1974ce47: chore: USDT and WBTC on BOB migration
+- ab168f4e: SOV-5152: Update packages
+
 ## 1.0.32
 
 ### Patch Changes

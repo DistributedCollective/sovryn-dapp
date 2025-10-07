@@ -1,6 +1,6 @@
 {
   "name": "@sovryn/sdk",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",
@@ -30,7 +30,7 @@
     "@sovryn/contracts": "*",
     "@sovryn/ethers-provider": "*",
     "@sovryn/sdex": "*",
-    "@sovryn/utils": "^0.0.2",
+    "@sovryn/utils": "^0.0.3",
     "@uniswap/permit2-sdk": "^1.2.1",
     "rxjs": "7.5.6"
   },

@@ -1,5 +1,11 @@
 # @sovryn/utils
 
+## 0.0.3
+
+### Patch Changes
+
+- 0b4f5048: fix: decimal util crashing when null value is given
+
 ## 0.0.2
 
 ### Patch Changes

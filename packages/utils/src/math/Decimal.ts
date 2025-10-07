@@ -93,15 +93,29 @@ export class Decimal {
       case 'object':
         if (decimalish instanceof Decimal) {
           return decimalish;
+        } else if (decimalish === null || decimalish === undefined) {
+          return Decimal.ZERO;
         } else {
-          throw new Error('invalid Decimalish value');
+          throw new Error(
+            'invalid Decimalish value: ' +
+              typeof decimalish +
+              '(' +
+              decimalish +
+              ')',
+          );
         }
       case 'string':
         return Decimal._fromString(decimalish);
       case 'number':
         return Decimal._fromString(decimalish.toString());
       default:
-        throw new Error('invalid Decimalish value');
+        throw new Error(
+          'invalid Decimalish value: ' +
+            typeof decimalish +
+            '(' +
+            decimalish +
+            ')',
+        );
     }
   }
 

@@ -4,8 +4,10 @@ import { useCallback } from 'react';
 
 import { Pool } from '@sovryn/sdk';
 
+import { BOB } from '../../../../../../constants/infrastructure/bob';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
-import { loadIndexer } from '../../../../../../lib/indexer';
+import { Environments } from '../../../../../../types/global';
+import { isMainnet } from '../../../../../../utils/helpers';
 import { useGetPool } from '../../../hooks/useGetPool';
 
 export const useGetPoolInfo = (pool: Pool) => {
@@ -17,7 +19,10 @@ export const useGetPoolInfo = (pool: Pool) => {
       return '0';
     }
 
-    const poolStatsFreshEndpoint = loadIndexer(chainId).url + '/pool_stats?';
+    const poolStatsFreshEndpoint =
+      (isMainnet()
+        ? BOB.indexer[Environments.Mainnet]
+        : BOB.indexer[Environments.Testnet]) + '/pool_stats?';
 
     return fetch(
       poolStatsFreshEndpoint +

@@ -1,6 +1,6 @@
 {
   "name": "@sovryn/ui",
-  "version": "1.0.32",
+  "version": "1.0.33",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/typings.d.ts",
@@ -50,7 +50,8 @@
     "rollup-plugin-postcss": "4.0.2",
     "rollup-plugin-terser": "7.0.2",
     "storybook-css-modules": "1.0.8",
-    "typescript": "4.5.2"
+    "typescript": "4.5.2",
+    "react-slider": "2.0.6"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "6.2.0",

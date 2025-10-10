@@ -1,5 +1,17 @@
 # @sovryn/sdk
 
+## 2.0.8
+
+### Patch Changes
+
+- 1974ce47: chore: USDT and WBTC on BOB migration
+- ba60a4a8: feat(SOV-5169): new bob pools routes
+- Updated dependencies [0b4f5048]
+- Updated dependencies [1974ce47]
+- Updated dependencies [e8cf255f]
+  - @sovryn/utils@0.0.3
+  - @sovryn/contracts@1.2.6
+
 ## 2.0.7
 
 ### Patch Changes

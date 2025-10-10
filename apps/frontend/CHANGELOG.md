@@ -1,5 +1,24 @@
 # frontend
 
+## 1.1.38
+
+### Patch Changes
+
+- 1974ce47: chore: USDT and WBTC on BOB migration
+- ba60a4a8: feat(SOV-5169): new bob pools routes
+- ab168f4e: SOV-5152: Update packages
+- 0d399ab3: SOV-5155: update display value
+- 682e42cf: SOV-5129: Fix Fast BTC address validation
+- Updated dependencies [0b4f5048]
+- Updated dependencies [1974ce47]
+- Updated dependencies [ba60a4a8]
+- Updated dependencies [ab168f4e]
+- Updated dependencies [e8cf255f]
+  - @sovryn/utils@0.0.3
+  - @sovryn/contracts@1.2.6
+  - @sovryn/sdk@2.0.8
+  - @sovryn/ui@1.0.33
+
 ## 1.1.37
 
 ### Patch Changes

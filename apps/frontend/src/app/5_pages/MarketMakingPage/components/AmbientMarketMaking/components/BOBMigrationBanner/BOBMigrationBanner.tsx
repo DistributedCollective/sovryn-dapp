@@ -24,7 +24,7 @@ export const BOBMigrationBanner: FC = () => {
       <Button
         text={t(translations.common.learnMore)}
         style={ButtonStyle.ghost}
-        href="/"
+        href="https://app.gobob.xyz/en/migrate"
         hrefExternal
       />
     </div>

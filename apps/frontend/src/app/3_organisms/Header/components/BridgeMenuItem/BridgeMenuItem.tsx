@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { ChainIds } from '@sovryn/ethers-provider';
-import { Menu, MenuItem, Tooltip } from '@sovryn/ui';
+import { Badge, Menu, MenuItem, Tooltip } from '@sovryn/ui';
 
 import { POWPEG, RSK_FAUCET } from '../../../../../constants/general';
 import { BOB } from '../../../../../constants/infrastructure/bob';
@@ -141,7 +141,12 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
             />
             <MenuItem
               key={t('header.nav.bridges.subMenu.btcBridge')}
-              text={t('header.nav.bridges.subMenu.btcBridge')}
+              text={
+                <span className="flex items-center gap-1.5">
+                  {t('header.nav.bridges.subMenu.btcBridge')}
+                  <Badge content={t('common.deprecated')} className="px-1.5" />
+                </span>
+              }
               label={
                 !isMobile &&
                 t('header.nav.bridges.subMenu.btcBridgeDescription')

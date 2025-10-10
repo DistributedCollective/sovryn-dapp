@@ -1,5 +1,12 @@
 # @sovryn/contracts
 
+## 1.2.6
+
+### Patch Changes
+
+- 1974ce47: chore: USDT and WBTC on BOB migration
+- e8cf255f: fix: add WBTC contract
+
 ## 1.2.5
 
 ### Patch Changes

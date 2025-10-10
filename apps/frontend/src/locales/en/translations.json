@@ -71,7 +71,8 @@
             "withdrawal": "Withdrawal"
         },
         "learnMore": "Learn more",
-        "invalidAmountError": "Exceeds maximum amount"
+        "invalidAmountError": "Exceeds maximum amount",
+        "deprecated": "deprecated"
     },
     "connectWalletButton": {
         "connect": "Get started",

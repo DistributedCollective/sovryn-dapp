@@ -165,7 +165,9 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
                 t('header.nav.bridges.subMenu.erc20BridgeDescription')
               }
               dataAttribute={`dapp-menu-erc20Bridge`}
-              className="no-underline"
+              className={classNames('no-underline', {
+                hidden: isBobChain(chainId),
+              })}
               onClick={handleErc20Click}
             />
             <MenuItem
@@ -201,7 +203,7 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
               }
               dataAttribute={`dapp-menu-ercBridge`}
               className={classNames('no-underline', {
-                hidden: isRskChain(chainId),
+                hidden: !isBobChain(chainId),
               })}
               onClick={handleErcClick}
             />

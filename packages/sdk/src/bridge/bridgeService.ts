@@ -267,18 +267,25 @@ export class BridgeService {
 
     // For native assets
     if (assetConfig.isNative) {
-      return bridgeContract.receiveEthAt(receiverAddress, extraData, {
-        value: amount,
-      });
+      const txRequest = await bridgeContract.populateTransaction.receiveEthAt(
+        receiverAddress,
+        extraData,
+        {
+          value: amount,
+        },
+      );
+
+      return signer.sendTransaction(txRequest);
     }
 
-    // For token transfers
-    return bridgeContract.receiveTokensAt(
+    const txRequest = await bridgeContract.populateTransaction.receiveTokensAt(
       (assetConfig.bridgeTokenAddress || assetData.address).toLowerCase(),
       amount,
       receiverAddress,
       extraData,
     );
+
+    return signer.sendTransaction(txRequest);
   }
 
   // Withdraw tokens from Rootstock
@@ -321,18 +328,6 @@ export class BridgeService {
           receiverAddress,
         );
 
-      console.log('Prepared aggregator tx:', {
-        to: txRequest.to,
-        value: txRequest.value?.toString() || '0',
-        data: txRequest.data,
-        function: 'redeemToBridge',
-        args: {
-          bridgeToken: bridgeTokenAddress.toLowerCase(),
-          amount: amount.toString(),
-          receiver: receiverAddress,
-        },
-      });
-
       return signer.sendTransaction(txRequest);
     }
 
@@ -367,18 +362,6 @@ export class BridgeService {
         { value: amount },
       );
 
-      console.log('Prepared native tx:', {
-        to: txRequest.to,
-        value: txRequest.value?.toString() || '0',
-        data: txRequest.data,
-        function: 'receiveEthAt',
-        args: {
-          receiver: actualReceiver,
-          extraData,
-          value: amount.toString(),
-        },
-      });
-
       return signer.sendTransaction(txRequest);
     }
 
@@ -391,19 +374,6 @@ export class BridgeService {
       actualReceiver,
       extraData,
     );
-
-    console.log('Prepared token tx:', {
-      to: txRequest.to,
-      value: txRequest.value?.toString() || '0',
-      data: txRequest.data,
-      function: 'receiveTokensAt',
-      args: {
-        token: tokenAddress.toLowerCase(),
-        amount: amount.toString(),
-        receiver: actualReceiver,
-        extraData,
-      },
-    });
 
     return signer.sendTransaction(txRequest);
   }

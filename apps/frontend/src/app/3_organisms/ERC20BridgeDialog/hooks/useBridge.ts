@@ -7,11 +7,13 @@ import { ethers } from 'ethers';
 import { BridgeParams, BridgeTransaction, TxStep } from '@sovryn/sdk';
 
 import { useAccount } from '../../../../hooks';
+import { isRskChain } from '../../../../utils/chain';
 import { useBridgeService } from './useBridgeService';
 import { useBridgeValidation } from './useBridgeValidation';
 
 interface UseBridgeParams extends Omit<BridgeParams, 'signer'> {
   onSuccess?: () => void;
+  onTxStart?: () => void;
 }
 
 export function useBridge({
@@ -21,6 +23,7 @@ export function useBridge({
   amount,
   receiver,
   onSuccess,
+  onTxStart,
 }: UseBridgeParams) {
   const bridgeService = useBridgeService();
   const { account, signer } = useAccount();
@@ -39,14 +42,16 @@ export function useBridge({
   );
 
   const spenderAddress = useMemo(() => {
-    if (!bridgeConfig || !assetConfig) return undefined;
+    if (!bridgeConfig || !assetConfig) {
+      return undefined;
+    }
 
-    if (assetConfig.usesAggregator && assetConfig.aggregatorContractAddress) {
+    if (isRskChain(sourceChain) && assetConfig.usesAggregator) {
       return assetConfig.aggregatorContractAddress;
     }
 
     return bridgeConfig.bridgeContractAddress;
-  }, [bridgeConfig, assetConfig]);
+  }, [bridgeConfig, assetConfig, sourceChain]);
 
   // Fetch allowance
   const { data: allowance, refetch: refetchAllowance } = useQuery({
@@ -215,6 +220,8 @@ export function useBridge({
         );
       }
 
+      onTxStart?.();
+
       if (requiresApproval) {
         await handleApproval();
       }
@@ -222,7 +229,7 @@ export function useBridge({
     } catch (error) {
       console.error('Bridge transfer failed:', error);
     }
-  }, [isValid, requiresApproval, handleApproval, handleBridge]);
+  }, [isValid, onTxStart, requiresApproval, handleBridge, handleApproval]);
 
   // Reset transaction when parameters change
   useEffect(() => {

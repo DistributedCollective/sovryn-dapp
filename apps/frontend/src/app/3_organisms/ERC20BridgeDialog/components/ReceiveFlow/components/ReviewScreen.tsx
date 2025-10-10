@@ -19,7 +19,10 @@ import { translations } from '../../../../../../locales/i18n';
 import { sharedState } from '../../../../../../store/rxjs/shared-state';
 import { getChainById } from '../../../../../../utils/chain';
 import { formatValue } from '../../../../../../utils/math';
-import { ReceiveFlowContext } from '../../../contexts/receiveflow';
+import {
+  ReceiveFlowContext,
+  ReceiveFlowStep,
+} from '../../../contexts/receiveflow';
 import { useBridge } from '../../../hooks/useBridge';
 import { useBridgeLimits } from '../../../hooks/useBridgeLimits';
 import { useBridgeService } from '../../../hooks/useBridgeService';
@@ -28,7 +31,8 @@ import { TxStatusTitle } from '../../TxStatusTitle';
 const translation = translations.erc20Bridge.confirmationScreens;
 
 export const ReviewScreen: React.FC = () => {
-  const { token, chainId, amount, receiver } = useContext(ReceiveFlowContext);
+  const { token, chainId, amount, receiver, set } =
+    useContext(ReceiveFlowContext);
   const { account } = useAccount();
   const sourceChain = getChainById(chainId!);
   const targetChain = getChainById(RSK_CHAIN_ID);
@@ -44,6 +48,10 @@ export const ReviewScreen: React.FC = () => {
     asset: token!,
     amount: parseUnits(amount || '0', assetDetails?.decimals).toString(),
     receiver,
+    onSuccess: () =>
+      set(prev => ({ ...prev, step: ReceiveFlowStep.COMPLETED })),
+    onTxStart: () =>
+      set(prev => ({ ...prev, step: ReceiveFlowStep.PROCESSING })),
   });
 
   const handleErc20BridgeDialogClose = useCallback(

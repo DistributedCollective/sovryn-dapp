@@ -42,12 +42,15 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = () => {
 
   return (
     <>
-      {allowedStepsToGoBackFrom.includes(step) && (
-        <GoBackButton onClick={onBackClick} />
+      {step !== ReceiveFlowStep.INITIAL && (
+        <GoBackButton
+          onClick={onBackClick}
+          disabled={!allowedStepsToGoBackFrom.includes(step)}
+        />
       )}
 
       {step !== ReceiveFlowStep.INITIAL && (
-        <Stepper className="mt-6" steps={4} activeStep={step} />
+        <Stepper className="mt-6" steps={5} activeStep={step} />
       )}
 
       <div className="mt-0 md:mt-10">

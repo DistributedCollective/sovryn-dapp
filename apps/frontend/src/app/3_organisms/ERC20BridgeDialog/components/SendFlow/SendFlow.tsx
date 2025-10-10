@@ -39,12 +39,15 @@ export const SendFlow: React.FC<SendFlowProps> = () => {
 
   return (
     <>
-      {allowedStepsToGoBackFrom.includes(step) && (
-        <GoBackButton onClick={onBackClick} />
+      {step !== SendFlowStep.INITIAL && (
+        <GoBackButton
+          onClick={onBackClick}
+          disabled={!allowedStepsToGoBackFrom.includes(step)}
+        />
       )}
 
       {step !== SendFlowStep.INITIAL && (
-        <Stepper className="mt-6" steps={4} activeStep={step} />
+        <Stepper className="mt-6" steps={5} activeStep={step} />
       )}
 
       <div className="mt-0 md:mt-10">

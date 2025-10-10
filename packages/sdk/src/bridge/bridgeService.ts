@@ -254,11 +254,11 @@ export class BridgeService {
     let extraData: string = '0x';
 
     if (assetConfig.usesAggregator) {
-      receiverAddress = assetConfig.aggregatorContractAddress;
       extraData = ethers.utils.defaultAbiCoder.encode(
         ['address'],
         [receiverAddress],
       );
+      receiverAddress = assetConfig.aggregatorContractAddress;
     }
 
     if (!receiverAddress) {

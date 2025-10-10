@@ -1,4 +1,4 @@
-import { AssetConfig, CrossBridgeAsset } from '../types';
+import { AssetConfig } from '../types';
 
 // Aggregator addresses
 export const aggregators = {
@@ -24,7 +24,6 @@ export const bscToRskMainnetAssets: AssetConfig[] = [
     usesAggregator: true,
     aggregatorContractAddress: aggregators.mainnet.bnbs,
     bridgeTokenAddress: '0xB6C313a427fa911A4C9a119e80Feea0fe20E69F0',
-    allowedTargets: [CrossBridgeAsset.BNBS],
   },
   {
     symbol: 'ETH',
@@ -33,7 +32,6 @@ export const bscToRskMainnetAssets: AssetConfig[] = [
     isBase: false,
     usesAggregator: true,
     aggregatorContractAddress: aggregators.mainnet.eths,
-    allowedTargets: [CrossBridgeAsset.ETHS],
   },
 ];
 
@@ -47,10 +45,6 @@ export const rskToBscMainnetAssets: AssetConfig[] = [
     usesAggregator: true,
     aggregatorContractAddress: aggregators.mainnet.bnbs,
     bridgeTokenAddress: '0xd2a826b78200c8434b957913ce4067e6e3169385',
-    allowedTargets: [CrossBridgeAsset.BNB],
-    targetContracts: new Map([
-      [CrossBridgeAsset.BNB, '0xd2a826b78200c8434b957913ce4067e6e3169385'],
-    ]),
   },
   {
     symbol: 'ETH',
@@ -60,10 +54,6 @@ export const rskToBscMainnetAssets: AssetConfig[] = [
     usesAggregator: true,
     aggregatorContractAddress: aggregators.mainnet.eths,
     bridgeTokenAddress: '0x30d1B36924c2c0CD1c03EC257D7FFf31bD8c3007',
-    allowedTargets: [CrossBridgeAsset.ETH],
-    targetContracts: new Map([
-      [CrossBridgeAsset.ETH, '0x30d1B36924c2c0CD1c03EC257D7FFf31bD8c3007'],
-    ]),
   },
 ];
 
@@ -137,7 +127,6 @@ export const bscToRskTestnetAssets: AssetConfig[] = [
     usesAggregator: true,
     aggregatorContractAddress: aggregators.testnet.bnbs,
     bridgeTokenAddress: '0x68bD35422b457f315AA176743325a9F7C9830c68',
-    allowedTargets: [CrossBridgeAsset.BNBS],
   },
   {
     symbol: 'ETH',
@@ -146,7 +135,6 @@ export const bscToRskTestnetAssets: AssetConfig[] = [
     isBase: false,
     usesAggregator: true,
     aggregatorContractAddress: aggregators.testnet.eths,
-    allowedTargets: [CrossBridgeAsset.ETHS],
   },
 ];
 
@@ -160,10 +148,6 @@ export const rskToBscTestnetAssets: AssetConfig[] = [
     usesAggregator: true,
     aggregatorContractAddress: aggregators.testnet.bnbs,
     bridgeTokenAddress: '0xafa6A1eb7E2282E8854822d2bB412b6db2cabA4E',
-    allowedTargets: [CrossBridgeAsset.BNB],
-    targetContracts: new Map([
-      [CrossBridgeAsset.BNB, '0xafa6A1eb7E2282E8854822d2bB412b6db2cabA4E'],
-    ]),
   },
   {
     symbol: 'ETH',
@@ -173,9 +157,5 @@ export const rskToBscTestnetAssets: AssetConfig[] = [
     usesAggregator: true,
     aggregatorContractAddress: aggregators.testnet.eths,
     bridgeTokenAddress: '0x793CE6F95912D5b43532c2116e1b68993d902272',
-    allowedTargets: [CrossBridgeAsset.ETH],
-    targetContracts: new Map([
-      [CrossBridgeAsset.ETH, '0x793CE6F95912D5b43532c2116e1b68993d902272'],
-    ]),
   },
 ];

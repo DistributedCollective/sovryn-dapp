@@ -43,8 +43,6 @@ export interface AssetConfig {
   usesAggregator: boolean;
   aggregatorContractAddress?: string;
   bridgeTokenAddress?: string;
-  allowedTargets?: CrossBridgeAsset[];
-  targetContracts?: Map<CrossBridgeAsset, string>;
 }
 
 export interface BridgeConfig {

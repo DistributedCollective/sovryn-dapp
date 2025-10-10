@@ -4,13 +4,7 @@ import { useCallback, useState, useEffect, useMemo } from 'react';
 
 import { ethers } from 'ethers';
 
-import { ChainIds } from '@sovryn/ethers-provider';
-import {
-  BridgeParams,
-  BridgeTransaction,
-  CrossBridgeAsset,
-  TxStep,
-} from '@sovryn/sdk';
+import { BridgeParams, BridgeTransaction, TxStep } from '@sovryn/sdk';
 
 import { useAccount } from '../../../../hooks';
 import { useBridgeService } from './useBridgeService';
@@ -104,32 +98,6 @@ export function useBridge({
     setTransaction({ step: TxStep.APPROVING });
 
     try {
-      // Special handling for USDT on ETH (reset allowance to 0 first)
-      if (
-        [ChainIds.MAINNET, ChainIds.ROPSTEN].includes(
-          sourceChain as ChainIds,
-        ) &&
-        asset === CrossBridgeAsset.USDT
-      ) {
-        const currentAllowance = await bridgeService.getAllowance(
-          sourceChain,
-          asset,
-          account!,
-          spenderAddress,
-        );
-
-        if (currentAllowance !== '0') {
-          const resetTx = await bridgeService.approve(
-            sourceChain,
-            asset,
-            spenderAddress,
-            '0',
-            signer,
-          );
-          await resetTx.wait();
-        }
-      }
-
       const tx = await bridgeService.approve(
         sourceChain,
         asset,
@@ -166,7 +134,6 @@ export function useBridge({
     asset,
     amount,
     refetchAllowance,
-    account,
   ]);
 
   const handleBridge = useCallback(async (): Promise<void> => {

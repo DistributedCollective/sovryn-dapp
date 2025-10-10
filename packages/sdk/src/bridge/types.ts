@@ -86,6 +86,6 @@ export interface BridgeParams {
   targetChain: ChainId;
   asset: string;
   amount: string;
-  receiver?: string;
+  receiver: string;
   signer: Signer;
 }

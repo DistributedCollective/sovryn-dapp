@@ -13,8 +13,12 @@ import {
 } from '@sovryn/sdk';
 
 import { useAccount } from '../../../../hooks';
-import { useBridgeAmountValidation } from './useBridgeAmountValidation';
 import { useBridgeService } from './useBridgeService';
+import { useBridgeValidation } from './useBridgeValidation';
+
+interface UseBridgeParams extends Omit<BridgeParams, 'signer'> {
+  onSuccess?: () => void;
+}
 
 export function useBridge({
   sourceChain,
@@ -22,7 +26,8 @@ export function useBridge({
   asset,
   amount,
   receiver,
-}: Omit<BridgeParams, 'signer'>) {
+  onSuccess,
+}: UseBridgeParams) {
   const bridgeService = useBridgeService();
   const { account, signer } = useAccount();
   const [transaction, setTransaction] = useState<BridgeTransaction>({
@@ -83,11 +88,12 @@ export function useBridge({
     }
   }, [assetConfig, allowance, amount]);
 
-  const isAmountValid = useBridgeAmountValidation({
+  const { isValid } = useBridgeValidation({
     sourceChain,
     targetChain,
     asset,
     amount,
+    receiver,
   });
 
   const handleApproval = useCallback(async (): Promise<void> => {
@@ -165,7 +171,7 @@ export function useBridge({
 
   const handleBridge = useCallback(async (): Promise<void> => {
     if (!bridgeService || !signer) {
-      throw new Error('Missing requirements for deposit');
+      throw new Error('Missing requirements for bridge');
     }
 
     setTransaction(prev => ({
@@ -192,7 +198,7 @@ export function useBridge({
       const receipt = await tx.wait();
 
       if (receipt.status === 0) {
-        throw new Error('Deposit transaction failed');
+        throw new Error('Bridge transaction failed');
       }
 
       setTransaction(prev => ({
@@ -200,6 +206,7 @@ export function useBridge({
         step: TxStep.CONFIRMED,
         transferHash: receipt.transactionHash,
       }));
+      onSuccess?.();
     } catch (error: any) {
       console.log({
         error,
@@ -228,29 +235,27 @@ export function useBridge({
     amount,
     receiver,
     account,
+    onSuccess,
   ]);
 
   const handleSubmit = useCallback(async (): Promise<void> => {
     try {
       setTransaction({ step: TxStep.IDLE });
 
-      if (!isAmountValid) {
+      if (!isValid) {
         throw new Error(
-          'Cannot proceed with deposit: insufficient balance or amount out of limits',
+          'Cannot proceed with bridge: insufficient balance or amount out of limits',
         );
       }
 
       if (requiresApproval) {
         await handleApproval();
-        await handleBridge();
-      } else {
-        // Direct deposit for native assets or when allowance is sufficient
-        await handleBridge();
       }
+      await handleBridge();
     } catch (error) {
       console.error('Bridge transfer failed:', error);
     }
-  }, [isAmountValid, requiresApproval, handleApproval, handleBridge]);
+  }, [isValid, requiresApproval, handleApproval, handleBridge]);
 
   // Reset transaction when parameters change
   useEffect(() => {
@@ -261,6 +266,6 @@ export function useBridge({
     handleSubmit,
     transaction,
     requiresApproval,
-    isAmountValid,
+    isValid,
   };
 }

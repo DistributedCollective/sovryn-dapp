@@ -94,7 +94,7 @@ export const ReviewScreen: React.FC = () => {
         },
       ];
     }
-    return [
+    const items = [
       {
         label: t(translation.from),
         value: (
@@ -141,18 +141,21 @@ export const ReviewScreen: React.FC = () => {
           </>
         ),
       },
-      {
+    ];
+
+    if (transaction.transferHash) {
+      items.push({
         label: t(translation.rootstockTxId),
-        value: transaction.transferHash ? (
+        value: (
           <TransactionIdRenderer
             hash={transaction.transferHash}
-            chainId={chainId}
+            chainId={RSK_CHAIN_ID}
           />
-        ) : (
-          ''
         ),
-      },
-    ];
+      });
+    }
+
+    return items;
   }, [
     account,
     amount,

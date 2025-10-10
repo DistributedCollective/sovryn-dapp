@@ -2048,7 +2048,8 @@
                 "sendLabel": "Send",
                 "receiveInfoText": "Transfer assets from Ethereum and BSC network to your Rootstock address",
                 "sendInfoText": "Transfer assets from Rootstock to Ethereum or BSC"
-            }
+            },
+            "sending": "Sending"
         },
         "instructions": {
             "title": "Instructions",
@@ -2090,6 +2091,22 @@
             "dailyLimitSpent": "Daily Limit Spent",
             "fee": "Fee",
             "aggregatorBalance": "Aggregator Balance"
+        },
+        "receive": {
+            "warning": "Provide only the wallet address that you have access to",
+            "addressLabel": "Receiving Rootstock address"
+        },
+        "send": {
+            "warning": "Beware when sending to exchange address <br/><br/> Not all exchanges receiving assets directly from the bridge smart contracts. Before sending directly to an exchange address, be sure to confirm that your exchange supports directly transactions from smart contratcts.",
+            "addressLabel": "Receiving {{network}} address"
+        },
+        "form": {
+            "invalidReceiver": "Receiver address is invalid.",
+            "invalidInput": "Invalid amount or data not loaded.",
+            "insufficientBalance": "Insufficient balance.",
+            "belowMinimum": "Amount is below the minimum limit ({{min}})",
+            "aboveMaximum": "Amount exceeds the maximum limit ({{max}})",
+            "invalidNumberFormat": "Invalid number format."
         }
     }
 }

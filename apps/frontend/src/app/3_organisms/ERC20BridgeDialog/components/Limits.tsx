@@ -99,6 +99,7 @@ export const Limits: React.FC<LimitsProps> = ({
         className={className}
         open={open}
         onClick={onClick}
+        labelClassName="font-medium"
       />
     </>
   );

@@ -51,7 +51,11 @@ export const SendFlow: React.FC<SendFlowProps> = () => {
         {step === SendFlowStep.INITIAL && <InitialScreen />}
         {step === SendFlowStep.MAIN && <MainScreen />}
         {step === SendFlowStep.AMOUNT && <AmountScreen />}
-        {step === SendFlowStep.REVIEW && <ReviewScreen />}
+        {[
+          SendFlowStep.REVIEW,
+          SendFlowStep.PROCESSING,
+          SendFlowStep.COMPLETED,
+        ].includes(step) && <ReviewScreen />}
       </div>
     </>
   );

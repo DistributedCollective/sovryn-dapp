@@ -54,7 +54,11 @@ export const ReceiveFlow: React.FC<ReceiveFlowProps> = () => {
         {step === ReceiveFlowStep.INITIAL && <InitialScreen />}
         {step === ReceiveFlowStep.MAIN && <MainScreen />}
         {step === ReceiveFlowStep.AMOUNT && <AmountScreen />}
-        {step === ReceiveFlowStep.REVIEW && <ReviewScreen />}
+        {[
+          ReceiveFlowStep.REVIEW,
+          ReceiveFlowStep.PROCESSING,
+          ReceiveFlowStep.COMPLETED,
+        ].includes(step) && <ReviewScreen />}
       </div>
     </>
   );

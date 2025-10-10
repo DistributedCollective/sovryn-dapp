@@ -1,7 +1,8 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 
-import { formatUnits, isAddress, parseUnits } from 'ethers/lib/utils';
+import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
+import { Trans } from 'react-i18next';
 
 import {
   AmountInput,
@@ -9,6 +10,7 @@ import {
   ButtonStyle,
   ErrorBadge,
   ErrorLevel,
+  ErrorList,
   Icon,
   IconNames,
   Input,
@@ -23,8 +25,8 @@ import { useAccount } from '../../../../../../hooks';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { translations } from '../../../../../../locales/i18n';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
-import { useBridgeAmountValidation } from '../../../hooks/useBridgeAmountValidation';
 import { useBridgeService } from '../../../hooks/useBridgeService';
+import { useBridgeValidation } from '../../../hooks/useBridgeValidation';
 import { useTokenBalance } from '../../../hooks/useTokenBalance';
 
 export const AmountScreen: React.FC = () => {
@@ -62,12 +64,12 @@ export const AmountScreen: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isValidAddress = Boolean(receiver && isAddress(receiver));
-  const isValidAmount = useBridgeAmountValidation({
+  const { isValid, messages } = useBridgeValidation({
     sourceChain: RSK_CHAIN_ID,
     targetChain: chainId!,
     asset: token!,
     amount: parseUnits(amount || '0', assetDetails?.decimals).toString(),
+    receiver,
   });
 
   return (
@@ -75,15 +77,18 @@ export const AmountScreen: React.FC = () => {
       {chainId && (
         <Paragraph className="flex text-base font-medium items-center mb-6 gap-2">
           <>
-            Sending {bridgeService.getNetworkConfig(RSK_CHAIN_ID)?.name}
+            {t(translations.erc20Bridge.mainScreen.sending)}{' '}
+            {bridgeService.getNetworkConfig(RSK_CHAIN_ID)?.name}
             <Icon icon={IconNames.ARROW_RIGHT} size={12} />
             {bridgeService.getNetworkConfig(chainId)?.name}
           </>
         </Paragraph>
       )}
 
-      <div className="w-full flex flex-row justify-between items-center mb-6">
-        <Paragraph className="text-sm">Send</Paragraph>
+      <div className="w-full flex flex-row justify-between items-center mb-1">
+        <Paragraph className="text-sm font-medium">
+          {t(translations.erc20Bridge.mainScreen.tabs.sendLabel)}
+        </Paragraph>
 
         {token && balance && (
           <MaxButton
@@ -104,33 +109,34 @@ export const AmountScreen: React.FC = () => {
         min={0}
         className="w-full mb-6 max-w-full"
         placeholder="0"
-        invalid={!!amount && !isValidAmount}
       />
 
-      <Paragraph className="mb-1 text-sm">
-        Receiving {bridgeService.getNetworkConfig(chainId!)?.name} address
+      <Paragraph className="mb-1 text-sm font-medium">
+        <Trans
+          i18nKey={t(translations.erc20Bridge.send.addressLabel, {
+            network: bridgeService.getNetworkConfig(chainId!)?.name,
+          })}
+        />
       </Paragraph>
+
       <Input
         value={receiver}
         onChangeText={setReceiver}
         className="w-full mb-6 max-w-full"
         placeholder="0x"
         size={InputSize.large}
-        invalid={Boolean(receiver && !isValidAddress)}
       />
 
       <ErrorBadge
         level={ErrorLevel.Warning}
-        message={
-          <>
-            Beware when sending to exchange address <br />
-            <br />
-            Not all exchanges receiving assets directly from the bridge smart
-            contracts. Before sending directly to an exchange address, be sure
-            to confirm that your exchange supports directly transactions from
-            smart contratcts.
-          </>
-        }
+        message={<Trans i18nKey={t(translations.erc20Bridge.send.warning)} />}
+      />
+
+      <ErrorList
+        errors={messages.map(message => ({
+          level: ErrorLevel.Critical,
+          message,
+        }))}
       />
 
       <Button
@@ -139,7 +145,7 @@ export const AmountScreen: React.FC = () => {
         className="w-full mt-6"
         style={ButtonStyle.secondary}
         dataAttribute="funding-send-instructions-confirm"
-        disabled={!(isValidAddress && isValidAmount)}
+        disabled={!isValid}
       />
     </div>
   );

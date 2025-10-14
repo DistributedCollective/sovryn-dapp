@@ -39,7 +39,11 @@ export const BOB_CHAIN_ID = (
   IS_MAINNET ? ChainIds.BOB_MAINNET : ChainIds.BOB_TESTNET
 ) as ChainId;
 
-export type ChainWithLogo = Chain & { icon: string; indexer?: string };
+export type ChainWithLogo = Chain & {
+  icon: string;
+  indexer?: string;
+  isVisible?: boolean;
+};
 
 export const APP_CHAIN_LIST: ChainWithLogo[] = [
   ...(IS_MAINNET
@@ -54,6 +58,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           icon: rskLogo,
           indexer:
             (IS_STAGING ? INDEXER_URL_STAGING : INDEXER_URL) + '/v2/rootstock',
+          isVisible: true,
         },
         {
           id: ChainIds.BOB_MAINNET,
@@ -65,6 +70,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           icon: bobLogo,
           indexer:
             (IS_STAGING ? INDEXER_URL_STAGING : INDEXER_URL) + '/v2/gobob',
+          isVisible: true,
         },
         {
           id: ChainIds.BSC_MAINNET,
@@ -95,6 +101,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           blockExplorerUrl: RSK.explorer[Environments.Testnet],
           icon: rskLogo,
           indexer: INDEXER_URL_TESTNET + '/v2/rootstock',
+          isVisible: true,
         },
         {
           id: ChainIds.BOB_TESTNET,
@@ -105,6 +112,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           blockExplorerUrl: BOB.explorer[Environments.Testnet],
           icon: bobLogo,
           indexer: INDEXER_URL_TESTNET + '/v2/gobob',
+          isVisible: true,
         },
         {
           id: ChainIds.SEPOLIA,
@@ -132,6 +140,7 @@ export const APP_CHAIN_LIST: ChainWithLogo[] = [
           rpcUrl: FORK.rpc[Environments.Testnet],
           blockExplorerUrl: FORK.explorer[Environments.Testnet],
           icon: unknownLogo,
+          isVisible: true,
         },
       ]),
 ];

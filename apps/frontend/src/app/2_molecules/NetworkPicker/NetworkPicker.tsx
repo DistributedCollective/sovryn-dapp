@@ -35,7 +35,7 @@ export const NetworkPicker: FC<NetworkPickerProps> = ({ className }) => {
       dropdownClassName="z-[10000000]"
     >
       <Menu>
-        {APP_CHAIN_LIST.map(item => (
+        {APP_CHAIN_LIST.filter(item => item.isVisible).map(item => (
           <MenuItem
             key={item.id}
             text={

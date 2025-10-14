@@ -15,8 +15,11 @@ import {
   VerticalTabs,
 } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
 import { MobileCloseButton } from '../../1_atoms/MobileCloseButton/MobileCloseButton';
 import { useAccount } from '../../../hooks/useAccount';
+import { useChainStore } from '../../../hooks/useChainStore';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { translations } from '../../../locales/i18n';
 import { ACTIVE_CLASSNAME, queryClient } from './ERC20BridgeDialog.constants';
@@ -41,6 +44,15 @@ export const ERC20BridgeDialog: React.FC<ERC20BridgeDialogProps> = ({
   const [index, setIndex] = useState(step);
   const { account } = useAccount();
   const { isMobile } = useIsMobile();
+  const { currentChainId, setCurrentChainId } = useChainStore();
+  const isWrongChain = RSK_CHAIN_ID !== currentChainId;
+
+  const handleClose = useCallback(() => {
+    if (isWrongChain) {
+      setCurrentChainId(RSK_CHAIN_ID);
+    }
+    onClose();
+  }, [onClose, isWrongChain, setCurrentChainId]);
 
   useEffect(() => {
     setIndex(step);
@@ -53,8 +65,8 @@ export const ERC20BridgeDialog: React.FC<ERC20BridgeDialogProps> = ({
         infoText: t(translation.tabs.receiveInfoText),
         content: (
           <ReceiveFlowContextProvider>
-            <ReceiveFlow onClose={onClose} />
-            <MobileCloseButton onClick={onClose} />
+            <ReceiveFlow onClose={handleClose} />
+            <MobileCloseButton onClick={handleClose} />
           </ReceiveFlowContextProvider>
         ),
         activeClassName: ACTIVE_CLASSNAME,
@@ -65,15 +77,15 @@ export const ERC20BridgeDialog: React.FC<ERC20BridgeDialogProps> = ({
         infoText: t(translation.tabs.sendInfoText),
         content: (
           <SendFlowContextProvider>
-            <SendFlow onClose={onClose} />
-            <MobileCloseButton onClick={onClose} />
+            <SendFlow onClose={handleClose} />
+            <MobileCloseButton onClick={handleClose} />
           </SendFlowContextProvider>
         ),
         activeClassName: ACTIVE_CLASSNAME,
         dataAttribute: 'erc20-bridge-send',
       },
     ];
-  }, [onClose]);
+  }, [handleClose]);
 
   const onChangeIndex = useCallback((index: number | null) => {
     index !== null ? setIndex(index) : setIndex(0);
@@ -124,7 +136,7 @@ export const ERC20BridgeDialog: React.FC<ERC20BridgeDialogProps> = ({
           footer={() => (
             <Button
               text={t(translations.common.buttons.close)}
-              onClick={onClose}
+              onClick={handleClose}
               style={ButtonStyle.ghost}
               dataAttribute="erc20-bridge-close"
             />

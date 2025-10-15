@@ -128,9 +128,11 @@
                     "tokenBridgeDescription": "Transfer between RSK and other chains",
                     "btcBridge": "Fast BTC",
                     "btcBridgeDescription": "Transfer between Bitcoin and RSK",
+                    "erc20Bridge": "ERC-20",
+                    "erc20BridgeDescription": "Transfer between Ethereum, Binance and RSK",
                     "ethBridge": "ETH",
                     "ethBridgeDescription": "Transfer between BOB and other chains",
-                    "ercBridge": "ERC-20",
+                    "ercBridge": "ERC20",
                     "ercBridgeDescription": "Transfer between BOB and other chains",
                     "powPeg": "PowPeg",
                     "powPegDescription": "Transfer between Bitcoin and RSK"
@@ -171,6 +173,7 @@
     "maintenanceMode": {
         "fastBtc": "Fast BTC is locked",
         "runeBridge": "Rune Bridge is locked",
+        "erc20Bridge": "ERC-20 Bridge is locked",
         "featureDisabled": "This feature is currently disabled",
         "openingLOC": "Opening a line of credit is currently disabled",
         "fullD2": {
@@ -2035,6 +2038,75 @@
         "startEarning": {
             "title": "Bridge your runes",
             "subtitle": "Bridge your runes to start trading and earning with runes on Sovryn"
+        }
+    },
+    "erc20Bridge": {
+        "mainScreen": {
+            "title": "ERC-20 Bridge",
+            "tabs": {
+                "receiveLabel": "Receive",
+                "sendLabel": "Send",
+                "receiveInfoText": "Transfer assets from Ethereum and BSC network to your Rootstock address",
+                "sendInfoText": "Transfer assets from Rootstock to Ethereum or BSC"
+            },
+            "sending": "Sending"
+        },
+        "instructions": {
+            "title": "Instructions",
+            "1": "Only send supported ERC-20 assets",
+            "2": "Do not send less than the minimum amount",
+            "3": "Do not send more than the maximum amount",
+            "4": "Allow up to 1.5 hrs to process",
+            "5": "If you transaction takes longer than 1.5 hrs please <0>create a support ticket</0>",
+            "createSupportTicketCta": "create a support ticket"
+        },
+        "confirmationScreens": {
+            "from": "From",
+            "to": "To",
+            "date": "Date",
+            "originNetwork": "Origin network",
+            "destinationNetwork": "Destination network",
+            "token": "Token",
+            "amount": "Amount",
+            "receiver": "Receiving address",
+            "sending": "Sending",
+            "serviceFee": "Service fee",
+            "sendingAmount": "Sending amount",
+            "receivingAmount": "Receiving amount",
+            "reviewTitle": "Review transaction",
+            "statusApprovalProcessing": "Approval processing...",
+            "statusTitleProcessing": "Transfer processing...",
+            "statusTitleComplete": "Transfer complete",
+            "statusTitleFailed": "Process failed",
+            "transactionID": "TXID",
+            "rootstockTxId": "Rootstock TXID",
+            "switchNetwork": "Switch network",
+            "avaiaibleLiquidity": "Avaiaible liquidity"
+        },
+        "limits": {
+            "title": "Daily bridge limits",
+            "minimumAmount": "Minimum amount",
+            "maximumAmount": "Maximum amount",
+            "dailyLimit": "Daily Limit",
+            "dailyLimitSpent": "Daily Limit Spent",
+            "fee": "Fee",
+            "aggregatorBalance": "Aggregator Balance"
+        },
+        "receive": {
+            "warning": "Provide only the wallet address that you have access to",
+            "addressLabel": "Receiving Rootstock address"
+        },
+        "send": {
+            "warning": "Beware when sending to exchange address <br/><br/> Not all exchanges receiving assets directly from the bridge smart contracts. Before sending directly to an exchange address, be sure to confirm that your exchange supports directly transactions from smart contratcts.",
+            "addressLabel": "Receiving {{network}} address"
+        },
+        "form": {
+            "invalidReceiver": "Receiver address is invalid.",
+            "invalidInput": "Invalid amount or data not loaded.",
+            "insufficientBalance": "Insufficient balance.",
+            "belowMinimum": "Amount is below the minimum limit ({{min}})",
+            "aboveMaximum": "Amount exceeds the maximum limit ({{max}})",
+            "invalidNumberFormat": "Invalid number format."
         }
     }
 }

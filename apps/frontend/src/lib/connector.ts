@@ -37,6 +37,7 @@ const chainList = APP_CHAIN_LIST.map(item => ({
   indexer: undefined,
 })).map(item => {
   delete item.indexer;
+  delete item.isVisible;
   return item;
 });
 

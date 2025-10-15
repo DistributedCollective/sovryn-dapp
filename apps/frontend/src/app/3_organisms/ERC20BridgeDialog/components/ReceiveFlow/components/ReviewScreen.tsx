@@ -13,7 +13,6 @@ import { TransactionIdRenderer } from '../../../../../2_molecules/TransactionIdR
 import { TxIdWithNotification } from '../../../../../2_molecules/TxIdWithNotification/TransactionIdWithNotification';
 import { getTokenDisplayName } from '../../../../../../constants/tokens';
 import { useAccount } from '../../../../../../hooks';
-import { useChainStore } from '../../../../../../hooks/useChainStore';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { translations } from '../../../../../../locales/i18n';
 import { sharedState } from '../../../../../../store/rxjs/shared-state';
@@ -37,10 +36,8 @@ export const ReviewScreen: React.FC = () => {
   const sourceChain = getChainById(chainId!);
   const targetChain = getChainById(RSK_CHAIN_ID);
   const bridgeService = useBridgeService();
-  const { currentChainId, setCurrentChainId } = useChainStore();
   const { data: limits } = useBridgeLimits(chainId, RSK_CHAIN_ID, token);
   const assetDetails = useTokenDetailsByAsset(token, chainId);
-  const isWrongChain = RSK_CHAIN_ID !== currentChainId;
 
   const { handleSubmit, transaction } = useBridge({
     sourceChain: chainId!,
@@ -204,20 +201,12 @@ export const ReviewScreen: React.FC = () => {
         <Button
           text={
             isConfirmed
-              ? isWrongChain
-                ? t(translations.erc20Bridge.confirmationScreens.switchNetwork)
-                : t(translations.common.buttons.done)
+              ? t(translations.common.buttons.done)
               : [TxStep.USER_DENIED, TxStep.FAILED].includes(transaction.step)
               ? t(translations.common.buttons.retry)
               : t(translations.common.buttons.confirm)
           }
-          onClick={
-            isConfirmed
-              ? isWrongChain
-                ? () => setCurrentChainId(RSK_CHAIN_ID)
-                : handleErc20BridgeDialogClose
-              : handleSubmit
-          }
+          onClick={isConfirmed ? handleErc20BridgeDialogClose : handleSubmit}
           loading={isLoading}
           disabled={isLoading}
           className="w-full"

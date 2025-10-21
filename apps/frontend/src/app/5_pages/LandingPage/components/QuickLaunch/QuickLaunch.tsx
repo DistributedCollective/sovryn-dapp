@@ -40,8 +40,8 @@ export const QuickLaunch: FC = () => {
   const maxRate = useMemo(() => {
     let maxRewards = '0';
     rates.forEach(rate => {
-      if (Number(rate.afterRewards) > Number(maxRewards)) {
-        maxRewards = rate.afterRewards;
+      if (Number(rate.beforeRewards) > Number(maxRewards)) {
+        maxRewards = rate.beforeRewards;
       }
     });
 

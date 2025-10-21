@@ -29,7 +29,7 @@ export const useGetPoolVolumeData = (pool: AmmLiquidityPool) => {
         pool.poolTokenA.toLowerCase()
       ].map(item => ({
         timestamp: dayjs(item.activity_date).format('YYYY-MM-DD'),
-        apy: Number(item.APY_pc),
+        apy: Number(item.APY_fees_pc),
         btcVolume: String(item.btc_volume),
       }));
 

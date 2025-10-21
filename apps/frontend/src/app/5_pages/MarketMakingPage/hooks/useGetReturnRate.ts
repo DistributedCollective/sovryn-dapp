@@ -49,18 +49,26 @@ export const useGetReturnRate = ({
               ? data[converter].data[Object.keys(data[converter].data)[0]]
               : data[converter].data[poolTokenA];
 
-          const lastEntry = poolData[poolData.length - 1];
+          if (poolData && poolData.length > 0) {
+            const sumFeesApy = poolData.reduce(
+              (acc, entry) => acc + parseFloat(entry.APY_fees_pc),
+              0,
+            );
+            const sumTotalApy = poolData.reduce(
+              (acc, entry) => acc + parseFloat(entry.APY_pc),
+              0,
+            );
 
-          const totalAPY = {
-            beforeRewards: lastEntry
-              ? parseFloat(lastEntry.APY_rewards_pc).toFixed(2)
-              : '0',
-            afterRewards: lastEntry
-              ? parseFloat(lastEntry.APY_pc).toFixed(2)
-              : '0',
-          };
+            const avgFeesApy = (sumFeesApy / poolData.length).toFixed(2);
+            const avgTotalApy = (sumTotalApy / poolData.length).toFixed(2);
 
-          setReturnRates(totalAPY);
+            setReturnRates({
+              beforeRewards: avgFeesApy,
+              afterRewards: avgTotalApy,
+            });
+          } else {
+            setReturnRates({ beforeRewards: '0', afterRewards: '0' });
+          }
         } else {
           setReturnRates({ beforeRewards: '0', afterRewards: '0' });
         }

@@ -544,9 +544,9 @@
                 "action": "Coming soon"
             },
             "originsLaunchpad": {
-                "title": "Join $BOS Presale – Phase 2 Live",
-                "description": "Deposit from any chain. Get bonuses for $SOV staking. BTC and ADA deposits.",
-                "action": "Join Presale"
+                "title": "Claim your $BOS",
+                "description": "Presale Claims are now open.",
+                "action": "Claim $BOS"
             }
         },
         "promotions": {
@@ -582,10 +582,9 @@
                 "cta": "Stake SOV"
             },
             "originsLaunch": {
-                "title": "Origins is live!",
-                "description": "Join the $BOS Phase 2 presale on Sovryn’s multichain launchpad. $SOV stakers earn bonuses!",
-                "cta": "Join Presale",
-                "secondaryCta": "Learn more"
+                "title": "BOS CLAIMS ARE OPEN",
+                "description": "Claim your BOS tokens on Sovryn Origin - the multichain launchpad!",
+                "cta": "Claim $BOS"
             }
         },
         "titleSection": {

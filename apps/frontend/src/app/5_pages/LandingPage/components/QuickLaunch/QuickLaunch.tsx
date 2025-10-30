@@ -58,7 +58,7 @@ export const QuickLaunch: FC = () => {
           pageTranslations.quickLaunch.originsLaunchpad.description,
         ),
         action: t(pageTranslations.quickLaunch.originsLaunchpad.action),
-        href: LAUNCHPAD_LINKS.ORIGINS,
+        href: LAUNCHPAD_LINKS.ORIGINS_CLAIM,
         url: noop,
         backgroundImage: originsLaunch,
         chains: [Chains.RSK],

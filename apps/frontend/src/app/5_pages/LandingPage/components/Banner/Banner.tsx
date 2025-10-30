@@ -50,18 +50,7 @@ export const Banner: FC = () => {
                 style={ButtonStyle.secondary}
                 size={ButtonSize.large}
                 text={t(translations.landingPage.promotions.originsLaunch.cta)}
-                href={LAUNCHPAD_LINKS.ORIGINS}
-                hrefExternal
-              />
-              <Button
-                style={ButtonStyle.ghost}
-                size={ButtonSize.large}
-                className="text-sm"
-                text={t(
-                  translations.landingPage.promotions.originsLaunch
-                    .secondaryCta,
-                )}
-                href={LAUNCHPAD_LINKS.LEARN_MORE}
+                href={LAUNCHPAD_LINKS.ORIGINS_CLAIM}
                 hrefExternal
               />
             </>

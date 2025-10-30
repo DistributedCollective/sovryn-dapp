@@ -71,6 +71,7 @@ export const ROOTSTOCK_LINK = 'https://rootstock.io/';
 
 export const LAUNCHPAD_LINKS = {
   ORIGINS: 'https://origins.sovryn.app',
+  ORIGINS_CLAIM: 'https://origins.sovryn.app/bos/vesting-claim',
   LEARN_MORE:
     'https://sovryn.com/all-things-sovryn/stake-sov-get-origins-bonus',
 };

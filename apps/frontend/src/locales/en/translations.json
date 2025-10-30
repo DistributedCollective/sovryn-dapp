@@ -510,7 +510,7 @@
             },
             "earn": {
                 "title": "Earn up to {{amount}}% APR in AMM",
-                "description": "Deposit in the AMM pools, earn from trades and get SOV rewards.",
+                "description": "Deposit in the AMM pools and earn from trades.",
                 "action": "Deposit in AMM"
             },
             "lend": {
@@ -1211,7 +1211,7 @@
         },
         "yieldFarmingBanner": {
             "title": "Yield farming",
-            "description": "Deposit in the AMM pools, earn from trades in Sovryn and get rewards",
+            "description": "Deposit in the AMM pools and earn from trades in Sovryn",
             "action": "Deposit in AMM"
         },
         "staking": {

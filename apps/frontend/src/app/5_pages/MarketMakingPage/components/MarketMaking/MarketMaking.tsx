@@ -18,7 +18,6 @@ import { RSK_STORAGE_KEY } from '../../../../2_molecules/MarketMakingNetworkBann
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
 import { PoolsTable } from '../PoolsTable/PoolsTable';
-import { Promotions } from '../Promotions/Promotions';
 
 export const MarketMaking: FC = () => {
   const { isMobile } = useIsMobile();
@@ -60,11 +59,6 @@ export const MarketMaking: FC = () => {
           >
             {t(translations.marketMakingPage.subtitle)}
           </Paragraph>
-
-          <Promotions
-            setActivePool={setActivePool}
-            onClick={setIsPromoCardClicked}
-          />
 
           <div className="w-full my-4">
             <Input

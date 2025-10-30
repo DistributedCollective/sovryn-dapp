@@ -1,4 +1,5 @@
 import { ApolloProvider } from '@apollo/client';
+import { QueryClientProvider } from '@tanstack/react-query';
 
 import './wdyr';
 
@@ -22,13 +23,12 @@ import { MaintenanceModeContextProvider } from './contexts/MaintenanceModeContex
 import { NotificationProvider } from './contexts/NotificationContext';
 import { TokenPricesProvider } from './contexts/TokenPricesContext';
 import { TransactionProvider } from './contexts/TransactionContext';
+import { queryClient } from './lib/query-client';
 import './locales/dayjs';
 import './locales/i18n';
 import { router } from './router';
 import './styles/tailwindcss/index.css';
 import { rskClient } from './utils/clients';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from './lib/query-client';
 
 const checkAndRemoveQueryParam = () => {
   const urlParams = new URLSearchParams(window.location.search);

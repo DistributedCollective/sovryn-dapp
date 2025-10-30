@@ -7,10 +7,10 @@ import { Helmet } from 'react-helmet-async';
 
 import { Heading, Paragraph, ParagraphSize } from '@sovryn/ui';
 
+import { queryClient } from '../../../lib/query-client';
 import { translations } from '../../../locales/i18n';
 import { BobGatewayForm } from './components/BobGatewayForm/BobGatewayForm';
 import { BobGatewayOrders } from './components/BobGatewayOrders/BobGatewayOrders';
-import { queryClient } from '../../../lib/query-client';
 
 const BobGateway: FC = () => (
   <>

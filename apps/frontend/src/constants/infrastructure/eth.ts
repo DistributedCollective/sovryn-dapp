@@ -1,13 +1,15 @@
 import { Environments } from '../../types/global';
 
 const rpc = {
+  [Environments.Mainnet]: 'https://ethereum-rpc.publicnode.com',
   [Environments.Testnet]: 'https://ethereum-sepolia-rpc.publicnode.com',
 };
 
-export const SEPOLIA = {
+export const ETHEREUM = {
   rpc,
   publicRpc: rpc,
   explorer: {
+    [Environments.Mainnet]: 'https://etherscan.io/',
     [Environments.Testnet]: 'https://sepolia.etherscan.io/',
   },
   indexer: {

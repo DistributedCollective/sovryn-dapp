@@ -1,3 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
+
 import axios from 'axios';
 
 import { Pool } from '@sovryn/sdk';
@@ -5,11 +7,10 @@ import { Pool } from '@sovryn/sdk';
 import { useCrocContext } from '../../../../../../contexts/CrocContext';
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
+import { loadIndexer } from '../../../../../../lib/indexer';
 import { PoolPositionType } from '../../../MarketMakingPage.types';
 import { AmbientPosition } from '../AmbientMarketMaking.types';
 import { useGetLpTokenBalance } from './useGetLpTokenBalance';
-import { useQuery } from '@tanstack/react-query';
-import { loadIndexer } from '../../../../../../lib/indexer';
 
 export const useGetAmbientPositions = (pool: Pool) => {
   const { croc } = useCrocContext();

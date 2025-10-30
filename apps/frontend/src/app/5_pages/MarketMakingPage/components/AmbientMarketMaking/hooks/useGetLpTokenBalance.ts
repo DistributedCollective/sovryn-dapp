@@ -1,3 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
+
 import { ethers } from 'ethers';
 
 import { getProvider } from '@sovryn/ethers-provider';
@@ -6,7 +8,6 @@ import { Pool } from '@sovryn/sdk';
 
 import { useAccount } from '../../../../../../hooks/useAccount';
 import { useCurrentChain } from '../../../../../../hooks/useChainStore';
-import { useQuery } from '@tanstack/react-query';
 
 export const useGetLpTokenBalance = (pool: Pool) => {
   const chainId = useCurrentChain();

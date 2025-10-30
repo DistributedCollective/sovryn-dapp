@@ -3,7 +3,7 @@ import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { ChainIds, ChainId } from '@sovryn/ethers-provider';
 
 import { SUBGRAPH } from '../constants/general';
-import { SEPOLIA } from '../constants/infrastructure/sepolia';
+import { ETHEREUM } from '../constants/infrastructure/eth';
 import { isRskChain } from './chain';
 
 export const rskClient = new ApolloClient({
@@ -35,7 +35,7 @@ export const bobClient = new ApolloClient({
 });
 
 export const sepoliaSdexClient = new ApolloClient({
-  uri: SEPOLIA.subgraph.testnet,
+  uri: ETHEREUM.subgraph.testnet,
   cache: new InMemoryCache({
     resultCaching: false,
   }),

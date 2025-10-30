@@ -1,0 +1,76 @@
+import { ChainIds, ChainId } from '@sovryn/ethers-provider';
+
+import { BridgeConfig } from '../types';
+import {
+  bscToRskMainnetAssets,
+  rskToBscMainnetAssets,
+  bscToRskTestnetAssets,
+  rskToBscTestnetAssets,
+  rskToEthMainnetAssets,
+  ethToRskMainnetAssets,
+} from './assets';
+
+export const bridges: BridgeConfig[] = [
+  // Mainnet Bridges
+  {
+    mainChainId: ChainIds.RSK_MAINNET,
+    sideChainId: ChainIds.BSC_MAINNET,
+    bridgeContractAddress: '0x971b97c8cc82e7d27bc467c2dc3f219c6ee2e350',
+    allowTokensContractAddress: '0xa2f50a2c699c1aa3b9089f6b565d4999d45d8983',
+    assets: rskToBscMainnetAssets,
+  },
+  {
+    mainChainId: ChainIds.BSC_MAINNET,
+    sideChainId: ChainIds.RSK_MAINNET,
+    bridgeContractAddress: '0xdfc7127593c8af1a17146893f10e08528f4c2aa7',
+    allowTokensContractAddress: '0x05b68e70168e876b2025f837bc8e0b2312d5327d',
+    assets: bscToRskMainnetAssets,
+  },
+  {
+    mainChainId: ChainIds.RSK_MAINNET,
+    sideChainId: ChainIds.MAINNET,
+    bridgeContractAddress: '0x1ccad820b6d031b41c54f1f3da11c0d48b399581',
+    allowTokensContractAddress: '0x200FD7A1Ccea4651f15008Cc99bf82d7461EFD3f',
+    assets: rskToEthMainnetAssets,
+  },
+  {
+    mainChainId: ChainIds.MAINNET,
+    sideChainId: ChainIds.RSK_MAINNET,
+    bridgeContractAddress: '0x33c0d33a0d4312562ad622f91d12b0ac47366ee1',
+    allowTokensContractAddress: '0x8DF20c2c85Bee0c3DA250dA96D892598C70aA1bE',
+    assets: ethToRskMainnetAssets,
+  },
+
+  // Testnet Bridges
+  {
+    mainChainId: ChainIds.RSK_TESTNET,
+    sideChainId: ChainIds.BSC_TESTNET,
+    bridgeContractAddress: '0x2b2bcad081fa773dc655361d1bb30577caa556f8',
+    allowTokensContractAddress: '0xa9f2ccb27fe01479a1f21f3a236989c614f801bc',
+    assets: rskToBscTestnetAssets,
+  },
+  {
+    mainChainId: ChainIds.BSC_TESTNET,
+    sideChainId: ChainIds.RSK_TESTNET,
+    bridgeContractAddress: '0x862e8aff917319594cc7faaae5350d21196c086f',
+    allowTokensContractAddress: '0xeb23e848ceca88b7d0c019c7186bb86cefadd0bd',
+    assets: bscToRskTestnetAssets,
+  },
+];
+
+export const getBridge = (
+  sourceChain: ChainId,
+  targetChain: ChainId,
+): BridgeConfig | undefined => {
+  return bridges.find(
+    b => b.mainChainId === sourceChain && b.sideChainId === targetChain,
+  );
+};
+
+export const getSupportedBridgesBySource = (sourceChain: ChainId) => {
+  return bridges.filter(b => b.mainChainId === sourceChain);
+};
+
+export const getSupportedBridgesByTarget = (targetChain: ChainId) => {
+  return bridges.filter(b => b.sideChainId === targetChain);
+};

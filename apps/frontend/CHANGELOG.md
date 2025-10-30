@@ -1,5 +1,11 @@
 # frontend
 
+## 1.1.39
+
+### Patch Changes
+
+- 1cf09a1d: SOV-5202: Hide LM rewards
+
 ## 1.1.38
 
 ### Patch Changes

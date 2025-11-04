@@ -490,7 +490,7 @@
                 },
                 "third": {
                     "title": "How do I get funds into Sovryn?",
-                    "description": "On BOB, you can use the bridge interface to bring in assets from Ethereum and to bridge in BTC from the bitcoin network.<br/><br/>On Rootstock, you can bridge in BTC from the bitcoin network with FastBTC. You can also bridge in stablecoins with Babelfish and other assets from Ethereum and BSC using the Sovryn bridge."
+                    "description": "On BOB, you can use the bridge interface to bring in assets from Ethereum and to bridge in BTC from the bitcoin network.<br/><br/>On Rootstock, you can bridge in stablecoins with Babelfish and other assets from Ethereum and BSC using the Sovryn bridge."
                 },
                 "fourth": {
                     "title": "What is the native gas token?",

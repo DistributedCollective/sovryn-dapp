@@ -20,10 +20,14 @@ import {
 
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
+import { AmountRenderer } from '../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
+import { USD } from '../../../../../../constants/currencies';
 import { useAccount } from '../../../../../../hooks';
+import { useDollarValue } from '../../../../../../hooks/useDollarValue';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { translations } from '../../../../../../locales/i18n';
+import { toWei } from '../../../../../../utils/math';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useBridgeService } from '../../../hooks/useBridgeService';
 import { useBridgeValidation } from '../../../hooks/useBridgeValidation';
@@ -72,6 +76,12 @@ export const AmountScreen: React.FC = () => {
     receiver,
   });
 
+  const { usdValue } = useDollarValue(
+    token!,
+    amount !== '' ? toWei(amount).toString() : '0',
+    RSK_CHAIN_ID,
+  );
+
   return (
     <div>
       {chainId && (
@@ -101,15 +111,21 @@ export const AmountScreen: React.FC = () => {
         )}
       </div>
 
-      <AmountInput
-        value={amount}
-        onChangeText={setAmount}
-        label={t(translations.common.amount)}
-        unit={token}
-        min={0}
-        className="w-full mb-6 max-w-full"
-        placeholder="0"
-      />
+      <div className="mb-6">
+        <AmountInput
+          value={amount}
+          onChangeText={setAmount}
+          label={t(translations.common.amount)}
+          unit={token}
+          min={0}
+          className="w-full mb-0 max-w-full"
+          placeholder="0"
+        />
+
+        <div className="flex justify-end text-tiny text-gray-30 mt-1">
+          <AmountRenderer value={usdValue} suffix={USD} />
+        </div>
+      </div>
 
       <Paragraph className="mb-1 text-sm font-medium">
         <Trans

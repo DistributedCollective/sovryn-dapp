@@ -2,6 +2,8 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import React, { createContext, useContext, ReactNode } from 'react';
 
+import { ChainIds } from '@sovryn/ethers-provider';
+
 import { DATA_REFRESH_INTERVAL } from '../constants/general';
 import { useCurrentChain } from '../hooks/useChainStore';
 import { loadIndexer } from '../lib/indexer';
@@ -25,6 +27,13 @@ export type TokenData = {
   usdPrice: string;
 };
 
+const UNSUPPORTED_CHAIN_IDS = [
+  ChainIds.MAINNET,
+  ChainIds.SEPOLIA,
+  ChainIds.BSC_MAINNET,
+  ChainIds.BSC_TESTNET,
+];
+
 const TokenPricesContext = createContext<TokenPricesContextType | undefined>(
   undefined,
 );
@@ -40,7 +49,12 @@ export const TokenPricesProvider: React.FC<TokenPricesProviderProps> = ({
     placeholderData: keepPreviousData,
     refetchInterval: DATA_REFRESH_INTERVAL,
     queryFn: async () => {
-      const data = await loadIndexer(currentChainId).tokens.list();
+      // Fallback to RSK_MAINNET if current chain is unsupported
+      const chain = UNSUPPORTED_CHAIN_IDS.includes(currentChainId as ChainIds)
+        ? ChainIds.RSK_MAINNET
+        : currentChainId;
+
+      const data = await loadIndexer(chain).tokens.list();
 
       if (data) {
         const prices = data.reduce(

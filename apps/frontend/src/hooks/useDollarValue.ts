@@ -45,6 +45,8 @@ export function useDollarValue(
         return COMMON_SYMBOLS.ETH;
       } else if (['wbtc', 'tbtc'].includes(asset.toLocaleLowerCase())) {
         return COMMON_SYMBOLS.BTC;
+      } else if (asset.toLocaleLowerCase() === 'esov') {
+        return COMMON_SYMBOLS.SOV;
       }
     }
     return asset.toUpperCase();

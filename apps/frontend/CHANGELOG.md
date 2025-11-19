@@ -1,5 +1,11 @@
 # frontend
 
+## 1.1.40
+
+### Patch Changes
+
+- 0076bfd2: ERC20 bridge maintenance mode
+
 ## 1.1.39
 
 ### Patch Changes

@@ -10,12 +10,13 @@ import {
   ReceiveFlowContext,
   ReceiveFlowStep,
 } from '../../../contexts/receiveflow';
+import { useERC20BridgeLocked } from '../../../hooks/useERC20BridgeLocked';
 import { Instructions } from '../../Instructions';
 
 export const InitialScreen: React.FC = () => {
   const { account } = useAccount();
   const { set } = useContext(ReceiveFlowContext);
-  const erc20BridgeLocked = false;
+  const isBridgeLocked = useERC20BridgeLocked();
   const onContinueClick = useCallback(() => {
     set(prevState => ({ ...prevState, step: ReceiveFlowStep.MAIN }));
   }, [set]);
@@ -24,7 +25,7 @@ export const InitialScreen: React.FC = () => {
     <div>
       <Instructions />
 
-      {erc20BridgeLocked ? (
+      {isBridgeLocked ? (
         <ErrorBadge
           level={ErrorLevel.Warning}
           message={t(translations.maintenanceMode.erc20Bridge)}

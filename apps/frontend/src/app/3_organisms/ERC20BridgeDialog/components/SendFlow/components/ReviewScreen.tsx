@@ -5,7 +5,7 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { t } from 'i18next';
 
 import { TxStep } from '@sovryn/sdk';
-import { Button } from '@sovryn/ui';
+import { Button, ErrorBadge, ErrorLevel } from '@sovryn/ui';
 
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
@@ -22,6 +22,7 @@ import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useBridge } from '../../../hooks/useBridge';
 import { useBridgeLimits } from '../../../hooks/useBridgeLimits';
 import { useBridgeService } from '../../../hooks/useBridgeService';
+import { useERC20BridgeLocked } from '../../../hooks/useERC20BridgeLocked';
 import { TxStatusTitle } from '../../TxStatusTitle';
 
 const translation = translations.erc20Bridge.confirmationScreens;
@@ -178,6 +179,8 @@ export const ReviewScreen: React.FC = () => {
     TxStep.PENDING,
   ].includes(transaction.step);
 
+  const isBridgeLocked = useERC20BridgeLocked();
+
   return (
     <div className="text-center">
       <TxStatusTitle step={transaction.step} />
@@ -191,26 +194,33 @@ export const ReviewScreen: React.FC = () => {
         ))}
       </div>
 
-      <div className="mt-12">
-        <Button
-          text={
-            transaction.step === TxStep.CONFIRMED
-              ? t(translations.common.buttons.done)
-              : [TxStep.USER_DENIED, TxStep.FAILED].includes(transaction.step)
-              ? t(translations.common.buttons.retry)
-              : t(translations.common.buttons.confirm)
-          }
-          onClick={
-            transaction.step === TxStep.CONFIRMED
-              ? handleErc20BridgeDialogClose
-              : handleSubmit
-          }
-          loading={isLoading}
-          disabled={isLoading}
-          className="w-full"
-          dataAttribute="erc20-send-confirm"
+      {isBridgeLocked ? (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.erc20Bridge)}
         />
-      </div>
+      ) : (
+        <div className="mt-12">
+          <Button
+            text={
+              transaction.step === TxStep.CONFIRMED
+                ? t(translations.common.buttons.done)
+                : [TxStep.USER_DENIED, TxStep.FAILED].includes(transaction.step)
+                ? t(translations.common.buttons.retry)
+                : t(translations.common.buttons.confirm)
+            }
+            onClick={
+              transaction.step === TxStep.CONFIRMED
+                ? handleErc20BridgeDialogClose
+                : handleSubmit
+            }
+            loading={isLoading}
+            disabled={isLoading || isBridgeLocked}
+            className="w-full"
+            dataAttribute="erc20-send-confirm"
+          />
+        </div>
+      )}
     </div>
   );
 };

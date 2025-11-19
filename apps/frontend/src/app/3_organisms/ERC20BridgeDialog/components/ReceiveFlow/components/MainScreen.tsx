@@ -7,6 +7,8 @@ import {
   AmountInput,
   Button,
   ButtonStyle,
+  ErrorBadge,
+  ErrorLevel,
   Paragraph,
   Select,
 } from '@sovryn/ui';
@@ -22,6 +24,7 @@ import {
   ReceiveFlowStep,
 } from '../../../contexts/receiveflow';
 import { useAssetsByTargetChain } from '../../../hooks/useBridgeAssets';
+import { useERC20BridgeLocked } from '../../../hooks/useERC20BridgeLocked';
 import { useTokenBalance } from '../../../hooks/useTokenBalance';
 import { Limits } from '../../Limits';
 import { NetworkRenderer } from '../../NetworkRenderer';
@@ -34,6 +37,7 @@ export const MainScreen: React.FC = () => {
   const isWrongChain = currentChainId !== chainId;
   const { data: tokenBalance } = useTokenBalance(token, chainId);
   const assetDetails = useTokenDetailsByAsset(token, chainId);
+  const isBridgeLocked = useERC20BridgeLocked();
 
   const balance = formatUnits(tokenBalance || '0', assetDetails?.decimals);
 
@@ -119,7 +123,12 @@ export const MainScreen: React.FC = () => {
         />
       </div>
 
-      {isWrongChain ? (
+      {isBridgeLocked ? (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.erc20Bridge)}
+        />
+      ) : isWrongChain ? (
         <Button
           onClick={() => chainId && setCurrentChainId(chainId)}
           text={t(translations.erc20Bridge.confirmationScreens.switchNetwork)}
@@ -132,7 +141,7 @@ export const MainScreen: React.FC = () => {
         <>
           <AmountInput
             className="w-full max-w-full mb-6"
-            label="Avaiaible Balance"
+            label="Available Balance"
             value={balance}
             readOnly
             unit={token}
@@ -150,7 +159,9 @@ export const MainScreen: React.FC = () => {
             className="w-full mt-12"
             style={ButtonStyle.secondary}
             dataAttribute="funding-receive-instructions-confirm"
-            disabled={!token || !chainId || Number(balance) <= 0}
+            disabled={
+              !token || !chainId || Number(balance) <= 0 || isBridgeLocked
+            }
           />
         </>
       )}

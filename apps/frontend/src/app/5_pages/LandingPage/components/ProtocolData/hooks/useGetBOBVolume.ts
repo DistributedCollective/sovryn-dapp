@@ -1,4 +1,3 @@
-// useGetBOBVolume.ts
 import { useMemo } from 'react';
 
 import axios from 'axios';
@@ -17,17 +16,19 @@ import { useGetTokens } from './useGetTokens';
 
 const indexer = getIndexerUrl();
 
-// optional hard overrides if token list is wrong
+// hard overrides if token list is wrong
 const DECIMALS_OVERRIDE: Record<string, number> = {
-  // lowercased addresses
   // SOV
   '0xba20a5e63eeefffa6fd365e7e540628f8fc61474': 18,
   // WBTC
   '0x0555e30da8f98308edb960aa94c0db47230d2b9c': 8,
-  // add others here if the indexer list is wrong
+  // POWA
+  '0xd0c2f08a873186db5cfb7b767db62bef9e495bff': 18,
 };
 
-const isSanePrice = (p: number) => isFinite(p) && p > 0 && p < 200_000;
+// Treat ultra-small prices as broken (e.g. POWA mispriced at ~1e-7 USD),
+// and cap at a generous upper bound for safety.
+const isSanePrice = (p: number) => isFinite(p) && p >= 1e-5 && p < 200_000;
 
 export const useGetBOBVolume = () => {
   const { currentChainId } = useChainStore();
@@ -59,7 +60,12 @@ export const useGetBOBVolume = () => {
       const decimals = DECIMALS_OVERRIDE[addr] ?? Number(token.decimals ?? 18);
       const price = Number(token.usdPrice);
 
-      // drop broken feeds like POWA ~ 1e-7, or NaN/negative
+      // skip insane decimals
+      if (!Number.isInteger(decimals) || decimals < 0 || decimals > 36) {
+        continue;
+      }
+
+      // drop broken feeds like POWA ~ 1e-7, NaN, negative, etc.
       if (!isSanePrice(price)) continue;
 
       // raw volume is in base units; normalize with decimals
@@ -71,8 +77,10 @@ export const useGetBOBVolume = () => {
       }
 
       const usd = decimalic(price).mul(units);
-      // drop absurd contributions (protect against single bad token)
-      if (Number(usd) > 1e12 || !isFinite(Number(usd))) continue;
+
+      // drop absurd contributions (protect against a single bad token dominating)
+      const usdNum = Number(usd);
+      if (!isFinite(usdNum) || usdNum > 1e12) continue;
 
       sum = sum.add(usd);
     }

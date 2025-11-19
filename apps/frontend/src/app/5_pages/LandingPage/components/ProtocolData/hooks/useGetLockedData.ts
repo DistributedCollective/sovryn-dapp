@@ -39,7 +39,7 @@ export const useGetLockedData = (chainId?: ChainId) => {
         const data = result?.data?.data;
         if (!data) return;
 
-        // --- BOB sanitizer: recompute total from parts; drop insane entries ---
+        // BOB sanitizer: recompute total from parts; drop insane entries
         if (Number(chainId || currentChainId) === Number(BOB_CHAIN_ID)) {
           // BTC-ish symbols where we validate unit price hard
           const CLAMP_BTC_SYMBOLS = new Set([

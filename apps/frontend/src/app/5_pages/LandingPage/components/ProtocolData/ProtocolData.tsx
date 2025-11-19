@@ -17,6 +17,7 @@ import { translations } from '../../../../../locales/i18n';
 import { decimalic } from '../../../../../utils/math';
 import { USD_VALUE_PRECISION } from './ProtocolData.constants';
 import styles from './ProtocolData.module.css';
+import { pickBtcUsd, safeBucketUsd, sanitizeUsd } from './ProtocolData.utils';
 import { useGetBOBVolume } from './hooks/useGetBOBVolume';
 import { useGetLockedData } from './hooks/useGetLockedData';
 import { useGetRSKVolume } from './hooks/useGetRSKVolume';
@@ -24,40 +25,14 @@ import { useGetTokens } from './hooks/useGetTokens';
 
 const pageTranslations = translations.landingPage.protocolDataSection;
 
-/** Reject non-finite or absurd USD values; return "0" if invalid. */
-const sanitizeUsd = (raw: unknown, cap = 1e12) => {
-  const n = Number(raw ?? 0);
-  if (!isFinite(n) || n < 0 || n > cap) return '0';
-  return String(n);
-};
-
-/** Pick a reasonable BTC/USD from token lists; validate rough range. */
-function pickBtcUsd(
-  tokens: Array<{ symbol?: string; usdPrice?: string | number }> = [],
-  symbols: string[],
-): number | undefined {
-  for (const s of symbols) {
-    const tok = tokens.find(
-      t =>
-        t?.symbol?.toUpperCase() === s.toUpperCase() && Number(t.usdPrice) > 0,
-    );
-    const px = Number(tok?.usdPrice);
-    if (isFinite(px) && px >= 1_000 && px <= 200_000) return px; // wide but sane
-  }
-  return undefined;
-}
-
 export const ProtocolData: FC = () => {
-  // --- Raw data hooks ---------------------------------------------------------
   // RSK data (TVL parts + 24h volume)
   const rskLocked = useGetLockedData(RSK_CHAIN_ID);
-  console.log(rskLocked);
 
   const rskVolumeRaw = useGetRSKVolume(); // 24h USD (string)
 
   // BOB data (TVL aggregate + 24h volume)
   const bobLocked = useGetLockedData(BOB_CHAIN_ID);
-  console.log('bob locked', bobLocked);
 
   const bobVolumeRaw = useGetBOBVolume(); // 24h USD (string)
 
@@ -69,7 +44,6 @@ export const ProtocolData: FC = () => {
   const [open, toggle] = useReducer(v => !v, false);
   const handleClick = useCallback(() => navigate('/stats'), [navigate]);
 
-  // --- BTC/USD sources --------------------------------------------------------
   // Prefer RSK RBTC/WRBTC for stability; fallback to BOB BTC wrappers.
   const rskBtcUsd = useMemo(
     () => pickBtcUsd(rskTokens, ['RBTC', 'WRBTC', 'BTC']) ?? 0,
@@ -94,28 +68,57 @@ export const ProtocolData: FC = () => {
     [rskBtcUsd, bobBtcUsd],
   );
 
-  // --- RSK TVL (USD) aggregated from sub-buckets ------------------------------
-  const rskTvlUsd = useMemo(
-    () =>
-      decimalic(rskLocked?.tvlAmm?.totalUsd || 0)
-        .add(rskLocked?.tvlLending?.totalUsd || 0)
-        .add(rskLocked?.tvlMynt?.totalUsd || 0)
-        .add(rskLocked?.tvlProtocol?.totalUsd || 0)
-        .add(rskLocked?.tvlStaking?.totalUsd || 0)
-        .add(rskLocked?.tvlSubprotocols?.totalUsd || 0)
-        .add(rskLocked?.tvlZero?.totalUsd || 0)
-        .toString(),
-    [rskLocked],
-  );
+  const rskTvlUsd = useMemo(() => {
+    if (!rskLocked) {
+      return '0';
+    }
 
-  // --- BOB TVL (USD) from backend (already recomputed/clamped in hook) -------
+    // Aggregate from buckets, applying numeric caps per bucket
+    const fromBuckets = decimalic(0)
+      .add(safeBucketUsd(rskLocked.tvlAmm))
+      .add(safeBucketUsd(rskLocked.tvlLending))
+      .add(safeBucketUsd(rskLocked.tvlMynt))
+      .add(safeBucketUsd(rskLocked.tvlProtocol))
+      .add(safeBucketUsd(rskLocked.tvlStaking))
+      .add(safeBucketUsd(rskLocked.tvlSubprotocols))
+      .add(safeBucketUsd(rskLocked.tvlZero));
+
+    //sanity-check against raw total_usd/totalUsd from backend
+    const rawTotal = Number(
+      (rskLocked as any)?.total_usd ?? (rskLocked as any)?.totalUsd ?? 0,
+    );
+    const safeRawTotal =
+      !isFinite(rawTotal) || rawTotal < 0 || rawTotal > 1e9 ? 0 : rawTotal;
+
+    if (safeRawTotal > 0) {
+      const diff = Math.abs(fromBuckets.toNumber() - safeRawTotal);
+      const relDiff = diff / safeRawTotal;
+
+      // Log if discrepancy > ~3% (indexer vs graph-wrapper)
+      if (relDiff > 0.03) {
+        // eslint-disable-next-line no-console
+        console.warn('[ProtocolData] RSK TVL mismatch', {
+          buckets: fromBuckets.toString(),
+          total_usd: safeRawTotal.toString(),
+          relDiff,
+        });
+      }
+    }
+
+    return fromBuckets.toString();
+  }, [rskLocked]);
+
   const bobTvlUsd = useMemo(() => {
-    // accept either total_usd or totalUsd from the hook
-    const raw = bobLocked.total_usd;
-    return sanitizeUsd(raw, 1e12);
+    if (!bobLocked) {
+      return '0';
+    }
+
+    const raw =
+      (bobLocked as any)?.total_usd ?? (bobLocked as any)?.totalUsd ?? 0;
+
+    return sanitizeUsd(raw, 1e9);
   }, [bobLocked]);
 
-  // --- Per-chain TVL in BTC ---------------------------------------------------
   const rskTvlBtc = useMemo(
     () => (rskBtcUsd ? decimalic(rskTvlUsd).div(rskBtcUsd).toString() : '0'),
     [rskTvlUsd, rskBtcUsd],
@@ -125,7 +128,6 @@ export const ProtocolData: FC = () => {
     [bobTvlUsd, bobBtcUsd],
   );
 
-  // --- 24h volumes (USD sanitized) -------------------------------------------
   const rskVolumeUsd = useMemo(
     () => sanitizeUsd(rskVolumeRaw, 1e12),
     [rskVolumeRaw],
@@ -135,7 +137,6 @@ export const ProtocolData: FC = () => {
     [bobVolumeRaw],
   );
 
-  // --- Per-chain 24h volume in BTC -------------------------------------------
   const rskVolumeBtc = useMemo(
     () => (rskBtcUsd ? decimalic(rskVolumeUsd).div(rskBtcUsd).toString() : '0'),
     [rskVolumeUsd, rskBtcUsd],
@@ -145,7 +146,6 @@ export const ProtocolData: FC = () => {
     [bobVolumeUsd, bobBtcUsd],
   );
 
-  // --- Totals (USD) and convert once with global BTC/USD ----------------------
   const totalTvlUsd = useMemo(
     () => decimalic(rskTvlUsd).add(bobTvlUsd).toString(),
     [rskTvlUsd, bobTvlUsd],
@@ -166,7 +166,6 @@ export const ProtocolData: FC = () => {
     [totalVolUsd, globalBtcUsd],
   );
 
-  // --- Render -----------------------------------------------------------------
   return (
     <div>
       <div className="text-base font-medium text-gray-10">

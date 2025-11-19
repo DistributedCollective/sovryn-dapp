@@ -222,13 +222,3 @@ export const scrollToElement = (ref: RefObject<any>) => {
     });
   }
 };
-
-export function sanitizeUsd(v: unknown, cap = 1e9): number {
-  const n = Number(v);
-  if (!Number.isFinite(n) || n < 0 || n > cap) return 0;
-  return n;
-}
-
-export function safeAddUsd(a: unknown, b: unknown, cap = 1e9): string {
-  return String(sanitizeUsd(a, cap) + sanitizeUsd(b, cap));
-}

@@ -30,6 +30,7 @@ import {
 } from '../../../contexts/receiveflow';
 import { useBridgeService } from '../../../hooks/useBridgeService';
 import { useBridgeValidation } from '../../../hooks/useBridgeValidation';
+import { useERC20BridgeLocked } from '../../../hooks/useERC20BridgeLocked';
 import { useTokenBalance } from '../../../hooks/useTokenBalance';
 
 export const AmountScreen: React.FC = () => {
@@ -78,6 +79,8 @@ export const AmountScreen: React.FC = () => {
     amount: parseUnits(amount || '0', assetDetails?.decimals).toString(),
     receiver,
   });
+
+  const isBridgeLocked = useERC20BridgeLocked();
 
   return (
     <div>
@@ -141,7 +144,12 @@ export const AmountScreen: React.FC = () => {
         }))}
       />
 
-      {isWrongChain ? (
+      {isBridgeLocked ? (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.erc20Bridge)}
+        />
+      ) : isWrongChain ? (
         <Button
           onClick={() => chainId && setCurrentChainId(chainId)}
           text={t(translations.erc20Bridge.confirmationScreens.switchNetwork)}
@@ -157,7 +165,7 @@ export const AmountScreen: React.FC = () => {
           className="w-full mt-6"
           style={ButtonStyle.secondary}
           dataAttribute="funding-receive-instructions-confirm"
-          disabled={!isValid}
+          disabled={!isValid || isBridgeLocked}
         />
       )}
     </div>

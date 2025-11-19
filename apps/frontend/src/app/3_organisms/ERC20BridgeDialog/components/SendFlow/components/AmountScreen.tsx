@@ -27,6 +27,7 @@ import { translations } from '../../../../../../locales/i18n';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useBridgeService } from '../../../hooks/useBridgeService';
 import { useBridgeValidation } from '../../../hooks/useBridgeValidation';
+import { useERC20BridgeLocked } from '../../../hooks/useERC20BridgeLocked';
 import { useTokenBalance } from '../../../hooks/useTokenBalance';
 
 export const AmountScreen: React.FC = () => {
@@ -35,6 +36,7 @@ export const AmountScreen: React.FC = () => {
   const bridgeService = useBridgeService();
   const assetDetails = useTokenDetailsByAsset(token, RSK_CHAIN_ID);
   const { data: tokenBalance } = useTokenBalance(token, RSK_CHAIN_ID);
+  const isBridgeLocked = useERC20BridgeLocked();
 
   const balance = formatUnits(tokenBalance || '0', assetDetails?.decimals);
 
@@ -139,14 +141,21 @@ export const AmountScreen: React.FC = () => {
         }))}
       />
 
-      <Button
-        onClick={onContinueClick}
-        text={t(translations.common.buttons.continue)}
-        className="w-full mt-6"
-        style={ButtonStyle.secondary}
-        dataAttribute="funding-send-instructions-confirm"
-        disabled={!isValid}
-      />
+      {isBridgeLocked ? (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.erc20Bridge)}
+        />
+      ) : (
+        <Button
+          onClick={onContinueClick}
+          text={t(translations.common.buttons.continue)}
+          className="w-full mt-6"
+          style={ButtonStyle.secondary}
+          dataAttribute="funding-send-instructions-confirm"
+          disabled={!isValid || isBridgeLocked}
+        />
+      )}
     </div>
   );
 };

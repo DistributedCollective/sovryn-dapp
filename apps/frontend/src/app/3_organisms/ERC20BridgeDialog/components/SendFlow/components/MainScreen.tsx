@@ -7,6 +7,8 @@ import {
   AmountInput,
   Button,
   ButtonStyle,
+  ErrorBadge,
+  ErrorLevel,
   Paragraph,
   Select,
 } from '@sovryn/ui';
@@ -19,6 +21,7 @@ import { translations } from '../../../../../../locales/i18n';
 import { SendFlowContext, SendFlowStep } from '../../../contexts/sendflow';
 import { useBridgeAggregatorBalance } from '../../../hooks/useBridgeAggregatorBalance';
 import { useAssetsBySourceChain } from '../../../hooks/useBridgeAssets';
+import { useERC20BridgeLocked } from '../../../hooks/useERC20BridgeLocked';
 import { Limits } from '../../Limits';
 import { NetworkRenderer } from '../../NetworkRenderer';
 
@@ -32,6 +35,7 @@ export const MainScreen: React.FC = () => {
   );
   const { currentChainId, setCurrentChainId } = useChainStore();
   const isWrongChain = currentChainId !== RSK_CHAIN_ID;
+  const isBridgeLocked = useERC20BridgeLocked();
 
   const uniqueAssets = assets.filter(
     (asset, index, arr) =>
@@ -128,7 +132,12 @@ export const MainScreen: React.FC = () => {
 
       <Limits sourceChain={RSK_CHAIN_ID} targetChain={chainId} asset={token} />
 
-      {isWrongChain ? (
+      {isBridgeLocked ? (
+        <ErrorBadge
+          level={ErrorLevel.Warning}
+          message={t(translations.maintenanceMode.erc20Bridge)}
+        />
+      ) : isWrongChain ? (
         <Button
           onClick={() => setCurrentChainId(RSK_CHAIN_ID)}
           text={t(translations.erc20Bridge.confirmationScreens.switchNetwork)}
@@ -145,6 +154,7 @@ export const MainScreen: React.FC = () => {
           style={ButtonStyle.secondary}
           dataAttribute="funding-send-instructions-confirm"
           disabled={
+            isBridgeLocked ||
             !token ||
             !chainId ||
             !aggregatorBalance ||

@@ -143,6 +143,8 @@ export const MAINNET_AMM = [
     ChainIds.RSK_MAINNET,
     '0xF1DeE3175593f4e13a2b9e09a5FaafC513c9A27F',
     '0x7899206a3D55688dAFee9E42768ec582bF701050',
+    undefined,
+    true,
   ),
 ];
 

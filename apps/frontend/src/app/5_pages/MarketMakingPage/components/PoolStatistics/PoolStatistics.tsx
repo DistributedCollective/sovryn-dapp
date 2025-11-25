@@ -35,6 +35,17 @@ export const PoolsStatistics: FC<PoolsStatisticsProps> = ({ pool }) => {
   } = useGetProtocolFee();
 
   const renderLpFeeRate = useMemo(() => {
+    // Temporary fix for BOS pool
+    if (pool.poolTokenA === '0xfd834bbcde8c3ac4766bf5c1f5d861400103087b') {
+      return (
+        <AmountRenderer
+          value={0.25}
+          suffix="%"
+          dataAttribute="market-making-pool-statistics-lp-fee-rate"
+        />
+      );
+    }
+
     if (pool.converterVersion === 2) {
       return (
         <AmountRenderer
@@ -55,7 +66,12 @@ export const PoolsStatistics: FC<PoolsStatisticsProps> = ({ pool }) => {
     ) : (
       0
     );
-  }, [conversionFee, conversionFeeLoading, pool.converterVersion]);
+  }, [
+    conversionFee,
+    conversionFeeLoading,
+    pool.converterVersion,
+    pool.poolTokenA,
+  ]);
 
   const renderBitocracyFeeRate = useMemo(
     () =>
@@ -73,6 +89,17 @@ export const PoolsStatistics: FC<PoolsStatisticsProps> = ({ pool }) => {
   );
 
   const renderTotalSwapFeeRate = useMemo(() => {
+    // Temporary fix for BOS pool
+    if (pool.poolTokenA === '0xfd834bbcde8c3ac4766bf5c1f5d861400103087b') {
+      return (
+        <AmountRenderer
+          value={0.35}
+          suffix="%"
+          dataAttribute="market-making-pool-statistics-total-swap-fee-rate"
+        />
+      );
+    }
+
     if (pool.converterVersion === 2) {
       return (
         <AmountRenderer
@@ -93,6 +120,7 @@ export const PoolsStatistics: FC<PoolsStatisticsProps> = ({ pool }) => {
       0
     );
   }, [
+    pool.poolTokenA,
     pool.converterVersion,
     protocolFeeLoading,
     conversionFeeLoading,

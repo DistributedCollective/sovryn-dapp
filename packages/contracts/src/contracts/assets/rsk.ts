@@ -125,4 +125,11 @@ export const rsk: Array<AssetDetails> = [
     decimals: 18,
     getIcon: async () => (await import('./icons/rsk/powa')).default,
   },
+  {
+    symbol: 'BOS',
+    address: '0x3E3006896458F0ACfE79b57A1A0fe067B3a1ce6f',
+    name: 'BitcoinOS Token',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/bos')).default,
+  },
 ];

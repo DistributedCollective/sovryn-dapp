@@ -1,5 +1,13 @@
 # @sovryn/sdk
 
+## 2.0.9
+
+### Patch Changes
+
+- 0855c695: SOV-5247: BOS bridging and trading
+- Updated dependencies [0855c695]
+  - @sovryn/contracts@1.2.7
+
 ## 2.0.8
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.2.7
+
+### Patch Changes
+
+- 0855c695: SOV-5247: BOS bridging and trading
+
 ## 1.2.6
 
 ### Patch Changes

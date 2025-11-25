@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -17,7 +17,10 @@ import { MarketMakingNetworkBanner } from '../../../../2_molecules/MarketMakingN
 import { RSK_STORAGE_KEY } from '../../../../2_molecules/MarketMakingNetworkBanner/MarketMakingNetworkBanner.constants';
 import { useIsMobile } from '../../../../../hooks/useIsMobile';
 import { translations } from '../../../../../locales/i18n';
+import { AmmLiquidityPoolDictionary } from '../../utils/AmmLiquidityPoolDictionary';
 import { PoolsTable } from '../PoolsTable/PoolsTable';
+
+const ammPools = AmmLiquidityPoolDictionary.list();
 
 export const MarketMaking: FC = () => {
   const { isMobile } = useIsMobile();
@@ -37,6 +40,11 @@ export const MarketMaking: FC = () => {
       setActivePool('');
     }
   }, [activePool, isMobile]);
+
+  const isAnyPoolHighlighted = useMemo(
+    () => ammPools.some(pool => pool.isHighlighted),
+    [],
+  );
 
   return (
     <>
@@ -71,6 +79,33 @@ export const MarketMaking: FC = () => {
               )}
             />
           </div>
+
+          {isAnyPoolHighlighted && (
+            <>
+              <Paragraph
+                className="pl-2 w-full text-base font-medium text-left mb-4 mt-8"
+                size={ParagraphSize.base}
+              >
+                {t(translations.marketMakingPage.newPairs)}
+              </Paragraph>
+
+              <PoolsTable
+                setActivePool={setActivePoolKey}
+                shouldScroll={isPromoCardClicked}
+                activePool={activePool}
+                filter={searchInputValue}
+                showHighlightedPools={true}
+              />
+
+              <Paragraph
+                className="pl-2 w-full text-base font-medium text-left mb-4 mt-8"
+                size={ParagraphSize.base}
+              >
+                {t(translations.marketMakingPage.allPairs)}
+              </Paragraph>
+            </>
+          )}
+
           <PoolsTable
             setActivePool={setActivePoolKey}
             shouldScroll={isPromoCardClicked}

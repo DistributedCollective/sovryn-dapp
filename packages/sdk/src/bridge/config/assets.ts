@@ -86,6 +86,15 @@ export const ethToRskMainnetAssets: AssetConfig[] = [
     aggregatorContractAddress: aggregators.mainnet.eths,
     bridgeTokenAddress: '0xd412acd34a832a09c80c8a4895ff46d733f09538',
   },
+  {
+    symbol: 'BOS',
+    minDecimals: 4,
+    isNative: false,
+    isBase: false,
+    usesAggregator: false,
+    aggregatorContractAddress: undefined,
+    bridgeTokenAddress: '0x13239C268BEDDd88aD0Cb02050D3ff6a9d00de6D',
+  },
 ];
 
 // RSK to ETH Assets (Mainnet)
@@ -114,6 +123,14 @@ export const rskToEthMainnetAssets: AssetConfig[] = [
     usesAggregator: true,
     aggregatorContractAddress: aggregators.mainnet.eths,
     bridgeTokenAddress: '0xFe878227c8F334038DAb20a99fC3B373fFe0a755',
+  },
+  {
+    symbol: 'BOS',
+    minDecimals: 4,
+    isNative: false,
+    isBase: false,
+    usesAggregator: false,
+    aggregatorContractAddress: undefined,
   },
 ];
 

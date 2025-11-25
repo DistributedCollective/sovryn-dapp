@@ -124,6 +124,7 @@ export const ammSwapRoute: SwapRouteFunction = (
           'MYNT',
           'BPRO',
           'POWA',
+          'BOS',
         ];
 
         const contracts = (

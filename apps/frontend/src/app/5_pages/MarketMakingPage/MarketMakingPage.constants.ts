@@ -136,6 +136,16 @@ export const MAINNET_AMM = [
     '0x4531DD0f24D204c08b251084E12ce3D3e70Dd03e',
     '0xBfd61419D30650FD943855b2bbE4C2A2E54857f9',
   ),
+  new AmmLiquidityPool(
+    'BOS',
+    COMMON_SYMBOLS.BTC,
+    1,
+    ChainIds.RSK_MAINNET,
+    '0xF1DeE3175593f4e13a2b9e09a5FaafC513c9A27F',
+    '0xfd834bbcde8c3ac4766bf5c1f5d861400103087b',
+    undefined,
+    true,
+  ),
 ];
 
 export const TESTNET_AMM = [

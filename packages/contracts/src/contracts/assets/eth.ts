@@ -26,4 +26,11 @@ export const eth: Array<AssetDetails> = [
     decimals: 18,
     getIcon: async () => (await import('./icons/rsk/dllr')).default,
   },
+  {
+    symbol: 'BOS',
+    address: '0x13239C268BEDDd88aD0Cb02050D3ff6a9d00de6D',
+    name: 'BitcoinOS Token',
+    decimals: 18,
+    getIcon: async () => (await import('./icons/rsk/bos')).default,
+  },
 ];

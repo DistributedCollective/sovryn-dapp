@@ -75,6 +75,10 @@ const ClaimLpPage = loadable(
 
 const RunesPage = loadable(() => import('./app/5_pages/RunesPage/RunesPage'));
 
+const AgentChatPage = loadable(
+  () => import('./app/5_pages/AgentChatPage/AgentChatPage'),
+);
+
 const routes = [
   {
     path: '/',
@@ -173,6 +177,10 @@ const routes = [
       {
         path: '/runes',
         element: <RunesPage />,
+      },
+      {
+        path: '/agent',
+        element: <AgentChatPage />,
       },
     ],
   },

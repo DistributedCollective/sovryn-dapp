@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "3.7.1",
+    "assert": "^2.1.0",
     "@gobob/bob-sdk": "^3.1.7-alpha0",
     "@gobob/sats-wagmi": "^0.3.21-alpha1",
     "@loadable/component": "5.15.2",
@@ -30,8 +31,10 @@
     "@tanstack/react-query": "^5.59.0",
     "@uniswap/permit2-sdk": "1.2.0",
     "bitcoin-address-validation": "2.2.1",
+    "buffer": "^6.0.3",
     "chart.js": "4.1.1",
     "classnames": "2.5.1",
+    "crypto-browserify": "^3.12.0",
     "date-fns": "4.1.0",
     "dayjs": "1.11.18",
     "env-cmd": "10.1.0",
@@ -62,6 +65,7 @@
     "socket.io-client": "4.5.4",
     "storage-factory": "^0.2.1",
     "utf8": "^3.0.0",
+    "vm-browserify": "^1.1.2",
     "zustand": "^4.5.1"
   },
   "devDependencies": {
@@ -119,6 +123,36 @@
     "last 5 ios version"
   ],
   "resolutions": {
-    "rxjs": "7.5.6"
+    "rxjs": "7.5.6",
+    "@ethersproject/abi": "5.7.0",
+    "@ethersproject/abstract-provider": "5.7.0",
+    "@ethersproject/abstract-signer": "5.7.0",
+    "@ethersproject/address": "5.7.0",
+    "@ethersproject/base64": "5.7.0",
+    "@ethersproject/basex": "5.7.0",
+    "@ethersproject/bignumber": "5.7.0",
+    "@ethersproject/bytes": "5.7.0",
+    "@ethersproject/constants": "5.7.0",
+    "@ethersproject/contracts": "5.7.0",
+    "@ethersproject/hash": "5.7.0",
+    "@ethersproject/hdnode": "5.7.0",
+    "@ethersproject/json-wallets": "5.7.0",
+    "@ethersproject/keccak256": "5.7.0",
+    "@ethersproject/logger": "5.7.0",
+    "@ethersproject/networks": "5.7.0",
+    "@ethersproject/pbkdf2": "5.7.0",
+    "@ethersproject/properties": "5.7.0",
+    "@ethersproject/providers": "5.7.2",
+    "@ethersproject/random": "5.7.0",
+    "@ethersproject/rlp": "5.7.0",
+    "@ethersproject/sha2": "5.7.0",
+    "@ethersproject/signing-key": "5.7.0",
+    "@ethersproject/solidity": "5.7.0",
+    "@ethersproject/strings": "5.7.0",
+    "@ethersproject/transactions": "5.7.0",
+    "@ethersproject/units": "5.7.0",
+    "@ethersproject/wallet": "5.7.0",
+    "@ethersproject/web": "5.7.1",
+    "@ethersproject/wordlists": "5.7.0"
   }
 }

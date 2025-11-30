@@ -23,6 +23,7 @@ import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { loadIndexer } from '../../../../../lib/indexer';
 import { translations } from '../../../../../locales/i18n';
 import { AmbientPoolsTable } from './components/AmbientPoolsTable/AmbientPoolsTable';
+import { BOBFusionSeasonBanner } from './components/BOBFusionSeasonBanner/BOBFusionSeasonBanner';
 import { BOBMigrationBanner } from './components/BOBMigrationBanner/BOBMigrationBanner';
 
 export const AmbientMarketMaking: FC = () => {
@@ -54,6 +55,7 @@ export const AmbientMarketMaking: FC = () => {
       </Helmet>
 
       <div className="w-full max-w-[74.75rem]">
+        <BOBFusionSeasonBanner />
         <MarketMakingNetworkBanner
           requiredChainId={RSK_CHAIN_ID}
           storageKey={BOB_STORAGE_KEY}

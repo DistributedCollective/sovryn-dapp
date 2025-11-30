@@ -45,7 +45,10 @@ export const ERC20BridgeDialog: React.FC<ERC20BridgeDialogProps> = ({
   const { account } = useAccount();
   const { isMobile } = useIsMobile();
   const { currentChainId, setCurrentChainId } = useChainStore();
-  const isWrongChain = RSK_CHAIN_ID !== currentChainId;
+  const isWrongChain = useMemo(
+    () => RSK_CHAIN_ID !== currentChainId,
+    [currentChainId],
+  );
 
   const handleClose = useCallback(() => {
     if (isWrongChain) {

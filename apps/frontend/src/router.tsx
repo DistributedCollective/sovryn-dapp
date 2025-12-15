@@ -64,11 +64,6 @@ const PortfolioPage = loadable(
 const ProtocolDataPage = loadable(
   () => import('./app/5_pages/ProtocolDataPage/ProtocolDataPage'),
 );
-
-const LeaderboardPointsPage = loadable(
-  () => import('./app/5_pages/LeaderboardPointsPage/LeaderboardPointsPage'),
-);
-
 const ClaimLpPage = loadable(
   () => import('./app/5_pages/ClaimLpPage/ClaimLpPage'),
 );
@@ -157,10 +152,6 @@ const routes = [
       {
         path: '/earn/staking',
         element: <StakePage />,
-      },
-      {
-        path: '/bob-lp-points',
-        element: <LeaderboardPointsPage />,
       },
       {
         path: '/stats',

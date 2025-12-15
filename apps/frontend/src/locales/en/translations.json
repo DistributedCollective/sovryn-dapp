@@ -697,6 +697,9 @@
             "emailNotifications": "Email notifications",
             "doNotShowAgain": "Don't show again",
             "signUp": "Sign up"
+        },
+        "networkSwitch": {
+            "content": "Staking is available on {{network}}. Continue by <0>switching to</0> {{network}} chain."
         }
     },
     "fixedInterestPage": {

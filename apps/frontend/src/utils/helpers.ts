@@ -163,7 +163,7 @@ export const composeGas = (priceInGwei: Decimalish, limitInWei: Decimalish) =>
     .div(10 ** 18);
 
 export const isMobileDevice = () => {
-  const config = resolveConfig(tailwindConfig);
+  const config = resolveConfig(tailwindConfig as any);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const widthToCheck: string = config?.theme?.screens.md; // value will be in format "768px"

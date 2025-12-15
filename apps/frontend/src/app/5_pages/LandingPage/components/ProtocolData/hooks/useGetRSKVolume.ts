@@ -36,11 +36,11 @@ export const useGetRSKVolume = () => {
         },
         cancelToken,
       })
-      .then(result => {
+      .then(result =>
         setVolumeData({
           usd: result.data?.data?.total_volume_usd || 0,
-        });
-      })
+        }),
+      )
       .catch(() => {});
   }, []);
 

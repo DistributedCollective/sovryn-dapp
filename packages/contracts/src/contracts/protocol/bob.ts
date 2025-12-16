@@ -7,7 +7,7 @@ export const bob: Record<string, AsyncContractConfigData> = {
       (await import('../../abis/merkleDistributor.json')).default,
   },
   stakingRewardsOs: {
-    address: '0xFdC57Cb52264209afd1559E7E3Db0F28351E9422',
+    address: '0x0',
     getAbi: async () =>
       (await import('../../abis/StakingRewardsOs.json')).default,
   },

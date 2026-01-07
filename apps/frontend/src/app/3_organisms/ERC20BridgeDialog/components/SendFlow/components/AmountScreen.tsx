@@ -123,7 +123,6 @@ export const AmountScreen: React.FC = () => {
           className="w-full mb-0 max-w-full"
           placeholder="0"
         />
-
         <div className="flex justify-end text-tiny text-gray-30 mt-1">
           <AmountRenderer value={usdValue} suffix={USD} />
         </div>

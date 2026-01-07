@@ -19,11 +19,15 @@ import {
 
 import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
+import { AmountRenderer } from '../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { MaxButton } from '../../../../../2_molecules/MaxButton/MaxButton';
+import { USD } from '../../../../../../constants/currencies';
 import { useAccount } from '../../../../../../hooks';
 import { useChainStore } from '../../../../../../hooks/useChainStore';
+import { useDollarValue } from '../../../../../../hooks/useDollarValue';
 import { useTokenDetailsByAsset } from '../../../../../../hooks/useTokenDetailsByAsset';
 import { translations } from '../../../../../../locales/i18n';
+import { toWei } from '../../../../../../utils/math';
 import {
   ReceiveFlowContext,
   ReceiveFlowStep,
@@ -80,6 +84,12 @@ export const AmountScreen: React.FC = () => {
     receiver,
   });
 
+  const { usdValue } = useDollarValue(
+    token!,
+    amount !== '' ? toWei(amount).toString() : '0',
+    RSK_CHAIN_ID,
+  );
+
   const isBridgeLocked = useERC20BridgeLocked();
 
   return (
@@ -111,15 +121,21 @@ export const AmountScreen: React.FC = () => {
         )}
       </div>
 
-      <AmountInput
-        value={amount}
-        onChangeText={setAmount}
-        label={t(translations.common.amount)}
-        unit={token}
-        min={0}
-        className="w-full max-w-full"
-        placeholder="0"
-      />
+      <div>
+        <AmountInput
+          value={amount}
+          onChangeText={setAmount}
+          label={t(translations.common.amount)}
+          unit={token}
+          min={0}
+          className="w-full max-w-full"
+          placeholder="0"
+        />
+
+        <div className="flex justify-end text-tiny text-gray-30 mt-1">
+          <AmountRenderer value={usdValue} suffix={USD} />
+        </div>
+      </div>
 
       <Paragraph className="mb-1 mt-6 text-sm font-medium">
         {t(translations.erc20Bridge.receive.addressLabel)}

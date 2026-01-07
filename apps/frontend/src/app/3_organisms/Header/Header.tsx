@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useReducer } from 'react';
 
 import { t } from 'i18next';
-import { useNavigate } from 'react-router-dom';
 
 import {
   Button,
@@ -15,9 +14,7 @@ import { ConnectWalletButton } from '../../2_molecules';
 import { NetworkPicker } from '../../2_molecules/NetworkPicker/NetworkPicker';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
-import { useCurrentChain } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
-import { isBobChain } from '../../../utils/chain';
 import { getOriginsUrl } from '../../../utils/helpers';
 import { menuItemsMapping } from './Header.constants';
 import { BridgeMenuItem } from './components/BridgeMenuItem/BridgeMenuItem';
@@ -25,8 +22,6 @@ import { NavItem } from './components/NavItem/NavItem';
 import { ProductLinks } from './components/ProductLinks/ProductLinks';
 
 export const Header: FC = () => {
-  const chainId = useCurrentChain();
-  const navigate = useNavigate();
   const [isOpen, toggle] = useReducer(v => !v, false);
   const { connectWallet, disconnectWallet, account, pending } =
     useWalletConnect();
@@ -80,16 +75,6 @@ export const Header: FC = () => {
               </a>
             </li>
             <ProductLinks />
-            {isBobChain(chainId) && (
-              <>
-                <Button
-                  text={t(translations.header.nav.runes)}
-                  style={ButtonStyle.primary}
-                  className="bg-[#24BFB74D]/[0.3] border-[#24BFB74D]/[0.3] hover:bg-[#24BFB74D]"
-                  onClick={() => navigate('/runes')}
-                />
-              </>
-            )}
           </ol>
         }
         secondaryContent={

@@ -131,8 +131,10 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
                 !isMobile &&
                 t('header.nav.bridges.subMenu.runeBridgeDescription')
               }
+              className={classNames('no-underline', {
+                hidden: isBobChain(chainId),
+              })}
               dataAttribute={`dapp-menu-runeBridge`}
-              className="no-underline"
               onClick={handleRunesClick}
             />
             <MenuItem

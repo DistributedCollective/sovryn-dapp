@@ -20,6 +20,9 @@ export interface AmbientPosition {
   aprPostLiq: string;
   aprContributedLiq: string;
   aprEst: string;
+
+  lpTokenAddress?: string;
+  lpTokenBalance?: string;
 }
 
 export interface AmbientTransaction {

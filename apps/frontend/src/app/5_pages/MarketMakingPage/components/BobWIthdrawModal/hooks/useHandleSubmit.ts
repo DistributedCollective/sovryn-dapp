@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { BigNumber } from 'ethers';
+import { BigNumber, constants } from 'ethers';
 import { t } from 'i18next';
 
 import { Pool } from '@sovryn/sdk';
@@ -56,11 +56,15 @@ export const useHandleSubmit = (
 
     try {
       if (position.positionType === PoolPositionType.ambient) {
+        console.log('ambient withdrawAmount', withdrawAmount.toString(), { position });
+
         calldata = await crocPool.burnAmbientLiq(
           bigNumberic(withdrawAmount),
           [price.min, price.max],
           {
             lpConduit: pool.extra.lpToken,
+            // lpConduit: constants.AddressZero,
+            // lpConduit: position.lpTokenBalance !== '0' ? pool.extra.lpToken : undefined,
           },
         );
       } else if (position.positionType === PoolPositionType.concentrated) {

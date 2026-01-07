@@ -1933,7 +1933,6 @@
         },
         "migrationBanner": "There is migration of assets happening on BOB network. Some pools are deprecated ",
         "deprecated": "Deprecated",
-        "migrate": "Migrate",
         "deprecatedTooltips": {
             "usdt": {
                 "pool": "USDT is migrating to oUSDT. This pool is deprecated. Please remove liquidity and swap USDT to oUSDT.",

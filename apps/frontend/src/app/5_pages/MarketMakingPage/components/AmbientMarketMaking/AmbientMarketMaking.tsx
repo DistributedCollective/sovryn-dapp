@@ -24,7 +24,6 @@ import { loadIndexer } from '../../../../../lib/indexer';
 import { translations } from '../../../../../locales/i18n';
 import { AmbientPoolsTable } from './components/AmbientPoolsTable/AmbientPoolsTable';
 import { BOBFusionSeasonBanner } from './components/BOBFusionSeasonBanner/BOBFusionSeasonBanner';
-import { BOBMigrationBanner } from './components/BOBMigrationBanner/BOBMigrationBanner';
 
 export const AmbientMarketMaking: FC = () => {
   const chainId = useCurrentChain();
@@ -65,8 +64,6 @@ export const AmbientMarketMaking: FC = () => {
           <Heading className="text-center mb-4 lg:text-2xl">
             {t(translations.ambientMarketMaking.title)}
           </Heading>
-
-          <BOBMigrationBanner />
 
           <div className="w-full my-4">
             <div className="relative flex items-center">

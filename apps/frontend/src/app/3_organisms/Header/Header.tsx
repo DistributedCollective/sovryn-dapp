@@ -8,6 +8,7 @@ import {
   Header as UIHeader,
   Icon,
   IconNames,
+  Tooltip,
 } from '@sovryn/ui';
 
 import { ConnectWalletButton } from '../../2_molecules';
@@ -20,6 +21,7 @@ import { menuItemsMapping } from './Header.constants';
 import { BridgeMenuItem } from './components/BridgeMenuItem/BridgeMenuItem';
 import { NavItem } from './components/NavItem/NavItem';
 import { ProductLinks } from './components/ProductLinks/ProductLinks';
+import { IS_IMPERSONATING } from '../../../utils/account-debug';
 
 export const Header: FC = () => {
   const [isOpen, toggle] = useReducer(v => !v, false);
@@ -87,6 +89,18 @@ export const Header: FC = () => {
               pending={pending}
               dataAttribute="dapp-header-connect"
             />
+            {IS_IMPERSONATING && (
+              <button
+                className={
+                  'fixed bottom-3 right-3 bg-sovryn-black text-trade-short-25 text-xs px-2 py-1 rounded'
+                }
+                onClick={() => (window as any).stopImpersonatingAccount()}
+              >
+                <Tooltip content="You are in DEBUG MODE. All RPC requests will be called from the impersonated account. Click to disable.">
+                  <span>DEBUG MODE</span>
+                </Tooltip>
+              </button>
+            )}
           </div>
         }
         extraContent={

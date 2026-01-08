@@ -7,6 +7,7 @@ import { WalletState } from '@sovryn/onboard-core';
 import { connectWallet$ } from '@sovryn/onboard-core/dist/streams';
 
 import { onboard } from '../lib/connector';
+import { maybeDebugAccount } from '../utils/account-debug';
 
 export const useWalletConnect = () => {
   const [pending, setPending] = useState(false);
@@ -44,7 +45,10 @@ export const useWalletConnect = () => {
     return () => sub.unsubscribe();
   }, []);
 
-  const account = useMemo(() => wallets[0]?.accounts[0]?.address, [wallets]);
+  const account = useMemo(
+    () => maybeDebugAccount(wallets[0]?.accounts[0]?.address),
+    [wallets],
+  );
 
   const getWallet = useCallback((index: number) => wallets[index], [wallets]);
 

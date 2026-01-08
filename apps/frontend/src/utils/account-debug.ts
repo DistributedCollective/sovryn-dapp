@@ -20,9 +20,18 @@ export function impersonateAccount(address?: string) {
     throw new Error("It's not a valid Ethereum address.");
   }
   const lowercasedAddress = address.toLowerCase();
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem('impersonate', lowercasedAddress);
-    window.location.reload();
+
+  if (
+    window.confirm(`You are about to impersonate the account: ${lowercasedAddress}
+This will set the address in localStorage and reload the page.
+To stop impersonation, run stopImpersonatingAccount() in the console.
+
+Do you want to proceed?`)
+  ) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('impersonate', lowercasedAddress);
+      window.location.reload();
+    }
   }
 }
 

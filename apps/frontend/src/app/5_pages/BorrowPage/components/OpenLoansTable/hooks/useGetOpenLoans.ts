@@ -29,7 +29,7 @@ const unsafeOnly = false;
 
 export const useGetOpenLoans = () => {
   const { account } = useAccount();
-  const blockNumber = useBlockNumber();
+  const { value: blockNumber } = useBlockNumber();
   const contract = useLoadContract('protocol', 'protocol', RSK_CHAIN_ID);
 
   const {
@@ -112,7 +112,6 @@ export const useGetOpenLoans = () => {
     },
     enabled: !!account && !!contract,
     placeholderData: keepPreviousData,
-    throwOnError: true,
   });
 
   return {

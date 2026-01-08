@@ -127,7 +127,7 @@ export const rskTestnet: Array<AssetDetails> = [
   },
   {
     symbol: 'BOS',
-    address: '0x0000000000000000000000000000000000000000',
+    address: '0x0000000000000000000000000000000000000000', // todo: This is a placeholder address, change it once we have it deployed on RSK Testnet
     name: 'BitcoinOS Token',
     decimals: 18,
     getIcon: async () => (await import('./icons/rsk/bos')).default,

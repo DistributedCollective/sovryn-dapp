@@ -16,12 +16,15 @@ import { NetworkPicker } from '../../2_molecules/NetworkPicker/NetworkPicker';
 import { SovrynLogo } from '../../2_molecules/SovrynLogo/SovrynLogo';
 import { useWalletConnect, useWrongNetworkCheck } from '../../../hooks';
 import { translations } from '../../../locales/i18n';
+import {
+  IS_IMPERSONATING,
+  stopImpersonatingAccount,
+} from '../../../utils/account-debug';
 import { getOriginsUrl } from '../../../utils/helpers';
 import { menuItemsMapping } from './Header.constants';
 import { BridgeMenuItem } from './components/BridgeMenuItem/BridgeMenuItem';
 import { NavItem } from './components/NavItem/NavItem';
 import { ProductLinks } from './components/ProductLinks/ProductLinks';
-import { IS_IMPERSONATING } from '../../../utils/account-debug';
 
 export const Header: FC = () => {
   const [isOpen, toggle] = useReducer(v => !v, false);
@@ -94,7 +97,7 @@ export const Header: FC = () => {
                 className={
                   'fixed bottom-3 right-3 bg-sovryn-black text-trade-short-25 text-xs px-2 py-1 rounded'
                 }
-                onClick={() => (window as any).stopImpersonatingAccount()}
+                onClick={() => stopImpersonatingAccount()}
               >
                 <Tooltip content="You are in DEBUG MODE. All RPC requests will be called from the impersonated account. Click to disable.">
                   <span>DEBUG MODE</span>

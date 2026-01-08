@@ -15,32 +15,39 @@ export function maybeDebugAccount(address?: string): string {
   return address?.toLowerCase() ?? '';
 }
 
-function impersonateAccount(address: string) {
-  if (!ethers.utils.isAddress(address?.toLowerCase())) {
+export function impersonateAccount(address?: string) {
+  if (!address || !ethers.utils.isAddress(address.toLowerCase())) {
     throw new Error("It's not a valid Ethereum address.");
   }
-
+  const lowercasedAddress = address.toLowerCase();
   if (typeof localStorage !== 'undefined') {
-    localStorage.setItem('impersonate', address.toLowerCase());
+    localStorage.setItem('impersonate', lowercasedAddress);
     window.location.reload();
   }
 }
 
-function stopImpersonatingAccount() {
+export function stopImpersonatingAccount() {
   if (typeof localStorage !== 'undefined') {
     localStorage.removeItem('impersonate');
     window.location.reload();
   }
 }
 
+declare global {
+  interface Window {
+    impersonateAccount: (address: string) => void;
+    stopImpersonatingAccount: () => void;
+  }
+}
+
 (() => {
   if (typeof window !== 'undefined') {
-    (window as any).impersonateAccount = impersonateAccount;
-    (window as any).stopImpersonatingAccount = stopImpersonatingAccount;
+    window.impersonateAccount = impersonateAccount;
+    window.stopImpersonatingAccount = stopImpersonatingAccount;
   }
 
   if (IS_IMPERSONATING) {
-    console.warn(
+    console.log(
       '%cYou are in DEBUG MODE. All RPC requests will be called from the impersonated account. However transactions still will be signed with your connected wallet.\nTo stop impersonation, run stopImpersonatingAccount().',
       'background: red; color: white; font-size: 16px; padding: 4px;',
     );

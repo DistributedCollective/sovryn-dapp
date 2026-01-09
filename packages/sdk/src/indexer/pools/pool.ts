@@ -96,6 +96,7 @@ export class Pool {
       quoteVolume: this.quoteVolume,
       dailyBaseVolume: this.dailyBaseVolume,
       dailyQuoteVolume: this.dailyQuoteVolume,
+      extra: this.extra,
     };
   }
 

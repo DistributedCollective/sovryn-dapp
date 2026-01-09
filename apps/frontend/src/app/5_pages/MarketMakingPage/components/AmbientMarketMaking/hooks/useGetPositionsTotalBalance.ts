@@ -1,19 +1,21 @@
 import { useMemo } from 'react';
 
+import { fromDisplayPrice } from '@sovryn/sdex';
 import { Pool } from '@sovryn/sdk';
 
 import { getPositionBalance } from '../components/AmbientPoolPositions/AmbientPoolPositions.utils';
-import { usePoolSpotPrice } from '../components/AmbientPoolPositions/hooks/usePoolSpotPrice';
 import { useGetAmbientPositions } from './useGetAmbientPositions';
 
 export const useGetPositionsTotalBalance = (pool: Pool) => {
   const { positions } = useGetAmbientPositions(pool);
-  const { value: price } = usePoolSpotPrice(pool);
+  const price = fromDisplayPrice(
+    Number(pool.price),
+    pool.base.decimals,
+    pool.quote.decimals,
+    true,
+  );
 
   return useMemo(() => {
-    if (!price) {
-      return 0;
-    }
     const balances = positions
       .map(position => getPositionBalance(position, price))
       .filter(balance => !!balance);
@@ -30,5 +32,5 @@ export const useGetPositionsTotalBalance = (pool: Pool) => {
     });
 
     return sum;
-  }, [positions, price]);
+  }, [price, positions]);
 };

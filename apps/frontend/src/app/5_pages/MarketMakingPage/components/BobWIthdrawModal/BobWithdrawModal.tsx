@@ -1,9 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
-import { Pool } from '@sovryn/sdk';
 import {
   Button,
   ButtonStyle,
@@ -30,7 +28,6 @@ import { useGetPool } from '../../hooks/useGetPool';
 import { AmbientPosition } from '../AmbientMarketMaking/AmbientMarketMaking.types';
 import { AmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/components/AmbientPositionBalance/AmbientPositionBalance';
 import { useAmbientPositionBalance } from '../AmbientMarketMaking/components/AmbientPoolPositions/hooks/useAmbientPositionBalance';
-import { useGetLpTokenBalance } from '../AmbientMarketMaking/hooks/useGetLpTokenBalance';
 import { useGetPoolInfo } from '../BobDepositModal/hooks/useGetPoolInfo';
 import { AmountForm } from './components/AmountForm/AmountForm';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
@@ -57,7 +54,6 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   const isMounted = useIsMounted();
   const { checkMaintenance, States } = useMaintenance();
   const withdrawLocked = checkMaintenance(States.BOB_WITHDRAW_LIQUIDITY);
-  const lpTokenBalance = useGetLpTokenBalance(pool);
 
   const [depositedAmountBase, setDepositedAmountBase] = useState(Decimal.ZERO);
   const [depositedAmountQuote, setDepositedAmountQuote] = useState(
@@ -77,16 +73,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
     poolTokens?.tokenB,
   );
 
-  const updatedPosition = useMemo(
-    () => ({ ...position, ambientLiq: lpTokenBalance }),
-    [position, lpTokenBalance],
-  );
-
-  const deposits = useAmbientPositionBalance(
-    pool,
-    updatedPosition,
-    displayPrice,
-  );
+  const deposits = useAmbientPositionBalance(pool, position, displayPrice);
 
   const updateLiquidity = useCallback(async () => {
     try {
@@ -104,11 +91,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
       let liquidity;
 
       if (position.positionType === PoolPositionType.ambient) {
-        if (pool.extra.lpToken) {
-          liquidity = BigNumber.from(lpTokenBalance);
-        } else {
-          liquidity = (await pos.queryAmbient()).seeds;
-        }
+        liquidity = position.ambientLiq;
       } else {
         liquidity = (
           await pos.queryRangePos(position.bidTick, position.askTick)
@@ -119,7 +102,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
     } catch (error) {
       console.error(error);
     }
-  }, [croc, position, account, lpTokenBalance, pool]);
+  }, [croc, position, account, pool]);
 
   const isFullWithdrawal = useMemo(
     () =>

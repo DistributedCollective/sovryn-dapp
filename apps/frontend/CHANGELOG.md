@@ -1,5 +1,17 @@
 # frontend
 
+## 1.1.41
+
+### Patch Changes
+
+- 92ecfe96: SOV-5216: Show estimated USD value of bridge transfers
+- b2b0d048: chore: read-only wallet impersonation for debuging
+- 1d9a529d: chore: remove BOB pool migration mentions
+- beaad72f: Fix Protocol Data
+- a249f196: chore: reduce rpc calls
+- Updated dependencies [a249f196]
+  - @sovryn/sdk@2.0.10
+
 ## 1.1.40
 
 ### Patch Changes

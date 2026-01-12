@@ -1,5 +1,11 @@
 # @sovryn/sdk
 
+## 2.0.10
+
+### Patch Changes
+
+- a249f196: chore: reduce rpc calls
+
 ## 2.0.9
 
 ### Patch Changes

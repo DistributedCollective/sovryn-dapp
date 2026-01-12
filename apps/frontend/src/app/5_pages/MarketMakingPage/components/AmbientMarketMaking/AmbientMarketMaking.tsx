@@ -29,7 +29,7 @@ export const AmbientMarketMaking: FC = () => {
   const chainId = useCurrentChain();
 
   const { data: value } = useQuery({
-    queryKey: ['mm', chainId],
+    queryKey: ['ambientMarketMakingPools', { chainId }],
     initialData: [],
     queryFn: async () => {
       return (await loadIndexer(chainId).pools.list()).sort((a, b) =>

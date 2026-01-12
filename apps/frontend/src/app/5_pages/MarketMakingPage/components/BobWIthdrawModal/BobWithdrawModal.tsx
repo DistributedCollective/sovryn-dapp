@@ -54,7 +54,6 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
 }) => {
   const { account } = useAccount();
   const { croc } = useCrocContext();
-  const deposits = useAmbientPositionBalance(pool, position);
   const isMounted = useIsMounted();
   const { checkMaintenance, States } = useMaintenance();
   const withdrawLocked = checkMaintenance(States.BOB_WITHDRAW_LIQUIDITY);
@@ -69,13 +68,24 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   const [secondaryWithdrawAmount, setSecondaryWithdrawAmount] = useState(
     Decimal.ZERO,
   );
-  const { spotPrice: price } = useGetPoolInfo(pool);
+  const { spotPrice: price, price: displayPrice } = useGetPoolInfo(pool);
   const [sqrtPrice, setSqrtPrice] = useState(0);
   const [withdrawLiquidity, setWithdrawLiquidity] = useState(Decimal.ZERO);
   const { poolTokens } = useGetPool(pool);
   const { baseTokenDecimals, quoteTokenDecimals } = useGetTokenDecimals(
     poolTokens?.tokenA,
     poolTokens?.tokenB,
+  );
+
+  const updatedPosition = useMemo(
+    () => ({ ...position, ambientLiq: lpTokenBalance }),
+    [position, lpTokenBalance],
+  );
+
+  const deposits = useAmbientPositionBalance(
+    pool,
+    updatedPosition,
+    displayPrice,
   );
 
   const updateLiquidity = useCallback(async () => {
@@ -95,12 +105,7 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
 
       if (position.positionType === PoolPositionType.ambient) {
         if (pool.extra.lpToken) {
-          const walletBalance = await croc
-            .token(pool.extra.lpToken)
-            .wallet(account);
-          liquidity = walletBalance.gt(0)
-            ? walletBalance
-            : BigNumber.from(lpTokenBalance);
+          liquidity = BigNumber.from(lpTokenBalance);
         } else {
           liquidity = (await pos.queryAmbient()).seeds;
         }
@@ -162,9 +167,9 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
 
   const handleAmbientPosition = useCallback(() => {
     const amount = withdrawAmount.div(sqrtPrice);
-    const convertedAmount = amount.mul(Math.pow(10, baseTokenDecimals));
+    const convertedAmount = amount.mul(Math.pow(10, pool.base.decimals));
     setWithdrawLiquidity(convertedAmount);
-  }, [withdrawAmount, sqrtPrice, baseTokenDecimals]);
+  }, [withdrawAmount, sqrtPrice, pool.base.decimals]);
 
   const handleConcentratedPosition = useCallback(() => {
     if (withdrawAmount.eq(0) && secondaryWithdrawAmount.gt(0)) {
@@ -232,18 +237,16 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
   useEffect(() => {
     if (deposits && price) {
       setDepositedAmountBase(
-        decimalic(deposits?.positionLiqBase || '0').div(
-          Math.pow(10, baseTokenDecimals),
-        ),
+        decimalic(deposits?.positionLiqBase || '0').toUnits(pool.base.decimals),
       );
       setDepositedAmountQuote(
-        decimalic(deposits?.positionLiqQuote || '0').div(
-          Math.pow(10, quoteTokenDecimals),
+        decimalic(deposits?.positionLiqQuote || '0').toUnits(
+          pool.quote.decimals,
         ),
       );
       setSqrtPrice(Math.sqrt(price));
     }
-  }, [deposits, baseTokenDecimals, quoteTokenDecimals, price]);
+  }, [deposits, pool.base.decimals, pool.quote.decimals, price]);
 
   return (
     <Dialog disableFocusTrap isOpen={isOpen}>
@@ -279,7 +282,13 @@ export const BobWithdrawModal: FC<BobWithdrawModalProps> = ({
                 suffix="%"
               />
             }
-            value2={<AmbientPositionBalance pool={pool} position={position} />}
+            value2={
+              <AmbientPositionBalance
+                pool={pool}
+                position={position}
+                priceOverride={displayPrice}
+              />
+            }
           />
         </div>
 

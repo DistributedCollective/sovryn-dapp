@@ -24,7 +24,7 @@ export const getPositionBalance = (
   position: AmbientPosition,
   spotPrice: number | undefined,
 ) => {
-  if (!spotPrice) {
+  if (!spotPrice || isFinite(spotPrice) === false) {
     return;
   }
 

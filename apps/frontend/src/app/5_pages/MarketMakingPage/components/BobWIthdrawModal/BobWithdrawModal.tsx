@@ -33,6 +33,7 @@ import { AmountForm } from './components/AmountForm/AmountForm';
 import { NewPoolStatistics } from './components/NewPoolStatistics/NewPoolStatistics';
 import { useGetTokenDecimals } from './hooks/useGetTokenDecimals';
 import { useHandleSubmit } from './hooks/useHandleSubmit';
+import { Pool } from '@sovryn/sdk';
 
 const pageTranslations = translations.bobMarketMakingPage.withdrawModal;
 

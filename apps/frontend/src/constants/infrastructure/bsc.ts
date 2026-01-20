@@ -1,8 +1,8 @@
 import { Environments } from '../../types/global';
 
 const rpc = {
-  [Environments.Mainnet]: 'wss://bsc.sovryn.app/mainnet/websocket',
-  [Environments.Testnet]: 'wss://bsc.sovryn.app/testnet/websocket',
+  [Environments.Mainnet]: 'https://bsc.sovryn.app/mainnet',
+  [Environments.Testnet]: 'https://bsc.sovryn.app/testnet',
 };
 
 export const BSC = {

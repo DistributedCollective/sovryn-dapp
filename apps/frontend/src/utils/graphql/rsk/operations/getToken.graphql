@@ -1,5 +1,6 @@
 query getToken($id: ID!) {
   token(id: $id) {
+    symbol
     lastPriceUsd
     lastPriceBtc
   }

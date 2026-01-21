@@ -508,6 +508,11 @@
                 "description": "Earn a share of Sovryn’s revenue & vote on key decisions in Bitocracy.",
                 "action": "Stake SOV"
             },
+            "zero": {
+                "title": "0% Interest Loan",
+                "description": "Just a small origination fee and the rest is free forever. BTC collateral.",
+                "action": "Sovryn Zero"
+            },
             "earn": {
                 "title": "Earn up to {{amount}}% APR in AMM",
                 "description": "Deposit in the AMM pools and earn from trades.",
@@ -585,6 +590,11 @@
                 "title": "BOS CLAIMS ARE OPEN",
                 "description": "Claim your BOS tokens on Sovryn Origin - the multichain launchpad!",
                 "cta": "Claim $BOS"
+            },
+            "zeroInterestLoans": {
+                "title": "0% INTEREST LOANS",
+                "description": "Take a loan with Sovryn Zero at 0% interest. ",
+                "cta": "Sovryn Zero"
             }
         },
         "titleSection": {

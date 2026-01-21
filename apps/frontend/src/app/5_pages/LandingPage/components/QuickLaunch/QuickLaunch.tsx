@@ -11,20 +11,17 @@ import { Chains } from '../../../../../config/chains';
 import { CTA } from '../../../../2_molecules/CTA/CTA';
 import borrowSovryn from '../../../../../assets/images/QuickLaunch/Borrow with Sovryn.svg';
 import comingSoon from '../../../../../assets/images/QuickLaunch/Coming soon.svg';
-import depositAMM from '../../../../../assets/images/QuickLaunch/Deposit in AMM.svg';
 import lendDLLR from '../../../../../assets/images/QuickLaunch/Lend DLLR.svg';
-import originsLaunch from '../../../../../assets/images/QuickLaunch/Origins Launch.svg';
 import passiveYield from '../../../../../assets/images/QuickLaunch/Passive yield.svg';
 import stakeSOV from '../../../../../assets/images/QuickLaunch/Stake SOV.svg';
 import tradeRunes from '../../../../../assets/images/QuickLaunch/Trade Runes.svg';
-import { LAUNCHPAD_LINKS } from '../../../../../constants/links';
+import zero from '../../../../../assets/images/QuickLaunch/Zero.png';
 import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../utils/asset';
 import { isBobChain, isRskChain } from '../../../../../utils/chain';
 import { formatValue } from '../../../../../utils/math';
 import { useGetNextSupplyInterestRate } from '../../../LendPage/hooks/useGetNextSupplyInterestRate';
-import { useGetReturnRates } from '../../../MarketMakingPage/hooks/useGetReturnRates';
 import { useGetStakingStatistics } from '../../../StakePage/components/StakingStatistics/hooks/useGetStakingStatistics';
 import styles from './QuickLaunch.module.css';
 
@@ -35,32 +32,18 @@ export const QuickLaunch: FC = () => {
   const chainId = useCurrentChain();
   const { maxStakingApr } = useGetStakingStatistics();
   const { interestRate } = useGetNextSupplyInterestRate(COMMON_SYMBOLS.DLLR);
-  const { rates } = useGetReturnRates();
-
-  const maxRate = useMemo(() => {
-    let maxRewards = '0';
-    rates.forEach(rate => {
-      if (Number(rate.beforeRewards) > Number(maxRewards)) {
-        maxRewards = rate.beforeRewards;
-      }
-    });
-
-    return maxRewards;
-  }, [rates]);
 
   const options = useMemo(
     () => [
       {
-        title: t(pageTranslations.quickLaunch.originsLaunchpad.title, {
+        title: t(pageTranslations.quickLaunch.zero.title, {
           amount: formatValue(maxStakingApr, 2),
         }),
-        description: t(
-          pageTranslations.quickLaunch.originsLaunchpad.description,
-        ),
-        action: t(pageTranslations.quickLaunch.originsLaunchpad.action),
-        href: LAUNCHPAD_LINKS.ORIGINS_CLAIM,
-        url: noop,
-        backgroundImage: originsLaunch,
+        description: t(pageTranslations.quickLaunch.zero.description),
+        action: t(pageTranslations.quickLaunch.zero.action),
+        url: () => navigate('/borrow/line-of-credit'),
+        backgroundImage: zero,
+        imageClass: 'w-16 top-5 right-5',
         chains: [Chains.RSK],
       },
       {
@@ -71,16 +54,6 @@ export const QuickLaunch: FC = () => {
         action: t(pageTranslations.quickLaunch.stake.action),
         url: () => navigate('/earn/staking'),
         backgroundImage: stakeSOV,
-        chains: [Chains.RSK],
-      },
-      {
-        title: t(pageTranslations.quickLaunch.earn.title, {
-          amount: formatValue(maxRate, 2),
-        }),
-        description: t(pageTranslations.quickLaunch.earn.description),
-        action: t(pageTranslations.quickLaunch.earn.action),
-        url: () => navigate('/earn/market-making'),
-        backgroundImage: depositAMM,
         chains: [Chains.RSK],
       },
       {
@@ -135,7 +108,7 @@ export const QuickLaunch: FC = () => {
         disable: true,
       },
     ],
-    [interestRate, maxRate, maxStakingApr, navigate],
+    [interestRate, maxStakingApr, navigate],
   );
 
   const filteredOptions = useMemo(() => {
@@ -194,9 +167,10 @@ export const QuickLaunch: FC = () => {
             title={option.title}
             description={option.description}
             action={option.action}
-            href={option.href}
+            // href={option.href}
             navigateTo={option.url}
             disableCTA={option.disable}
+            imageClass={option.imageClass}
           />
         ))}
       </Carousel>

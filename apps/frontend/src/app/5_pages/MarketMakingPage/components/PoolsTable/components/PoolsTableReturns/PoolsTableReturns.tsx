@@ -15,7 +15,7 @@ export const PoolsTableReturns: FC<PoolsTableReturnsProps> = ({
   pool,
   className,
 }) => {
-  const { returnRates } = useGetReturnRate(pool);
+  const returnRates = useGetReturnRate(pool);
 
   const returnRate = useMemo(
     () =>

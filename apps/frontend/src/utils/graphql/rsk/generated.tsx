@@ -16669,6 +16669,7 @@ export type GetTokenQuery = {
   __typename?: 'Query';
   token?: {
     __typename?: 'Token';
+    symbol?: string | null;
     lastPriceUsd: string;
     lastPriceBtc: string;
   } | null;
@@ -19108,6 +19109,7 @@ export type GetSwapHistoryQueryResult = Apollo.QueryResult<
 export const GetTokenDocument = gql`
   query getToken($id: ID!) {
     token(id: $id) {
+      symbol
       lastPriceUsd
       lastPriceBtc
     }

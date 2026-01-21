@@ -100,7 +100,10 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
 
   const { weeklyRewardsEstimation } = useGetPoolBalanceAndRewards(
     pool,
+    newPoolBalanceA,
     newPoolBalanceB,
+    isTokenA,
+    isV2Pool,
   );
 
   return (

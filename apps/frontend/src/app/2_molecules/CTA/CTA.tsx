@@ -1,10 +1,13 @@
 import React, { FC } from 'react';
 
+import classNames from 'classnames';
+
 import { Badge, BadgeStyle, Button, ButtonStyle, Paragraph } from '@sovryn/ui';
 
 type CTAProps = {
   index: number;
   backgroundImage: string;
+  imageClass?: string;
   title: string;
   description: string;
   action: string;
@@ -24,6 +27,7 @@ export const CTA: FC<CTAProps> = ({
   badges,
   disableCTA = false,
   href,
+  imageClass,
 }) => (
   <div
     key={index}
@@ -44,10 +48,13 @@ export const CTA: FC<CTAProps> = ({
     <img
       src={backgroundImage}
       alt={title}
-      className="absolute top-0 right-0 md:max-w-none max-w-14"
+      className={classNames(
+        'absolute top-0 right-0 md:max-w-none max-w-14 z-0',
+        imageClass,
+      )}
     />
     <Paragraph
-      className="mb-6 font-medium text-sm xl:max-w-36 xl:pr-0 pr-12"
+      className="mb-6 font-medium text-sm xl:max-w-36 xl:pr-0 pr-12 relative z-2"
       children={title}
     />
     <Paragraph

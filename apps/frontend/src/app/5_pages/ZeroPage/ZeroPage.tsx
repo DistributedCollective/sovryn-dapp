@@ -185,6 +185,7 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
           <div className="flex-col-reverse lg:flex-row flex items-stretch md:p-4 md:bg-gray-90 rounded gap-9 md:gap-20">
             <div className="md:min-w-[23rem] min-w-auto">
               <SystemStats />
+              <p>hahaha</p>
             </div>
             <div className="flex-1 flex flex-col">
               <Paragraph
@@ -200,6 +201,16 @@ const ZeroPage: FC<ZeroPageProps> = ({ deferred: [price] }) => {
               </div>
             </div>
           </div>
+
+          <p className="mt-4 px-2">
+            <a
+              href="https://wiki.sovryn.com/en/sovryn-dapp/subprotocols/zero-zusd"
+              target="_blank"
+              rel="nofollow noreferrer"
+            >
+              Learn More
+            </a>
+          </p>
 
           <Dialog width={DialogSize.md} isOpen={open} disableFocusTrap>
             <DialogHeader

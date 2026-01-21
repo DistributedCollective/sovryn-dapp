@@ -3,18 +3,13 @@ import React, { FC } from 'react';
 import { t } from 'i18next';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-import { Button, ButtonSize, ButtonStyle } from '@sovryn/ui';
-
-import { LAUNCHPAD_LINKS } from '../../../../../constants/links';
 import { translations } from '../../../../../locales/i18n';
 import styles from './Banner.module.css';
 import { LandingPromoCard } from './components/LandingPromoCard/LandingPromoCard';
 
 export const Banner: FC = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="w-full relative pb-16">
       <Carousel
@@ -33,44 +28,27 @@ export const Banner: FC = () => {
         swipeable
         className="static"
         renderDotsOutside
-        showDots
+        // showDots
         autoPlay={false} // Needs to be true when we have more than 1 promo
         dotListClass={styles.dot}
         autoPlaySpeed={15000}
-        infinite
+        // infinite
       >
         <LandingPromoCard
-          heading={t(translations.landingPage.promotions.originsLaunch.title)}
+          heading={t(
+            translations.landingPage.promotions.zeroInterestLoans.title,
+          )}
           description={t(
-            translations.landingPage.promotions.originsLaunch.description,
+            translations.landingPage.promotions.zeroInterestLoans.description,
           )}
           actions={
             <>
-              <Button
-                style={ButtonStyle.secondary}
-                size={ButtonSize.large}
-                text={t(translations.landingPage.promotions.originsLaunch.cta)}
-                href={LAUNCHPAD_LINKS.ORIGINS_CLAIM}
-                hrefExternal
-              />
-            </>
-          }
-          className="border-primary"
-        />
-        <LandingPromoCard
-          heading={t(translations.landingPage.promotions.bosLaunch.title)}
-          description={t(
-            translations.landingPage.promotions.bosLaunch.description,
-          )}
-          actions={
-            <>
-              <Button
-                style={ButtonStyle.secondary}
-                size={ButtonSize.large}
-                text={t(translations.landingPage.promotions.bosLaunch.cta)}
-                onClick={() => navigate('/earn/staking')}
-                hrefExternal
-              />
+              <Link
+                to="/borrow/line-of-credit"
+                className="inline-flex box-border items-center justify-center text-center border font-body font-semibold no-underline rounded cursor-pointer px-5 py-2  bg-gray-80 border-gray-50 text-gray-10 text-sm hover:bg-gray-50"
+              >
+                {t(translations.landingPage.promotions.zeroInterestLoans.cta)}
+              </Link>
             </>
           }
           className="border-primary"

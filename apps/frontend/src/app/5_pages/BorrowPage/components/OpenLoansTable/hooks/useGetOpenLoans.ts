@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import dayjs from 'dayjs';
 
@@ -12,7 +12,6 @@ import { useAccount } from '../../../../../../hooks/useAccount';
 import { useBlockNumber } from '../../../../../../hooks/useBlockNumber';
 import { useLoadContract } from '../../../../../../hooks/useLoadContract';
 import { queryRate } from '../../../../../../utils/calls';
-import { useGetActiveLoansQuery } from '../../../../../../utils/graphql/rsk/generated';
 import { decimalic } from '../../../../../../utils/math';
 import {
   calculateApr,
@@ -31,34 +30,18 @@ const unsafeOnly = false;
 export const useGetOpenLoans = () => {
   const { account } = useAccount();
   const { value: blockNumber } = useBlockNumber();
-  const [processedBlock, setProcessedBlock] = useState<number | undefined>();
   const contract = useLoadContract('protocol', 'protocol', RSK_CHAIN_ID);
-  const [loadingLoans, setLoadingLoans] = useState(false);
-  const [loanItemsSmartContract, setLoanItemsSmartContract] = useState<
-    LoanItem[]
-  >([]);
 
   const {
-    data,
-    loading: loadingSubgraph,
-    refetch,
-  } = useGetActiveLoansQuery({
-    variables: { user: account },
-  });
-
-  const loading = useMemo(
-    () => loadingLoans || loadingSubgraph,
-    [loadingLoans, loadingSubgraph],
-  );
-
-  const getUserLoans = useCallback(async () => {
-    if (!account || !contract) {
-      setLoadingLoans(false);
-      return;
-    }
-
-    try {
-      setLoadingLoans(true);
+    data: loanItemsSmartContract,
+    isPending,
+    error,
+  } = useQuery({
+    queryKey: ['userLoans', { account, blockNumber }],
+    queryFn: async () => {
+      if (!account || !contract) {
+        return [];
+      }
       const loans = await contract.getUserLoans(
         account,
         start,
@@ -69,7 +52,7 @@ export const useGetOpenLoans = () => {
       );
 
       if (!loans) {
-        return;
+        return [];
       }
 
       const rates = await mapRates(loans);
@@ -125,29 +108,16 @@ export const useGetOpenLoans = () => {
         .filter(Boolean)
         .filter(item => isSupportedPool(item.debtAsset, item.collateralAsset));
 
-      setLoanItemsSmartContract(result);
-      setProcessedBlock(blockNumber);
-    } catch (error) {
-      console.error(`Error while fetching loans: ${error}`);
-    } finally {
-      setLoadingLoans(false);
-    }
-  }, [account, blockNumber, contract]);
-
-  useEffect(() => {
-    if (blockNumber !== processedBlock) {
-      refetch();
-      getUserLoans();
-    }
-  }, [blockNumber, getUserLoans, processedBlock, refetch]);
-
-  if (!data?.loans || !contract || !loanItemsSmartContract) {
-    return { data: [], loading };
-  }
+      return result as LoanItem[];
+    },
+    enabled: !!account && !!contract,
+    placeholderData: keepPreviousData,
+  });
 
   return {
-    data: loanItemsSmartContract,
-    loading,
+    data: loanItemsSmartContract ?? [],
+    loading: isPending,
+    error,
   };
 };
 

@@ -7,7 +7,7 @@ export class LendingPoolDictionary {
       COMMON_SYMBOLS.DLLR,
       new LendingPool(
         COMMON_SYMBOLS.DLLR,
-        [COMMON_SYMBOLS.BTC, 'BPRO', COMMON_SYMBOLS.SOV],
+        [COMMON_SYMBOLS.BTC, 'BPRO', COMMON_SYMBOLS.SOV, COMMON_SYMBOLS.BOS],
         false,
         false,
       ),
@@ -22,6 +22,7 @@ export class LendingPoolDictionary {
           COMMON_SYMBOLS.SOV,
           'BPRO',
           COMMON_SYMBOLS.DOC,
+          COMMON_SYMBOLS.BOS,
         ],
         false,
         false,
@@ -31,7 +32,7 @@ export class LendingPoolDictionary {
       COMMON_SYMBOLS.XUSD,
       new LendingPool(
         COMMON_SYMBOLS.XUSD,
-        [COMMON_SYMBOLS.BTC, 'BPRO', COMMON_SYMBOLS.SOV],
+        [COMMON_SYMBOLS.BTC, 'BPRO', COMMON_SYMBOLS.SOV, COMMON_SYMBOLS.BOS],
         true,
         false,
       ),
@@ -40,7 +41,13 @@ export class LendingPoolDictionary {
       COMMON_SYMBOLS.DOC,
       new LendingPool(
         COMMON_SYMBOLS.DOC,
-        [COMMON_SYMBOLS.BTC, COMMON_SYMBOLS.XUSD, 'BPRO', COMMON_SYMBOLS.SOV],
+        [
+          COMMON_SYMBOLS.BTC,
+          COMMON_SYMBOLS.XUSD,
+          'BPRO',
+          COMMON_SYMBOLS.SOV,
+          COMMON_SYMBOLS.BOS,
+        ],
         false,
         false,
       ),
@@ -59,6 +66,7 @@ export class LendingPoolDictionary {
           COMMON_SYMBOLS.XUSD,
           COMMON_SYMBOLS.DOC,
           COMMON_SYMBOLS.SOV,
+          COMMON_SYMBOLS.BOS,
         ],
         false,
         false,

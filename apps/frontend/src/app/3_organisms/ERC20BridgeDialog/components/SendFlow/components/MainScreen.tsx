@@ -48,7 +48,12 @@ export const MainScreen: React.FC = () => {
     .map(a => a.sideChainId);
 
   const onContinueClick = useCallback(
-    () => set(prevState => ({ ...prevState, step: SendFlowStep.AMOUNT })),
+    () =>
+      set(prevState => ({
+        ...prevState,
+        step: SendFlowStep.AMOUNT,
+        amount: '',
+      })),
     [set],
   );
   const setAsset = useCallback(

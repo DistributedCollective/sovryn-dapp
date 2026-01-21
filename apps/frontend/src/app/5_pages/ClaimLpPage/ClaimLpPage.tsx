@@ -3,16 +3,8 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { Trans } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 
-import {
-  Button,
-  ButtonStyle,
-  Heading,
-  Link,
-  Paragraph,
-  ParagraphSize,
-} from '@sovryn/ui';
+import { Button, Heading, Link, Paragraph, ParagraphSize } from '@sovryn/ui';
 
 import { BOB_CHAIN_ID } from '../../../config/chains';
 
@@ -28,7 +20,6 @@ import { Claim, useClaimLp } from './hooks/useClaimLp';
 const ClaimLpPage: FC = () => {
   const { account } = useAccount();
   const chainId = useCurrentChain();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [claimable, setClaimable] = useState<Claim[]>([]);
 
@@ -80,12 +71,6 @@ const ClaimLpPage: FC = () => {
           </Paragraph>
 
           <div className="flex lg:flex-row flex-col items-center justify-around mt-6">
-            <Button
-              style={ButtonStyle.secondary}
-              text={t(translations.claimLpPage.checkLeaderboard)}
-              loading={loading}
-              onClick={() => navigate('/bob-lp-points')}
-            />
             <Link
               href={CAMPAIGN_URL}
               text={t(translations.claimLpPage.aboutCampaign)}
@@ -144,21 +129,7 @@ const ClaimLpPage: FC = () => {
               ))}
             </div>
 
-            <div className="rounded bg-gray-60 p-4 mt-6">
-              <Paragraph>
-                <Trans
-                  i18nKey={t(translations.claimLpPage.eSovDescription)}
-                  components={[
-                    <Button
-                      style={ButtonStyle.ghost}
-                      text={t(translations.claimLpPage.leaderboard)}
-                      onClick={() => navigate('/bob-lp-points')}
-                    />,
-                  ]}
-                />
-              </Paragraph>
-            </div>
-            <div className="mt-2 text-center">
+            <div className="mt-8 text-center">
               <Button
                 text={t(translations.claimLpPage.cta)}
                 className="grow-0 shrink w-full max-w-48"

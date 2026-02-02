@@ -25,7 +25,7 @@ export const Limits: React.FC<LimitsProps> = ({
   asset,
   className,
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const { data: limits } = useBridgeLimits(sourceChain, targetChain, asset);
   const onClick = useCallback((toOpen: boolean) => setOpen(toOpen), []);
 

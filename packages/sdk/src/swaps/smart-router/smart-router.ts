@@ -34,9 +34,9 @@ export class SmartRouter {
     const routes = await Promise.all(
       this.getAvailableRoutes(chain).map(async route => {
         const pairs = await route.pairs();
-        if (pairs.has(base)) {
-          const quoteTokens = pairs.get(base);
-          if (quoteTokens?.includes(quote)) {
+        if (pairs.has(base.toLowerCase())) {
+          const quoteTokens = pairs.get(base.toLowerCase());
+          if (quoteTokens?.includes(quote.toLowerCase())) {
             return route;
           }
         }
@@ -93,7 +93,6 @@ export class SmartRouter {
     amount: BigNumberish,
   ): Promise<BestRouteQuote> {
     const routes = await this.getQuotes(chain, base, quote, amount);
-
     if (routes.length === 0) {
       throw new Error('No routes available');
     }

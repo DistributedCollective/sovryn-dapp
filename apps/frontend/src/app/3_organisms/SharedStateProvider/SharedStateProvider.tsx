@@ -1,27 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { useAccount } from '../../../hooks/useAccount';
 import {
   sharedState,
-  FastBtcDialogState,
   EmailNotificationSettingsDialogState,
   RuneBridgeDialogState,
   Erc20BridgeDialogState,
 } from '../../../store/rxjs/shared-state';
 import { ERC20BridgeDialog } from '../ERC20BridgeDialog/ERC20BridgeDialog';
 import { EmailNotificationSettingsDialog } from '../EmailNotificationSettingsDialog/EmailNotificationSettingsDialog';
-import { FastBtcDialog } from '../FastBtcDialog/FastBtcDialog';
 import { RuneBridgeDialog } from '../RuneBridgeDialog/RuneBridgeDialog';
 
 export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const { account } = useAccount();
-
-  const [fastBtcDialog, setFastBtcDialog] = useState<FastBtcDialogState>(
-    sharedState.get().fastBtcDialog,
-  );
-
   const [runeBridgeDialog, setRuneBridgeDialog] =
     useState<RuneBridgeDialogState>(sharedState.get().runeBridgeDialog);
 
@@ -32,16 +23,6 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
     useState<EmailNotificationSettingsDialogState>(
       sharedState.get().emailNotificationSettingsDialog,
     );
-
-  useEffect(() => {
-    const fastBtcDialogSubscription = sharedState
-      .select('fastBtcDialog')
-      .subscribe(setFastBtcDialog);
-
-    return () => {
-      fastBtcDialogSubscription.unsubscribe();
-    };
-  }, []);
 
   useEffect(() => {
     const emailNotificationSettingsDialogSubscription = sharedState
@@ -73,11 +54,6 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
     };
   }, []);
 
-  const handleFastBtcDialogClose = useCallback(
-    () => sharedState.actions.closeFastBtcDialog(),
-    [],
-  );
-
   const handleEmailNotificationSettingsDialogClose = useCallback(
     () => sharedState.actions.closeEmailNotificationSettingsDialog(),
     [],
@@ -93,23 +69,9 @@ export const SharedStateProvider: React.FC<React.PropsWithChildren> = ({
     [],
   );
 
-  // Close the dialog if there is no wallet connected
-  useEffect(() => {
-    if (fastBtcDialog.isOpen && !account) {
-      handleFastBtcDialogClose();
-    }
-  }, [account, fastBtcDialog.isOpen, handleFastBtcDialogClose]);
-
   return (
     <>
       {children}
-
-      <FastBtcDialog
-        isOpen={fastBtcDialog.isOpen}
-        shouldHideSend={fastBtcDialog.shouldHideSend}
-        onClose={handleFastBtcDialogClose}
-        step={fastBtcDialog.step}
-      />
 
       <EmailNotificationSettingsDialog
         isOpen={emailNotificationSettingsDialog.isOpen}

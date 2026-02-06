@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { ChainIds } from '@sovryn/ethers-provider';
-import { Menu, MenuItem, Tooltip } from '@sovryn/ui';
+import { Badge, Menu, MenuItem, Tooltip } from '@sovryn/ui';
 
 import { POWPEG } from '../../../../../constants/general';
 import { BOB } from '../../../../../constants/infrastructure/bob';
@@ -48,10 +48,6 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
 
   const handleErc20Click = useCallback(() => {
     sharedState.actions.openErc20BridgeDialog();
-  }, []);
-
-  const handleStablecoinsClick = useCallback(() => {
-    window.open(BABELFISH_APP_LINK, '_blank');
   }, []);
 
   const handleErcClick = useCallback(() => {
@@ -126,13 +122,18 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
             />
             <MenuItem
               key={t('header.nav.bridges.subMenu.runeBridge')}
-              text={t('header.nav.bridges.subMenu.runeBridge')}
+              text={
+                <span className="flex items-center gap-1.5">
+                  {t('header.nav.bridges.subMenu.runeBridge')}
+                  <Badge content={t('common.deprecated')} className="px-1.5" />
+                </span>
+              }
               label={
                 !isMobile &&
                 t('header.nav.bridges.subMenu.runeBridgeDescription')
               }
               className={classNames('no-underline', {
-                hidden: isBobChain(chainId),
+                hidden: !(isBobChain(chainId) || isRskChain(chainId)),
               })}
               dataAttribute={`dapp-menu-runeBridge`}
               onClick={handleRunesClick}
@@ -148,7 +149,8 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
               className={classNames('no-underline', {
                 hidden: !isRskChain(chainId),
               })}
-              onClick={handleStablecoinsClick}
+              href={BABELFISH_APP_LINK}
+              hrefExternal
             />
             <MenuItem
               key={t('header.nav.bridges.subMenu.ercBridge')}

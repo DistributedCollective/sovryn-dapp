@@ -24,7 +24,7 @@ export const Instructions: React.FC<InstructionsProps> = ({ isReceive }) => {
         {t(translations.runeBridge.instructions.title)}:
       </Heading>
 
-      <ul className="list-disc list-inside text-xs leading-5 font-medium text-gray-30 mt-4 mb-12">
+      <ul className="list-disc list-inside text-xs leading-5 font-medium text-gray-30 mt-4 mb-4">
         {isReceive ? (
           <>
             <li className="mb-4">

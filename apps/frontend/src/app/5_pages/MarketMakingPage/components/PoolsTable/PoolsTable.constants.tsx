@@ -1,12 +1,16 @@
 import React from 'react';
 
+import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { ChainIds } from '@sovryn/ethers-provider';
 import { HelperButton } from '@sovryn/ui';
 
 import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
+import { DeprecatedBadge } from '../../../../2_molecules/DeprecatedBadge/DeprecatedBadge';
+import { getRskDeprecatedAssetTooltips } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
+import { findAsset } from '../../../../../utils/asset';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
 import { BlockedPoolConfig } from './PoolsTable.types';
 import { CurrentBalanceRenderer } from './components/CurrentBalanceRenderer/CurrentBalanceRenderer';
@@ -19,11 +23,35 @@ export const COLUMNS_CONFIG = [
   {
     id: 'pair',
     title: t(translations.marketMakingPage.poolsTable.pair),
-    cellRenderer: (pool: AmmLiquidityPool) => (
-      <div data-pool-key={pool.key}>
-        <AssetPairRenderer asset1={pool.assetA} asset2={pool.assetB} />
-      </div>
-    ),
+    cellRenderer: (pool: AmmLiquidityPool) => {
+      const isDeprecated =
+        !!getRskDeprecatedAssetTooltips(pool.assetA) ||
+        !!getRskDeprecatedAssetTooltips(pool.assetB);
+      return (
+        <div
+          data-pool-key={pool.key}
+          className="inline-flex items-center gap-2"
+        >
+          <AssetPairRenderer
+            asset1={pool.assetA}
+            asset2={pool.assetB}
+            chainId={pool.chainId}
+            hideSymbol
+          />
+          <div
+            className={classNames('flex flex-col gap-1 font-medium text-xs', {
+              'text-gray-40': isDeprecated,
+            })}
+          >
+            <span>
+              {findAsset(pool.assetA, pool.chainId)?.symbol}/
+              {findAsset(pool.assetB, pool.chainId)?.symbol}
+            </span>
+            {isDeprecated && <DeprecatedBadge />}
+          </div>
+        </div>
+      );
+    },
     className: 'hidden lg:block',
   },
   {
@@ -85,5 +113,13 @@ export const BLOCKED_POOLS: BlockedPoolConfig[] = [
     poolAssetB: 'BTC',
     chainId: ChainIds.RSK_TESTNET,
     message: 'SOV pool deposits are under maintenance for testing purposes',
+  },
+  {
+    poolAssetA: 'POWA',
+    poolAssetB: 'BTC',
+    chainId: ChainIds.RSK_MAINNET,
+    message: t(
+      translations.marketMakingPage.marketMakingOperations.depositNotAllowed,
+    ),
   },
 ];

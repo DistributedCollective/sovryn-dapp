@@ -38,4 +38,22 @@ export const getBobDeprecatedAssetTooltips = (asset: string) => {
       ),
     };
   }
+
+  if (
+    ['POWA', 'DOGGOTOTHEMOON', 'PUPSWORLDPEACE'].includes(asset.toUpperCase())
+  ) {
+    return {
+      pool: 'Will be removed soon',
+      convert: 'Convert',
+    };
+  }
+};
+
+export const getRskDeprecatedAssetTooltips = (asset: string) => {
+  if (['POWA'].includes(asset.toUpperCase())) {
+    return {
+      pool: 'Will be removed soon',
+      convert: 'Convert',
+    };
+  }
 };

@@ -1,7 +1,7 @@
 import { Environments } from '../types/global';
 
 export const SOCIAL_LINKS = {
-  DISCORD: 'https://discord.gg/sovryn',
+  DISCORD: 'https://discord.gg/5mAMAJb2X3',
   TELEGRAM: 'https://t.me/SovrynBitcoin',
   TWITTER: 'https://x.com/SovrynBTC',
 };

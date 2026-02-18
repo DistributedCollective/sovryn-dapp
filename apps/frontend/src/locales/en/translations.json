@@ -1928,6 +1928,22 @@
             }
         }
     },
+    "rusdtMigration": {
+        "notice": "RUSDT is deprecated. Migrate to USDT0.",
+        "cta": "Migrate",
+        "convertNotice": "The RUSDT pool is deprecated due to migration to USDT0.",
+        "modal": {
+            "title": "Migrate RUSDT to USDT0",
+            "description": "This migrates your entire RUSDT balance to USDT0 using the Rootstock migration contract.",
+            "currentBalance": "Current RUSDT balance",
+            "noBalance": "Connect a wallet with RUSDT balance to migrate.",
+            "migrate": "Migrate"
+        },
+        "tx": {
+            "title": "Migrate RUSDT to USDT0",
+            "migrate": "Migrate RUSDT"
+        }
+    },
     "claimLpPage": {
         "meta": {
             "title": "Claim LP - Sovryn"

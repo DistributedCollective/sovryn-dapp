@@ -8,9 +8,10 @@ import { HelperButton } from '@sovryn/ui';
 
 import { AssetPairRenderer } from '../../../../2_molecules/AssetPairRenderer/AssetPairRenderer';
 import { DeprecatedBadge } from '../../../../2_molecules/DeprecatedBadge/DeprecatedBadge';
+import { RusdtMigrationNotice } from '../../../../2_molecules/RusdtMigrationNotice/RusdtMigrationNotice';
 import { getRskDeprecatedAssetTooltips } from '../../../../../constants/tokens';
 import { translations } from '../../../../../locales/i18n';
-import { findAsset } from '../../../../../utils/asset';
+import { COMMON_SYMBOLS, findAsset } from '../../../../../utils/asset';
 import { AmmLiquidityPool } from '../../utils/AmmLiquidityPool';
 import { BlockedPoolConfig } from './PoolsTable.types';
 import { CurrentBalanceRenderer } from './components/CurrentBalanceRenderer/CurrentBalanceRenderer';
@@ -27,6 +28,9 @@ export const COLUMNS_CONFIG = [
       const isDeprecated =
         !!getRskDeprecatedAssetTooltips(pool.assetA) ||
         !!getRskDeprecatedAssetTooltips(pool.assetB);
+      const isRusdtPool = [pool.assetA, pool.assetB].some(
+        asset => asset.toUpperCase() === COMMON_SYMBOLS.RUSDT,
+      );
       return (
         <div
           data-pool-key={pool.key}
@@ -47,7 +51,16 @@ export const COLUMNS_CONFIG = [
               {findAsset(pool.assetA, pool.chainId)?.symbol}/
               {findAsset(pool.assetB, pool.chainId)?.symbol}
             </span>
-            {isDeprecated && <DeprecatedBadge />}
+            <span className="flex flex-row justify-start items-center gap-1">
+              {isDeprecated && <DeprecatedBadge />}
+              {isRusdtPool && (
+                <RusdtMigrationNotice
+                  className="justify-center lg:justify-end text-center lg:text-right"
+                  buttonClassName="prevent-row-click"
+                  dataAttributePrefix="market-making-rusdt-migration"
+                />
+              )}
+            </span>
           </div>
         </div>
       );

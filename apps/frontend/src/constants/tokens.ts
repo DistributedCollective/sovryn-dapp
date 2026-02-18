@@ -50,6 +50,13 @@ export const getBobDeprecatedAssetTooltips = (asset: string) => {
 };
 
 export const getRskDeprecatedAssetTooltips = (asset: string) => {
+  if (asset.toUpperCase() === COMMON_SYMBOLS.RUSDT) {
+    return {
+      pool: t(translations.rusdtMigration.notice),
+      convert: t(translations.rusdtMigration.convertNotice),
+    };
+  }
+
   if (['POWA'].includes(asset.toUpperCase())) {
     return {
       pool: 'Will be removed soon',

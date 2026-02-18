@@ -73,67 +73,69 @@ export const PoolsTableAction: FC<PoolsTableActionProps> = ({ pool }) => {
   }, [refetch, block]);
 
   return (
-    <div className="flex items-center justify-center lg:justify-end w-full">
-      <Tooltip
-        trigger={TooltipTrigger.click}
-        content={<>{t(translations.maintenanceMode.featureDisabled)}</>}
-        disabled={!actionLocked}
-        children={
-          <>
-            {!account ||
-            (poolBalanceA.lte(Decimal.ZERO) &&
-              poolBalanceB.lte(Decimal.ZERO)) ? (
-              poolBlocked.isBlocked ? (
-                <Tooltip
-                  children={
-                    <div>
-                      <Button
-                        style={ButtonStyle.primary}
-                        size={ButtonSize.small}
-                        text={t(translations.common.deposit)}
-                        dataAttribute="pools-table-deposit-button"
-                        className="w-full lg:w-auto prevent-row-click"
-                        disabled
-                      />
-                    </div>
-                  }
-                  content={
-                    poolBlocked.message ??
-                    t(
-                      translations.marketMakingPage.marketMakingOperations
-                        .depositNotAllowed,
-                    )
-                  }
-                  dataAttribute="pools-table-deposit-button-tooltip"
-                  className="w-full lg:w-auto prevent-row-click"
-                />
+    <div className="flex flex-col items-center lg:items-end gap-1.5 w-full">
+      <div className="flex items-center justify-center lg:justify-end w-full">
+        <Tooltip
+          trigger={TooltipTrigger.click}
+          content={<>{t(translations.maintenanceMode.featureDisabled)}</>}
+          disabled={!actionLocked}
+          children={
+            <>
+              {!account ||
+              (poolBalanceA.lte(Decimal.ZERO) &&
+                poolBalanceB.lte(Decimal.ZERO)) ? (
+                poolBlocked.isBlocked ? (
+                  <Tooltip
+                    children={
+                      <div>
+                        <Button
+                          style={ButtonStyle.primary}
+                          size={ButtonSize.small}
+                          text={t(translations.common.deposit)}
+                          dataAttribute="pools-table-deposit-button"
+                          className="w-full lg:w-auto prevent-row-click"
+                          disabled
+                        />
+                      </div>
+                    }
+                    content={
+                      poolBlocked.message ??
+                      t(
+                        translations.marketMakingPage.marketMakingOperations
+                          .depositNotAllowed,
+                      )
+                    }
+                    dataAttribute="pools-table-deposit-button-tooltip"
+                    className="w-full lg:w-auto prevent-row-click"
+                  />
+                ) : (
+                  <Button
+                    style={ButtonStyle.primary}
+                    size={ButtonSize.small}
+                    text={t(translations.common.deposit)}
+                    dataAttribute="pools-table-deposit-button"
+                    className="w-full lg:w-auto prevent-row-click"
+                    disabledStyle={actionLocked}
+                    disabled={!account}
+                    onClick={handleDepositClick}
+                  />
+                )
               ) : (
                 <Button
-                  style={ButtonStyle.primary}
+                  style={ButtonStyle.secondary}
                   size={ButtonSize.small}
-                  text={t(translations.common.deposit)}
-                  dataAttribute="pools-table-deposit-button"
+                  text={t(translations.common.adjust)}
+                  dataAttribute="pools-table-adjust-button"
                   className="w-full lg:w-auto prevent-row-click"
                   disabledStyle={actionLocked}
                   disabled={!account}
-                  onClick={handleDepositClick}
+                  onClick={handleAdjustClick}
                 />
-              )
-            ) : (
-              <Button
-                style={ButtonStyle.secondary}
-                size={ButtonSize.small}
-                text={t(translations.common.adjust)}
-                dataAttribute="pools-table-adjust-button"
-                className="w-full lg:w-auto prevent-row-click"
-                disabledStyle={actionLocked}
-                disabled={!account}
-                onClick={handleAdjustClick}
-              />
-            )}
-          </>
-        }
-      />
+              )}
+            </>
+          }
+        />
+      </div>
 
       <AdjustAndDepositModal
         isOpen={isModalOpen}

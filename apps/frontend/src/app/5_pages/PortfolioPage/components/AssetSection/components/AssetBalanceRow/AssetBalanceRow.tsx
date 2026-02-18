@@ -1,19 +1,23 @@
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 
 import { Icon, IconNames, Paragraph, prettyTx } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { DeprecatedBadge } from '../../../../../../2_molecules/DeprecatedBadge/DeprecatedBadge';
+import { RusdtMigrationNotice } from '../../../../../../2_molecules/RusdtMigrationNotice/RusdtMigrationNotice';
 import { USD } from '../../../../../../../constants/currencies';
-import { getBobDeprecatedAssetTooltips } from '../../../../../../../constants/tokens';
+import {
+  getBobDeprecatedAssetTooltips,
+  getRskDeprecatedAssetTooltips,
+} from '../../../../../../../constants/tokens';
 import { useAccount } from '../../../../../../../hooks/useAccount';
 import { useAssetBalance } from '../../../../../../../hooks/useAssetBalance';
 import { useCurrentChain } from '../../../../../../../hooks/useChainStore';
 import { useCopyAddress } from '../../../../../../../hooks/useCopyAddress';
 import { useDollarValue } from '../../../../../../../hooks/useDollarValue';
-import { findAsset } from '../../../../../../../utils/asset';
-import { isBobChain } from '../../../../../../../utils/chain';
+import { COMMON_SYMBOLS, findAsset } from '../../../../../../../utils/asset';
+import { isBobChain, isRskChain } from '../../../../../../../utils/chain';
 import { getCurrencyPrecision } from '../../../ProtocolSection/ProtocolSection.utils';
 import styles from './AssetBalanceRow.module.css';
 import { SdexBalance } from './SdexBalance';
@@ -38,8 +42,22 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
     updateUsdValue(usdValue);
   }, [usdValue, updateUsdValue]);
 
-  const isDeprecated =
-    isBobChain(chainId) && !!getBobDeprecatedAssetTooltips(token);
+  const isDeprecated = useMemo(() => {
+    if (isBobChain(chainId)) {
+      return !!getBobDeprecatedAssetTooltips(token);
+    }
+
+    if (isRskChain(chainId)) {
+      return !!getRskDeprecatedAssetTooltips(token);
+    }
+
+    return false;
+  }, [chainId, token]);
+
+  const isRskRusdtAsset = useMemo(
+    () => isRskChain(chainId) && token.toUpperCase() === COMMON_SYMBOLS.RUSDT,
+    [chainId, token],
+  );
 
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(asset.address);
@@ -70,6 +88,12 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
               </span>
             </span>
             <DeprecatedBadge />
+            {isRskRusdtAsset && (
+              <RusdtMigrationNotice
+                className="w-full mt-0.5 text-left"
+                dataAttributePrefix="portfolio-rusdt-migration"
+              />
+            )}
           </div>
         )}
       </AssetRenderer>

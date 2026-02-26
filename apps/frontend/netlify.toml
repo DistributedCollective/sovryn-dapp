@@ -4,4 +4,4 @@
   command = "yarn build"
 
 [functions]
-  directory = "netlify/functions"
+  directory = "apps/frontend/netlify/functions"

@@ -2,3 +2,6 @@
   base = "apps/frontend/"
   publish = "build"
   command = "yarn build"
+
+[functions]
+  directory = "netlify/functions"

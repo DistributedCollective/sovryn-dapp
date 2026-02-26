@@ -16,6 +16,7 @@ import {
 import { translations } from '../../../locales/i18n';
 import { isStaging } from '../../../utils/helpers';
 import { getChangelogUrl } from '../../../utils/helpers';
+import { SupportFeedbackBadge } from '../SupportFeedbackBadge/SupportFeedbackBadge';
 
 type FooterProps = {
   showDashboardLink?: boolean;
@@ -76,42 +77,45 @@ export const Footer: FC<FooterProps> = ({ showDashboardLink }) => {
   );
 
   return (
-    <UIFooter
-      leftContent={
-        <SovrynLogo
-          image={Logo}
-          dataAttribute="footer-logo"
-          className="max-h-4 max-w-fit mr-2"
-          text="Powered by bitcoin"
-          link="/"
-        />
-      }
-      links={
-        <div className="flex flex-row justify-center flex-wrap gap-x-6 gap-y-5">
-          {footerLinks.map(link => (
-            <Link
-              key={link.id}
-              href={link.href}
-              text={link.name}
-              openNewTab={link.openNewTab}
-            />
-          ))}
-        </div>
-      }
-      rightContent={
-        <div className="flex gap-x-2">
-          <div className="flex items-center text-xs justify-center">
-            <Link
-              href={getChangelogUrl(CURRENT_RELEASE.commit)}
-              text={`${t(
-                translations.footer.buildID,
-              )} ${CURRENT_RELEASE.commit?.substring(0, 7)}`}
-              openNewTab={true}
-            />
+    <>
+      <UIFooter
+        leftContent={
+          <SovrynLogo
+            image={Logo}
+            dataAttribute="footer-logo"
+            className="max-h-4 max-w-fit mr-2"
+            text="Powered by bitcoin"
+            link="/"
+          />
+        }
+        links={
+          <div className="flex flex-row justify-center flex-wrap gap-x-6 gap-y-5">
+            {footerLinks.map(link => (
+              <Link
+                key={link.id}
+                href={link.href}
+                text={link.name}
+                openNewTab={link.openNewTab}
+              />
+            ))}
           </div>
-          <SocialLinks dataAttribute="footer-social" />
-        </div>
-      }
-    />
+        }
+        rightContent={
+          <div className="flex gap-x-2">
+            <div className="flex items-center text-xs justify-center">
+              <Link
+                href={getChangelogUrl(CURRENT_RELEASE.commit)}
+                text={`${t(
+                  translations.footer.buildID,
+                )} ${CURRENT_RELEASE.commit?.substring(0, 7)}`}
+                openNewTab={true}
+              />
+            </div>
+            <SocialLinks dataAttribute="footer-social" />
+          </div>
+        }
+      />
+      <SupportFeedbackBadge />
+    </>
   );
 };

@@ -1934,7 +1934,7 @@
         "convertNotice": "The RUSDT pool is deprecated due to migration to USDT0.",
         "modal": {
             "title": "Migrate RUSDT to USDT0",
-            "description": "Enter the amount of RUSDT you want to migrate to USDT0 using the Rootstock migration contract.",
+            "description": "Enter the amount of RUSDT you want to migrate 1:1 to USDT0",
             "currentBalance": "Current RUSDT balance",
             "maxMigratable": "Max migratable now",
             "amount": "Amount to migrate",

@@ -62,7 +62,7 @@ export const RusdtMigrationNotice: FC<RusdtMigrationNoticeProps> = ({
     weiBalance: migrationUsdtBalanceWei,
     loading: migrationBalanceLoading,
   } = useAssetBalance(
-    COMMON_SYMBOLS.USDT,
+    COMMON_SYMBOLS.USDT0,
     RSK_CHAIN_ID,
     RUSDT_MIGRATION_ALLOWANCE_PROVIDER,
   );
@@ -80,7 +80,7 @@ export const RusdtMigrationNotice: FC<RusdtMigrationNoticeProps> = ({
       try {
         setMigrationAllowanceLoading(true);
         const { contract } = await getAssetData(
-          COMMON_SYMBOLS.USDT,
+          COMMON_SYMBOLS.USDT0,
           RSK_CHAIN_ID,
         );
         const usdtContract = contract(getProvider(RSK_CHAIN_ID));
@@ -277,7 +277,7 @@ export const RusdtMigrationNotice: FC<RusdtMigrationNoticeProps> = ({
               &nbsp;&nbsp;-&gt;&nbsp;&nbsp;
               <AmountRenderer
                 value={account ? decimalic(maxOutputWeiAmount).toUnits(6) : '0'}
-                suffix={COMMON_SYMBOLS.USDT}
+                suffix={COMMON_SYMBOLS.USDT0}
                 isAnimated
               />
             </Paragraph>
@@ -291,7 +291,7 @@ export const RusdtMigrationNotice: FC<RusdtMigrationNoticeProps> = ({
               <MaxButton
                 onClick={handleSetMaxAmount}
                 value={maxMigratableAmount}
-                token={COMMON_SYMBOLS.SOV}
+                token={COMMON_SYMBOLS.RUSDT}
               />
             </div>
 

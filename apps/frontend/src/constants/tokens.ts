@@ -22,7 +22,7 @@ export const getTokenDisplayNameByAddress = (
   (fallbackPrettified ? prettyTx(address) : address);
 
 export const getBobDeprecatedAssetTooltips = (asset: string) => {
-  if (asset.toUpperCase() === COMMON_SYMBOLS.USDT) {
+  if (asset.toUpperCase() === COMMON_SYMBOLS.USDT0) {
     return {
       pool: t(translations.ambientMarketMaking.deprecatedTooltips.usdt.pool),
       convert: t(
@@ -50,12 +50,12 @@ export const getBobDeprecatedAssetTooltips = (asset: string) => {
 };
 
 export const getRskDeprecatedAssetTooltips = (asset: string) => {
-  if (asset.toUpperCase() === COMMON_SYMBOLS.RUSDT) {
-    return {
-      pool: t(translations.rusdtMigration.notice),
-      convert: t(translations.rusdtMigration.convertNotice),
-    };
-  }
+  // if (asset.toUpperCase() === COMMON_SYMBOLS.RUSDT) {
+  //   return {
+  //     pool: t(translations.rusdtMigration.notice),
+  //     convert: t(translations.rusdtMigration.convertNotice),
+  //   };
+  // }
 
   if (['POWA'].includes(asset.toUpperCase())) {
     return {

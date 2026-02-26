@@ -36,7 +36,7 @@ export const COMMON_SYMBOLS = {
   RUSDT: 'RUSDT',
   ETH: 'ETH',
   WBTC_OLD: 'WBTC.OLD',
-  USDT: 'USDT',
+  USDT0: 'USDT0',
 };
 
 export const compareAssets = (asset1?: string | null, asset2?: string | null) =>

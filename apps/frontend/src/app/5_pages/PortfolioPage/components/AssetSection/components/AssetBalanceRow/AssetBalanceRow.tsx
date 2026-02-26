@@ -79,7 +79,7 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
         showLongName
         assetLongNameClassName="hidden lg:block"
       >
-        {isDeprecated && (
+        {isDeprecated ? (
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="flex items-center gap-1 text-gray-40 font-medium text-[10px]">
               {prettyTx(asset.address)}
@@ -95,6 +95,8 @@ export const AssetBalanceRow: FC<AssetBalanceRowProps> = ({
               />
             )}
           </div>
+        ) : (
+          <>{isRskRusdtAsset && <RusdtMigrationNotice />}</>
         )}
       </AssetRenderer>
       <Paragraph className="text-right lg:text-left truncate">

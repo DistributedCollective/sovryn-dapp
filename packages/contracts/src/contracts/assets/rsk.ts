@@ -113,6 +113,12 @@ export const rsk: Array<AssetDetails> = [
     getIcon: async () => (await import('./icons/rsk/rusdt')).default,
   },
   {
+    symbol: 'USDT0',
+    address: '0x779dED0C9e1022225F8e0630b35A9B54Be713736',
+    decimals: 6,
+    getIcon: async () => (await import('./icons/rsk/usdt0')).default,
+  },
+  {
     symbol: 'MYNT',
     address: '0x2e6B1d146064613E8f521Eb3c6e65070af964EbB',
     decimals: 18,

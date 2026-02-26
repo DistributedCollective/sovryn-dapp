@@ -122,8 +122,6 @@
                 "title": "Bridges",
                 "connectWallet": "Connect a wallet to use the bridges.",
                 "subMenu": {
-                    "runeBridge": "Runes",
-                    "runeBridgeDescription": "Transfer between Bitcoin and Sovryn",
                     "tokenBridge": "Stablecoins",
                     "tokenBridgeDescription": "Transfer between RSK and other chains",
                     "btcBridge": "Fast BTC",
@@ -172,7 +170,6 @@
     },
     "maintenanceMode": {
         "fastBtc": "Fast BTC is locked",
-        "runeBridge": "Rune Bridge is locked",
         "erc20Bridge": "ERC-20 Bridge is locked",
         "featureDisabled": "This feature is currently disabled",
         "openingLOC": "Opening a line of credit is currently disabled",
@@ -970,97 +967,6 @@
         "claimDescription": "Users who participated in the BOB Fusion Season 1 Spice Liquidity Provisioning campaign can claim their LP tokens here:",
         "claimLp": "Claim LP tokens"
     },
-    "runeBridge": {
-        "mainScreen": {
-            "title": "Rune Bridge",
-            "tabs": {
-                "receiveLabel": "Receive",
-                "receiveInfoText": "Transfer Runes from Bitcoin to your {{chainName}} address",
-                "sendLabel": "Send",
-                "sendInfoText": "Transfer Rune Tokens from {{chainName}} to your Bitcoin address"
-            }
-        },
-        "instructions": {
-            "title": "Instructions",
-            "upToNHours": "Allow up to {{hours}} hrs to process",
-            "createSupportTicket": "If your transaction takes longer than {{hours}} hrs please <0>create a support ticket</0>",
-            "createSupportTicketCta": "create a support ticket",
-            "receive": {
-                "onlyRunes": "Only transfer Runes, not Bitcoin",
-                "onlySupportedRunes": "Only transfer Runes that are supported by the bridge, visible on the next page. Transfers of unsupported Runes will not be processed",
-                "postage": "Set the postage to at least {{postageSat}} satoshi ({{postageBtc}} BTC)"
-            },
-            "send": {
-                "wallet": "Only transfer Rune Tokens to a wallet that supports Runes, such as <0>the Ordinals wallet \"ord\"</0>. Runes sent to a Bitcoin wallet without support for Runes will be lost",
-                "walletCta": "the Ordinals wallet \"ord\"",
-                "minAmount": "Do not send less than the minimum amount",
-                "maxAmount": "Do not send more than the maximum amount",
-                "supportedFormats": "Supported address formats: P2TR, P2PKH, P2SH, P2WPKH, P2WSH"
-            }
-        },
-        "limits": {
-            "title": "Transfer policies",
-            "minimumAmount": "Minimum amount",
-            "maximumAmount": "Maximum amount",
-            "minimumPostage": "Minimum postage",
-            "serviceFee": "Service fee",
-            "supportedRunes": "Supported Runes"
-        },
-        "addressForm": {
-            "title": "Send Runes to this address",
-            "copyAddressSuccess": "Address was copied to clipboard."
-        },
-        "send": {
-            "amountForm": {
-                "title": "Select the Rune Token and enter the amount to send",
-                "amountLabel": "Send"
-            },
-            "addressForm": {
-                "title": "Enter recipient's bitcoin address",
-                "addressLabel": "Address",
-                "maxExceed": "Exceeds maximum amount",
-                "invalidAddress": "Invalid address"
-            },
-            "confirmationScreens": {
-                "reviewTitle": "Transfer details",
-                "statusTitleProcessing": "Transfer processing...",
-                "statusTitleComplete": "Transfer complete",
-                "statusTitleFailed": "Transfer failed",
-                "from": "From",
-                "to": "To",
-                "sending": "Sending",
-                "serviceFee": "Service fee",
-                "receiving": "Receiving",
-                "hash": "{{chainName}} TXID",
-                "bitcoinTxId": "Bitcoin TXID"
-            },
-            "txDialog": {
-                "title": "Send {{rune}} to the bitcoin network",
-                "approveTxTitle": "Approve {{rune}}",
-                "sendTxTitle": "Send {{rune}}"
-            }
-        },
-        "receive": {
-            "loading": "Loading... this may take up to 30 seconds",
-            "statusScreen": {
-                "transferStatus": {
-                    "detected": "Transfer detected",
-                    "seen": "Runes received by the bridge",
-                    "sent_to_evm": "Rune Tokens transferred in {{chainName}}",
-                    "confirmed": "Rune Token transfer confirmed in {{chainName}}"
-                },
-                "statusTitleProcessing": "Transfer processing...",
-                "statusTitleComplete": "Transfer complete",
-                "to": "To",
-                "sending": "Sending",
-                "serviceFee": "Service fee",
-                "receiving": "Receiving",
-                "bitcoinTxId": "Bitcoin TXID",
-                "rootstockTxId": "Rootstock TXID",
-                "currentChainTxId": "{{chainName}} TXID"
-            }
-        }
-    },
     "fastBtc": {
         "mainScreen": {
             "title": "Funding",
@@ -1823,8 +1729,7 @@
             "withdraw": "Withdraw",
             "asset": "Asset",
             "balance": "Balance",
-            "usdValue": "USD Value",
-            "runeBridge": "Rune Bridge"
+            "usdValue": "USD Value"
         }
     },
     "protocolDataPage": {
@@ -2015,8 +1920,7 @@
             "title": "Runes - Sovryn"
         },
         "title": "Earn with Runes!",
-        "subtitle": "Earn Trading fees and BOB’s Spice with your Runes. Deposit into the trading pools and start earning from trades made on Sovryn. You can trade your rune to any asset available on Sovryn. Bridge in your runes to start earning.",
-        "bridgeRunes": "Bridge Runes",
+        "subtitle": "Earn trading fees and BOB’s Spice with your Runes. Deposit into trading pools and start earning from trades on Sovryn. You can trade your rune to any asset available on Sovryn.",
         "benefits": {
             "title": "Benefits",
             "list": {
@@ -2039,10 +1943,6 @@
                 "convert": "Convert",
                 "deposit": "Deposit"
             }
-        },
-        "startEarning": {
-            "title": "Bridge your runes",
-            "subtitle": "Bridge your runes to start trading and earning with runes on Sovryn"
         }
     },
     "erc20Bridge": {

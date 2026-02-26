@@ -52,7 +52,6 @@ export const WIKI_LINKS = {
   REWARDS: 'https://wiki.sovryn.app/en/sovryn-dapp/sovryn-rewards-explained',
   STAKING: 'https://wiki.sovryn.com/en/governance/staking-vesting-voting',
   WALLET_SETUP: 'https://wiki.sovryn.com/en/getting-started/wallet-setup',
-  BRIDGE_RUNES: 'https://wiki.sovryn.com/en/sovryn-dapp/runes#bridging-runes',
 };
 
 export const HELPDESK_LINK = 'https://help.sovryn.app/';
@@ -62,6 +61,8 @@ export const BABELFISH_APP_LINK = 'https://app.babelfish.money';
 export const POWA_LINK = 'https://sovryn.com/powa';
 
 export const GOBOB_LINK = 'https://gobob.sovryn.app';
+
+export const BOB_MIGRATION_LINK = 'https://app.gobob.xyz/en/migrate';
 
 export const SEPOLIA_FAUCET_LINK = 'https://sepolia-faucet.pk910.de';
 

@@ -4,14 +4,12 @@ import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 
-import { Button, Heading, Icon, IconNames, Link, Paragraph } from '@sovryn/ui';
+import { Button, Heading, Link, Paragraph } from '@sovryn/ui';
 
 import { BOB_CHAIN_ID } from '../../../config/chains';
 
 import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
-import { WIKI_LINKS } from '../../../constants/links';
 import { translations } from '../../../locales/i18n';
-import { sharedState } from '../../../store/rxjs/shared-state';
 import { AVAILABLE_RUNES, RUNES_REQUEST_EMAIL } from './RunesPage.constants';
 import { RUNES_USE_CASE_ACTIONS } from './RunesPage.types';
 import {
@@ -24,9 +22,6 @@ const pageTranslations = translations.runesPage;
 
 export const RunesPage: FC = () => {
   const navigate = useNavigate();
-  const handleBridgeRunes = useCallback(() => {
-    sharedState.actions.openRuneBridgeDialog();
-  }, []);
 
   const handleRuneAction = useCallback(
     (action: RUNES_USE_CASE_ACTIONS) => {
@@ -74,16 +69,12 @@ export const RunesPage: FC = () => {
                 {renderAvailableRunes()}
               </div>
 
-              <div className="flex items-start justify-center mb-4">
+              <div className="flex justify-center mb-4">
                 <Button
-                  text={t(pageTranslations.bridgeRunes)}
-                  onClick={handleBridgeRunes}
-                  className="mr-1"
-                />
-                <Link
-                  text={<Icon icon={IconNames.INFO} size={12} />}
-                  href={WIKI_LINKS.BRIDGE_RUNES}
-                  className="text-sov-white hover:text-gray-30"
+                  text={t(pageTranslations.runesUseCases.actions.convert)}
+                  onClick={() =>
+                    handleRuneAction(RUNES_USE_CASE_ACTIONS.convert)
+                  }
                 />
               </div>
 
@@ -112,25 +103,6 @@ export const RunesPage: FC = () => {
             />
             <div className="rounded bg-gray-80 text-base sm:text-md text-gray-30 leading-5 font-medium mt-4 flex sm:flex-row flex-col gap-6 p-6 flex-wrap lg:flex-nowrap">
               {renderRunesUseCases(handleRuneAction)}
-            </div>
-          </div>
-
-          <div className="mt-11 bg-gray-90 rounded p-6">
-            <div className="flex lg:flex-row flex-col gap-11 justify-between items-center">
-              <div className="lg:max-w-[26rem] w-full">
-                <Paragraph
-                  className="text-gray-10 font-medium mb-6 text-2xl"
-                  children={t(pageTranslations.startEarning.title)}
-                />
-                <Paragraph
-                  className="text-gray-30 leading-5 font-medium"
-                  children={t(pageTranslations.startEarning.subtitle)}
-                />
-              </div>
-              <Button
-                text={t(pageTranslations.bridgeRunes)}
-                onClick={handleBridgeRunes}
-              />
             </div>
           </div>
         </NetworkBanner>

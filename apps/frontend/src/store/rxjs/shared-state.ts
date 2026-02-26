@@ -9,19 +9,11 @@ import {
 
 export type EventDriverState = {
   emailNotificationSettingsDialog: EmailNotificationSettingsDialogState;
-  /** @deprecated */
-  runeBridgeDialog: RuneBridgeDialogState;
   erc20BridgeDialog: Erc20BridgeDialogState;
 };
 
 export type EmailNotificationSettingsDialogState = {
   isOpen: boolean;
-};
-
-/** @deprecated */
-export type RuneBridgeDialogState = {
-  isOpen: boolean;
-  step?: number;
 };
 
 export type Erc20BridgeDialogState = {
@@ -32,11 +24,6 @@ export type Erc20BridgeDialogState = {
 const INITIAL_STATE = {
   emailNotificationSettingsDialog: {
     isOpen: false,
-  },
-  /** @deprecated */
-  runeBridgeDialog: {
-    isOpen: false,
-    step: 0,
   },
   erc20BridgeDialog: {
     isOpen: false,
@@ -77,25 +64,6 @@ function select<T extends keyof EventDriverState>(
 const get = (): EventDriverState => store.getValue();
 
 // Actions
-/** @deprecated */
-const openRuneBridgeDialog = (step: number = 0) =>
-  dispatch(state => ({
-    ...state,
-    runeBridgeDialog: {
-      isOpen: true,
-      step,
-    },
-  }));
-/** @deprecated */
-const closeRuneBridgeDialog = () =>
-  dispatch(state => ({
-    ...state,
-    runeBridgeDialog: {
-      ...state.runeBridgeDialog,
-      isOpen: false,
-    },
-  }));
-
 const openErc20BridgeDialog = (step: number = 0) =>
   dispatch(state => ({
     ...state,
@@ -135,8 +103,6 @@ export const sharedState = {
   actions: {
     openEmailNotificationSettingsDialog,
     closeEmailNotificationSettingsDialog,
-    openRuneBridgeDialog,
-    closeRuneBridgeDialog,
     openErc20BridgeDialog,
     closeErc20BridgeDialog,
   },

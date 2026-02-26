@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { t } from 'i18next';
 
 import { ChainIds } from '@sovryn/ethers-provider';
-import { Badge, Menu, MenuItem, Tooltip } from '@sovryn/ui';
+import { Menu, MenuItem, Tooltip } from '@sovryn/ui';
 
 import { POWPEG } from '../../../../../constants/general';
 import { BOB } from '../../../../../constants/infrastructure/bob';
@@ -41,10 +41,6 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
       window.open(SEPOLIA_FAUCET_LINK, '_blank');
     }
   }, [chainId]);
-
-  const handleRunesClick = useCallback(() => {
-    sharedState.actions.openRuneBridgeDialog();
-  }, []);
 
   const handleErc20Click = useCallback(() => {
     sharedState.actions.openErc20BridgeDialog();
@@ -119,24 +115,6 @@ export const BridgeMenuItem: FC<BridgeMenuItemProps> = ({ dataAttribute }) => {
                 hidden: isBobChain(chainId),
               })}
               onClick={handleErc20Click}
-            />
-            <MenuItem
-              key={t('header.nav.bridges.subMenu.runeBridge')}
-              text={
-                <span className="flex items-center gap-1.5">
-                  {t('header.nav.bridges.subMenu.runeBridge')}
-                  <Badge content={t('common.deprecated')} className="px-1.5" />
-                </span>
-              }
-              label={
-                !isMobile &&
-                t('header.nav.bridges.subMenu.runeBridgeDescription')
-              }
-              className={classNames('no-underline', {
-                hidden: !(isBobChain(chainId) || isRskChain(chainId)),
-              })}
-              dataAttribute={`dapp-menu-runeBridge`}
-              onClick={handleRunesClick}
             />
             <MenuItem
               key={t('header.nav.bridges.subMenu.tokenBridge')}

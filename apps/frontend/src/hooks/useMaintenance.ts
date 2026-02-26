@@ -147,9 +147,6 @@ enum States {
   D2_MARKET_MAKING_RIF = 'marketMakingRIF',
   D2_MARKET_MAKING_MYNT = 'marketMakingMYNT',
 
-  D2_RUNE_BRIDGE_RSK = 'd2RuneBridgeRSK',
-  D2_RUNE_BRIDGE_BOB = 'd2RuneBridgeBOB',
-
   // BOB chain states
   BOB_FULL = 'fullD2Bob',
   BOB_DEPOSIT_LIQUIDITY = 'd2BobDepositLiquidity',

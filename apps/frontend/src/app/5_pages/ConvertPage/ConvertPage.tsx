@@ -39,8 +39,8 @@ import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer'
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
 import { MaxButton } from '../../2_molecules/MaxButton/MaxButton';
 import { TradingChart } from '../../2_molecules/TradingChart/TradingChart';
-import { BOB_MIGRATION_LINK } from '../../3_organisms/RuneBridgeDialog/constants';
 import { TOKEN_RENDER_PRECISION, USD } from '../../../constants/currencies';
+import { BOB_MIGRATION_LINK } from '../../../constants/links';
 import {
   getBobDeprecatedAssetTooltips,
   getTokenDisplayName,

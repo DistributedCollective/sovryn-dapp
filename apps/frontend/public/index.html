@@ -65,18 +65,9 @@
         width: 100%;
         height: 100%;
       }
-      @media (max-width: 640px) {
-        #tiledesk-container.closed #tiledeskdiv {
-          bottom: -15px !important;
-          right: -15px !important;
-        }
-      }
     </style>
     <link rel="icon" href="%PUBLIC_URL%/sovryn_favicon.png" />
-    <link
-      href="%PUBLIC_URL%/sovryn_favicon_256.png"
-      rel="apple-touch-icon"
-    />
+    <link href="%PUBLIC_URL%/sovryn_favicon_256.png" rel="apple-touch-icon" />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
       rel="stylesheet"
@@ -92,35 +83,6 @@
       rel="stylesheet"
     />
     <title>Sovryn - DeFi for bitcoin</title>
-    <% if (process.env.REACT_APP_TILEDESK_ID) { %>
-    <!-- Tiledesk Code -->
-    <script type="application/javascript">
-      window.tiledeskSettings = {
-        projectid: '%REACT_APP_TILEDESK_ID%',
-      };
-      (function (d, s, id) {
-        var w = window;
-        var d = document;
-        var i = function () {
-          i.c(arguments);
-        };
-        i.q = [];
-        i.c = function (args) {
-          i.q.push(args);
-        };
-        w.Tiledesk = i;
-        var js,
-          fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s);
-        js.id = id;
-        js.async = true;
-        js.src = 'https://widget.tiledesk.com/v6/launch.js';
-        fjs.parentNode.insertBefore(js, fjs);
-      })(document, 'script', 'tiledesk-jssdk');
-    </script>
-    <!-- End Tiledesk Code -->
-    <% } %>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

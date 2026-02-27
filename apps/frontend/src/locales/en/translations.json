@@ -1843,7 +1843,7 @@
             "currentBalance": "Current RUSDT balance",
             "maxMigratable": "Max migratable now",
             "amount": "Amount to migrate",
-            "capacityUnavailable": "Migration liquidity is currently unavailable. Please try again later.",
+            "capacityUnavailable": "Total USDT0 available for migration: 0 USDT0.",
             "invalidAmount": "Enter an amount between 0.000001 and the max migratable amount.",
             "noBalance": "Connect a wallet with RUSDT balance to migrate.",
             "migrate": "Migrate"

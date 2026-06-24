@@ -16,7 +16,10 @@ type AcceptedCollateralProps = {
 };
 
 export const AcceptedCollateral: FC<AcceptedCollateralProps> = ({ pool }) => {
-  const availableAssets = useMemo(() => pool.getBorrowCollateral(), [pool]);
+  const availableAssets = useMemo(
+    () => pool.getActiveBorrowCollateral(),
+    [pool],
+  );
 
   const renderPools = useMemo(() => {
     if (!availableAssets.length) {

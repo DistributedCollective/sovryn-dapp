@@ -87,7 +87,7 @@ export const NewLoanForm: FC<NewLoanFormProps> = ({ pool }) => {
     dayjs(defaultFirstRolloverDate).unix(),
   );
   const collateralAssets = useMemo(
-    () => pool.getBorrowCollateral().map(item => maybeWrappedAsset(item)),
+    () => pool.getActiveBorrowCollateral().map(item => maybeWrappedAsset(item)),
     [pool],
   );
 

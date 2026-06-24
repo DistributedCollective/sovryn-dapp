@@ -11,6 +11,7 @@ export class LendingPool {
     private _borrowCollateral: string[] = [],
     public readonly useLM: boolean,
     public readonly deprecated: boolean = false,
+    private _activeBorrowCollateral: string[] = _borrowCollateral,
   ) {
     this._details = findAsset(this._asset, RSK_CHAIN_ID);
   }
@@ -25,5 +26,8 @@ export class LendingPool {
   }
   public getBorrowCollateral(): string[] {
     return this._borrowCollateral;
+  }
+  public getActiveBorrowCollateral(): string[] {
+    return this._activeBorrowCollateral;
   }
 }

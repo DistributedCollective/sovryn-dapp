@@ -4,7 +4,30 @@ import { COMMON_SYMBOLS } from '../../../utils/asset';
 import { PromotionData } from './MarketMakingPage.types';
 import { AmmLiquidityPool } from './utils/AmmLiquidityPool';
 
+const isAddress = (value?: string) => /^0x[a-fA-F0-9]{40}$/.test(value || '');
+
+// USDT0/RBTC pool activation. Leave empty until the pool is deployed.
+const USDT0_BTC_AMM_CONVERTER = '0xd107e06964112d3f70cfb386565dfbda16ae71f3';
+const USDT0_BTC_AMM_POOL_TOKEN = '0x591e07d721c2e22eeb4bf33d0b3377daca886fcc';
+
+const MAINNET_AMM_USDT0_WRBTC =
+  isAddress(USDT0_BTC_AMM_CONVERTER) && isAddress(USDT0_BTC_AMM_POOL_TOKEN)
+    ? [
+        new AmmLiquidityPool(
+          COMMON_SYMBOLS.USDT0,
+          COMMON_SYMBOLS.BTC,
+          1,
+          ChainIds.RSK_MAINNET,
+          USDT0_BTC_AMM_CONVERTER!,
+          USDT0_BTC_AMM_POOL_TOKEN!,
+          undefined,
+          true,
+        ).setSovRewards(false),
+      ]
+    : [];
+
 export const MAINNET_AMM = [
+  ...MAINNET_AMM_USDT0_WRBTC,
   new AmmLiquidityPool(
     COMMON_SYMBOLS.DLLR,
     COMMON_SYMBOLS.BTC,
@@ -143,8 +166,6 @@ export const MAINNET_AMM = [
     ChainIds.RSK_MAINNET,
     '0xF1DeE3175593f4e13a2b9e09a5FaafC513c9A27F',
     '0xfd834bbcde8c3ac4766bf5c1f5d861400103087b',
-    undefined,
-    true,
   ),
 ];
 

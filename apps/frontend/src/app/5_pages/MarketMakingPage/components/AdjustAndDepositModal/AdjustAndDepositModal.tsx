@@ -20,6 +20,8 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
+
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
 import { CurrentStatistics } from '../../../../2_molecules/CurrentStatistics/CurrentStatistics';
 import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
@@ -27,7 +29,7 @@ import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
 import { useAccount } from '../../../../../hooks/useAccount';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
-import { COMMON_SYMBOLS } from '../../../../../utils/asset';
+import { COMMON_SYMBOLS, findAsset } from '../../../../../utils/asset';
 import { decimalic, toWei } from '../../../../../utils/math';
 import { useCheckPoolBlocked } from '../../hooks/useCheckPoolBlocked';
 import { useGetExpectedTokenAmount } from '../../hooks/useGetExpectedTokenAmount';
@@ -63,7 +65,13 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
 }) => {
   const [adjustType, setAdjustType] = useState(AdjustType.Deposit);
   const [selectedAsset, setSelectedAsset] = useState(pool.assetA);
-  const [value, setValue, amount] = useWeiAmountInput('');
+  // Parse the input with the asset's real decimals so `amount` is in the
+  // token's native units (USDT0 has 6 decimals, other AMM tokens 18).
+  const tokenDecimals = useMemo(
+    () => findAsset(selectedAsset, RSK_CHAIN_ID)?.decimals ?? 18,
+    [selectedAsset],
+  );
+  const [value, setValue, amount] = useWeiAmountInput('', tokenDecimals);
   const { account } = useAccount();
 
   const poolBlocked = useCheckPoolBlocked(pool);
@@ -135,8 +143,10 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
     account,
   );
 
+  const decimalValue = useMemo(() => decimalic(value), [value]);
+
   const poolWeiAmount = calculatePoolWeiAmount(
-    Decimal.fromBigNumberString(amount.toString()),
+    decimalValue,
     selectedAsset === pool.assetA ? balanceA : balanceB,
     tokenPoolBalance,
   );
@@ -178,12 +188,16 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
     [isDeposit, maxTokenToDepositAmount, maxWithdrawalAmount],
   );
 
-  const handleMaxClick = useCallback(
-    () => setValue(maxBalance.toString()),
-    [maxBalance, setValue],
-  );
-
-  const decimalValue = useMemo(() => decimalic(value), [value]);
+  const handleMaxClick = useCallback(() => {
+    // Floor to the asset's decimals so the value stays parseable in the
+    // token's native units (e.g. USDT0 supports only 6 decimal places).
+    const [integer, fraction] = maxBalance.toString().split('.');
+    setValue(
+      fraction && fraction.length > tokenDecimals
+        ? `${integer}.${fraction.slice(0, tokenDecimals)}`
+        : maxBalance.toString(),
+    );
+  }, [maxBalance, setValue, tokenDecimals]);
 
   const expectedTokenAmount = useGetExpectedTokenAmount(pool, decimalValue);
   const minReturn1 = getMinReturn(decimalAmount);
@@ -339,6 +353,7 @@ export const AdjustAndDepositModal: FC<AdjustAndDepositModalProps> = ({
                 value={value}
                 onChangeText={setValue}
                 maxAmount={maxBalance.toNumber()}
+                decimalPrecision={tokenDecimals}
                 label={t(translations.common.amount)}
                 className="max-w-none"
                 unit={<AssetRenderer asset={selectedAsset} />}

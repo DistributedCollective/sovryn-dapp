@@ -1,6 +1,16 @@
-import { BigNumber, Contract, constants, providers } from 'ethers';
+import {
+  BigNumber,
+  BigNumberish,
+  Contract,
+  constants,
+  providers,
+} from 'ethers';
 
-import { getAssetContract, getProtocolContract } from '@sovryn/contracts';
+import {
+  getAssetContract,
+  getAssetDataByAddress,
+  getProtocolContract,
+} from '@sovryn/contracts';
 import { ChainId, ChainIds, numberToChainId } from '@sovryn/ethers-provider';
 
 import { RSK_STABLECOINS } from '../../../constants';
@@ -24,6 +34,8 @@ export const ammSwapRoute: SwapRouteFunction = (
   let rbtcConverter: Contract;
   let protocolContract: Contract;
   let wrbtcMinter: Contract;
+
+  const decimalsCache: Record<string, number> = {};
 
   const getChainId = async () => {
     if (!chainId) {
@@ -101,6 +113,47 @@ export const ammSwapRoute: SwapRouteFunction = (
     return token;
   };
 
+  // The smart router works with 18-decimal-normalized amounts, while the AMM
+  // converters operate in each token's native units. Every RSK AMM token used
+  // to be 18 decimals, but USDT0 (6 decimals) breaks that assumption, so we
+  // convert amounts in/out of native units around every on-chain call. These
+  // helpers are a no-op for 18-decimal tokens.
+  const getTokenDecimals = async (token: string): Promise<number> => {
+    if (await isNativeToken(token)) {
+      return 18;
+    }
+    const address = token.toLowerCase();
+    if (decimalsCache[address] === undefined) {
+      const chainId = await getChainId();
+      // Tokens missing from the asset registry keep the legacy 18-decimals
+      // pass-through so unsupported pairs still fail at the contract level.
+      decimalsCache[address] = await getAssetDataByAddress(token, chainId)
+        .then(item => item.decimals)
+        .catch(() => 18);
+    }
+    return decimalsCache[address];
+  };
+
+  // 18-decimal-normalized -> token native units
+  const denormalizeAmount = async (token: string, amount: BigNumberish) => {
+    const decimals = await getTokenDecimals(token);
+    const value = BigNumber.from(amount);
+    if (decimals === 18) {
+      return value;
+    }
+    return value.div(BigNumber.from(10).pow(18 - decimals));
+  };
+
+  // token native units -> 18-decimal-normalized
+  const normalizeAmount = async (token: string, amount: BigNumberish) => {
+    const decimals = await getTokenDecimals(token);
+    const value = BigNumber.from(amount);
+    if (decimals === 18) {
+      return value;
+    }
+    return value.mul(BigNumber.from(10).pow(18 - decimals));
+  };
+
   return {
     name: 'AMM',
     chains: [ChainIds.RSK_MAINNET, ChainIds.RSK_TESTNET],
@@ -125,6 +178,7 @@ export const ammSwapRoute: SwapRouteFunction = (
           'BPRO',
           'POWA',
           'BOS',
+          'USDT0',
         ];
 
         const contracts = (
@@ -171,11 +225,17 @@ export const ammSwapRoute: SwapRouteFunction = (
 
       const baseToken = await getTokenAddress(entry);
       const quoteToken = await getTokenAddress(destination);
-      return (await getSwapQuoteContract())
-        .getSwapExpectedReturn(baseToken, quoteToken, amount)
+
+      // Quote in native units, return normalized to 18 decimals.
+      const entryAmount = await denormalizeAmount(entry, amount);
+
+      const expectedReturn = await (await getSwapQuoteContract())
+        .getSwapExpectedReturn(baseToken, quoteToken, entryAmount)
         .catch(e => {
           throw makeError(e.message, SovrynErrorCode.ETHERS_CALL_EXCEPTION);
         });
+
+      return normalizeAmount(destination, expectedReturn);
     },
     approve: async (entry, destination, amount, from, overrides) => {
       // native token is always approved
@@ -193,24 +253,26 @@ export const ammSwapRoute: SwapRouteFunction = (
 
       const converter = await getConverterContract(entry, destination);
 
+      // The incoming amount is 18-decimal-normalized; approve in native units.
+      const approveAmount =
+        amount === undefined || amount === null
+          ? constants.MaxUint256
+          : await denormalizeAmount(entry, amount);
+
       if (
         await hasEnoughAllowance(
           provider,
           entry,
           from,
           converter.address,
-          amount ?? constants.MaxUint256,
+          approveAmount,
         )
       ) {
         return undefined;
       }
 
       return {
-        ...makeApproveRequest(
-          entry,
-          converter.address,
-          amount ?? constants.MaxUint256,
-        ),
+        ...makeApproveRequest(entry, converter.address, approveAmount),
         ...overrides,
       };
     },
@@ -265,6 +327,11 @@ export const ammSwapRoute: SwapRouteFunction = (
 
       const converter = await getConverterContract(entry, destination);
 
+      // `quote()` returns an 18-decimal-normalized amount; convert both the
+      // input amount and the min return into the tokens' native units for the
+      // on-chain call.
+      const entryAmount = await denormalizeAmount(entry, amount);
+
       const expectedReturn = await this.quote(
         entry,
         destination,
@@ -272,14 +339,17 @@ export const ammSwapRoute: SwapRouteFunction = (
         options,
       );
 
-      const minReturn = getMinReturn(expectedReturn, options?.slippage);
+      const minReturn = await denormalizeAmount(
+        destination,
+        getMinReturn(expectedReturn, options?.slippage),
+      );
 
-      let args = [path, amount, minReturn];
+      let args = [path, entryAmount, minReturn];
 
       if (!entryIsNative && !destinationIsNative) {
         args = [
           path,
-          amount,
+          entryAmount,
           minReturn,
           constants.AddressZero,
           constants.AddressZero,
@@ -290,7 +360,7 @@ export const ammSwapRoute: SwapRouteFunction = (
       return {
         to: converter.address,
         data: converter.interface.encodeFunctionData('convertByPath', args),
-        value: entryIsNative ? amount.toString() : '0',
+        value: entryIsNative ? entryAmount.toString() : '0',
         ...overrides,
       };
     },

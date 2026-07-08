@@ -7,4 +7,5 @@ export const RSK_STABLECOINS: string[] = [
   'XUSD',
   'DOC',
   'RUSDT',
+  'USDT0',
 ];

@@ -10,6 +10,7 @@ import { RSK_CHAIN_ID } from '../../../../../../config/chains';
 
 import { asyncCall } from '../../../../../../store/rxjs/provider-cache';
 import { COMMON_SYMBOLS } from '../../../../../../utils/asset';
+import { decimalic, fromWei } from '../../../../../../utils/math';
 import { AmmLiquidityPool } from '../../../utils/AmmLiquidityPool';
 
 export const useGetPoolsBalance = (pool: AmmLiquidityPool) => {
@@ -39,7 +40,12 @@ export const useGetPoolsBalance = (pool: AmmLiquidityPool) => {
       asyncCall(
         `loanToken/${loanTokenContract.address}/balanceOf/${pool.converter}`,
         () =>
-          contractA.balanceOf(pool.converter).then(Decimal.fromBigNumberString),
+          contractA
+            .balanceOf(pool.converter)
+            // Asset A may not use 18 decimals (e.g. USDT0 has 6).
+            .then(balance =>
+              decimalic(fromWei(balance, loanTokenContract.decimals)),
+            ),
       ),
       asyncCall(
         `loanToken/${wrbtcContract.address}/balanceOf/${pool.converter}`,

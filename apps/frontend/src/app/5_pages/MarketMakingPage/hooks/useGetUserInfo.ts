@@ -14,7 +14,8 @@ import {
   useGetProtocolContract,
   useGetTokenContract,
 } from '../../../../hooks/useGetContract';
-import { COMMON_SYMBOLS } from '../../../../utils/asset';
+import { COMMON_SYMBOLS, findAsset } from '../../../../utils/asset';
+import { decimalic, fromWei } from '../../../../utils/math';
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
 export const useGetUserInfo = (pool: AmmLiquidityPool) => {
@@ -79,9 +80,12 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
       const totalSupply = await contract
         .totalSupply()
         .then(Decimal.fromBigNumberString);
+      // Asset A may not use 18 decimals (e.g. USDT0 has 6), so convert its
+      // raw balance with the asset's real decimals.
+      const decimalsA = findAsset(assetA, chainId)?.decimals ?? 18;
       const converterBalanceA = await contractTokenA
         ?.balanceOf(pool.converter)
-        .then(Decimal.fromBigNumberString);
+        .then(balance => decimalic(fromWei(balance, decimalsA)));
       const converterBalanceB = await contractTokenB
         ?.balanceOf(pool.converter)
         .then(Decimal.fromBigNumberString);
@@ -137,6 +141,8 @@ export const useGetUserInfo = (pool: AmmLiquidityPool) => {
     account,
     pool.converterVersion,
     pool.converter,
+    assetA,
+    chainId,
     contractTokenA,
     contractTokenB,
     poolTokenB,

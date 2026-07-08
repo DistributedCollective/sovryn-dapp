@@ -9,7 +9,8 @@ import { RSK_CHAIN_ID } from '../../../../config/chains';
 
 import { useGetTokenContract } from '../../../../hooks/useGetContract';
 import { asyncCall } from '../../../../store/rxjs/provider-cache';
-import { COMMON_SYMBOLS } from '../../../../utils/asset';
+import { COMMON_SYMBOLS, findAsset } from '../../../../utils/asset';
+import { decimalic, fromWei } from '../../../../utils/math';
 import { AmmLiquidityPool } from '../utils/AmmLiquidityPool';
 
 export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
@@ -31,13 +32,22 @@ export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
       }
 
       try {
-        const fetchBalance = async (contract: Contract, type: string) =>
+        // Asset A may not use 18 decimals (e.g. USDT0 has 6).
+        const fetchBalance = async (
+          contract: Contract,
+          type: string,
+          decimals: number = 18,
+        ) =>
           await asyncCall(`${type}/balanceOf/${pool.converter}`, () =>
             contract.balanceOf(pool.converter),
-          ).then(Decimal.fromBigNumberString);
+          ).then(balance => decimalic(fromWei(balance, decimals)));
 
         const [tokenBalance, btcBalance] = await Promise.all([
-          fetchBalance(contractTokenA, pool.assetA),
+          fetchBalance(
+            contractTokenA,
+            pool.assetA,
+            findAsset(pool.assetA, RSK_CHAIN_ID)?.decimals ?? 18,
+          ),
           fetchBalance(contractTokenB, COMMON_SYMBOLS.WBTC),
         ]);
 
@@ -62,7 +72,11 @@ export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
       );
 
       try {
-        const fetchBalance = async (tokenContract: Contract) =>
+        // Asset A may not use 18 decimals (e.g. USDT0 has 6).
+        const fetchBalance = async (
+          tokenContract: Contract,
+          decimals: number = 18,
+        ) =>
           await asyncCall(
             `${
               pool.converter
@@ -71,10 +85,13 @@ export const useGetPoolLiquidity = (pool: AmmLiquidityPool) => {
               contract.reserveStakedBalance(
                 tokenContract.address.toLowerCase(),
               ),
-          ).then(Decimal.fromBigNumberString);
+          ).then(balance => decimalic(fromWei(balance, decimals)));
 
         const [tokenBalance, btcBalance] = await Promise.all([
-          fetchBalance(contractTokenA),
+          fetchBalance(
+            contractTokenA,
+            findAsset(pool.assetA, RSK_CHAIN_ID)?.decimals ?? 18,
+          ),
           fetchBalance(contractTokenB),
         ]);
 

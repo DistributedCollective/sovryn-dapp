@@ -112,7 +112,12 @@ export const RusdtMigrationNotice: FC<RusdtMigrationNoticeProps> = ({
   }, [blockNumber]);
 
   const migrationCapacityWei = useMemo(() => {
-    const balanceLimit = bigNumberic(migrationUsdtBalanceWei);
+    // `weiBalance` from useAssetBalance is 18-decimals-normalized while the
+    // allowance is read from the contract in USDT0's native 6 decimals —
+    // bring the balance down to native units before comparing.
+    const balanceLimit = bigNumberic(migrationUsdtBalanceWei).div(
+      RUSDT_TO_USDT_DECIMALS_MULTIPLIER,
+    );
     const allowanceLimit = bigNumberic(migrationAllowanceWei);
 
     return balanceLimit.lt(allowanceLimit) ? balanceLimit : allowanceLimit;

@@ -82,7 +82,7 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
 
     return adjustType === AdjustType.Deposit || isInitialDeposit
       ? balanceB.add(expectedTokenAmount)
-      : decimalAmount.eq(balanceA)
+      : decimalValue.eq(balanceA)
       ? Decimal.ZERO
       : balanceB.sub(expectedTokenAmount);
   }, [
@@ -92,7 +92,6 @@ export const NewPoolStatistics: FC<NewPoolStatisticsProps> = ({
     isInitialDeposit,
     balanceB,
     expectedTokenAmount,
-    decimalAmount,
     balanceA,
     isDeposit,
     decimalValue,

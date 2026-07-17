@@ -8,7 +8,8 @@ const isAddress = (value?: string) => /^0x[a-fA-F0-9]{40}$/.test(value || '');
 
 // USDT0/RBTC pool activation. Leave empty until the pool is deployed.
 const USDT0_BTC_AMM_CONVERTER = '0xd107e06964112d3f70cfb386565dfbda16ae71f3';
-const USDT0_BTC_AMM_POOL_TOKEN = '0x591e07d721c2e22eeb4bf33d0b3377daca886fcc';
+export const USDT0_BTC_AMM_POOL_TOKEN =
+  '0x591e07d721c2e22eeb4bf33d0b3377daca886fcc';
 
 const MAINNET_AMM_USDT0_WRBTC =
   isAddress(USDT0_BTC_AMM_CONVERTER) && isAddress(USDT0_BTC_AMM_POOL_TOKEN)

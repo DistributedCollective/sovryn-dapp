@@ -28,12 +28,29 @@ export const Banner: FC = () => {
         swipeable
         className="static"
         renderDotsOutside
-        // showDots
-        autoPlay={false} // Needs to be true when we have more than 1 promo
+        showDots
+        autoPlay
         dotListClass={styles.dot}
         autoPlaySpeed={15000}
-        // infinite
+        infinite
       >
+        <LandingPromoCard
+          heading={t(translations.landingPage.promotions.usdt0Migration.title)}
+          description={t(
+            translations.landingPage.promotions.usdt0Migration.description,
+          )}
+          actions={
+            <>
+              <Link
+                to="/earn/market-making"
+                className="inline-flex box-border items-center justify-center text-center border font-body font-semibold no-underline rounded cursor-pointer px-5 py-2  bg-gray-80 border-gray-50 text-gray-10 text-sm hover:bg-gray-50"
+              >
+                {t(translations.landingPage.promotions.usdt0Migration.cta)}
+              </Link>
+            </>
+          }
+          className="border-primary"
+        />
         <LandingPromoCard
           heading={t(
             translations.landingPage.promotions.zeroInterestLoans.title,

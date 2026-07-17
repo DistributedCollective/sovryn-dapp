@@ -592,6 +592,11 @@
                 "title": "0% INTEREST LOANS",
                 "description": "Take a loan with Sovryn Zero at 0% interest. ",
                 "cta": "Sovryn Zero"
+            },
+            "usdt0Migration": {
+                "title": "USDT0 MIGRATION: ~10% APR",
+                "description": "Migrate your USDT to USDT0 1:1 and provide liquidity to the USDT0/RBTC pool. Rewards paid every 8 hours via Merkl, for as long as the reward pool lasts.",
+                "cta": "Start migration"
             }
         },
         "titleSection": {
@@ -1230,7 +1235,12 @@
             "returnsRate": "Return rate",
             "returnsInfo": "The return rate shown is based on swap fees, plus liquidity mining rewards (if applicable), earned by the given pool in the previous 24 hour period, extrapolated to show an estimated annual percentage rate of return.",
             "volume": "24H volume",
-            "balance": "Balance"
+            "balance": "Balance",
+            "merklIncentive": {
+                "title": "Merkl incentives live on this pool",
+                "description": "USDT0/RBTC liquidity providers currently earn ~10% APR on top of pool fees through the USDT0 migration campaign. Rewards are tracked from the LP tokens in your wallet and paid out every 8 hours, for as long as the reward pool lasts.",
+                "cta": "View & claim on Merkl"
+            }
         },
         "poolsTableReturns": {
             "title": "Up to {{percent}}% APR",

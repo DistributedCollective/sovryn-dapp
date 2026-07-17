@@ -134,4 +134,4 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 ## Licence
 
-The Sovryn dapp is open-sourced software licensed under the [MIT license](LICENSE).
+The Sovryn dapp is open-sourced software licensed under the [MIT license](LICENSE)

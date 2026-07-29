@@ -29,21 +29,29 @@ import './locales/i18n';
 import { router } from './router';
 import './styles/tailwindcss/index.css';
 import { rskClient } from './utils/clients';
+import { stripTrezorConnectSrcParam } from './utils/sanitizeUrl';
 
-const checkAndRemoveQueryParam = () => {
-  const urlParams = new URLSearchParams(window.location.search);
+// Neutralise the `@trezor/connect-web` `connectSrc`-override XSS (Immunefi #40463 and
+// its `trezor-connect-srcz` substring bypass) before anything can read the query
+// string. connect-web matches the override param by *substring*, so we must strip on
+// the same basis rather than by exact key — see stripTrezorConnectSrcParam(). This runs
+// synchronously at module load, well before the Trezor onboarding module ever calls
+// TrezorConnect.init() (which only happens on user wallet selection).
+const removeTrezorConnectSrcParam = () => {
+  const sanitized = stripTrezorConnectSrcParam(window.location.search);
 
-  if (urlParams.has('trezor-connect-src')) {
-    urlParams.delete('trezor-connect-src');
-
-    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+  if (sanitized !== null) {
+    const newUrl =
+      window.location.pathname +
+      (sanitized ? `?${sanitized}` : '') +
+      window.location.hash;
 
     window.history.replaceState({}, document.title, newUrl);
     window.location.reload();
   }
 };
 
-checkAndRemoveQueryParam();
+removeTrezorConnectSrcParam();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,

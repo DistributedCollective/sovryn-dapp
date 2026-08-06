@@ -1,5 +1,15 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# In linked git worktrees, git exports an absolute GIT_DIR to hooks. Child git
+# calls that run in package subdirectories (jest --onlyChanged, via turbo) then
+# treat their own cwd as the top of the working tree and report thousands of
+# phantom changed files, so unrelated suites run with broken module resolution.
+# Unset it so each git call rediscovers the repo from its cwd — correct in both
+# the main checkout and linked worktrees. GIT_INDEX_FILE stays exported so
+# partial commits (git commit <paths>) still expose the temporary index to
+# lint-staged.
+unset GIT_DIR GIT_WORK_TREE
+
 npx turbo run test:staged
 npx lint-staged

@@ -6,7 +6,6 @@ import { CrocEnv, CrocPoolView } from '@sovryn/sdex';
 import { OrderDirective } from '@sovryn/sdex/dist/encoding/longform';
 import { Decimal } from '@sovryn/utils';
 
-import { DEFAULT_SWAP_SLIPPAGE } from '../../../constants';
 import { SovrynErrorCode, makeError } from '../../../errors/errors';
 import {
   hasEnoughAllowance,
@@ -231,9 +230,9 @@ export const ambientRoute: SwapRouteFunction = (
     },
     permit: async () => Promise.resolve(undefined),
     swap: async (entry, destination, amount, from, options, overrides) => {
-      // options.slippage is in basis points (10_000 = 100%); sdex expects a fraction
-      const slippage =
-        Number(options?.slippage ?? DEFAULT_SWAP_SLIPPAGE) / 10000;
+      // options.slippage is in basis points (10_000 = 100%); sdex expects a
+      // fraction. Fallback 50 bps = 0.5%, the UI's preset tolerance.
+      const slippage = Number(options?.slippage ?? 50) / 10000;
 
       const pools = await loadPools();
       const chainId = await getChainId();

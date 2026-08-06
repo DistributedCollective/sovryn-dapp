@@ -2,7 +2,6 @@ import { BigNumber, constants, providers } from 'ethers';
 
 import { OrderDirective } from '@sovryn/sdex/dist/encoding/longform';
 
-import { DEFAULT_SWAP_SLIPPAGE } from '../../../constants';
 import { getMinReturn } from '../../../internal/utils';
 import { ambientRoute } from '../../../swaps/smart-router/routes/ambient';
 import { SwapRoute } from '../../../swaps/smart-router/types';
@@ -102,9 +101,9 @@ describe('Ambient route slippage encoding', () => {
     expect(fraction).toBeCloseTo(0.005, 10);
   });
 
-  it('defaults to DEFAULT_SWAP_SLIPPAGE when no slippage option is given', async () => {
+  it('defaults to 50 bps (0.5%, the UI preset) when no slippage option is given', async () => {
     const fraction = await swapWithSlippage();
-    expect(fraction).toBeCloseTo(DEFAULT_SWAP_SLIPPAGE / 10000, 10);
+    expect(fraction).toBeCloseTo(0.005, 10);
   });
 
   it('matches getMinReturn basis-point semantics across tolerance values', async () => {

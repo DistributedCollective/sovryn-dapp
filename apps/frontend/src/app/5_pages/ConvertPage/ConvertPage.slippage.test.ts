@@ -16,8 +16,12 @@ describe('ConvertPage slippage tolerance policy', () => {
       expect(isHighSlippageTolerance('0.5')).toBe(false);
     });
 
-    it('does not warn at exactly 5%', () => {
-      expect(isHighSlippageTolerance('5')).toBe(false);
+    it('does not warn just below 5%', () => {
+      expect(isHighSlippageTolerance('4.99')).toBe(false);
+    });
+
+    it('warns at exactly 5% (catches 5 typed instead of 0.5)', () => {
+      expect(isHighSlippageTolerance('5')).toBe(true);
     });
 
     it('warns at 5.01%', () => {

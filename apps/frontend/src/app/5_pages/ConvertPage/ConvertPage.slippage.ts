@@ -4,8 +4,9 @@
 export const SLIPPAGE_TOLERANCE_WARNING_THRESHOLD = 5;
 export const MAXIMUM_SLIPPAGE_TOLERANCE = 49;
 
+// Inclusive: exactly 5 also warns, to catch 5 typed instead of 0.5.
 export const isHighSlippageTolerance = (value: string) =>
-  Number(value) > SLIPPAGE_TOLERANCE_WARNING_THRESHOLD;
+  Number(value) >= SLIPPAGE_TOLERANCE_WARNING_THRESHOLD;
 
 // The input's HTML max attribute does not block typed values, so values
 // above the cap must also be rejected here and block submission.

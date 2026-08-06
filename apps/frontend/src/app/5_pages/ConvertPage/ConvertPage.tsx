@@ -73,6 +73,11 @@ import {
   SMART_ROUTER_STABLECOINS,
   SWAP_ROUTES,
 } from './ConvertPage.constants';
+import {
+  MAXIMUM_SLIPPAGE_TOLERANCE,
+  isHighSlippageTolerance,
+  isInvalidSlippageTolerance,
+} from './ConvertPage.slippage';
 import { CategoryType } from './ConvertPage.types';
 import { AssetDropdownWithFilters } from './components/AssetDropdownWithFilters/AssetDropdownWithFilters';
 import { useConversionMaintenance } from './hooks/useConversionMaintenance';
@@ -181,6 +186,16 @@ const ConvertPage: FC = () => {
 
   const [slippageTolerance, setSlippageTolerance] = useState(
     DEFAULT_SLIPPAGE_TOLERANCE,
+  );
+
+  const isSlippageToleranceInvalid = useMemo(
+    () => isInvalidSlippageTolerance(slippageTolerance),
+    [slippageTolerance],
+  );
+
+  const isSlippageToleranceHigh = useMemo(
+    () => isHighSlippageTolerance(slippageTolerance),
+    [slippageTolerance],
   );
 
   const [priceInQuote, setPriceQuote] = useState(false);
@@ -539,6 +554,7 @@ const ConvertPage: FC = () => {
       Number(amount) > Number(maximumAmountToConvert) ||
       !destinationToken ||
       !route ||
+      isSlippageToleranceInvalid ||
       (isSlippageHigh && !slippageWarningAccepted),
     [
       isInMaintenance,
@@ -547,6 +563,7 @@ const ConvertPage: FC = () => {
       maximumAmountToConvert,
       destinationToken,
       route,
+      isSlippageToleranceInvalid,
       isSlippageHigh,
       slippageWarningAccepted,
     ],
@@ -867,8 +884,30 @@ const ConvertPage: FC = () => {
                   step="0.01"
                   decimalPrecision={2}
                   placeholder="0"
-                  max="100"
+                  max={MAXIMUM_SLIPPAGE_TOLERANCE}
+                  invalid={isSlippageToleranceInvalid}
                 />
+
+                {isSlippageToleranceInvalid ? (
+                  <ErrorBadge
+                    level={ErrorLevel.Critical}
+                    message={t(
+                      pageTranslations.form.invalidSlippageToleranceError,
+                      { max: MAXIMUM_SLIPPAGE_TOLERANCE },
+                    )}
+                    dataAttribute="convert-slippage-tolerance-error"
+                  />
+                ) : (
+                  isSlippageToleranceHigh && (
+                    <ErrorBadge
+                      level={ErrorLevel.Warning}
+                      message={t(
+                        pageTranslations.form.highSlippageToleranceWarning,
+                      )}
+                      dataAttribute="convert-slippage-tolerance-warning"
+                    />
+                  )
+                )}
               </div>
             </Accordion>
 

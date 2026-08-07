@@ -18,6 +18,15 @@ export function defineProperties<T>(
   }
 }
 
+// Wallets exposing raw signer output (Frame, onboard-ledger, some MPC
+// wallets) return the ECDSA v byte as the recovery id (0/1), and EIP-2098
+// signers return a 64-byte compact form; contracts that feed v straight into
+// ecrecover (e.g. Permit2's SignatureVerification) accept only the 65-byte
+// r||s||v form with v in {27, 28}. Canonical signatures pass through
+// byte-for-byte unchanged; malformed ones throw here instead of on-chain.
+export const normalizeSignature = (signature: ethers.BytesLike): string =>
+  ethers.utils.joinSignature(ethers.utils.splitSignature(signature));
+
 // slippage 100% = 10000, 1% = 100
 export const getMinReturn = (
   amount: BigNumberish,

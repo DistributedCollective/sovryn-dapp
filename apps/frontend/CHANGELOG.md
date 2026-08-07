@@ -1,5 +1,20 @@
 # frontend
 
+## 1.1.42
+
+### Patch Changes
+
+- d23037c4: fix: state not clearing when leaving token bridge
+- a84ece08: SOV-5278: fix amm rewards estimation
+- 98aa545e: SOV-5296: zero copy changes
+- 49dbe17f: fix: ambient position amounts
+- b8bacc6a: SOV-5304 expand bridge fees by default
+- a201cebe: chore: remove spice mentions
+- Updated dependencies [6917f90c]
+- Updated dependencies [84ced870]
+- Updated dependencies [f60cca69]
+  - @sovryn/sdk@2.0.11
+
 ## 1.1.41
 
 ### Patch Changes

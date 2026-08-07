@@ -1,4 +1,4 @@
-import { BigNumber, constants, Contract } from 'ethers';
+import { BigNumber, constants, Contract, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
 import { getAssetContract, getProtocolContract } from '@sovryn/contracts';
@@ -115,6 +115,50 @@ describe('Moc Integration Route', () => {
       await expect(
         route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero),
       ).rejects.toThrowError(/Permit2 is required for swap/);
+    });
+
+    it('canonicalizes a raw recovery-id signature (v=1) before encoding the Permit2 call', async () => {
+      // Frame, onboard-ledger and some MPC wallets return v as the raw
+      // recovery id (0/1); Permit2's on-chain ecrecover accepts only 27/28
+      const rawSignature = `${FAKE_SIGNATURE.slice(0, -2)}01`;
+
+      const tx = await route.swap(
+        dllr,
+        rbtc,
+        parseUnits('20'),
+        constants.AddressZero,
+        {
+          typedDataValue: FAKE_PERMIT_TRANSFER_FROM,
+          typedDataSignature: rawSignature,
+        },
+      );
+
+      const { abi } = await getProtocolContract('mocIntegrationProxy');
+      const decoded = new ethers.utils.Interface(abi).decodeFunctionData(
+        'getDocFromDllrAndRedeemRbtcWithPermit2',
+        tx.data!,
+      );
+      expect(decoded[1]).toEqual(FAKE_SIGNATURE); // ...01 -> ...1c (v=28)
+    });
+
+    it('passes an already-canonical signature through unchanged', async () => {
+      const tx = await route.swap(
+        dllr,
+        rbtc,
+        parseUnits('20'),
+        constants.AddressZero,
+        {
+          typedDataValue: FAKE_PERMIT_TRANSFER_FROM,
+          typedDataSignature: FAKE_SIGNATURE,
+        },
+      );
+
+      const { abi } = await getProtocolContract('mocIntegrationProxy');
+      const decoded = new ethers.utils.Interface(abi).decodeFunctionData(
+        'getDocFromDllrAndRedeemRbtcWithPermit2',
+        tx.data!,
+      );
+      expect(decoded[1]).toEqual(FAKE_SIGNATURE);
     });
 
     it('fails build swap tx data for RBTC -> DLLR', async () => {

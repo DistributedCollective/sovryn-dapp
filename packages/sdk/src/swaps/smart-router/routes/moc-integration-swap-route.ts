@@ -8,6 +8,7 @@ import {
   areAddressesEqual,
   hasEnoughAllowance,
   makeApproveRequest,
+  normalizeSignature,
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
 import {
@@ -192,7 +193,10 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
           to: mocIntegration.address,
           data: mocIntegration.interface.encodeFunctionData(
             'getDocFromDllrAndRedeemRbtcWithPermit2',
-            [options?.typedDataValue, options?.typedDataSignature],
+            [
+              options?.typedDataValue,
+              normalizeSignature(options.typedDataSignature),
+            ],
           ),
           value: '0',
           gasLimit: 800_000,

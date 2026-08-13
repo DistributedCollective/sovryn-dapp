@@ -1670,6 +1670,11 @@
         "currentBalance": "Current lending balance",
         "newBalance": "New lending balance"
     },
+    "exitFee": {
+        "label": "Perimeter fee ({{rate}}%)",
+        "youWillReceive": "You will receive",
+        "tooltip": "The perimeter fee is deducted from the withdrawn amount when your transaction executes. Shown values are approximate — the final fee is determined at execution time."
+    },
     "lending": {
         "title": "Deposit",
         "disclaimer": "I understand that the APR is variable and that there must be available liquidity in the pool for me to be able to withdraw my lending balance.",

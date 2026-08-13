@@ -25,6 +25,7 @@ import { Decimal } from '@sovryn/utils';
 import { AdvancedSettings } from '../../../2_molecules/AdvancedSettings/AdvancedSettings';
 import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
+import { ExitFeeRow } from '../../../2_molecules/ExitFeeRow/ExitFeeRow';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
 import {
@@ -35,14 +36,15 @@ import {
 } from '../../../../constants/currencies';
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../constants/general';
 import { WIKI_LINKS } from '../../../../constants/links';
+import { useZeroExitFee } from '../../../../hooks/exitFee/useZeroExitFee';
 import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../../utils/asset';
 import { formatValue, decimalic } from '../../../../utils/math';
 import { CurrentTroveData } from '../CurrentTroveData';
 import { Label } from '../Label';
 import { Row } from '../Row';
 import { AmountType } from '../types';
-import { COMMON_SYMBOLS } from '../../../../utils/asset';
 
 export type OpenTroveProps = {
   hasTrove: false;
@@ -148,6 +150,16 @@ export const FormContent: FC<FormContentProps> = props => {
   const isBorrowDisabled = useMemo(
     () => borrowLocked && props.hasTrove && props.debtType === AmountType.Add,
     [borrowLocked, props],
+  );
+
+  const { active: exitFeeActive, rateBps: exitFeeRateBps } = useZeroExitFee();
+
+  const exitFeeGross = useMemo(
+    () =>
+      props.hasTrove && props.collateralType === AmountType.Remove
+        ? decimalic(props.collateralAmount)
+        : Decimal.ZERO,
+    [props],
   );
 
   const { minBorrowingFeeRate, maxBorrowingFeeRate } = useLiquityBaseParams();
@@ -488,6 +500,13 @@ export const FormContent: FC<FormContentProps> = props => {
                     renderer={renderTotalCollateral}
                   />
                 }
+              />
+              <ExitFeeRow
+                gross={exitFeeGross}
+                rateBps={exitFeeRateBps}
+                active={exitFeeActive}
+                assetSymbol={COMMON_SYMBOLS.BTC}
+                precision={BTC_RENDER_PRECISION}
               />
             </>
           ) : (

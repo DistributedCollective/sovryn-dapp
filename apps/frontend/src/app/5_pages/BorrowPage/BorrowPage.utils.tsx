@@ -20,7 +20,11 @@ import {
 } from '../../../constants/lending';
 import { translations } from '../../../locales/i18n';
 import { COMMON_SYMBOLS, findAsset } from '../../../utils/asset';
-import { isBitpro, isBtcBasedAsset } from '../../../utils/helpers';
+import {
+  areValuesIdentical,
+  isBitpro,
+  isBtcBasedAsset,
+} from '../../../utils/helpers';
 import { decimalic } from '../../../utils/math';
 
 export const renderValue = (
@@ -114,4 +118,43 @@ export const normalizeTokenWrapped = (token: string): string => {
   }
 
   return normalizeToken(token);
+};
+
+export const getBorrowerExitFeeGross = ({
+  isCloseTab,
+  isRepayTab,
+  isCollateralWithdrawTab,
+  loanCollateral,
+  collateralSize,
+  collateralWithdrawn,
+  debtSize,
+  maximumRepayAmount,
+}: {
+  isCloseTab: boolean;
+  isRepayTab: boolean;
+  isCollateralWithdrawTab: boolean;
+  loanCollateral: Decimal;
+  collateralSize: Decimal;
+  collateralWithdrawn: Decimal;
+  debtSize: Decimal;
+  maximumRepayAmount: Decimal;
+}): Decimal => {
+  // Order matters: Repay/Close force the collateral tab to Withdraw
+  // (AdjustLoanForm.onDebtTabChange), so close/repay must win over
+  // isCollateralWithdrawTab.
+  if (isCloseTab) {
+    return loanCollateral;
+  }
+  if (isRepayTab) {
+    if (debtSize.isZero()) {
+      return Decimal.ZERO;
+    }
+    return areValuesIdentical(debtSize, maximumRepayAmount)
+      ? loanCollateral
+      : collateralWithdrawn;
+  }
+  if (isCollateralWithdrawTab) {
+    return collateralSize;
+  }
+  return Decimal.ZERO;
 };

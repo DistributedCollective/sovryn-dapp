@@ -18,12 +18,15 @@ import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { ExitFeeRow } from '../../../../2_molecules/ExitFeeRow/ExitFeeRow';
 import { GAS_LIMIT } from '../../../../../constants/gasLimits';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
+import { useExitFeeRate } from '../../../../../hooks/exitFee/useExitFeeRate';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
 import { translations } from '../../../../../locales/i18n';
 import { asyncCall } from '../../../../../store/rxjs/provider-cache';
+import { SURFACE_LENDING_LENDER_WITHDRAW } from '../../../../../utils/exitFee';
 import { FullAdjustModalState } from './AdjustLendingModalContainer';
 import { Label } from './Label';
 
@@ -47,6 +50,16 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
     state.token,
     RSK_CHAIN_ID,
     GAS_LIMIT.LENDING_MINT,
+  );
+
+  const { active: exitFeeActive, rateBps: exitFeeRateBps } = useExitFeeRate(
+    SURFACE_LENDING_LENDER_WITHDRAW,
+    state.poolTokenContract.address,
+  );
+
+  const withdrawAmount = useMemo(
+    () => Decimal.fromBigNumberString(amount.toString()),
+    [amount],
   );
 
   const balance = useMemo(
@@ -181,6 +194,14 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
             />
           }
         />
+        {!isDeposit && (
+          <ExitFeeRow
+            gross={withdrawAmount}
+            rateBps={exitFeeRateBps}
+            active={exitFeeActive}
+            assetSymbol={state.tokenDetails.symbol}
+          />
+        )}
       </SimpleTable>
 
       <Button

@@ -33,6 +33,10 @@ jest.mock('../../../hooks/exitFee/useZeroExitFee', () => ({
   useZeroExitFee: () => mockQuote,
 }));
 
+jest.mock('../../../hooks/exitDelay/useZeroExitDelayQuote', () => ({
+  useZeroExitDelayQuote: () => ({ delaySeconds: 0, loading: false }),
+}));
+
 jest.mock('./hooks/useZeroData', () => ({
   useZeroData: () => ({ isRecoveryMode: false }),
 }));

@@ -27,6 +27,10 @@ jest.mock('../../../../../hooks/exitFee/useExitFeeRate', () => ({
   useExitFeeRate: () => ({ active: true, rateBps: 50, loading: false }),
 }));
 
+jest.mock('../../../../../hooks/exitDelay/useExitDelayQuote', () => ({
+  useExitDelayQuote: () => ({ delaySeconds: 0, loading: false }),
+}));
+
 jest.mock('../../../../../hooks/useMaxAssetBalance', () => {
   const { Decimal: ActualDecimal } = jest.requireActual('@sovryn/utils');
   return {

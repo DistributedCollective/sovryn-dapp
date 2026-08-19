@@ -20,9 +20,11 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
+import { ExitDelayRow } from '../../2_molecules/ExitDelayRow/ExitDelayRow';
 import { ExitFeeTooltipContent } from '../../2_molecules/ExitFeeRow/ExitFeeRow';
 import { BITCOIN, BTC_RENDER_PRECISION } from '../../../constants/currencies';
 import { getTokenDisplayName } from '../../../constants/tokens';
+import { useZeroExitDelayQuote } from '../../../hooks/exitDelay/useZeroExitDelayQuote';
 import { useZeroExitFee } from '../../../hooks/exitFee/useZeroExitFee';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../hooks/useMaintenance';
@@ -55,6 +57,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   const { balance: availableBalance } = useAssetBalance(creditToken);
 
   const exitFee = useZeroExitFee(collateralValue);
+  const { delaySeconds } = useZeroExitDelayQuote();
 
   const showExitFee = useMemo(
     () => isExitFeeShown(exitFee.active, exitFee.rateBps, exitFee.feeAmount),
@@ -186,6 +189,7 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             )
           }
         />
+        <ExitDelayRow delaySeconds={delaySeconds} />
       </SimpleTable>
 
       {hasError && !isRecoveryMode && (

@@ -1675,6 +1675,63 @@
         "youWillReceive": "You will receive",
         "tooltip": "The perimeter fee is deducted from the withdrawn amount when your transaction executes. Shown values are approximate — the final fee is determined at execution time."
     },
+    "exitDelay": {
+        "label": "Withdrawal hold",
+        "tooltip": "While the Sovryn Perimeter is active this withdrawal is held in the Sovryn Perimeter vault before it reaches you. Nothing else changes: the destination is fixed when you sign, and you release the funds yourself from the Perimeter page once the hold ends.",
+        "duration": {
+            "days": "{{count}} days",
+            "days_one": "{{count}} day",
+            "days_other": "{{count}} days",
+            "hours": "{{count}} hours",
+            "hours_one": "{{count}} hour",
+            "hours_other": "{{count}} hours",
+            "minutes": "{{count}} minutes",
+            "minutes_one": "{{count}} minute",
+            "minutes_other": "{{count}} minutes",
+            "seconds": "{{count}} seconds",
+            "seconds_one": "{{count}} second",
+            "seconds_other": "{{count}} seconds"
+        }
+    },
+    "perimeterPage": {
+        "meta": {
+            "title": "Perimeter vault"
+        },
+        "title": "Perimeter vault",
+        "subtitle": "Withdrawals held by the Sovryn Perimeter appear here. The destination of each one was fixed when you signed it and cannot be changed. Release it yourself once its hold ends.",
+        "connectWallet": "Connect your wallet to see withdrawals held for you.",
+        "inactive": "The Sovryn Perimeter is not holding any withdrawals for this account.",
+        "table": {
+            "id": "Reference",
+            "amount": "Amount",
+            "receiver": "Destination",
+            "unlocks": "Releases",
+            "status": "Status",
+            "action": "Action"
+        },
+        "status": {
+            "locked": "On hold",
+            "unlocked": "Ready",
+            "notExecutor": "Released by the owner",
+            "blocked": "Under review",
+            "paused": "Paused",
+            "settled": "Settled"
+        },
+        "statusTooltip": {
+            "locked": "Still inside its hold window. It becomes releasable at the time shown.",
+            "unlocked": "The hold has ended. Release it to send the funds to their destination.",
+            "notExecutor": "This withdrawal is released by the account that made it or by the position owner.",
+            "blocked": "One of the accounts involved is under review, so this withdrawal cannot be released right now. Contact support.",
+            "paused": "Releases are paused across the whole perimeter. Nothing is lost; try again once they resume.",
+            "settled": "Already paid out or otherwise resolved. Nothing left to do."
+        },
+        "release": "Release",
+        "readyNow": "Now",
+        "tx": {
+            "executeExit": "Release held withdrawal",
+            "executeExitTitle": "Release from the Perimeter vault"
+        }
+    },
     "lending": {
         "title": "Deposit",
         "disclaimer": "I understand that the APR is variable and that there must be available liquidity in the pool for me to be able to withdraw my lending balance.",

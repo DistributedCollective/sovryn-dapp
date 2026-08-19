@@ -25,6 +25,7 @@ import { Decimal } from '@sovryn/utils';
 import { AdvancedSettings } from '../../../2_molecules/AdvancedSettings/AdvancedSettings';
 import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
+import { ExitDelayRow } from '../../../2_molecules/ExitDelayRow/ExitDelayRow';
 import { ExitFeeRow } from '../../../2_molecules/ExitFeeRow/ExitFeeRow';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
@@ -36,6 +37,7 @@ import {
 } from '../../../../constants/currencies';
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../constants/general';
 import { WIKI_LINKS } from '../../../../constants/links';
+import { useZeroExitDelayQuote } from '../../../../hooks/exitDelay/useZeroExitDelayQuote';
 import { useZeroExitFee } from '../../../../hooks/exitFee/useZeroExitFee';
 import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
@@ -153,6 +155,7 @@ export const FormContent: FC<FormContentProps> = props => {
   );
 
   const { active: exitFeeActive, rateBps: exitFeeRateBps } = useZeroExitFee();
+  const { delaySeconds } = useZeroExitDelayQuote();
 
   const exitFeeGross = useMemo(
     () =>
@@ -508,6 +511,7 @@ export const FormContent: FC<FormContentProps> = props => {
                 assetSymbol={COMMON_SYMBOLS.BTC}
                 precision={BTC_RENDER_PRECISION}
               />
+              <ExitDelayRow delaySeconds={delaySeconds} />
             </>
           ) : (
             <>

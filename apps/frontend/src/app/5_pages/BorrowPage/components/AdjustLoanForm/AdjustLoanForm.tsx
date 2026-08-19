@@ -21,6 +21,7 @@ import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { ExitDelayRow } from '../../../../2_molecules/ExitDelayRow/ExitDelayRow';
 import { ExitFeeRow } from '../../../../2_molecules/ExitFeeRow/ExitFeeRow';
 import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
 import { convertLoanTokenToSupportedAssets } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
@@ -32,6 +33,7 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
+import { useExitDelayQuote } from '../../../../../hooks/exitDelay/useExitDelayQuote';
 import { useExitFeeRate } from '../../../../../hooks/exitFee/useExitFeeRate';
 import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInput';
 import { useLoadContract } from '../../../../../hooks/useLoadContract';
@@ -271,6 +273,11 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
   );
 
   const { active: exitFeeActive, rateBps: exitFeeRateBps } = useExitFeeRate(
+    SURFACE_LENDING_BORROWER_WITHDRAW,
+    loanTokenContract?.address,
+  );
+
+  const { delaySeconds } = useExitDelayQuote(
     SURFACE_LENDING_BORROWER_WITHDRAW,
     loanTokenContract?.address,
   );
@@ -888,6 +895,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             assetSymbol={collateralToken}
             precision={BTC_RENDER_PRECISION}
           />
+          {exitFeeGross.gt(0) && <ExitDelayRow delaySeconds={delaySeconds} />}
           {(isBorrowTab || isRepayTab) && (
             <SimpleTableRow
               label={t(pageTranslations.labels.newTotalDebt)}

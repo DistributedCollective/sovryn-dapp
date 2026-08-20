@@ -7,6 +7,7 @@ import {
   SURFACE_LENDING_BORROWER_WITHDRAW,
   SURFACE_LENDING_LENDER_WITHDRAW,
   SURFACE_ZERO_CLAIM_SURPLUS,
+  SURFACE_ZERO_WITHDRAW_COLL,
   getExitFeeAmount,
   getExitFeeNet,
   isExitFeeShown,
@@ -15,23 +16,31 @@ import {
 describe('exitFee utils', () => {
   it('surface ids match keccak256 of the registry preimages', () => {
     expect(SURFACE_LENDING_LENDER_WITHDRAW).toEqual(
-      utils.id('COLFEE:SURFACE_LENDING_LENDER_WITHDRAW'),
+      utils.id('PERIMETER_SURFACE_LENDING_LENDER_WITHDRAW'),
     );
     expect(SURFACE_LENDING_BORROWER_WITHDRAW).toEqual(
-      utils.id('COLFEE:SURFACE_LENDING_BORROWER_WITHDRAW'),
+      utils.id('PERIMETER_SURFACE_LENDING_BORROWER_WITHDRAW'),
+    );
+    expect(SURFACE_ZERO_WITHDRAW_COLL).toEqual(
+      utils.id('PERIMETER_SURFACE_ZERO_WITHDRAW_COLL'),
     );
     expect(SURFACE_ZERO_CLAIM_SURPLUS).toEqual(
-      utils.id('COLFEE:SURFACE_ZERO_CLAIM_SURPLUS'),
+      utils.id('PERIMETER_SURFACE_ZERO_CLAIM_SURPLUS'),
     );
-    // pin the literals so a typo in the preimage string cannot pass silently
+    // Pin the literals too. The preimage assertions above cannot catch a
+    // rename that rewrites the constant and its own expectation together —
+    // which is exactly how a stale `COLFEE:` prefix survived once.
     expect(SURFACE_LENDING_LENDER_WITHDRAW).toEqual(
-      '0x3d0383a7986bf042db59f806aef31f95d28262f3280554c8541c299fa8e2ffb3',
+      '0xd4896528a9fba849e3d3db442dea05ef8f08c93e00cc760acac34c42a7dacffe',
     );
     expect(SURFACE_LENDING_BORROWER_WITHDRAW).toEqual(
-      '0x5c408ce1df6222b56e2084e292cdc734b880e9adbb4df2331d304431936967f7',
+      '0xfa502ea562018a194d7f66e337810fa8b882ec21f706f3b3c709a53fa126b018',
+    );
+    expect(SURFACE_ZERO_WITHDRAW_COLL).toEqual(
+      '0xfb3234ca0cf70fe9c90b73939f36a37fadcfdef4628afc42dd57d1f26dfd8fb5',
     );
     expect(SURFACE_ZERO_CLAIM_SURPLUS).toEqual(
-      '0xdd1d6592d9143b113f128998b830887d87bf784969f0bdeda154f2a49ca302e0',
+      '0x44224716871939619faf861b30e39bac8861d4f76b5dd0468d31bf4b7dc684be',
     );
   });
 

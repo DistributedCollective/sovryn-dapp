@@ -25,7 +25,7 @@ import { COMMON_SYMBOLS } from '../../../utils/asset';
 import {
   SURFACE_ZERO_CLAIM_SURPLUS,
   getExitFeeAmount,
-  isExitFeeShown,
+  getExitFeeDisplay,
 } from '../../../utils/exitFee';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 import { ExitFeeTooltipContent } from '../ExitFeeRow/ExitFeeRow';
@@ -60,7 +60,12 @@ export const LOCStatus: FC<LOCStatusProps> = ({
 
   const ratio = useMemo(() => parseInt(cRatio.toString()), [cRatio]);
 
-  const { active: exitFeeActive, rateBps: exitFeeRateBps } = useExitFeeRate(
+  const {
+    active: exitFeeActive,
+    rateBps: exitFeeRateBps,
+    unknown: exitFeeUnknown,
+    loading: exitFeeLoading,
+  } = useExitFeeRate(
     SURFACE_ZERO_CLAIM_SURPLUS,
     constants.AddressZero, // ethers constants — subProduct dimension unused for Zero
   );
@@ -68,11 +73,23 @@ export const LOCStatus: FC<LOCStatusProps> = ({
     () => getExitFeeAmount(withdrawalSurplus, exitFeeRateBps),
     [withdrawalSurplus, exitFeeRateBps],
   );
-  const showSurplusExitFee = isExitFeeShown(
-    exitFeeActive,
-    exitFeeRateBps,
+  const exitFeeDisplay = getExitFeeDisplay(
+    {
+      active: exitFeeActive,
+      rateBps: exitFeeRateBps,
+      unknown: exitFeeUnknown,
+      loading: exitFeeLoading,
+    },
     surplusExitFee,
   );
+  const showSurplusExitFee = exitFeeDisplay === 'charged';
+  /**
+   * The surplus figure below is the gross when no fee is charged. That is the
+   * right number for a surface that is genuinely uncharged and the wrong one
+   * when we simply could not read the rate, so the unknown case says so
+   * instead of presenting the gross as settled.
+   */
+  const exitFeeUnavailable = exitFeeDisplay === 'unknown';
 
   return (
     <div
@@ -100,6 +117,15 @@ export const LOCStatus: FC<LOCStatusProps> = ({
                     }
                     trigger={TooltipTrigger.click}
                     dataAttribute="exit-fee-helper"
+                  />
+                </span>
+              ) : exitFeeUnavailable ? (
+                <span className="flex flex-row items-center gap-1 whitespace-nowrap">
+                  {t('LOCStatus.withdrawalSurplus')}
+                  <HelperButton
+                    content={t('exitFee.unavailableTooltip')}
+                    trigger={TooltipTrigger.click}
+                    dataAttribute="exit-fee-unavailable-helper"
                   />
                 </span>
               ) : (

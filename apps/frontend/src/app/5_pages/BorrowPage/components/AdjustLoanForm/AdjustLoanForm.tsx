@@ -270,7 +270,12 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     RSK_CHAIN_ID,
   );
 
-  const { active: exitFeeActive, rateBps: exitFeeRateBps } = useExitFeeRate(
+  const {
+    active: exitFeeActive,
+    rateBps: exitFeeRateBps,
+    unknown: exitFeeUnknown,
+    loading: exitFeeLoading,
+  } = useExitFeeRate(
     SURFACE_LENDING_BORROWER_WITHDRAW,
     loanTokenContract?.address,
   );
@@ -882,6 +887,8 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             />
           )}
           <ExitFeeRow
+            unknown={exitFeeUnknown}
+            loading={exitFeeLoading}
             gross={exitFeeGross}
             rateBps={exitFeeRateBps}
             active={exitFeeActive}

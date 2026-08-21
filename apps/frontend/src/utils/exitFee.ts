@@ -29,9 +29,51 @@ export const getExitFeeAmount = (gross: Decimal, rateBps: number): Decimal =>
 export const getExitFeeNet = (gross: Decimal, rateBps: number): Decimal =>
   gross.sub(getExitFeeAmount(gross, rateBps));
 
-/** Mirror of the on-chain charge test (PERIMETER_FEE_CALL_GRAPH.md §"Quoting for UIs"). */
+/**
+ * Mirror of the on-chain charge test (PERIMETER_FEE_CALL_GRAPH.md §"Quoting for UIs").
+ *
+ * This answers "would a fee be charged", and ONLY that. It cannot tell you
+ * whether the quote behind `active`/`rateBps` was actually obtained — pass the
+ * whole quote to `getExitFeeDisplay` instead of calling this directly.
+ */
 export const isExitFeeShown = (
   active: boolean,
   rateBps: number,
   fee: Decimal,
 ): boolean => active && rateBps > 0 && rateBps <= EXIT_FEE_MAX_BPS && fee.gt(0);
+
+/**
+ * A quote, including whether we managed to get one.
+ *
+ * `unknown` exists because the perimeter fails open on chain: an unreachable
+ * controller, a reverting call or a surface with no policy all resolve to "no
+ * fee". Those are indistinguishable from a deliberate zero rate in the raw
+ * numbers, so the hooks report which of the two happened here rather than
+ * flattening both to `active: false`.
+ */
+export type ExitFeeQuote = {
+  active: boolean;
+  rateBps: number;
+  loading: boolean;
+  /** True when no quote was obtained. NOT the same as a rate of zero. */
+  unknown: boolean;
+};
+
+/** What the UI should show. Three states, because there are three truths. */
+export type ExitFeeDisplay = 'charged' | 'none' | 'unknown';
+
+/**
+ * The single display decision. Folds `loading` in deliberately: a quote that
+ * has not arrived yet is not evidence of a zero fee, and every consumer that
+ * destructured `{ active, rateBps }` and dropped `loading` rendered "no fee"
+ * during the first fetch and for the whole cache TTL after any RPC blip.
+ */
+export const getExitFeeDisplay = (
+  quote: ExitFeeQuote,
+  fee: Decimal,
+): ExitFeeDisplay => {
+  if (quote.loading || quote.unknown) {
+    return 'unknown';
+  }
+  return isExitFeeShown(quote.active, quote.rateBps, fee) ? 'charged' : 'none';
+};

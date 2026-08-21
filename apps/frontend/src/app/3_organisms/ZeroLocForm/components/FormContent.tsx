@@ -152,7 +152,12 @@ export const FormContent: FC<FormContentProps> = props => {
     [borrowLocked, props],
   );
 
-  const { active: exitFeeActive, rateBps: exitFeeRateBps } = useZeroExitFee();
+  const {
+    active: exitFeeActive,
+    rateBps: exitFeeRateBps,
+    unknown: exitFeeUnknown,
+    loading: exitFeeLoading,
+  } = useZeroExitFee();
 
   const exitFeeGross = useMemo(
     () =>
@@ -502,6 +507,8 @@ export const FormContent: FC<FormContentProps> = props => {
                 }
               />
               <ExitFeeRow
+                unknown={exitFeeUnknown}
+                loading={exitFeeLoading}
                 gross={exitFeeGross}
                 rateBps={exitFeeRateBps}
                 active={exitFeeActive}

@@ -7,16 +7,17 @@ import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
 import { getRskChainId } from '../../utils/chain';
-import { EXIT_FEE_REFERENCE_GROSS, EXIT_FEE_TTL } from '../../utils/exitFee';
+import {
+  EXIT_FEE_REFERENCE_GROSS,
+  EXIT_FEE_TTL,
+  ExitFeeQuote,
+} from '../../utils/exitFee';
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 
-export type ZeroExitFee = {
-  active: boolean;
-  rateBps: number;
+export type ZeroExitFee = ExitFeeQuote & {
   feeAmount: Decimal;
   netAmount: Decimal;
-  loading: boolean;
 };
 
 const INACTIVE = {
@@ -24,6 +25,7 @@ const INACTIVE = {
   rateBps: 0,
   feeAmount: Decimal.ZERO,
   netAmount: Decimal.ZERO,
+  unknown: false,
 };
 
 // The Z-1 kept preview — same _safeQuote path as the live charge hook.
@@ -48,7 +50,7 @@ export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
     getRskChainId(),
     async () => {
       if (!account || grossWei === null) {
-        return INACTIVE;
+        return { ...INACTIVE, unknown: true };
       }
       try {
         const { address } = await getZeroContract(
@@ -69,9 +71,11 @@ export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
           rateBps: Number(result.rateBps),
           feeAmount: Decimal.fromBigNumberString(result.feeAmount.toString()),
           netAmount: Decimal.fromBigNumberString(result.netAmount.toString()),
+          unknown: false,
         };
       } catch (error) {
-        return INACTIVE;
+        // Same rule as the lending hook: a failed preview is not a zero fee.
+        return { ...INACTIVE, unknown: true };
       }
     },
     [account, grossWei],

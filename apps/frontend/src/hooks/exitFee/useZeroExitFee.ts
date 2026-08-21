@@ -49,7 +49,14 @@ export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
     `exitFee/zero/${account}/${grossWei}`,
     getRskChainId(),
     async () => {
-      if (!account || grossWei === null) {
+      if (grossWei === null) {
+        // An explicit zero gross: nothing leaves, so no fee can be charged.
+        // That is a real answer, not a failure to get one -- reporting it as
+        // unknown would put "fee unavailable" on every add-collateral and
+        // borrow form, where no exit is happening at all.
+        return INACTIVE;
+      }
+      if (!account) {
         return { ...INACTIVE, unknown: true };
       }
       try {

@@ -139,6 +139,11 @@ export const LOCStatus: FC<LOCStatusProps> = ({
                   suffix={BITCOIN}
                   precision={BTC_RENDER_PRECISION}
                 />
+              ) : exitFeeUnavailable ? (
+                // Not a number: the surplus is charged a fee we could not read,
+                // so the gross is not what arrives and printing it would be a
+                // receipt we cannot honour.
+                '—'
               ) : (
                 `${withdrawalSurplus} ${BITCOIN}`
               )

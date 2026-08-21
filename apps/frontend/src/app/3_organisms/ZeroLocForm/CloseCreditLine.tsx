@@ -191,6 +191,10 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
                 prefix="~ "
                 showRoundingPrefix={false}
               />
+            ) : exitFeeUnavailable ? (
+              // See LOCStatus: an unreadable fee means the gross is not the
+              // amount received, so we decline to name one.
+              '—'
             ) : (
               collateralValueRenderer(collateralValue)
             )

@@ -56,7 +56,17 @@ export const useExitFeeRate = (
           CONTROLLER_GETTER_ABI,
           getProvider(RSK_CHAIN_ID),
         );
-        // negative-cached too: while undeployed this reverts and we cache UNKNOWN
+        // Negative-cached too: while undeployed this reverts and we cache
+        // UNKNOWN.
+        //
+        // Known and accepted: the pointer is cached for EXIT_FEE_TTL under a
+        // key with no block dimension, so at the moment governance pins the
+        // controller the app can report "no fee" for up to that long while the
+        // chain has started charging. The window is bounded, it exists once,
+        // and the release order already covers it -- the dapp ships before
+        // charging is enabled, never after. Closing it properly means block-
+        // based invalidation in the shared cache, which is a wider change than
+        // this window justifies.
         const controllerAddress: string = await asyncCall(
           `exitFee/controllerAddress/${RSK_CHAIN_ID}/${protocol.address}`,
           () => getter.exitFeeController(),

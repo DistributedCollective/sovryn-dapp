@@ -47,17 +47,21 @@ export const useExitFeeRate = (
     RSK_CHAIN_ID,
     async () => {
       if (!protocol || !subProduct || !account) {
-        // Nothing was asked, so nothing is known.
-        return UNKNOWN;
+        // Nothing to quote against yet. The spec's rule for every such case is
+        // that the form looks exactly as it does without the perimeter.
+        return UNCHARGED;
       }
+
+      const getter = new Contract(
+        protocol.address,
+        CONTROLLER_GETTER_ABI,
+        getProvider(RSK_CHAIN_ID),
+      );
+
+      let controllerAddress;
       try {
-        const getter = new Contract(
-          protocol.address,
-          CONTROLLER_GETTER_ABI,
-          getProvider(RSK_CHAIN_ID),
-        );
-        // Negative-cached too: while undeployed this reverts and we cache
-        // UNKNOWN.
+        // Negative-cached too: while undeployed this reverts and we cache the
+        // uncharged answer.
         //
         // Known and accepted: the pointer is cached for EXIT_FEE_TTL under a
         // key with no block dimension, so at the moment governance pins the
@@ -67,14 +71,27 @@ export const useExitFeeRate = (
         // charging is enabled, never after. Closing it properly means block-
         // based invalidation in the shared cache, which is a wider change than
         // this window justifies.
-        const controllerAddress: string = await asyncCall(
+        controllerAddress = await asyncCall(
           `exitFee/controllerAddress/${RSK_CHAIN_ID}/${protocol.address}`,
           () => getter.exitFeeController(),
           { ttl: EXIT_FEE_TTL },
         );
-        if (!controllerAddress || controllerAddress === constants.AddressZero) {
-          return UNCHARGED;
-        }
+      } catch (error) {
+        // The getter itself is missing or reverts, which is what a protocol
+        // without the perimeter looks like. Nothing is charged there, and the
+        // spec requires the forms to look exactly as they do today -- so this
+        // is a real answer of "no fee", not a failure to obtain one. It is
+        // also the state of mainnet until the activation SIPs execute.
+        return UNCHARGED;
+      }
+
+      if (!controllerAddress || controllerAddress === constants.AddressZero) {
+        // Perimeter deployed but not yet pinned: charges nothing by
+        // construction.
+        return UNCHARGED;
+      }
+
+      try {
         const controller = new Contract(
           controllerAddress,
           CONTROLLER_ABI,
@@ -92,8 +109,10 @@ export const useExitFeeRate = (
           unknown: false,
         };
       } catch (error) {
-        // Reverts, RPC failures and decode errors land here alike. Every one of
-        // them means we do not know the rate -- not that the rate is zero.
+        // The pointer resolved, so the perimeter IS live and this call should
+        // have worked. A revert, RPC failure or decode error here means we do
+        // not know the rate -- and with a live perimeter that is not the same
+        // as the rate being zero.
         return UNKNOWN;
       }
     },

@@ -1,11 +1,12 @@
 import { useMemo } from 'react';
 
-import { Contract } from 'ethers';
+import { Contract, constants } from 'ethers';
 
 import { getZeroContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
+import { asyncCall } from '../../store/rxjs/provider-cache';
 import { getRskChainId } from '../../utils/chain';
 import {
   EXIT_FEE_REFERENCE_GROSS,
@@ -29,6 +30,10 @@ const INACTIVE = {
 };
 
 // The Z-1 kept preview — same _safeQuote path as the live charge hook.
+const CONTROLLER_GETTER_ABI = [
+  'function exitFeeController() view returns (address)',
+];
+
 const PREVIEW_ABI = [
   'function previewZeroCollWithdrawExitFee(address borrower, uint256 grossColl) view returns (uint16 rateBps, uint256 feeAmount, uint256 netAmount, address feeReceiver, bool active, uint8 reason)',
 ];
@@ -64,6 +69,32 @@ export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
           'borrowerOperations',
           getRskChainId(),
         );
+        /**
+         * Same split as the lending hook. A missing or reverting
+         * `exitFeeController()` is what Zero looks like before the perimeter
+         * ships: nothing is charged, and the form must look untouched. Only
+         * once that pointer resolves does a failing preview mean we genuinely
+         * do not know the rate.
+         */
+        const pointer = new Contract(
+          address,
+          CONTROLLER_GETTER_ABI,
+          getProvider(getRskChainId()),
+        );
+        let controllerAddress;
+        try {
+          controllerAddress = await asyncCall(
+            `exitFee/zeroController/${getRskChainId()}/${address}`,
+            () => pointer.exitFeeController(),
+            { ttl: EXIT_FEE_TTL },
+          );
+        } catch (error) {
+          return INACTIVE;
+        }
+        if (!controllerAddress || controllerAddress === constants.AddressZero) {
+          return INACTIVE;
+        }
+
         const borrowerOperations = new Contract(
           address,
           PREVIEW_ABI,

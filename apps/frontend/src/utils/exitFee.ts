@@ -14,6 +14,10 @@ export const SURFACE_LENDING_LENDER_WITHDRAW =
   '0xd4896528a9fba849e3d3db442dea05ef8f08c93e00cc760acac34c42a7dacffe';
 export const SURFACE_LENDING_BORROWER_WITHDRAW =
   '0xfa502ea562018a194d7f66e337810fa8b882ec21f706f3b3c709a53fa126b018';
+// Not consumed by any component: the Zero collateral-withdrawal fee comes from
+// the contract's own previewZeroCollWithdrawExitFee, which resolves the surface
+// on chain. It is declared and pinned anyway, as a drift canary — the test below
+// fails if this id stops matching the contracts. Do not delete it as dead code.
 export const SURFACE_ZERO_WITHDRAW_COLL =
   '0xfb3234ca0cf70fe9c90b73939f36a37fadcfdef4628afc42dd57d1f26dfd8fb5';
 export const SURFACE_ZERO_CLAIM_SURPLUS =

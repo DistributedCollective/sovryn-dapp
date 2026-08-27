@@ -20,6 +20,8 @@ import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { useAccount } from '../../../../hooks/useAccount';
+import { useZeroExitDelayQuote } from '../../../../hooks/exitDelay/useZeroExitDelayQuote';
+import { usePerimeterHoldToast } from '../../../../hooks/exitDelay/usePerimeterHoldToast';
 import { translations } from '../../../../locales/i18n';
 import { COMMON_SYMBOLS, compareAssets } from '../../../../utils/asset';
 import { loadLiquity } from '../../../../utils/liquity';
@@ -101,6 +103,8 @@ export const useHandleTrove = (
 ) => {
   const { signer, account, provider } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
+  const { delaySeconds: zeroDelaySeconds } = useZeroExitDelayQuote();
+  const notifyHold = usePerimeterHoldToast(zeroDelaySeconds);
 
   const handleTroveSubmit = useCallback(
     async (value: CreditLineSubmitValue) => {
@@ -299,7 +303,13 @@ export const useHandleTrove = (
               value: adjustedTrove.value,
               gasLimit: GAS_LIMIT.ADJUST_TROVE,
             },
-            onComplete: callbacks?.onTroveAdjusted,
+            onComplete: result => {
+              callbacks?.onTroveAdjusted?.();
+              if (value.withdrawCollateral) {
+                notifyHold();
+              }
+              return result;
+            },
             updateHandler: permitHandler((req, res) => {
               if (isTransactionRequest(req) && isDllr) {
                 req.args = [...adjustedTrove.args, res];
@@ -341,9 +351,9 @@ export const useHandleTrove = (
     },
     [
       account,
-      callbacks?.onTroveAdjusted,
-      callbacks?.onTroveOpened,
+      callbacks,
       hasLoc,
+      notifyHold,
       setIsOpen,
       setTitle,
       setTransactions,
@@ -400,7 +410,11 @@ export const useHandleTrove = (
               args: [permitTransferFrom, ''],
               gasLimit: GAS_LIMIT.CLOSE_DLLR_TROVE,
             },
-            onComplete: callbacks?.onTroveClosed,
+            onComplete: result => {
+              callbacks?.onTroveClosed?.();
+              notifyHold();
+              return result;
+            },
             updateHandler: permitHandler((req, res) => {
               if (isTransactionRequest(req)) {
                 req.args = [permitTransferFrom, res];
@@ -421,7 +435,11 @@ export const useHandleTrove = (
                 args: [],
                 gasLimit: GAS_LIMIT.CLOSE_TROVE,
               },
-              onComplete: callbacks?.onTroveClosed,
+              onComplete: result => {
+                callbacks?.onTroveClosed?.();
+                notifyHold();
+                return result;
+              },
             },
           ]);
         } else {
@@ -434,7 +452,8 @@ export const useHandleTrove = (
     },
     [
       account,
-      callbacks?.onTroveClosed,
+      callbacks,
+      notifyHold,
       provider,
       setIsOpen,
       setTitle,

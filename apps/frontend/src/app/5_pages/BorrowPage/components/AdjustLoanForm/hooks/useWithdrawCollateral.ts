@@ -21,7 +21,7 @@ export const useWithdrawCollateral = () => {
   const { account, signer } = useAccount();
 
   const handleSubmit = useCallback(
-    async (amount: string, loanId: string) => {
+    async (amount: string, loanId: string, onHeld?: () => void) => {
       if (!contract || !account || !signer) {
         return;
       }
@@ -41,6 +41,7 @@ export const useWithdrawCollateral = () => {
             args: [loanId, account, weiAmount],
             gasLimit: GAS_LIMIT.WITHDRAW_LOAN_COLLATERAL,
           },
+          onComplete: onHeld,
         },
       ];
 

@@ -34,6 +34,7 @@ import {
 } from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
 import { useExitDelayQuote } from '../../../../../hooks/exitDelay/useExitDelayQuote';
+import { usePerimeterHoldToast } from '../../../../../hooks/exitDelay/usePerimeterHoldToast';
 import { useExitFeeRate } from '../../../../../hooks/exitFee/useExitFeeRate';
 import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInput';
 import { useLoadContract } from '../../../../../hooks/useLoadContract';
@@ -306,6 +307,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     ],
   );
 
+  const notifyHold = usePerimeterHoldToast(
+    exitFeeGross.gt(0) ? delaySeconds : 0,
+  );
+
   const prepaidInterest = calculatePrepaidInterestFromDuration(
     borrowApr,
     debtSize.toString(),
@@ -452,6 +457,8 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         loan.debt.toString(),
         loan.id,
         convertLoanTokenToSupportedAssets(loan.debtAsset),
+        false,
+        notifyHold,
       );
       return;
     }
@@ -462,6 +469,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         loan.id,
         convertLoanTokenToSupportedAssets(loan.debtAsset),
         true,
+        notifyHold,
       );
       return;
     }
@@ -488,7 +496,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     }
 
     if (isCollateralWithdrawMode) {
-      handleWithdrawCollateral(collateralAmount, loan.id);
+      handleWithdrawCollateral(collateralAmount, loan.id, notifyHold);
     }
   }, [
     collateralAmount,
@@ -498,6 +506,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     debtSize,
     debtToken,
     handleBorrow,
+    notifyHold,
     handleDepositCollateral,
     handleRepay,
     handleWithdrawCollateral,

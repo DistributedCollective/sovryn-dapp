@@ -16,7 +16,10 @@ import {
 } from '@sovryn/ui';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
-import { useExecuteExit } from '../../../hooks/exitDelay/useExecuteExit';
+import {
+  useExecuteExit,
+  useExecuteExits,
+} from '../../../hooks/exitDelay/useExecuteExit';
 import { usePerimeterVault } from '../../../hooks/exitDelay/usePerimeterVault';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
@@ -50,6 +53,7 @@ const PerimeterPage: FC = () => {
   }, []);
 
   const executeExit = useExecuteExit(queueAddress);
+  const executeExits = useExecuteExits(queueAddress);
 
   const rows: PerimeterExitRow[] = useMemo(
     () =>
@@ -73,6 +77,19 @@ const PerimeterPage: FC = () => {
   const handleRelease = useCallback(
     (row: PerimeterExitRow) => executeExit(row.id),
     [executeExit],
+  );
+
+  // The batch carries exactly the rows the per-row button would offer —
+  // executeExits is atomic on-chain, so one uncertain id would revert every
+  // other release with it.
+  const releasableIds = useMemo(
+    () => rows.filter(row => canExecuteExit(row.state)).map(row => row.id),
+    [rows],
+  );
+
+  const handleReleaseAll = useCallback(
+    () => executeExits(releasableIds),
+    [executeExits, releasableIds],
   );
 
   const columns = useMemo(
@@ -164,6 +181,19 @@ const PerimeterPage: FC = () => {
           </Paragraph>
         )}
         <div className="w-full max-w-5xl">
+          {releasableIds.length > 1 && (
+            <div className="flex justify-end mb-3">
+              <Button
+                text={t(translations.perimeterPage.releaseAll, {
+                  count: releasableIds.length,
+                })}
+                size={ButtonSize.small}
+                style={ButtonStyle.primary}
+                onClick={handleReleaseAll}
+                dataAttribute="perimeter-release-all"
+              />
+            </div>
+          )}
           <Table
             columns={columns}
             rows={rows}

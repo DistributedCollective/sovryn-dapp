@@ -15,6 +15,7 @@ const RECEIVER = '0x3333333333333333333333333333333333333333';
 const QUEUE = '0x9999999999999999999999999999999999999999';
 
 const mockExecuteExit = jest.fn();
+const mockExecuteExits = jest.fn();
 
 let mockVault: {
   queueAddress?: string;
@@ -44,6 +45,7 @@ jest.mock('../../../hooks/exitDelay/usePerimeterVault', () => ({
 
 jest.mock('../../../hooks/exitDelay/useExecuteExit', () => ({
   useExecuteExit: () => mockExecuteExit,
+  useExecuteExits: () => mockExecuteExits,
 }));
 
 const NOW = 1_800_000_000;
@@ -80,6 +82,7 @@ describe('PerimeterPage', () => {
     // tests, and a reset Date.now would make every row read as unlocked.
     jest.spyOn(Date, 'now').mockReturnValue(NOW * 1000);
     mockExecuteExit.mockClear();
+    mockExecuteExits.mockClear();
     mockVault = {
       queueAddress: QUEUE,
       exits: [],
@@ -172,5 +175,26 @@ describe('PerimeterPage', () => {
     expect(
       container.querySelector('[data-layout-id="perimeter-release-7"]'),
     ).not.toBeInTheDocument();
+  });
+
+  it('offers one batch release for exactly the certainly-succeeding rows', () => {
+    mockVault.exits = [
+      exit({ id: '7' }),
+      exit({ id: '8' }),
+      exit({ id: '9', unlockAt: NOW + 3600 }),
+    ];
+    render(<PerimeterPage />);
+    const all = screen.getByText('Release all ready (2)');
+    fireEvent.click(all);
+    expect(mockExecuteExits).toHaveBeenCalledWith(['7', '8']);
+  });
+
+  it('withholds the batch button when only one row is ready', () => {
+    mockVault.exits = [
+      exit({ id: '7' }),
+      exit({ id: '8', unlockAt: NOW + 60 }),
+    ];
+    render(<PerimeterPage />);
+    expect(screen.queryByText(/Release all ready/)).not.toBeInTheDocument();
   });
 });

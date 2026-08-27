@@ -166,10 +166,6 @@ const routes = [
         element: <ClaimLpPage />,
       },
       {
-        // Reachable by URL and from the withdrawal-hold tooltip. Deliberately
-        // not in the main navigation: until the perimeter holds something the
-        // page is empty for everyone, and where it belongs in the menu is a
-        // product decision, not a routing one.
         path: '/perimeter',
         element: <PerimeterPage />,
       },

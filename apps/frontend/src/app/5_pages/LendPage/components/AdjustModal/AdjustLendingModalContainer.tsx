@@ -21,6 +21,9 @@ import { translations } from '../../../../../locales/i18n';
 import { eventDriven } from '../../../../../store/rxjs/event-driven';
 import { asyncCall } from '../../../../../store/rxjs/provider-cache';
 import { Nullable } from '../../../../../types/global';
+import { useExitDelayQuote } from '../../../../../hooks/exitDelay/useExitDelayQuote';
+import { usePerimeterHoldToast } from '../../../../../hooks/exitDelay/usePerimeterHoldToast';
+import { SURFACE_LENDING_LENDER_WITHDRAW } from '../../../../../utils/exitFee';
 import { LendModalAction } from '../../LendPage.types';
 import { FormType, LendingForm } from './LendingForm';
 
@@ -30,6 +33,7 @@ export type AdjustModalProps = {
     amount: Decimal,
     token: AssetDetailsData,
     pool: Contract,
+    onHeld?: () => void,
   ) => void;
   onClose: () => void;
   isOpen: boolean;
@@ -122,6 +126,12 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
     onClose();
   }, [onClose, push]);
 
+  const { delaySeconds } = useExitDelayQuote(
+    SURFACE_LENDING_LENDER_WITHDRAW,
+    state?.poolTokenContract?.address,
+  );
+  const notifyHold = usePerimeterHoldToast(delaySeconds);
+
   const handleConfirm = useCallback(
     (type: FormType, amount: Decimal) => {
       if (state == null) {
@@ -130,10 +140,15 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
       if (type === FormType.Deposit) {
         onDeposit(amount, state.tokenDetails, state.poolTokenContract);
       } else {
-        onWithdraw(amount, state.tokenDetails, state.poolTokenContract);
+        onWithdraw(
+          amount,
+          state.tokenDetails,
+          state.poolTokenContract,
+          notifyHold,
+        );
       }
     },
-    [onDeposit, onWithdraw, state],
+    [notifyHold, onDeposit, onWithdraw, state],
   );
 
   return (

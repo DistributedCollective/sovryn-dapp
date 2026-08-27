@@ -118,7 +118,7 @@ describe('PerimeterPage', () => {
     );
     expect(button).toBeInTheDocument();
     fireEvent.click(button!);
-    expect(mockExecuteExit).toHaveBeenCalledWith('7');
+    expect(mockExecuteExit).toHaveBeenCalledWith('7', expect.any(Function));
   });
 
   it('withholds Release while an exit is still on hold', () => {
@@ -169,9 +169,9 @@ describe('PerimeterPage', () => {
     mockVault.blocks = { '7': clear };
     const { container } = render(<PerimeterPage />);
 
-    expect(screen.getAllByText('Released by the owner').length).toBeGreaterThan(
-      0,
-    );
+    expect(
+      screen.getAllByText('Releasable by the owner').length,
+    ).toBeGreaterThan(0);
     expect(
       container.querySelector('[data-layout-id="perimeter-release-7"]'),
     ).not.toBeInTheDocument();
@@ -186,7 +186,10 @@ describe('PerimeterPage', () => {
     render(<PerimeterPage />);
     const all = screen.getByText('Release all ready (2)');
     fireEvent.click(all);
-    expect(mockExecuteExits).toHaveBeenCalledWith(['7', '8']);
+    expect(mockExecuteExits).toHaveBeenCalledWith(
+      ['7', '8'],
+      expect.any(Function),
+    );
   });
 
   it('withholds the batch button when only one row is ready', () => {

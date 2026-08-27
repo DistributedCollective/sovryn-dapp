@@ -52,31 +52,48 @@ const PerimeterPage: FC = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Ids released in this session, held until the next block refetch drops them
+  // from the vault. The queue refetches each block, but a row released one
+  // moment and included in a "release all" the next would revert the whole
+  // atomic batch (its status is no longer Queued). Excluding released ids until
+  // the fetch catches up keeps a just-released row from poisoning a later batch.
+  const [releasedIds, setReleasedIds] = useState<Set<string>>(new Set());
+  const markReleased = useCallback((ids: string[]) => {
+    setReleasedIds(prev => {
+      const next = new Set(prev);
+      ids.forEach(id => next.add(id));
+      return next;
+    });
+  }, []);
+
   const executeExit = useExecuteExit(queueAddress);
   const executeExits = useExecuteExits(queueAddress);
 
   const rows: PerimeterExitRow[] = useMemo(
     () =>
-      exits.map(exit => ({
-        ...exit,
-        state: getPendingExitState(
-          exit,
-          blocks[exit.id] ?? {
-            originator: BlockState.None,
-            owner: BlockState.None,
-            receiver: BlockState.None,
-          },
-          paused,
-          account,
-          now,
-        ),
-      })),
-    [account, blocks, exits, now, paused],
+      exits
+        .filter(exit => !releasedIds.has(exit.id))
+        .map(exit => ({
+          ...exit,
+          state: getPendingExitState(
+            exit,
+            blocks[exit.id] ?? {
+              originator: BlockState.None,
+              owner: BlockState.None,
+              receiver: BlockState.None,
+            },
+            paused,
+            account,
+            now,
+          ),
+        })),
+    [account, blocks, exits, now, paused, releasedIds],
   );
 
   const handleRelease = useCallback(
-    (row: PerimeterExitRow) => executeExit(row.id),
-    [executeExit],
+    (row: PerimeterExitRow) =>
+      executeExit(row.id, () => markReleased([row.id])),
+    [executeExit, markReleased],
   );
 
   // The batch carries exactly the rows the per-row button would offer —
@@ -88,8 +105,8 @@ const PerimeterPage: FC = () => {
   );
 
   const handleReleaseAll = useCallback(
-    () => executeExits(releasableIds),
-    [executeExits, releasableIds],
+    () => executeExits(releasableIds, () => markReleased(releasableIds)),
+    [executeExits, markReleased, releasableIds],
   );
 
   const columns = useMemo(

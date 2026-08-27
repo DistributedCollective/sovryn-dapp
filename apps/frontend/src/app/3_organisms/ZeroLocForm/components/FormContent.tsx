@@ -511,7 +511,11 @@ export const FormContent: FC<FormContentProps> = props => {
                 assetSymbol={COMMON_SYMBOLS.BTC}
                 precision={BTC_RENDER_PRECISION}
               />
-              <ExitDelayRow delaySeconds={delaySeconds} />
+              {/* Only a collateral withdrawal is held; a borrow or add-collateral
+                  adjust removes nothing, so the hold notice must not show for it. */}
+              {exitFeeGross.gt(0) && (
+                <ExitDelayRow delaySeconds={delaySeconds} />
+              )}
             </>
           ) : (
             <>

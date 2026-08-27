@@ -305,7 +305,13 @@ export const useHandleTrove = (
             },
             onComplete: result => {
               callbacks?.onTroveAdjusted?.();
-              if (value.withdrawCollateral) {
+              // withdrawCollateral is a string; a debt-only adjust can carry
+              // '0' here, which is truthy — gate on a real withdrawal so the
+              // hold notice never fires for a borrow or repay.
+              if (
+                value.withdrawCollateral &&
+                value.withdrawCollateral !== '0'
+              ) {
                 notifyHold();
               }
               return result;

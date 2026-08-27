@@ -1697,7 +1697,7 @@
     "vaultLink": "Track and release it on the Perimeter page",
     "holdToast": {
       "title": "Withdrawal held by the Sovryn Perimeter",
-      "content": "The funds went to the Perimeter vault, not to your wallet. Release them from the Perimeter page once the hold ends."
+      "content": "The funds went to the Sovryn Perimeter vault, not to your wallet. Release them from the Perimeter page once the hold ends."
     }
   },
   "perimeterPage": {
@@ -1719,7 +1719,7 @@
     "status": {
       "locked": "On hold",
       "unlocked": "Ready",
-      "notExecutor": "Released by the owner",
+      "notExecutor": "Releasable by the owner",
       "blocked": "Under review",
       "paused": "Paused",
       "settled": "Settled"

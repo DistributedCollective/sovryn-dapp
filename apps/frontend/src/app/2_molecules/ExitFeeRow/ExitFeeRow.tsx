@@ -8,7 +8,7 @@ import { Decimal } from '@sovryn/utils';
 import { TOKEN_RENDER_PRECISION } from '../../../constants/currencies';
 import { getTokenDisplayName } from '../../../constants/tokens';
 import { translations } from '../../../locales/i18n';
-import { getExitFeeAmount, isExitFeeShown } from '../../../utils/exitFee';
+import { getExitFeeAmount, getExitFeeDisplay } from '../../../utils/exitFee';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
 
 /** `rateBps / 100`, integer-safe (e.g. 50 -> "0.5", 100 -> "1"). */
@@ -54,6 +54,14 @@ export type ExitFeeRowProps = {
   active: boolean;
   assetSymbol: string;
   precision?: number;
+  /**
+   * Required on purpose. The perimeter fails open, so a quote we could not get
+   * and a quote of zero look identical in `active`/`rateBps`; making the caller
+   * state which one this is stops the row from silently promising "no fee"
+   * while the quote is still loading or the RPC is down.
+   */
+  unknown: boolean;
+  loading?: boolean;
 };
 
 export const ExitFeeRow: FC<ExitFeeRowProps> = ({
@@ -62,11 +70,33 @@ export const ExitFeeRow: FC<ExitFeeRowProps> = ({
   active,
   assetSymbol,
   precision = TOKEN_RENDER_PRECISION,
+  unknown,
+  loading = false,
 }) => {
   const fee = useMemo(() => getExitFeeAmount(gross, rateBps), [gross, rateBps]);
+  const display = getExitFeeDisplay({ active, rateBps, unknown, loading }, fee);
 
-  if (!isExitFeeShown(active, rateBps, fee)) {
+  if (display === 'none') {
     return null;
+  }
+
+  if (display === 'unknown') {
+    return (
+      <SimpleTableRow
+        label={
+          <span className="flex flex-row items-center gap-1 whitespace-nowrap">
+            {t(translations.exitFee.unavailable)}
+            <HelperButton
+              content={t(translations.exitFee.unavailableTooltip)}
+              trigger={TooltipTrigger.click}
+              dataAttribute="exit-fee-unavailable-helper"
+            />
+          </span>
+        }
+        value="—"
+        dataAttribute="exit-fee-unavailable"
+      />
+    );
   }
 
   return (

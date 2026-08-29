@@ -10,7 +10,7 @@ import {
   SURFACE_ZERO_WITHDRAW_COLL,
   getExitFeeAmount,
   getExitFeeNet,
-  isExitFeeShown,
+  getExitFeeDisplay,
 } from './exitFee';
 
 describe('exitFee utils', () => {
@@ -27,7 +27,9 @@ describe('exitFee utils', () => {
     expect(SURFACE_ZERO_CLAIM_SURPLUS).toEqual(
       utils.id('PERIMETER_SURFACE_ZERO_CLAIM_SURPLUS'),
     );
-    // pin the literals so a typo in the preimage string cannot pass silently
+    // Pin the literals too. The preimage assertions above cannot catch a
+    // rename that rewrites the constant and its own expectation together —
+    // which is exactly how a stale `COLFEE:` prefix survived once.
     expect(SURFACE_LENDING_LENDER_WITHDRAW).toEqual(
       '0xd4896528a9fba849e3d3db442dea05ef8f08c93e00cc760acac34c42a7dacffe',
     );
@@ -53,10 +55,25 @@ describe('exitFee utils', () => {
 
   it('display gate: only active, sane-rate, non-zero fees are shown', () => {
     const fee = Decimal.from('0.5');
-    expect(isExitFeeShown(true, 50, fee)).toBe(true);
-    expect(isExitFeeShown(false, 50, fee)).toBe(false);
-    expect(isExitFeeShown(true, 0, fee)).toBe(false);
-    expect(isExitFeeShown(true, 10001, fee)).toBe(false);
-    expect(isExitFeeShown(true, 50, Decimal.ZERO)).toBe(false);
+    // Exercised through the exported decision, which is the only way a
+    // consumer can reach the charge test.
+    const q = (active: boolean, rateBps: number) => ({
+      active,
+      rateBps,
+      unknown: false,
+      loading: false,
+    });
+    expect(getExitFeeDisplay(q(true, 50), fee)).toBe('charged');
+    expect(getExitFeeDisplay(q(false, 50), fee)).toBe('none');
+    expect(getExitFeeDisplay(q(true, 0), fee)).toBe('none');
+    expect(getExitFeeDisplay(q(true, 10001), fee)).toBe('none');
+    expect(getExitFeeDisplay(q(true, 50), Decimal.ZERO)).toBe('none');
+    // The states the old predicate could not express at all.
+    expect(getExitFeeDisplay({ ...q(true, 50), unknown: true }, fee)).toBe(
+      'unknown',
+    );
+    expect(getExitFeeDisplay({ ...q(true, 50), loading: true }, fee)).toBe(
+      'unknown',
+    );
   });
 });

@@ -30,7 +30,7 @@ import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../utils/asset';
-import { isExitFeeShown } from '../../../utils/exitFee';
+import { getExitFeeDisplay } from '../../../utils/exitFee';
 import { Row } from './Row';
 import { useZeroData } from './hooks/useZeroData';
 
@@ -59,10 +59,18 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   const exitFee = useZeroExitFee(collateralValue);
   const { delaySeconds } = useZeroExitDelayQuote();
 
-  const showExitFee = useMemo(
-    () => isExitFeeShown(exitFee.active, exitFee.rateBps, exitFee.feeAmount),
+  const exitFeeDisplay = useMemo(
+    () => getExitFeeDisplay(exitFee, exitFee.feeAmount),
     [exitFee],
   );
+  const showExitFee = exitFeeDisplay === 'charged';
+  /**
+   * Closing the line returns collateral through a charged surface, so the
+   * amount below is only the gross when nothing is charged. When the quote
+   * could not be read it is not evidence of that, and saying nothing would
+   * present the gross as settled.
+   */
+  const exitFeeUnavailable = exitFeeDisplay === 'unknown';
 
   const collateralToReceive = useMemo(
     () => (showExitFee ? exitFee.netAmount : collateralValue),
@@ -171,6 +179,8 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
                 assetSymbol={COMMON_SYMBOLS.BTC}
                 precision={BTC_RENDER_PRECISION}
               />
+            ) : exitFeeUnavailable ? (
+              t(translations.exitFee.unavailableTooltip)
             ) : undefined
           }
           tooltipTrigger={TooltipTrigger.click}
@@ -184,6 +194,10 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
                 prefix="~ "
                 showRoundingPrefix={false}
               />
+            ) : exitFeeUnavailable ? (
+              // See LOCStatus: an unreadable fee means the gross is not the
+              // amount received, so we decline to name one.
+              '—'
             ) : (
               collateralValueRenderer(collateralValue)
             )

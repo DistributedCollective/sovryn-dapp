@@ -32,6 +32,7 @@ describe('ExitFeeRow', () => {
         gross={Decimal.from(100)}
         rateBps={50}
         active
+        unknown={false}
         assetSymbol="DLLR"
       />,
     );
@@ -49,6 +50,7 @@ describe('ExitFeeRow', () => {
         gross={Decimal.from(100)}
         rateBps={50}
         active
+        unknown={false}
         assetSymbol="DLLR"
       />,
     );
@@ -83,6 +85,58 @@ describe('ExitFeeRow', () => {
         gross={Decimal.from(gross)}
         rateBps={rateBps as number}
         active={active as boolean}
+        assetSymbol="DLLR"
+      />,
+    );
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('renders the unavailable row when the quote could not be obtained', () => {
+    const { container } = render(
+      <ExitFeeRow
+        gross={Decimal.from(100)}
+        rateBps={0}
+        active={false}
+        unknown
+        assetSymbol="DLLR"
+      />,
+    );
+    // The fail-open contract cannot tell "no fee" from "could not ask", so the
+    // UI must not answer for it. Absence of a row reads as "no fee"; this must
+    // render something.
+    expect(
+      container.querySelector('[data-layout-id="exit-fee-unavailable"]'),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-layout-id="exit-fee-net"]'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the unavailable row while the quote is still loading', () => {
+    const { container } = render(
+      <ExitFeeRow
+        gross={Decimal.from(100)}
+        rateBps={0}
+        active={false}
+        unknown={false}
+        loading
+        assetSymbol="DLLR"
+      />,
+    );
+    // A quote that has not arrived is not evidence of a zero fee. This is the
+    // case every consumer used to get wrong by dropping `loading`.
+    expect(
+      container.querySelector('[data-layout-id="exit-fee-unavailable"]'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders nothing when the surface is genuinely uncharged', () => {
+    const { container } = render(
+      <ExitFeeRow
+        gross={Decimal.from(100)}
+        rateBps={0}
+        active={false}
+        unknown={false}
         assetSymbol="DLLR"
       />,
     );

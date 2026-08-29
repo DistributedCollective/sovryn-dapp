@@ -54,7 +54,12 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
     GAS_LIMIT.LENDING_MINT,
   );
 
-  const { active: exitFeeActive, rateBps: exitFeeRateBps } = useExitFeeRate(
+  const {
+    active: exitFeeActive,
+    rateBps: exitFeeRateBps,
+    unknown: exitFeeUnknown,
+    loading: exitFeeLoading,
+  } = useExitFeeRate(
     SURFACE_LENDING_LENDER_WITHDRAW,
     state.poolTokenContract.address,
   );
@@ -204,6 +209,8 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
         {!isDeposit && (
           <>
             <ExitFeeRow
+              unknown={exitFeeUnknown}
+              loading={exitFeeLoading}
               gross={withdrawAmount}
               rateBps={exitFeeRateBps}
               active={exitFeeActive}

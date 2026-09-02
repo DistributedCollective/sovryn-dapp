@@ -106,7 +106,8 @@
     "generate:graphql:fetch:testnet": "env-cmd -f .env.development.local graphql-codegen -c codegen.fetch.yml",
     "generate:graphql:fetch:mainnet": "env-cmd -f .env.staging graphql-codegen -c codegen.fetch.yml",
     "find-deadcode": "ts-prune -s .generated.tsx | grep -v '(used in module)'",
-    "copy-libs": "node scripts/copyLibs.js"
+    "copy-libs": "node scripts/copyLibs.js",
+    "qa": "bash -c 'set -euo pipefail; eval \"$(scripts/qa-env.sh \"$1\")\"; yarn dev' qa-env"
   },
   "browserslist": [
     "last 5 chrome version",

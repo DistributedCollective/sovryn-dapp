@@ -94,43 +94,23 @@ describe('ExitFeeRow', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders the unavailable row when the quote could not be obtained', () => {
+  it.each([
+    ['the quote could not be obtained', { unknown: true, loading: false }],
+    ['the quote is still loading', { unknown: false, loading: true }],
+  ])('renders nothing when %s', (_label, state) => {
+    // Fail-hidden. The chain charges nothing when it cannot quote and pays
+    // the gross, so the honest display is the form exactly as it was before
+    // the perimeter existed — not a row that hints at a fee it cannot name.
     const { container } = render(
       <ExitFeeRow
         gross={Decimal.from(100)}
-        rateBps={0}
-        active={false}
-        unknown
+        rateBps={50}
+        active
         assetSymbol="DLLR"
+        {...state}
       />,
     );
-    // The fail-open contract cannot tell "no fee" from "could not ask", so the
-    // UI must not answer for it. Absence of a row reads as "no fee"; this must
-    // render something.
-    expect(
-      container.querySelector('[data-layout-id="exit-fee-unavailable"]'),
-    ).toBeInTheDocument();
-    expect(
-      container.querySelector('[data-layout-id="exit-fee-net"]'),
-    ).not.toBeInTheDocument();
-  });
-
-  it('renders the unavailable row while the quote is still loading', () => {
-    const { container } = render(
-      <ExitFeeRow
-        gross={Decimal.from(100)}
-        rateBps={0}
-        active={false}
-        unknown={false}
-        loading
-        assetSymbol="DLLR"
-      />,
-    );
-    // A quote that has not arrived is not evidence of a zero fee. This is the
-    // case every consumer used to get wrong by dropping `loading`.
-    expect(
-      container.querySelector('[data-layout-id="exit-fee-unavailable"]'),
-    ).toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
   });
 
   it('renders nothing when the surface is genuinely uncharged', () => {

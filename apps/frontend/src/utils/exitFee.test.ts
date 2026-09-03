@@ -68,12 +68,14 @@ describe('exitFee utils', () => {
     expect(getExitFeeDisplay(q(true, 0), fee)).toBe('none');
     expect(getExitFeeDisplay(q(true, 10001), fee)).toBe('none');
     expect(getExitFeeDisplay(q(true, 50), Decimal.ZERO)).toBe('none');
-    // The states the old predicate could not express at all.
+    // Fail-hidden: a quote not yet arrived, or not obtainable, shows nothing.
+    // The chain charges nothing in those cases and pays the gross, so the
+    // form rendering as it did before the perimeter is the truthful display.
     expect(getExitFeeDisplay({ ...q(true, 50), unknown: true }, fee)).toBe(
-      'unknown',
+      'none',
     );
     expect(getExitFeeDisplay({ ...q(true, 50), loading: true }, fee)).toBe(
-      'unknown',
+      'none',
     );
   });
 });

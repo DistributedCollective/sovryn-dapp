@@ -4,19 +4,20 @@ import { BigNumber } from 'ethers';
 
 import { Decimal } from '@sovryn/utils';
 
+import { getExitFeeDisplay } from '../../utils/exitFee';
 import { useZeroExitFee } from './useZeroExitFee';
 
 /**
- * The preview FAILS OPEN. It does not revert when it cannot obtain a usable
- * quote — it returns normally, with `active: false`, a zero fee, and a `reason`
- * saying why. So a hook that reads `active` alone reports "nothing is charged"
- * for a controller it could not reach, and on the Zero views that renders the
- * GROSS as the amount the user will receive.
+ * The preview FAILS OPEN, and so does the live charge: when the contract cannot
+ * obtain a usable quote it returns normally with `active: false`, a zero fee
+ * and the reason — and at execution the same path charges nothing and pays the
+ * gross. So for every reason the contract can report, the truthful display is
+ * the same: no fee taken, no fee shown, the form as it was before the
+ * perimeter existed.
  *
- * These tests exist to keep that distinction. They drive the hook with
- * successful calls that carry each reason, which is the shape the contract
- * actually produces — a throwing mock would exercise the other, already-covered
- * path and prove nothing about this one.
+ * These tests drive the hook with SUCCESSFUL calls carrying each reason, which
+ * is the shape the contract actually produces; a throwing mock exercises the
+ * other, already-covered path and proves nothing about this one.
  */
 
 const REASON = {
@@ -143,33 +144,14 @@ describe('useZeroExitFee', () => {
   });
 
   it.each([
-    ['the controller could not be reached', REASON.CONTROLLER_REVERT],
-    ['the quote came back unusable', REASON.INVALID_QUOTE],
-    ['the vault leg reported a failure', REASON.VAULT_REVERT],
-  ])(
-    'reports UNKNOWN, not a zero fee, when %s',
-    async (_label, reason) => {
-      // The call SUCCEEDS and hands back net == gross. Reading `active` alone
-      // would render that gross as the receivable amount.
-      mockPreview.mockResolvedValue(
-        previewResult(reason, { netAmount: '1000000000000000000' }),
-      );
-
-      const { result } = renderHook(() => useZeroExitFee(Decimal.from(1)));
-
-      await waitFor(() => expect(result.current.loading).toBe(false));
-      // The catch-all returns this same shape, so assert we got here by
-      // CLASSIFYING a successful preview rather than by throwing on the way.
-      expect(mockPreview).toHaveBeenCalled();
-      expect(result.current.unknown).toBe(true);
-      expect(result.current.active).toBe(false);
-    },
-  );
-
-  it.each([
     ['charging is switched off globally', REASON.INACTIVE],
     ['the surface carries no policy', REASON.DISABLED],
-  ])('reports a settled no-fee answer when %s', async (_label, reason) => {
+    ['the quote came back unusable', REASON.INVALID_QUOTE],
+    ['the controller could not be reached', REASON.CONTROLLER_REVERT],
+    ['the vault leg reported a failure', REASON.VAULT_REVERT],
+  ])('shows no fee when %s — the chain charges none', async (_label, reason) => {
+    // The call SUCCEEDS and hands back net == gross: that is the contract
+    // saying the user receives the whole amount. The rows must stay hidden.
     mockPreview.mockResolvedValue(
       previewResult(reason, { netAmount: '1000000000000000000' }),
     );
@@ -177,8 +159,24 @@ describe('useZeroExitFee', () => {
     const { result } = renderHook(() => useZeroExitFee(Decimal.from(1)));
 
     await waitFor(() => expect(result.current.loading).toBe(false));
+    // A throw anywhere upstream also yields active=false, so prove we got
+    // here by classifying a successful preview rather than by failing early.
     expect(mockPreview).toHaveBeenCalled();
-    expect(result.current.unknown).toBe(false);
     expect(result.current.active).toBe(false);
+    expect(result.current.unknown).toBe(false);
+    expect(getExitFeeDisplay(result.current, result.current.feeAmount)).toBe(
+      'none',
+    );
+  });
+
+  it('shows no fee while the quote has not arrived', async () => {
+    mockPreview.mockReturnValue(new Promise(() => undefined)); // never settles
+
+    const { result } = renderHook(() => useZeroExitFee(Decimal.from(1)));
+
+    expect(result.current.loading).toBe(true);
+    expect(getExitFeeDisplay(result.current, result.current.feeAmount)).toBe(
+      'none',
+    );
   });
 });

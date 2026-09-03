@@ -38,19 +38,6 @@ const PREVIEW_ABI = [
   'function previewZeroCollWithdrawExitFee(address borrower, uint256 grossColl) view returns (uint16 rateBps, uint256 feeAmount, uint256 netAmount, address feeReceiver, bool active, uint8 reason)',
 ];
 
-/**
- * `SkipReason` values that mean the quote could not be determined, as opposed
- * to a settled answer of "nothing is charged".
- *
- * 0 NONE and 1 INACTIVE and 2 DISABLED are real answers: the policy resolved,
- * or charging is switched off. 3 INVALID_QUOTE and 4 CONTROLLER_REVERT are the
- * fail-open paths — the hook could not obtain a usable quote and the contract
- * said so rather than reverting. 5 VAULT_REVERT belongs to the charging path
- * and cannot reach a view call, but it is listed because if it ever did, it
- * would likewise not be a rate we can show.
- */
-const UNDETERMINED_REASONS = [3, 4, 5];
-
 export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
   const { account } = useAccount();
 
@@ -117,15 +104,12 @@ export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
           account,
           grossWei,
         );
-        // The preview FAILS OPEN: when the controller is unreachable or hands
-        // back an unusable quote it does not revert, it returns normally with
-        // active=false, a zero fee and the reason why. Trusting `active` alone
-        // therefore turns "we could not ask" into "nothing is charged" — and on
-        // the Zero views that prints the GROSS as the amount you will receive,
-        // which is exactly what does not arrive (spec §3, revised 2026-08-21).
-        if (UNDETERMINED_REASONS.includes(Number(result.reason))) {
-          return { ...INACTIVE, unknown: true };
-        }
+        // The preview fails OPEN, exactly as the live charge does: when the
+        // controller is unreachable or hands back an unusable quote it returns
+        // active=false with a zero fee, and at execution the same path charges
+        // nothing and pays the gross. So `active=false` here IS the answer —
+        // no fee is taken — and the rows stay hidden. The reason is not
+        // consulted: whichever it is, the user receives the whole amount.
         return {
           active: result.active,
           rateBps: Number(result.rateBps),

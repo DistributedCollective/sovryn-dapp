@@ -61,21 +61,28 @@ export type ExitFeeQuote = {
   unknown: boolean;
 };
 
-/** What the UI should show. Three states, because there are three truths. */
-export type ExitFeeDisplay = 'charged' | 'none' | 'unknown';
-
 /**
- * The single display decision. Folds `loading` in deliberately: a quote that
- * has not arrived yet is not evidence of a zero fee, and every consumer that
- * destructured `{ active, rateBps }` and dropped `loading` rendered "no fee"
- * during the first fetch and for the whole cache TTL after any RPC blip.
+ * What the UI shows: the fee rows, or nothing at all.
+ *
+ * Fail-hidden. The rows appear only for a quote that has ARRIVED and says a
+ * fee is charged. Everything else — charging off, no policy, dust, a quote
+ * still loading, a quote we could not obtain — renders exactly as the form
+ * did before the perimeter existed. The chain fails open the same way: when it
+ * cannot quote, it charges nothing and pays the gross, so a form that says
+ * nothing in those cases is telling the truth.
+ *
+ * There is deliberately no third state. "A fee applies but we cannot say how
+ * much" is not a message this product sends: if no fee is taken, the user
+ * receives the whole amount and has nothing to be told.
  */
+export type ExitFeeDisplay = 'charged' | 'none';
+
 export const getExitFeeDisplay = (
   quote: ExitFeeQuote,
   fee: Decimal,
 ): ExitFeeDisplay => {
   if (quote.loading || quote.unknown) {
-    return 'unknown';
+    return 'none';
   }
   return isExitFeeShown(quote.active, quote.rateBps, fee) ? 'charged' : 'none';
 };

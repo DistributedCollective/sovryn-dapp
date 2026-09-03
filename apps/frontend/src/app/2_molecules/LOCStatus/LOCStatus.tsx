@@ -83,13 +83,6 @@ export const LOCStatus: FC<LOCStatusProps> = ({
     surplusExitFee,
   );
   const showSurplusExitFee = exitFeeDisplay === 'charged';
-  /**
-   * The surplus figure below is the gross when no fee is charged. That is the
-   * right number for a surface that is genuinely uncharged and the wrong one
-   * when we simply could not read the rate, so the unknown case says so
-   * instead of presenting the gross as settled.
-   */
-  const exitFeeUnavailable = exitFeeDisplay === 'unknown';
 
   return (
     <div
@@ -119,15 +112,6 @@ export const LOCStatus: FC<LOCStatusProps> = ({
                     dataAttribute="exit-fee-helper"
                   />
                 </span>
-              ) : exitFeeUnavailable ? (
-                <span className="flex flex-row items-center gap-1 whitespace-nowrap">
-                  {t('LOCStatus.withdrawalSurplus')}
-                  <HelperButton
-                    content={t('exitFee.unavailableTooltip')}
-                    trigger={TooltipTrigger.click}
-                    dataAttribute="exit-fee-unavailable-helper"
-                  />
-                </span>
               ) : (
                 t('LOCStatus.withdrawalSurplus')
               )
@@ -139,11 +123,6 @@ export const LOCStatus: FC<LOCStatusProps> = ({
                   suffix={BITCOIN}
                   precision={BTC_RENDER_PRECISION}
                 />
-              ) : exitFeeUnavailable ? (
-                // Not a number: the surplus is charged a fee we could not read,
-                // so the gross is not what arrives and printing it would be a
-                // receipt we cannot honour.
-                '—'
               ) : (
                 `${withdrawalSurplus} ${BITCOIN}`
               )

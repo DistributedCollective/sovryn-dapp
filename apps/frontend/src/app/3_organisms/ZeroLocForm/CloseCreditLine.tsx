@@ -61,13 +61,6 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
     [exitFee],
   );
   const showExitFee = exitFeeDisplay === 'charged';
-  /**
-   * Closing the line returns collateral through a charged surface, so the
-   * amount below is only the gross when nothing is charged. When the quote
-   * could not be read it is not evidence of that, and saying nothing would
-   * present the gross as settled.
-   */
-  const exitFeeUnavailable = exitFeeDisplay === 'unknown';
 
   const collateralToReceive = useMemo(
     () => (showExitFee ? exitFee.netAmount : collateralValue),
@@ -176,8 +169,6 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
                 assetSymbol={COMMON_SYMBOLS.BTC}
                 precision={BTC_RENDER_PRECISION}
               />
-            ) : exitFeeUnavailable ? (
-              t(translations.exitFee.unavailableTooltip)
             ) : undefined
           }
           tooltipTrigger={TooltipTrigger.click}
@@ -191,10 +182,6 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
                 prefix="~ "
                 showRoundingPrefix={false}
               />
-            ) : exitFeeUnavailable ? (
-              // See LOCStatus: an unreadable fee means the gross is not the
-              // amount received, so we decline to name one.
-              '—'
             ) : (
               collateralValueRenderer(collateralValue)
             )

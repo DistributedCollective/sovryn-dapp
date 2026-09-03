@@ -28,3 +28,26 @@ jobs:
         cache: 'yarn'
     - run: yarn install
     - run: yarn test
+
+  # `yarn test` type-STRIPS: craco/jest go through babel, and craco.config.js
+  # runs ts-loader with transpileOnly. The only full type check in the whole
+  # pipeline happens during the production build, so a type error can pass the
+  # matrix above and fail at the Netlify deploy gate instead — which is exactly
+  # how a missing required prop reached a release branch.
+  #
+  # `tsc --noEmit` is NOT the check to use here: this repo pins TypeScript 4.8,
+  # which cannot even parse some dependencies' modern .d.ts syntax, so it fails
+  # on node_modules regardless of our own code. Building is the gate that works.
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20.x
+        cache: 'yarn'
+    - run: yarn install
+    - run: yarn build

@@ -85,6 +85,9 @@ describe('ExitFeeRow', () => {
         gross={Decimal.from(gross)}
         rateBps={rateBps as number}
         active={active as boolean}
+        // Every case here is a quote we DID obtain, which says nothing is
+        // charged — as opposed to the unavailable case below.
+        unknown={false}
         assetSymbol="DLLR"
       />,
     );

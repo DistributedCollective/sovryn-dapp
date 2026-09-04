@@ -60,7 +60,13 @@ export const useExitFeeRate = (
   const { account } = useAccount();
   const protocol = useGetProtocolContract('protocol', RSK_CHAIN_ID);
 
-  const key = `exitFee/rate/${surfaceId}/${subProduct}/${account}`;
+  // The protocol contract loads asynchronously. Before it has, the fetcher
+  // answers UNCHARGED — and the shared cache keeps that answer for the TTL.
+  // If the key ignored readiness, the rerun triggered by the contract landing
+  // would hit that same fresh entry and a genuinely charged fee would stay
+  // hidden for up to 30 s after every page load. Keying on the address makes
+  // the pre-load answer live under its own key, so the loaded one is fetched.
+  const key = `exitFee/rate/${surfaceId}/${subProduct}/${account}/${protocol?.address}`;
 
   const { value, loading } = useCacheCall(
     key,

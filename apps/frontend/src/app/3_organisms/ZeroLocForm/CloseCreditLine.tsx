@@ -14,19 +14,23 @@ import {
   ParagraphStyle,
   Select,
   SimpleTable,
+  TooltipTrigger,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
+import { ExitFeeTooltipContent } from '../../2_molecules/ExitFeeRow/ExitFeeRow';
 import { BITCOIN, BTC_RENDER_PRECISION } from '../../../constants/currencies';
 import { getTokenDisplayName } from '../../../constants/tokens';
+import { useZeroExitFee } from '../../../hooks/exitFee/useZeroExitFee';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../hooks/useMaintenance';
 import { translations } from '../../../locales/i18n';
+import { COMMON_SYMBOLS } from '../../../utils/asset';
+import { getExitFeeDisplay } from '../../../utils/exitFee';
 import { Row } from './Row';
 import { useZeroData } from './hooks/useZeroData';
-import { COMMON_SYMBOLS } from '../../../utils/asset';
 
 type CloseCreditLineProps = {
   collateralValue: Decimal;
@@ -49,6 +53,19 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   const dllrLocked = checkMaintenance(States.ZERO_DLLR);
 
   const { balance: availableBalance } = useAssetBalance(creditToken);
+
+  const exitFee = useZeroExitFee(collateralValue);
+
+  const exitFeeDisplay = useMemo(
+    () => getExitFeeDisplay(exitFee, exitFee.feeAmount),
+    [exitFee],
+  );
+  const showExitFee = exitFeeDisplay === 'charged';
+
+  const collateralToReceive = useMemo(
+    () => (showExitFee ? exitFee.netAmount : collateralValue),
+    [showExitFee, exitFee.netAmount, collateralValue],
+  );
 
   const collateralValueRenderer = useCallback(
     (value: Decimal) => (
@@ -144,7 +161,31 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
       >
         <Row
           label={t(translations.closeCreditLine.fields.collateral.label)}
-          value={collateralValueRenderer(collateralValue)}
+          tooltip={
+            showExitFee ? (
+              <ExitFeeTooltipContent
+                fee={exitFee.feeAmount}
+                rateBps={exitFee.rateBps}
+                assetSymbol={COMMON_SYMBOLS.BTC}
+                precision={BTC_RENDER_PRECISION}
+              />
+            ) : undefined
+          }
+          tooltipTrigger={TooltipTrigger.click}
+          tooltipDataAttribute="exit-fee-helper"
+          value={
+            showExitFee ? (
+              <AmountRenderer
+                value={collateralToReceive}
+                suffix={BITCOIN}
+                precision={BTC_RENDER_PRECISION}
+                prefix="~ "
+                showRoundingPrefix={false}
+              />
+            ) : (
+              collateralValueRenderer(collateralValue)
+            )
+          }
         />
       </SimpleTable>
 

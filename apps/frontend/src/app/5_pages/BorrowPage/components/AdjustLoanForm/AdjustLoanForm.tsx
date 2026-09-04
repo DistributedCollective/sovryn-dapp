@@ -17,26 +17,34 @@ import {
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
 
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { ExitFeeRow } from '../../../../2_molecules/ExitFeeRow/ExitFeeRow';
 import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
 import { convertLoanTokenToSupportedAssets } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
 import { LoanItem } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoansTable.types';
 import { useGetMinCollateralRatio } from '../../../../5_pages/BorrowPage/hooks/useGetMinCollateralRatio';
+import { BTC_RENDER_PRECISION } from '../../../../../constants/currencies';
 import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS,
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
+import { useExitFeeRate } from '../../../../../hooks/exitFee/useExitFeeRate';
 import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInput';
+import { useLoadContract } from '../../../../../hooks/useLoadContract';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../utils/asset';
+import { SURFACE_LENDING_BORROWER_WITHDRAW } from '../../../../../utils/exitFee';
 import { areValuesIdentical } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
 import {
   calculatePrepaidInterestFromDuration,
+  getBorrowerExitFeeGross,
   getCollateralRatioThresholds,
   getOriginationFeeAmount,
   normalizeToken,
@@ -255,6 +263,46 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     maximumRepayAmount,
     collateralWithdrawn,
   ]);
+
+  const loanTokenContract = useLoadContract(
+    debtToken,
+    'loanTokens',
+    RSK_CHAIN_ID,
+  );
+
+  const {
+    active: exitFeeActive,
+    rateBps: exitFeeRateBps,
+    unknown: exitFeeUnknown,
+    loading: exitFeeLoading,
+  } = useExitFeeRate(
+    SURFACE_LENDING_BORROWER_WITHDRAW,
+    loanTokenContract?.address,
+  );
+
+  const exitFeeGross = useMemo(
+    () =>
+      getBorrowerExitFeeGross({
+        isCloseTab,
+        isRepayTab,
+        isCollateralWithdrawTab,
+        loanCollateral: decimalic(loan.collateral.toString()),
+        collateralSize,
+        collateralWithdrawn,
+        debtSize,
+        maximumRepayAmount,
+      }),
+    [
+      isCloseTab,
+      isRepayTab,
+      isCollateralWithdrawTab,
+      loan.collateral,
+      collateralSize,
+      collateralWithdrawn,
+      debtSize,
+      maximumRepayAmount,
+    ],
+  );
 
   const prepaidInterest = calculatePrepaidInterestFromDuration(
     borrowApr,
@@ -838,6 +886,15 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
               }
             />
           )}
+          <ExitFeeRow
+            unknown={exitFeeUnknown}
+            loading={exitFeeLoading}
+            gross={exitFeeGross}
+            rateBps={exitFeeRateBps}
+            active={exitFeeActive}
+            assetSymbol={collateralToken}
+            precision={BTC_RENDER_PRECISION}
+          />
           {(isBorrowTab || isRepayTab) && (
             <SimpleTableRow
               label={t(pageTranslations.labels.newTotalDebt)}

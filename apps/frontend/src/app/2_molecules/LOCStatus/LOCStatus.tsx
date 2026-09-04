@@ -122,6 +122,10 @@ export const LOCStatus: FC<LOCStatusProps> = ({
                   value={withdrawalSurplus.sub(surplusExitFee)}
                   suffix={BITCOIN}
                   precision={BTC_RENDER_PRECISION}
+                  // The surplus is a fixed gross, so this net is exact — no
+                  // "~", which AmountRenderer would otherwise add on its own
+                  // whenever the value carries more decimals than it shows.
+                  showRoundingPrefix={false}
                 />
               ) : (
                 `${withdrawalSurplus} ${BITCOIN}`

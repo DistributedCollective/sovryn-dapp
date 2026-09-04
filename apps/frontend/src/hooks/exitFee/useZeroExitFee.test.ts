@@ -149,25 +149,28 @@ describe('useZeroExitFee', () => {
     ['the quote came back unusable', REASON.INVALID_QUOTE],
     ['the controller could not be reached', REASON.CONTROLLER_REVERT],
     ['the vault leg reported a failure', REASON.VAULT_REVERT],
-  ])('shows no fee when %s — the chain charges none', async (_label, reason) => {
-    // The call SUCCEEDS and hands back net == gross: that is the contract
-    // saying the user receives the whole amount. The rows must stay hidden.
-    mockPreview.mockResolvedValue(
-      previewResult(reason, { netAmount: '1000000000000000000' }),
-    );
+  ])(
+    'shows no fee when %s — the chain charges none',
+    async (_label, reason) => {
+      // The call SUCCEEDS and hands back net == gross: that is the contract
+      // saying the user receives the whole amount. The rows must stay hidden.
+      mockPreview.mockResolvedValue(
+        previewResult(reason, { netAmount: '1000000000000000000' }),
+      );
 
-    const { result } = renderHook(() => useZeroExitFee(Decimal.from(1)));
+      const { result } = renderHook(() => useZeroExitFee(Decimal.from(1)));
 
-    await waitFor(() => expect(result.current.loading).toBe(false));
-    // A throw anywhere upstream also yields active=false, so prove we got
-    // here by classifying a successful preview rather than by failing early.
-    expect(mockPreview).toHaveBeenCalled();
-    expect(result.current.active).toBe(false);
-    expect(result.current.unknown).toBe(false);
-    expect(getExitFeeDisplay(result.current, result.current.feeAmount)).toBe(
-      'none',
-    );
-  });
+      await waitFor(() => expect(result.current.loading).toBe(false));
+      // A throw anywhere upstream also yields active=false, so prove we got
+      // here by classifying a successful preview rather than by failing early.
+      expect(mockPreview).toHaveBeenCalled();
+      expect(result.current.active).toBe(false);
+      expect(result.current.unknown).toBe(false);
+      expect(getExitFeeDisplay(result.current, result.current.feeAmount)).toBe(
+        'none',
+      );
+    },
+  );
 
   it('shows no fee while the quote has not arrived', async () => {
     mockPreview.mockReturnValue(new Promise(() => undefined)); // never settles

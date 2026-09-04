@@ -29,6 +29,17 @@ const INACTIVE = {
   unknown: false,
 };
 
+/**
+ * Stamp a fetched quote with the cache key it was fetched FOR. The shared
+ * cache keeps its previous state until a changed key's result lands, so on
+ * the first render after an account or gross switch `value` still belongs to
+ * the old key. Only a quote whose stamp matches the current key is displayed.
+ */
+const stamped = async <T extends object>(
+  forKey: string,
+  fetch: () => Promise<T>,
+) => ({ ...(await fetch()), forKey });
+
 // The Z-1 kept preview — same _safeQuote path as the live charge hook.
 const CONTROLLER_GETTER_ABI = [
   'function exitFeeController() view returns (address)',
@@ -50,82 +61,94 @@ export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
     return gross.isZero() ? null : gross.toBigNumber().toString();
   }, [gross]);
 
-  const { value, loading } = useCacheCall(
-    `exitFee/zero/${account}/${grossWei}`,
-    getRskChainId(),
-    async () => {
-      if (grossWei === null) {
-        // An explicit zero gross: nothing leaves, so no fee can be charged.
-        // That is a real answer, not a failure to get one -- reporting it as
-        // unknown would put "fee unavailable" on every add-collateral and
-        // borrow form, where no exit is happening at all.
-        return INACTIVE;
-      }
-      if (!account) {
-        return { ...INACTIVE, unknown: true };
-      }
-      try {
-        const { address } = await getZeroContract(
-          'borrowerOperations',
-          getRskChainId(),
-        );
-        /**
-         * Same split as the lending hook. A missing or reverting
-         * `exitFeeController()` is what Zero looks like before the perimeter
-         * ships: nothing is charged, and the form must look untouched. Only
-         * once that pointer resolves does a failing preview mean we genuinely
-         * do not know the rate.
-         */
-        const pointer = new Contract(
-          address,
-          CONTROLLER_GETTER_ABI,
-          getProvider(getRskChainId()),
-        );
-        let controllerAddress;
-        try {
-          controllerAddress = await asyncCall(
-            `exitFee/zeroController/${getRskChainId()}/${address}`,
-            () => pointer.exitFeeController(),
-            { ttl: EXIT_FEE_TTL },
-          );
-        } catch (error) {
-          return INACTIVE;
-        }
-        if (!controllerAddress || controllerAddress === constants.AddressZero) {
-          return INACTIVE;
-        }
+  const key = `exitFee/zero/${account}/${grossWei}`;
 
-        const borrowerOperations = new Contract(
-          address,
-          PREVIEW_ABI,
-          getProvider(getRskChainId()),
-        );
-        const result = await borrowerOperations.previewZeroCollWithdrawExitFee(
-          account,
-          grossWei,
-        );
-        // The preview fails OPEN, exactly as the live charge does: when the
-        // controller is unreachable or hands back an unusable quote it returns
-        // active=false with a zero fee, and at execution the same path charges
-        // nothing and pays the gross. So `active=false` here IS the answer —
-        // no fee is taken — and the rows stay hidden. The reason is not
-        // consulted: whichever it is, the user receives the whole amount.
-        return {
-          active: result.active,
-          rateBps: Number(result.rateBps),
-          feeAmount: Decimal.fromBigNumberString(result.feeAmount.toString()),
-          netAmount: Decimal.fromBigNumberString(result.netAmount.toString()),
-          unknown: false,
-        };
-      } catch (error) {
-        // Same rule as the lending hook: a failed preview is not a zero fee.
-        return { ...INACTIVE, unknown: true };
-      }
-    },
+  const { value, loading } = useCacheCall(
+    key,
+    getRskChainId(),
+    () =>
+      stamped(key, async () => {
+        if (grossWei === null) {
+          // An explicit zero gross: nothing leaves, so no fee can be charged.
+          return INACTIVE;
+        }
+        if (!account) {
+          return { ...INACTIVE, unknown: true };
+        }
+        try {
+          const { address } = await getZeroContract(
+            'borrowerOperations',
+            getRskChainId(),
+          );
+          /**
+           * Same split as the lending hook. A missing or reverting
+           * `exitFeeController()` is what Zero looks like before the perimeter
+           * ships: nothing is charged, and the form must look untouched. Only
+           * once that pointer resolves does a failing preview mean we genuinely
+           * do not know the rate.
+           */
+          const pointer = new Contract(
+            address,
+            CONTROLLER_GETTER_ABI,
+            getProvider(getRskChainId()),
+          );
+          let controllerAddress;
+          try {
+            controllerAddress = await asyncCall(
+              `exitFee/zeroController/${getRskChainId()}/${address}`,
+              () => pointer.exitFeeController(),
+              { ttl: EXIT_FEE_TTL },
+            );
+          } catch (error) {
+            return INACTIVE;
+          }
+          if (
+            !controllerAddress ||
+            controllerAddress === constants.AddressZero
+          ) {
+            return INACTIVE;
+          }
+
+          const borrowerOperations = new Contract(
+            address,
+            PREVIEW_ABI,
+            getProvider(getRskChainId()),
+          );
+          const result =
+            await borrowerOperations.previewZeroCollWithdrawExitFee(
+              account,
+              grossWei,
+            );
+          // The preview fails OPEN, exactly as the live charge does: when the
+          // controller is unreachable or hands back an unusable quote it returns
+          // active=false with a zero fee, and at execution the same path charges
+          // nothing and pays the gross. So `active=false` here IS the answer —
+          // no fee is taken — and the rows stay hidden. The reason is not
+          // consulted: whichever it is, the user receives the whole amount.
+          return {
+            active: result.active,
+            rateBps: Number(result.rateBps),
+            feeAmount: Decimal.fromBigNumberString(result.feeAmount.toString()),
+            netAmount: Decimal.fromBigNumberString(result.netAmount.toString()),
+            unknown: false,
+          };
+        } catch (error) {
+          // The preview itself could not be called. `unknown` records that for
+          // the consumers, and every consumer hides the rows for it: the chain
+          // fails open, so nothing is charged and the gross is paid.
+          return { ...INACTIVE, unknown: true };
+        }
+      }),
     [account, grossWei],
-    INACTIVE,
+    { ...INACTIVE, forKey: '' },
     { ttl: EXIT_FEE_TTL },
   );
 
-  return useMemo(() => ({ ...value, loading }), [value, loading]);
+  return useMemo(() => {
+    // A value fetched for a different key belongs to the previous account or
+    // gross. Report it as still loading — displayed as nothing charged — rather
+    // than showing that other quote's numbers for one frame.
+    const fresh = value.forKey === key;
+    return fresh ? { ...value, loading } : { ...INACTIVE, loading: true };
+  }, [value, loading, key]);
 };

@@ -1,5 +1,24 @@
 # frontend
 
+## 1.2.0
+
+### Minor Changes
+
+- d748a54e: feat: Sovryn Perimeter Fee display on withdraw and close flows. Shows the fee rate, amount, and net "You will receive" on lending withdrawals, borrower exits, Zero collateral withdrawal/close, and the surplus claim. Gated purely on on-chain state and fail-hidden: nothing renders until governance activates the perimeter and charging is enabled, so current forms are unchanged until then.
+
+### Patch Changes
+
+- d23037c4: fix: state not clearing when leaving token bridge
+- a84ece08: SOV-5278: fix amm rewards estimation
+- 98aa545e: SOV-5296: zero copy changes
+- 49dbe17f: fix: ambient position amounts
+- b8bacc6a: SOV-5304 expand bridge fees by default
+- a201cebe: chore: remove spice mentions
+- Updated dependencies [6917f90c]
+- Updated dependencies [84ced870]
+- Updated dependencies [f60cca69]
+  - @sovryn/sdk@2.0.11
+
 ## 1.1.41
 
 ### Patch Changes

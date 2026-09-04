@@ -1,5 +1,13 @@
 # @sovryn/sdk
 
+## 2.0.11
+
+### Patch Changes
+
+- 6917f90c: Fix Ambient route slippage encoding: `options.slippage` is expressed in basis points (10_000 = 100%) but was divided by 1000 instead of 10000 before being passed to sdex, so the enforced slippage bound was 10x looser than the value the user selected (e.g. 0.5% became 5%). The `?? 50` fallback keeps its intended meaning of 0.5%, matching the UI's preset tolerance.
+- 84ced870: Support non-18-decimal tokens (USDT0) in the RSK AMM swap route: add USDT0 to the tradeable token list and normalize amounts between the router's 18-decimal convention and each token's native units in quote/swap/approve
+- f60cca69: fix: route search
+
 ## 2.0.10
 
 ### Patch Changes

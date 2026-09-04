@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { Contract, constants } from 'ethers';
+import { Contract, constants, ethers } from 'ethers';
 
 import { getZeroContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
@@ -9,6 +9,7 @@ import { Decimal } from '@sovryn/utils';
 import { asyncCall } from '../../store/rxjs/provider-cache';
 import { getRskChainId } from '../../utils/chain';
 import {
+  EXIT_FEE_MAX_BPS,
   EXIT_FEE_REFERENCE_GROSS,
   EXIT_FEE_TTL,
   ExitFeeQuote,
@@ -125,6 +126,19 @@ export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
           // nothing and pays the gross. So `active=false` here IS the answer —
           // no fee is taken — and the rows stay hidden. The reason is not
           // consulted: whichever it is, the user receives the whole amount.
+          // A quote the chain itself would refuse is not one to display. The
+          // on-chain hook re-derives net from gross and fee and charges nothing
+          // when they disagree, so mirror that test here: an inconsistent
+          // preview — only a tampered RPC can produce one — hides the rows
+          // rather than printing a net the chain will not pay.
+          const gross = ethers.BigNumber.from(grossWei);
+          if (
+            result.feeAmount.gt(gross) ||
+            !result.netAmount.eq(gross.sub(result.feeAmount)) ||
+            Number(result.rateBps) > EXIT_FEE_MAX_BPS
+          ) {
+            return INACTIVE;
+          }
           return {
             active: result.active,
             rateBps: Number(result.rateBps),

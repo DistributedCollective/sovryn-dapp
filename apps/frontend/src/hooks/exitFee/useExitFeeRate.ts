@@ -91,13 +91,14 @@ export const useExitFeeRate = (
           // uncharged answer.
           //
           // Known and accepted: the pointer is cached for EXIT_FEE_TTL under a
-          // key with no block dimension, so at the moment governance pins the
-          // controller the app can report "no fee" for up to that long while the
-          // chain has started charging. The window is bounded, it exists once,
-          // and the release order already covers it -- the dapp ships before
+          // key with no block dimension, and a refetch only runs on the next
+          // observed block, so at the moment governance pins the controller an
+          // open client can report "no fee" for up to one TTL plus one block
+          // (about 60 s on RSK) while the chain has started charging. Bounded,
+          // one-time, and covered by the release order: the dapp ships before
           // charging is enabled, never after. Closing it properly means block-
-          // based invalidation in the shared cache, which is a wider change than
-          // this window justifies.
+          // based invalidation in the shared cache, a wider change than this
+          // window justifies.
           controllerAddress = await asyncCall(
             `exitFee/controllerAddress/${RSK_CHAIN_ID}/${protocol.address}`,
             () => getter.exitFeeController(),

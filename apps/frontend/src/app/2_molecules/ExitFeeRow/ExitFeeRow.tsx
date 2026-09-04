@@ -55,10 +55,10 @@ export type ExitFeeRowProps = {
   assetSymbol: string;
   precision?: number;
   /**
-   * Required on purpose. The perimeter fails open, so a quote we could not get
-   * and a quote of zero look identical in `active`/`rateBps`; making the caller
-   * state which one this is stops the row from silently promising "no fee"
-   * while the quote is still loading or the RPC is down.
+   * Whether the quote was obtained at all. Either way the row is hidden when
+   * nothing is charged — the perimeter fails open, so an unobtainable quote
+   * means the chain pays the gross — but the hooks report the distinction and
+   * the caller is asked to pass it through rather than drop it.
    */
   unknown: boolean;
   loading?: boolean;
@@ -78,25 +78,6 @@ export const ExitFeeRow: FC<ExitFeeRowProps> = ({
 
   if (display === 'none') {
     return null;
-  }
-
-  if (display === 'unknown') {
-    return (
-      <SimpleTableRow
-        label={
-          <span className="flex flex-row items-center gap-1 whitespace-nowrap">
-            {t(translations.exitFee.unavailable)}
-            <HelperButton
-              content={t(translations.exitFee.unavailableTooltip)}
-              trigger={TooltipTrigger.click}
-              dataAttribute="exit-fee-unavailable-helper"
-            />
-          </span>
-        }
-        value="—"
-        dataAttribute="exit-fee-unavailable"
-      />
-    );
   }
 
   return (

@@ -1804,6 +1804,9 @@
   "networkBanner": {
     "content": "This feature hasn't arrived on {{currentNetwork}} yet, click here to switch to {{network}} if you would like to try it out!"
   },
+  "rpcOverrideBanner": {
+    "content": "Not mainnet data. Every balance, rate and vault row on this build is read from {{rpc}}, while your wallet still signs against the real network."
+  },
   "marketMakingNetworkBanner": {
     "content": "Check out more AMM pools on Sovryn by <0>switching to</0> {{network}}"
   },

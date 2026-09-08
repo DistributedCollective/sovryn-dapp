@@ -8,6 +8,7 @@ import { applyDataAttr } from '@sovryn/ui';
 import { RSK_CHAIN_ID } from '../../../config/chains';
 
 import { DappLocked } from '../../1_atoms/DappLocked/DappLocked';
+import { RpcOverrideBanner } from '../../2_molecules/RpcOverrideBanner/RpcOverrideBanner';
 import { Header, Footer } from '../../3_organisms';
 import { UnclaimcedVestingAlert } from '../../5_pages/RewardsPage/components/Vesting/components/UnclaimedVestingAlert/UnclaimedVestingAlert';
 import { useIsDappLocked } from '../../../hooks/maintenances/useIsDappLocked';
@@ -38,6 +39,9 @@ export const PageContainer: FC<PageContainerProps> = ({
       ) : (
         <>
           <Header />
+          {/* A build reading a forked RPC looks exactly like mainnet
+              otherwise, and the wallet still signs against the real one. */}
+          <RpcOverrideBanner />
           {account && chainID === RSK_CHAIN_ID && <UnclaimcedVestingAlert />}
           <div
             className={classNames(

@@ -192,6 +192,46 @@ describe('PerimeterPage', () => {
     );
   });
 
+  it('drops a just-released row so a later batch cannot carry it', () => {
+    // executeExits is atomic on-chain: a terminal id reverts the batch and
+    // takes every other ready release down with it. The page therefore has to
+    // forget a row the moment its release is signed, ahead of the refetch —
+    // which only works if the callback it passes actually reaches the hook.
+    mockExecuteExit.mockImplementation(
+      (_id: string, onComplete?: () => void) => onComplete?.(),
+    );
+    mockVault.exits = [exit({ id: '7' }), exit({ id: '8' }), exit({ id: '9' })];
+    const { container } = render(<PerimeterPage />);
+
+    expect(screen.getByText('Release all ready (3)')).toBeInTheDocument();
+
+    fireEvent.click(
+      container.querySelector('[data-layout-id="perimeter-release-7"]')!,
+    );
+
+    expect(
+      container.querySelector('[data-layout-id="perimeter-release-7"]'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText('Release all ready (2)')).toBeInTheDocument();
+  });
+
+  it('drops every id a batch release settled', () => {
+    mockExecuteExits.mockImplementation(
+      (_ids: string[], onComplete?: () => void) => onComplete?.(),
+    );
+    mockVault.exits = [exit({ id: '7' }), exit({ id: '8' })];
+    render(<PerimeterPage />);
+
+    fireEvent.click(screen.getByText('Release all ready (2)'));
+
+    expect(screen.queryByText(/Release all ready/)).not.toBeInTheDocument();
+    expect(
+      screen.getAllByText(
+        'The Sovryn Perimeter is not holding any withdrawals for this account.',
+      ).length,
+    ).toBeGreaterThan(0);
+  });
+
   it('withholds the batch button when only one row is ready', () => {
     mockVault.exits = [
       exit({ id: '7' }),

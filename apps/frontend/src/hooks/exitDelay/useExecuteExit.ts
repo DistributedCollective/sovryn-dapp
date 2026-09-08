@@ -21,16 +21,16 @@ const QUEUE_ABI = [
  * funds. Only the originator or the position owner may call it, and only after
  * the delay has elapsed — the page decides whether to offer the action, so a
  * button never leads to a reverting transaction.
+ *
+ * `onComplete` belongs to the call, not to the hook: it names the ids this
+ * particular release settles, which the caller only knows at the click.
  */
-export const useExecuteExit = (
-  queueAddress: string | undefined,
-  onComplete?: () => void,
-) => {
+export const useExecuteExit = (queueAddress: string | undefined) => {
   const { signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   return useCallback(
-    async (requestId: string) => {
+    async (requestId: string, onComplete?: () => void) => {
       if (!queueAddress || !signer) {
         return;
       }
@@ -51,7 +51,7 @@ export const useExecuteExit = (
       setTitle(t(translations.perimeterPage.tx.executeExitTitle));
       setIsOpen(true);
     },
-    [onComplete, queueAddress, setIsOpen, setTitle, setTransactions, signer],
+    [queueAddress, setIsOpen, setTitle, setTransactions, signer],
   );
 };
 
@@ -64,15 +64,12 @@ export const useExecuteExit = (
  * per-row button renders — so the batch is built from rows that will certainly
  * succeed, never from "everything".
  */
-export const useExecuteExits = (
-  queueAddress: string | undefined,
-  onComplete?: () => void,
-) => {
+export const useExecuteExits = (queueAddress: string | undefined) => {
   const { signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   return useCallback(
-    async (requestIds: string[]) => {
+    async (requestIds: string[], onComplete?: () => void) => {
       if (!queueAddress || !signer || requestIds.length === 0) {
         return;
       }
@@ -95,6 +92,6 @@ export const useExecuteExits = (
       setTitle(t(translations.perimeterPage.tx.executeExitTitle));
       setIsOpen(true);
     },
-    [onComplete, queueAddress, setIsOpen, setTitle, setTransactions, signer],
+    [queueAddress, setIsOpen, setTitle, setTransactions, signer],
   );
 };

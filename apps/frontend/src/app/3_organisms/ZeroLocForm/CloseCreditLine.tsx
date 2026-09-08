@@ -57,7 +57,11 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   const { balance: availableBalance } = useAssetBalance(creditToken);
 
   const exitFee = useZeroExitFee(collateralValue);
-  const { delaySeconds } = useZeroExitDelayQuote();
+  const {
+    delaySeconds,
+    unknown: exitDelayUnknown,
+    loading: exitDelayLoading,
+  } = useZeroExitDelayQuote();
 
   const exitFeeDisplay = useMemo(
     () => getExitFeeDisplay(exitFee, exitFee.feeAmount),
@@ -190,7 +194,11 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             )
           }
         />
-        <ExitDelayRow delaySeconds={delaySeconds} />
+        <ExitDelayRow
+          delaySeconds={delaySeconds}
+          unknown={exitDelayUnknown}
+          loading={exitDelayLoading}
+        />
       </SimpleTable>
 
       {hasError && !isRecoveryMode && (

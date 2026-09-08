@@ -8,6 +8,7 @@ import { NotificationType } from '@sovryn/ui';
 
 import { useNotificationContext } from '../../contexts/NotificationContext';
 import { translations } from '../../locales/i18n';
+import { ExitDelayQuote, getExitDelayDisplay } from '../../utils/exitDelay';
 
 /** Long enough to survive the success toast that follows it. */
 const HOLD_TOAST_TIMEOUT_MS = 30_000;
@@ -20,24 +21,37 @@ const HOLD_TOAST_TIMEOUT_MS = 30_000;
  * withdrawal transaction's `onComplete`, and fires a notification naming where
  * the funds are and linking to the page that releases them.
  *
- * Pass the same `delaySeconds` the form displayed: the callback is a no-op
- * when it is zero, so unheld flows keep their exact current behaviour.
+ * Pass the same quote the form displayed, so the notice and the form agree. A
+ * quote that arrived saying nothing is held makes the callback a no-op and
+ * unheld flows keep their exact current behaviour; a quote we could not obtain
+ * says so, because the transaction that just succeeded is then one whose funds
+ * may be sitting in the vault.
  */
-export const usePerimeterHoldToast = (delaySeconds: number) => {
+export const usePerimeterHoldToast = (quote: ExitDelayQuote) => {
   const { addNotification } = useNotificationContext();
+  const display = getExitDelayDisplay(quote);
 
   return useCallback(() => {
-    if (delaySeconds <= 0) {
+    if (display === 'none') {
       return;
     }
+    const isUnknown = display === 'unknown';
     addNotification(
       {
         type: NotificationType.info,
         id: nanoid(),
-        title: t(translations.exitDelay.holdToast.title),
+        title: t(
+          isUnknown
+            ? translations.exitDelay.holdToast.unknownTitle
+            : translations.exitDelay.holdToast.title,
+        ),
         content: (
           <>
-            {t(translations.exitDelay.holdToast.content)}{' '}
+            {t(
+              isUnknown
+                ? translations.exitDelay.holdToast.unknownContent
+                : translations.exitDelay.holdToast.content,
+            )}{' '}
             <Link
               to="/perimeter"
               className="underline"
@@ -51,5 +65,5 @@ export const usePerimeterHoldToast = (delaySeconds: number) => {
       },
       HOLD_TOAST_TIMEOUT_MS,
     );
-  }, [addNotification, delaySeconds]);
+  }, [addNotification, display]);
 };

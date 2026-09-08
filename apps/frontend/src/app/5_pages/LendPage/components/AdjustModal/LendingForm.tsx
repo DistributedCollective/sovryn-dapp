@@ -64,7 +64,11 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
     state.poolTokenContract.address,
   );
 
-  const { delaySeconds } = useExitDelayQuote(
+  const {
+    delaySeconds,
+    unknown: exitDelayUnknown,
+    loading: exitDelayLoading,
+  } = useExitDelayQuote(
     SURFACE_LENDING_LENDER_WITHDRAW,
     state.poolTokenContract.address,
   );
@@ -216,7 +220,11 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
               active={exitFeeActive}
               assetSymbol={state.tokenDetails.symbol}
             />
-            <ExitDelayRow delaySeconds={delaySeconds} />
+            <ExitDelayRow
+              delaySeconds={delaySeconds}
+              unknown={exitDelayUnknown}
+              loading={exitDelayLoading}
+            />
           </>
         )}
       </SimpleTable>

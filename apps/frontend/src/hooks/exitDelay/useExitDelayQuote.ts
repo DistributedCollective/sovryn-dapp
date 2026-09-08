@@ -1,41 +1,24 @@
 import { useMemo } from 'react';
 
-import { Contract, constants } from 'ethers';
-
-import { getProvider } from '@sovryn/ethers-provider';
-
 import { RSK_CHAIN_ID } from '../../config/chains';
 
-import { asyncCall } from '../../store/rxjs/provider-cache';
-import { EXIT_DELAY_TTL } from '../../utils/exitDelay';
+import { EXIT_DELAY_TTL, ExitDelayQuote } from '../../utils/exitDelay';
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 import { useGetProtocolContract } from '../useGetContract';
+import { NO_DELAY, quoteExitDelay } from './quoteExitDelay';
 
-export type ExitDelayQuote = {
-  /** Seconds the perimeter will hold this withdrawal. 0 means paid directly. */
-  delaySeconds: number;
-  loading: boolean;
-};
-
-const NO_DELAY = { delaySeconds: 0 };
-
-const CONTROLLER_GETTER_ABI = [
-  'function exitFeeController() view returns (address)',
-];
-
-const CONTROLLER_ABI = [
-  'function quoteExitDelayFor(address rawOriginator, address owner, address receiver, bytes32 surfaceId, address subProduct) view returns (uint32 d, address effOrig, address effOwner)',
-];
+export type { ExitDelayQuote };
 
 /**
  * How long the perimeter would hold a withdrawal this account makes now.
  *
  * Reads the controller through the protocol's own pointer, the same route the
  * consumer contracts take, so the quote cannot disagree with what the exit
- * will actually do. Fails to "no delay": while the perimeter is undeployed or
- * unwired this reverts, the result is cached as zero, and every form renders
- * exactly as it does without the perimeter.
+ * will actually do. While the perimeter is undeployed or unwired the pointer
+ * is absent, the quote is a stated zero, and every form renders exactly as it
+ * does without the perimeter. A quote that could not be read is NOT that: it
+ * comes back `unknown`, because the exit hook fails closed.
  *
  * The three identity arguments are all this account: on the surfaces a user
  * reaches from the app the originator, the position owner and the payout
@@ -54,38 +37,22 @@ export const useExitDelayQuote = (
     RSK_CHAIN_ID,
     async () => {
       if (!protocol || !subProduct || !account) {
+        // Nothing to quote yet: no wallet, or the contracts are still loading.
+        // There is no withdrawal to describe either, so this is not a read that
+        // failed.
         return NO_DELAY;
       }
-      try {
-        const getter = new Contract(
-          protocol.address,
-          CONTROLLER_GETTER_ABI,
-          getProvider(RSK_CHAIN_ID),
-        );
-        const controllerAddress: string = await asyncCall(
-          `exitFee/controllerAddress/${RSK_CHAIN_ID}/${protocol.address}`,
-          () => getter.exitFeeController(),
-          { ttl: EXIT_DELAY_TTL },
-        );
-        if (!controllerAddress || controllerAddress === constants.AddressZero) {
-          return NO_DELAY;
-        }
-        const controller = new Contract(
-          controllerAddress,
-          CONTROLLER_ABI,
-          getProvider(RSK_CHAIN_ID),
-        );
-        const quote = await controller.quoteExitDelayFor(
-          account,
-          account,
-          account,
-          surfaceId,
-          subProduct,
-        );
-        return { delaySeconds: Number(quote.d) };
-      } catch (error) {
-        return NO_DELAY;
-      }
+      return quoteExitDelay({
+        chainId: RSK_CHAIN_ID,
+        consumerAddress: protocol.address,
+        // Shared with the vault page and useExitFeeRate: one read of each
+        // pointer serves every consumer of it.
+        queueKey: `exitDelay/queueAddress/${RSK_CHAIN_ID}/${protocol.address}`,
+        controllerKey: `exitFee/controllerAddress/${RSK_CHAIN_ID}/${protocol.address}`,
+        account,
+        surfaceId,
+        subProduct,
+      });
     },
     [protocol?.address, surfaceId, subProduct, account],
     NO_DELAY,
@@ -93,7 +60,11 @@ export const useExitDelayQuote = (
   );
 
   return useMemo(
-    () => ({ delaySeconds: value.delaySeconds, loading }),
+    () => ({
+      delaySeconds: value.delaySeconds,
+      unknown: value.unknown,
+      loading,
+    }),
     [value, loading],
   );
 };

@@ -61,9 +61,64 @@ export type PartyBlockStates = {
   receiver: BlockState;
 };
 
-/** A delay row is worth rendering only when the perimeter actually holds funds back. */
-export const isExitDelayShown = (delaySeconds: number): boolean =>
-  delaySeconds > 0;
+/**
+ * A hold quote, including whether we managed to get one.
+ *
+ * `unknown` exists because the delay fails CLOSED on chain — the mirror image
+ * of the fee. When a controller is pinned but cannot be quoted,
+ * `PerimeterLib.safeQuoteDelay` reverts the whole withdrawal
+ * (`PERIMETER:delay-quote-failed`) rather than paying direct. So a read that
+ * did not complete means one of two things — the money is held, or the
+ * transaction fails — and never "paid straight to the wallet". Zero is a
+ * truthful answer only where the perimeter is unwired, which is a different
+ * fact and is reported with `unknown: false`.
+ */
+export type ExitDelayQuote = {
+  /** Seconds the perimeter will hold this withdrawal. 0 means paid directly. */
+  delaySeconds: number;
+  loading: boolean;
+  /** True when no quote was obtained. NOT the same as a delay of zero. */
+  unknown: boolean;
+};
+
+/** A settled quote saying nothing is held: the shape callers pass to suppress the hold UI. */
+export const NO_EXIT_DELAY: ExitDelayQuote = {
+  delaySeconds: 0,
+  loading: false,
+  unknown: false,
+};
+
+/**
+ * Deliberately NOT exported. It answers "does the perimeter hold this" and only
+ * that, so on its own it cannot tell a hold of zero from a hold nobody could
+ * read — and silence is truthful only for the first. `getExitDelayDisplay` is
+ * the exported entry point; keeping this private makes the mistake a compile
+ * error rather than a review finding.
+ */
+const isExitDelayShown = (delaySeconds: number): boolean => delaySeconds > 0;
+
+/**
+ * What the UI shows: the hold rows, an admission that we could not check, or
+ * nothing at all.
+ *
+ * Three states, because the chain gives three answers. `held` and `none` are
+ * the two the chain stated. `unknown` is the one it did not: unlike the fee,
+ * an unread delay is not equivalent to no delay, so it gets its own display
+ * rather than borrowing silence from a fact we do not have.
+ */
+export type ExitDelayDisplay = 'held' | 'unknown' | 'none';
+
+export const getExitDelayDisplay = (
+  quote: ExitDelayQuote,
+): ExitDelayDisplay => {
+  if (quote.loading) {
+    return 'none';
+  }
+  if (quote.unknown) {
+    return 'unknown';
+  }
+  return isExitDelayShown(quote.delaySeconds) ? 'held' : 'none';
+};
 
 /**
  * Whole-unit duration for display: days, then hours, then minutes, then

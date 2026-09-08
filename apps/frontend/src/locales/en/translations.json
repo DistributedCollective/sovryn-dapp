@@ -2051,9 +2051,17 @@
     },
     "vaultNotice": "This amount goes to the Sovryn Perimeter vault when you sign, and reaches you after the hold.",
     "vaultLink": "Track and release it on the Perimeter page",
+    "unknown": {
+      "label": "Withdrawal hold",
+      "value": "Could not be checked",
+      "notice": "We could not check whether the Sovryn Perimeter will hold this withdrawal. If it does, the amount goes to the Perimeter vault when you sign instead of reaching your wallet; if the hold still cannot be read at that moment, the transaction fails and nothing moves.",
+      "tooltip": "The hold is quoted from the Sovryn Perimeter when you sign, not from this page. We could not reach it just now, so we cannot tell you whether this withdrawal is paid straight out or held in the Perimeter vault first. Try again in a moment."
+    },
     "holdToast": {
       "title": "Withdrawal held by the Sovryn Perimeter",
-      "content": "The funds went to the Sovryn Perimeter vault, not to your wallet. Release them from the Perimeter page once the hold ends."
+      "content": "The funds went to the Sovryn Perimeter vault, not to your wallet. Release them from the Perimeter page once the hold ends.",
+      "unknownTitle": "Withdrawal may be held by the Sovryn Perimeter",
+      "unknownContent": "We could not check whether the Sovryn Perimeter is holding this withdrawal. If your wallet balance has not changed, look for the funds in the Perimeter vault."
     }
   },
   "perimeterPage": {

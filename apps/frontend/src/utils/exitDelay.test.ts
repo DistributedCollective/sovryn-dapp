@@ -4,9 +4,9 @@ import {
   PendingExitState,
   canExecuteExit,
   formatDelayDuration,
+  getExitDelayDisplay,
   getPendingExitState,
   isExecutor,
-  isExitDelayShown,
   secondsUntilUnlock,
 } from './exitDelay';
 
@@ -31,9 +31,30 @@ const queued = (unlockAt: number) => ({
 });
 
 describe('exitDelay utils', () => {
-  it('shows a delay only when the perimeter holds funds back', () => {
-    expect(isExitDelayShown(0)).toBe(false);
-    expect(isExitDelayShown(1)).toBe(true);
+  it('shows the hold only when the chain said there is one', () => {
+    expect(
+      getExitDelayDisplay({ delaySeconds: 0, loading: false, unknown: false }),
+    ).toBe('none');
+    expect(
+      getExitDelayDisplay({ delaySeconds: 1, loading: false, unknown: false }),
+    ).toBe('held');
+  });
+
+  it('says so when the hold could not be read, instead of saying there is none', () => {
+    // The delay fails CLOSED on chain: an unread quote means the withdrawal is
+    // held or it reverts. Reporting it as zero would be a false statement.
+    expect(
+      getExitDelayDisplay({ delaySeconds: 0, loading: false, unknown: true }),
+    ).toBe('unknown');
+  });
+
+  it('shows nothing while the quote is still in flight', () => {
+    expect(
+      getExitDelayDisplay({ delaySeconds: 0, loading: true, unknown: false }),
+    ).toBe('none');
+    expect(
+      getExitDelayDisplay({ delaySeconds: 0, loading: true, unknown: true }),
+    ).toBe('none');
   });
 
   it('formats a duration in whole units, rounding up', () => {

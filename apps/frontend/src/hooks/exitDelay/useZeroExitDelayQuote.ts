@@ -1,40 +1,26 @@
 import { useMemo } from 'react';
 
-import { Contract, constants } from 'ethers';
+import { constants } from 'ethers';
 
 import { getZeroContract } from '@sovryn/contracts';
-import { getProvider } from '@sovryn/ethers-provider';
 
-import { asyncCall } from '../../store/rxjs/provider-cache';
 import { getRskChainId } from '../../utils/chain';
-import { EXIT_DELAY_TTL } from '../../utils/exitDelay';
+import { EXIT_DELAY_TTL, ExitDelayQuote } from '../../utils/exitDelay';
 import { SURFACE_ZERO_WITHDRAW_COLL } from '../../utils/exitFee';
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
+import { NO_DELAY, UNREADABLE, quoteExitDelay } from './quoteExitDelay';
 
-export type ZeroExitDelayQuote = {
-  /** Seconds the perimeter will hold this collateral withdrawal. */
-  delaySeconds: number;
-  loading: boolean;
-};
-
-const NO_DELAY = { delaySeconds: 0 };
-
-const CONTROLLER_GETTER_ABI = [
-  'function exitFeeController() view returns (address)',
-];
-
-const CONTROLLER_ABI = [
-  'function quoteExitDelayFor(address rawOriginator, address owner, address receiver, bytes32 surfaceId, address subProduct) view returns (uint32 d, address effOrig, address effOwner)',
-];
+export type ZeroExitDelayQuote = ExitDelayQuote;
 
 /**
  * How long the perimeter would hold collateral leaving a line of credit.
  *
  * Zero keeps its own controller pointer on BorrowerOperations rather than
  * reading the lending protocol's, so this resolves through Zero — the same
- * route the collateral exit itself takes. Fails to "no delay" while the
- * perimeter is undeployed, unwired or disabled.
+ * route the collateral exit itself takes. An unwired perimeter quotes a stated
+ * zero and the form is untouched; a quote that could not be read comes back
+ * `unknown` instead, because Zero's exit hook fails closed too.
  *
  * Zero has no passthrough on this surface: the borrower is the originator, the
  * position owner and the payout receiver, so all three identity arguments are
@@ -51,40 +37,26 @@ export const useZeroExitDelayQuote = (): ZeroExitDelayQuote => {
       if (!account) {
         return NO_DELAY;
       }
+      const chainId = getRskChainId();
+      let address: string;
       try {
-        const { address } = await getZeroContract(
-          'borrowerOperations',
-          getRskChainId(),
-        );
-        const getter = new Contract(
-          address,
-          CONTROLLER_GETTER_ABI,
-          getProvider(getRskChainId()),
-        );
-        const controllerAddress: string = await asyncCall(
-          `exitDelay/zeroControllerAddress/${getRskChainId()}/${address}`,
-          () => getter.exitFeeController(),
-          { ttl: EXIT_DELAY_TTL },
-        );
-        if (!controllerAddress || controllerAddress === constants.AddressZero) {
-          return NO_DELAY;
-        }
-        const controller = new Contract(
-          controllerAddress,
-          CONTROLLER_ABI,
-          getProvider(getRskChainId()),
-        );
-        const quote = await controller.quoteExitDelayFor(
-          account,
-          account,
-          account,
-          SURFACE_ZERO_WITHDRAW_COLL,
-          constants.AddressZero,
-        );
-        return { delaySeconds: Number(quote.d) };
+        ({ address } = await getZeroContract('borrowerOperations', chainId));
       } catch (error) {
-        return NO_DELAY;
+        // Without BorrowerOperations there is no pointer to follow, and no
+        // basis for claiming the withdrawal is paid straight out.
+        return UNREADABLE;
       }
+      return quoteExitDelay({
+        chainId,
+        consumerAddress: address,
+        // Shared with the vault page and useZeroExitFee: one read of each
+        // pointer serves every consumer of it.
+        queueKey: `exitDelay/queueAddress/${chainId}/${address}`,
+        controllerKey: `exitFee/zeroController/${chainId}/${address}`,
+        account,
+        surfaceId: SURFACE_ZERO_WITHDRAW_COLL,
+        subProduct: constants.AddressZero,
+      });
     },
     [account],
     NO_DELAY,
@@ -92,7 +64,11 @@ export const useZeroExitDelayQuote = (): ZeroExitDelayQuote => {
   );
 
   return useMemo(
-    () => ({ delaySeconds: value.delaySeconds, loading }),
+    () => ({
+      delaySeconds: value.delaySeconds,
+      unknown: value.unknown,
+      loading,
+    }),
     [value, loading],
   );
 };

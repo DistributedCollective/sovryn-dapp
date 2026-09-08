@@ -42,6 +42,7 @@ import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../utils/asset';
+import { NO_EXIT_DELAY } from '../../../../../utils/exitDelay';
 import { SURFACE_LENDING_BORROWER_WITHDRAW } from '../../../../../utils/exitFee';
 import { areValuesIdentical } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
@@ -283,7 +284,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     loanTokenContract?.address,
   );
 
-  const { delaySeconds } = useExitDelayQuote(
+  const exitDelay = useExitDelayQuote(
     SURFACE_LENDING_BORROWER_WITHDRAW,
     loanTokenContract?.address,
   );
@@ -312,8 +313,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     ],
   );
 
+  // A debt-only adjust removes nothing, so it is not a withdrawal the
+  // perimeter can hold — the notice must stay silent for it either way.
   const notifyHold = usePerimeterHoldToast(
-    exitFeeGross.gt(0) ? delaySeconds : 0,
+    exitFeeGross.gt(0) ? exitDelay : NO_EXIT_DELAY,
   );
 
   const prepaidInterest = calculatePrepaidInterestFromDuration(
@@ -911,7 +914,13 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             assetSymbol={collateralToken}
             precision={BTC_RENDER_PRECISION}
           />
-          {exitFeeGross.gt(0) && <ExitDelayRow delaySeconds={delaySeconds} />}
+          {exitFeeGross.gt(0) && (
+            <ExitDelayRow
+              delaySeconds={exitDelay.delaySeconds}
+              unknown={exitDelay.unknown}
+              loading={exitDelay.loading}
+            />
+          )}
           {(isBorrowTab || isRepayTab) && (
             <SimpleTableRow
               label={t(pageTranslations.labels.newTotalDebt)}

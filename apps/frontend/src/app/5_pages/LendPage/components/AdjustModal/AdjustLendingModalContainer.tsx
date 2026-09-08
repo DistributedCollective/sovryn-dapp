@@ -126,11 +126,11 @@ export const AdjustLendingModalContainer: FC<AdjustModalProps> = ({
     onClose();
   }, [onClose, push]);
 
-  const { delaySeconds } = useExitDelayQuote(
+  const exitDelay = useExitDelayQuote(
     SURFACE_LENDING_LENDER_WITHDRAW,
     state?.poolTokenContract?.address,
   );
-  const notifyHold = usePerimeterHoldToast(delaySeconds);
+  const notifyHold = usePerimeterHoldToast(exitDelay);
 
   const handleConfirm = useCallback(
     (type: FormType, amount: Decimal) => {

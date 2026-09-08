@@ -160,7 +160,11 @@ export const FormContent: FC<FormContentProps> = props => {
     unknown: exitFeeUnknown,
     loading: exitFeeLoading,
   } = useZeroExitFee();
-  const { delaySeconds } = useZeroExitDelayQuote();
+  const {
+    delaySeconds,
+    unknown: exitDelayUnknown,
+    loading: exitDelayLoading,
+  } = useZeroExitDelayQuote();
 
   const exitFeeGross = useMemo(
     () =>
@@ -521,7 +525,11 @@ export const FormContent: FC<FormContentProps> = props => {
               {/* Only a collateral withdrawal is held; a borrow or add-collateral
                   adjust removes nothing, so the hold notice must not show for it. */}
               {exitFeeGross.gt(0) && (
-                <ExitDelayRow delaySeconds={delaySeconds} />
+                <ExitDelayRow
+                  delaySeconds={delaySeconds}
+                  unknown={exitDelayUnknown}
+                  loading={exitDelayLoading}
+                />
               )}
             </>
           ) : (

@@ -20,10 +20,14 @@ jest.mock('../../../contexts/NotificationContext', () => {
   };
 });
 
-const renderRow = (delaySeconds: number) =>
+const renderRow = (delaySeconds: number, unknown = false, loading = false) =>
   render(
     <MemoryRouter>
-      <ExitDelayRow delaySeconds={delaySeconds} />
+      <ExitDelayRow
+        delaySeconds={delaySeconds}
+        unknown={unknown}
+        loading={loading}
+      />
     </MemoryRouter>,
   );
 
@@ -71,6 +75,30 @@ describe('ExitDelayRow', () => {
     );
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('href', '/perimeter');
+  });
+
+  it('admits it could not check, instead of rendering as an unheld withdrawal', () => {
+    // The delay fails closed on chain: a quote we could not read means the
+    // withdrawal is held or it reverts. Rendering nothing would tell the user
+    // the money arrives now.
+    const { container } = renderRow(0, true);
+    expect(container).not.toBeEmptyDOMElement();
+    expect(
+      container.querySelector('[data-layout-id="exit-delay-unknown"]'),
+    ).toHaveTextContent('Could not be checked');
+    const notice = container.querySelector(
+      '[data-test-id="exit-delay-unknown-notice"]',
+    );
+    expect(notice).toHaveTextContent(/could not check/i);
+    expect(notice).toHaveTextContent(/Perimeter vault/i);
+    expect(
+      container.querySelector('[data-layout-id="exit-delay-duration"]'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders nothing while the quote is still in flight', () => {
+    const { container } = renderRow(0, true, true);
+    expect(container).toBeEmptyDOMElement();
   });
 
   it('explains where the funds go, on click', () => {

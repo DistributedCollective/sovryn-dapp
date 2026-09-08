@@ -103,8 +103,8 @@ export const useHandleTrove = (
 ) => {
   const { signer, account, provider } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
-  const { delaySeconds: zeroDelaySeconds } = useZeroExitDelayQuote();
-  const notifyHold = usePerimeterHoldToast(zeroDelaySeconds);
+  const zeroExitDelay = useZeroExitDelayQuote();
+  const notifyHold = usePerimeterHoldToast(zeroExitDelay);
 
   const handleTroveSubmit = useCallback(
     async (value: CreditLineSubmitValue) => {

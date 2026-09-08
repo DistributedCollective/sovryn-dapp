@@ -41,7 +41,16 @@ export enum PendingExitState {
 
 export type PendingExit = {
   id: string;
-  amount: Decimal;
+  /** The queue holding this exit — the contract a release is sent to. */
+  queueAddress: string;
+  /**
+   * The escrowed amount in the asset's own units. Undefined when the asset
+   * could not be resolved: its decimals are then unknown, and a number scaled
+   * by a guess would be silently wrong by orders of magnitude.
+   */
+  amount?: Decimal;
+  /** Symbol of the asset the holder receives, undefined when unresolved. */
+  tokenSymbol?: string;
   /** address(0) means native RBTC. */
   token: string;
   createdAt: number;
@@ -141,6 +150,49 @@ export const formatDelayDuration = (
     return { value: Math.ceil(seconds / 60), unit: 'minutes' };
   }
   return { value: seconds, unit: 'seconds' };
+};
+
+type DelayUnit = 'days' | 'hours' | 'minutes' | 'seconds';
+
+const UNIT_SECONDS: [DelayUnit, number][] = [
+  ['days', 86_400],
+  ['hours', 3_600],
+  ['minutes', 60],
+  ['seconds', 1],
+];
+
+/**
+ * A countdown in at most two units: "1d 1h", "59m 59s", "2h".
+ *
+ * `formatDelayDuration` rounds a whole policy duration up to one unit, which is
+ * right for a form — it never promises money sooner than it arrives — but on
+ * the one screen where someone is watching a clock, 25 hours left reading as
+ * "2 days" is uselessly coarse. The remainder is still rounded UP, and a
+ * remainder that carries (59m 60s) rolls into the unit above rather than
+ * printing an impossible count.
+ */
+export const formatDelayCountdown = (
+  seconds: number,
+): { value: number; unit: DelayUnit }[] => {
+  if (seconds <= 0) {
+    return [];
+  }
+  const index = UNIT_SECONDS.findIndex(([, size]) => seconds >= size);
+  const [unit, size] = UNIT_SECONDS[index];
+  let major = Math.floor(seconds / size);
+  const rest = seconds - major * size;
+  if (rest === 0 || unit === 'seconds') {
+    return [{ value: major, unit }];
+  }
+  const [minorUnit, minorSize] = UNIT_SECONDS[index + 1];
+  const minor = Math.ceil(rest / minorSize);
+  if (minor * minorSize >= size) {
+    return [{ value: major + 1, unit }];
+  }
+  return [
+    { value: major, unit },
+    { value: minor, unit: minorUnit },
+  ];
 };
 
 /** Seconds remaining until an exit unlocks; never negative. */

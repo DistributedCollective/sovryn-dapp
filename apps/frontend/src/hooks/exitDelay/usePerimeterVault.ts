@@ -1,13 +1,16 @@
 import { useMemo } from 'react';
 
 import { BigNumber, Contract, constants } from 'ethers';
+import { formatUnits } from 'ethers/lib/utils';
 
+import { getZeroContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
 import { RSK_CHAIN_ID } from '../../config/chains';
 
 import { asyncCall } from '../../store/rxjs/provider-cache';
+import { findAssetByAddress, findNativeAsset } from '../../utils/asset';
 import {
   BlockState,
   EXIT_DELAY_TTL,
@@ -18,23 +21,40 @@ import {
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 import { useGetProtocolContract } from '../useGetContract';
+import { isCallRevert } from './quoteExitDelay';
 
 export type PerimeterVault = {
-  /** The queue holding this account's delayed exits, or undefined when unwired. */
-  queueAddress?: string;
   exits: PendingExit[];
   /** Block state of every party of every exit, keyed by exit id. */
   blocks: Record<string, PartyBlockStates>;
+  /** Whether releases are paused, per queue address (lower-cased). */
+  pausedByQueue: Record<string, boolean>;
+  /** True while any queue holding this account's exits is paused. */
   paused: boolean;
   loading: boolean;
+  /**
+   * True when the vault could not be read. NOT the same as nothing held: an
+   * account with queued exits produces exactly the same empty list when a
+   * round trip fails, and telling someone their funds are not held is the one
+   * thing this page must never do on a guess.
+   */
+  unknown: boolean;
 };
 
+type StampedVault = Omit<PerimeterVault, 'loading'> & { forKey: string };
+
 const EMPTY: Omit<PerimeterVault, 'loading'> = {
-  queueAddress: undefined,
   exits: [],
   blocks: {},
+  pausedByQueue: {},
   paused: false,
+  unknown: false,
 };
+
+const UNREADABLE: Omit<PerimeterVault, 'loading'> = { ...EMPTY, unknown: true };
+
+/** No fetch stamps its result with this, so a default value is never "fresh". */
+const PENDING_KEY = '';
 
 const QUEUE_GETTER_ABI = ['function exitDelayQueue() view returns (address)'];
 
@@ -45,8 +65,8 @@ const QUEUE_ABI = [
   'function securityPerimeterPaused() view returns (bool)',
 ];
 
-/** The contract clamps a page to this; asking for more just wastes a round trip. */
-const PAGE = 50;
+/** The contract clamps a page to MAX_GET_ACTIVE_PAGE; asking for more wastes a round trip. */
+const PAGE = 500;
 /**
  * A hard stop on paging. `getActive` is best-effort over a mutating set, so a
  * concurrent removal can repeat an entry; without a cap a pathological cursor
@@ -55,13 +75,93 @@ const PAGE = 50;
 const MAX_PAGES = 50;
 
 /**
+ * Queue addresses seen for a consumer, remembered for the life of the tab.
+ *
+ * Clearing `exitDelayQueue` is one of the ways the perimeter can be switched
+ * off, and it must not take already-escrowed funds off the screen with it: the
+ * queue still holds them and still releases them. So a pointer that goes to
+ * zero falls back to the address it last resolved to. Deliberately in memory
+ * only — a persisted address would be an attacker-supplied contract for the
+ * release button to call after someone edited local storage.
+ */
+const lastKnownQueues = new Map<string, string>();
+
+/**
+ * Follow one consumer's queue pointer.
+ *
+ * A reverted call is an answer (this consumer has no queue leg); an
+ * unreachable node is not, and is reported so the page can say it could not
+ * read rather than that nothing is held.
+ */
+const resolveQueue = async (
+  consumerAddress: string,
+): Promise<{ address?: string; unknown: boolean }> => {
+  const memoKey = `${RSK_CHAIN_ID}/${consumerAddress.toLowerCase()}`;
+  try {
+    const pointer = new Contract(
+      consumerAddress,
+      QUEUE_GETTER_ABI,
+      getProvider(RSK_CHAIN_ID),
+    );
+    const address: string = await asyncCall(
+      `exitDelay/queueAddress/${RSK_CHAIN_ID}/${consumerAddress}`,
+      () => pointer.exitDelayQueue(),
+      { ttl: EXIT_DELAY_TTL },
+    );
+    if (address && address !== constants.AddressZero) {
+      lastKnownQueues.set(memoKey, address);
+      return { address, unknown: false };
+    }
+    return { address: lastKnownQueues.get(memoKey), unknown: false };
+  } catch (error) {
+    if (isCallRevert(error)) {
+      return { address: lastKnownQueues.get(memoKey), unknown: false };
+    }
+    return { address: lastKnownQueues.get(memoKey), unknown: true };
+  }
+};
+
+/**
+ * Resolve the asset an escrowed amount is denominated in.
+ *
+ * One queue holds every asset the perimeter covers, so a bare number is
+ * unreadable: 1.5 RBTC and 1.5 DOC are three orders of magnitude apart. The
+ * amount is scaled by the token's OWN decimals rather than the 18 the rest of
+ * the app assumes, and an asset we cannot resolve yields no amount at all — a
+ * number scaled by a guess would be silently wrong by orders of magnitude,
+ * which is worse than an obvious gap.
+ */
+const resolveAmount = (
+  token: string,
+  unwrapOnDelivery: boolean,
+  amount: BigNumber,
+): { amount?: Decimal; tokenSymbol?: string } => {
+  const native = findNativeAsset(RSK_CHAIN_ID);
+  const escrowed =
+    token === constants.AddressZero
+      ? native
+      : findAssetByAddress(token, RSK_CHAIN_ID);
+  if (!escrowed) {
+    return {};
+  }
+  // The queue unwraps on the way out, so the holder receives the native asset
+  // even though the wrapped one is what is escrowed.
+  const delivered = unwrapOnDelivery ? native ?? escrowed : escrowed;
+  return {
+    amount: Decimal.from(formatUnits(amount, escrowed.decimals)),
+    tokenSymbol: delivered.symbol,
+  };
+};
+
+/**
  * Every exit the perimeter currently holds for the connected account, with the
  * state each one is in.
  *
- * The queue is reached through the protocol's own pointer, the same route the
- * consumer contracts take. While the perimeter is undeployed or unwired the
- * lookup reverts, the result is cached empty, and the page renders as "nothing
- * held" rather than as an error.
+ * The queues are reached through the consumers' own pointers, the same route
+ * the consumer contracts take. Zero keeps its pointer separately from the
+ * lending protocol's and the two are independently settable, so BOTH are
+ * followed and the results unioned: a hold promised by one surface's form can
+ * never be missing from the page that releases it.
  *
  * `getActive` is indexed by PARTY and an account is a party to an exit as
  * originator or owner, so this returns exits this account can execute. An exit
@@ -72,107 +172,170 @@ export const usePerimeterVault = (): PerimeterVault => {
   const { account } = useAccount();
   const protocol = useGetProtocolContract('protocol', RSK_CHAIN_ID);
 
-  const { value, loading } = useCacheCall(
-    `exitDelay/vault/${account}`,
+  const key = `exitDelay/vault/${account}/${protocol?.address}`;
+
+  const { value, loading } = useCacheCall<StampedVault>(
+    key,
     RSK_CHAIN_ID,
     async () => {
-      if (!protocol || !account) {
-        return EMPTY;
+      if (!account) {
+        return { ...EMPTY, forKey: key };
+      }
+      if (!protocol) {
+        // The contracts have not loaded yet. Nothing has been read, so nothing
+        // may be stated: stamp it so the hook keeps reporting "loading".
+        return { ...EMPTY, forKey: PENDING_KEY };
       }
       try {
-        const getter = new Contract(
-          protocol.address,
-          QUEUE_GETTER_ABI,
-          getProvider(RSK_CHAIN_ID),
-        );
-        const queueAddress: string = await asyncCall(
-          `exitDelay/queueAddress/${RSK_CHAIN_ID}/${protocol.address}`,
-          () => getter.exitDelayQueue(),
-          { ttl: EXIT_DELAY_TTL },
-        );
-        if (!queueAddress || queueAddress === constants.AddressZero) {
-          return EMPTY;
+        const consumers = [protocol.address];
+        try {
+          const { address } = await getZeroContract(
+            'borrowerOperations',
+            RSK_CHAIN_ID,
+          );
+          consumers.push(address);
+        } catch (error) {
+          // Zero's address could not be resolved; the protocol's queue is
+          // still worth listing, and `unknown` below records what was missed.
         }
 
-        const queue = new Contract(
-          queueAddress,
-          QUEUE_ABI,
-          getProvider(RSK_CHAIN_ID),
-        );
+        const resolved = await Promise.all(consumers.map(resolveQueue));
+        const pointerUnknown = resolved.some(entry => entry.unknown);
+        const queueAddresses = [
+          ...new Set(
+            resolved
+              .map(entry => entry.address)
+              .filter((address): address is string => !!address)
+              .map(address => address.toLowerCase()),
+          ),
+        ];
 
-        const ids: BigNumber[] = [];
-        let cursor = BigNumber.from(0);
-        for (let page = 0; page < MAX_PAGES; page++) {
-          const result = await queue.getActive(account, cursor, PAGE);
-          ids.push(...result.ids);
-          cursor = result.nextCursor;
-          if (cursor.isZero()) {
-            break;
-          }
+        if (queueAddresses.length === 0) {
+          return {
+            ...EMPTY,
+            unknown: pointerUnknown,
+            forKey: key,
+          };
         }
-
-        const paused: boolean = await queue.securityPerimeterPaused();
 
         const exits: PendingExit[] = [];
         const blocks: Record<string, PartyBlockStates> = {};
-        const blockCache = new Map<string, BlockState>();
-        const blockStateOf = async (address: string): Promise<BlockState> => {
-          const key = address.toLowerCase();
-          const cached = blockCache.get(key);
-          if (cached !== undefined) {
-            return cached;
-          }
-          const state: BlockState = Number(await queue.blockStateOf(address));
-          blockCache.set(key, state);
-          return state;
-        };
+        const pausedByQueue: Record<string, boolean> = {};
 
-        for (const id of ids) {
-          const request = await queue.getRequest(id);
-          const exitId = id.toString();
-          exits.push({
-            id: exitId,
-            amount: Decimal.fromBigNumberString(request.amount.toString()),
-            token: request.token,
-            createdAt: Number(request.createdAt),
-            unlockAt: Number(request.unlockAt),
-            originator: request.originator,
-            owner: request.owner,
-            receiver: request.receiver,
-            surfaceId: request.surfaceId,
-            subProduct: request.subProduct,
-            status: Number(request.status) as ExitStatus,
-            unwrapOnDelivery: request.unwrapOnDelivery,
+        for (const queueAddress of queueAddresses) {
+          const queue = new Contract(
+            queueAddress,
+            QUEUE_ABI,
+            getProvider(RSK_CHAIN_ID),
+          );
+
+          const ids: string[] = [];
+          let cursor = BigNumber.from(0);
+          for (let page = 0; page < MAX_PAGES; page++) {
+            const result = await queue.getActive(account, cursor, PAGE);
+            ids.push(...result.ids.map((id: BigNumber) => id.toString()));
+            cursor = result.nextCursor;
+            if (cursor.isZero()) {
+              break;
+            }
+          }
+
+          // `getActive` is documented as best-effort over a mutating set: a
+          // concurrent removal can repeat an id. Two rows sharing a React key
+          // is the visible symptom; the dangerous one is executeExits([7, 7]),
+          // where the second pass reverts AlreadyTerminal and takes every other
+          // release in the batch with it.
+          const uniqueIds = [...new Set(ids)];
+
+          pausedByQueue[queueAddress] = await queue.securityPerimeterPaused();
+
+          // One wave of requests rather than one round trip per id: the read
+          // runs every block, and a queue of ten was twenty sequential trips.
+          const requests = await Promise.all(
+            uniqueIds.map(id => queue.getRequest(id)),
+          );
+
+          const parties = [
+            ...new Set(
+              requests.flatMap(request => [
+                request.originator.toLowerCase(),
+                request.owner.toLowerCase(),
+                request.receiver.toLowerCase(),
+              ]),
+            ),
+          ];
+          const partyStates = new Map<string, BlockState>();
+          await Promise.all(
+            parties.map(async party => {
+              partyStates.set(party, Number(await queue.blockStateOf(party)));
+            }),
+          );
+          const blockStateOf = (address: string): BlockState =>
+            partyStates.get(address.toLowerCase()) ?? BlockState.None;
+
+          uniqueIds.forEach((id, index) => {
+            const request = requests[index];
+            exits.push({
+              id,
+              queueAddress,
+              ...resolveAmount(
+                request.token,
+                request.unwrapOnDelivery,
+                request.amount,
+              ),
+              token: request.token,
+              createdAt: Number(request.createdAt),
+              unlockAt: Number(request.unlockAt),
+              originator: request.originator,
+              owner: request.owner,
+              receiver: request.receiver,
+              surfaceId: request.surfaceId,
+              subProduct: request.subProduct,
+              status: Number(request.status) as ExitStatus,
+              unwrapOnDelivery: request.unwrapOnDelivery,
+            });
+            blocks[id] = {
+              originator: blockStateOf(request.originator),
+              owner: blockStateOf(request.owner),
+              receiver: blockStateOf(request.receiver),
+            };
           });
-          blocks[exitId] = {
-            originator: await blockStateOf(request.originator),
-            owner: await blockStateOf(request.owner),
-            receiver: await blockStateOf(request.receiver),
-          };
         }
 
         // Soonest to unlock first: the row a holder is waiting on is the one
         // worth putting at the top.
         exits.sort((a, b) => a.unlockAt - b.unlockAt);
 
-        return { queueAddress, exits, blocks, paused };
+        return {
+          exits,
+          blocks,
+          pausedByQueue,
+          paused: Object.values(pausedByQueue).some(Boolean),
+          unknown: pointerUnknown,
+          forKey: key,
+        };
       } catch (error) {
-        return EMPTY;
+        // A timeout, a rate limit, a malformed response. Whatever it was, this
+        // account's holds were not read, and the page must say so rather than
+        // print a definitive negative.
+        return { ...UNREADABLE, forKey: key };
       }
     },
     [protocol?.address, account],
-    EMPTY,
+    { ...EMPTY, forKey: PENDING_KEY },
     { ttl: EXIT_DELAY_TTL },
   );
 
-  return useMemo(
-    () => ({
-      queueAddress: value.queueAddress,
-      exits: value.exits,
-      blocks: value.blocks,
-      paused: value.paused,
-      loading,
-    }),
-    [value, loading],
-  );
+  return useMemo(() => {
+    // A value stamped for another key belongs to the previous account, or to
+    // no fetch at all — the seeded default the cache hands back before the
+    // first attempt resolves. Either way nothing has been read yet, and the
+    // page shows its loader instead of "not holding any withdrawals".
+    const fresh = value.forKey === key;
+    if (!fresh) {
+      return { ...EMPTY, loading: true };
+    }
+    const { forKey, ...vault } = value;
+    return { ...vault, loading };
+  }, [value, loading, key]);
 };

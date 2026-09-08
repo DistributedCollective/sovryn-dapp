@@ -40,7 +40,7 @@ const CONTROLLER_ABI = [
  * timeout or server failure carries no such information and must not be read
  * as an absent pointer.
  */
-const isCallRevert = (error: unknown): boolean =>
+export const isCallRevert = (error: unknown): boolean =>
   (error as { code?: string })?.code === 'CALL_EXCEPTION';
 
 /**

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -15,7 +15,15 @@ import {
   TooltipTrigger,
 } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../config/chains';
+
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
+import { NetworkBanner } from '../../2_molecules/NetworkBanner/NetworkBanner';
+import {
+  BTC_RENDER_PRECISION,
+  TOKEN_RENDER_PRECISION,
+} from '../../../constants/currencies';
+import { useChainTime } from '../../../hooks/exitDelay/useChainTime';
 import {
   useExecuteExit,
   useExecuteExits,
@@ -36,21 +44,22 @@ import {
   shortenAddress,
 } from './PerimeterPage.utils';
 
-/** Countdown resolution. Holds are minutes at least, so a second is ample. */
-const TICK_MS = 1_000;
+/** Bitcoin-denominated rows need every satoshi; everything else does not. */
+const precisionFor = (symbol?: string): number =>
+  symbol === 'BTC' || symbol === 'WBTC' || symbol === 'RBTC'
+    ? BTC_RENDER_PRECISION
+    : TOKEN_RENDER_PRECISION;
 
 const PerimeterPage: FC = () => {
   const { account } = useAccount();
-  const { queueAddress, exits, blocks, paused, loading } = usePerimeterVault();
+  const { exits, blocks, pausedByQueue, paused, loading, unknown } =
+    usePerimeterVault();
 
-  const [now, setNow] = useState(() => Math.floor(Date.now() / 1000));
-  useEffect(() => {
-    const timer = setInterval(
-      () => setNow(Math.floor(Date.now() / 1000)),
-      TICK_MS,
-    );
-    return () => clearInterval(timer);
-  }, []);
+  // Chain time, not the browser's: the queue compares block.timestamp, and a
+  // machine whose clock runs fast would otherwise offer a release that reverts
+  // and, in a batch, revert every other release with it. Zero means the chain
+  // clock has not been read, which the loader below covers.
+  const now = useChainTime(RSK_CHAIN_ID);
 
   // Ids released in this session, held until the next block refetch drops them
   // from the vault. The queue refetches each block, but a row released one
@@ -66,8 +75,8 @@ const PerimeterPage: FC = () => {
     });
   }, []);
 
-  const executeExit = useExecuteExit(queueAddress);
-  const executeExits = useExecuteExits(queueAddress);
+  const executeExit = useExecuteExit();
+  const executeExits = useExecuteExits();
 
   const rows: PerimeterExitRow[] = useMemo(
     () =>
@@ -82,31 +91,56 @@ const PerimeterPage: FC = () => {
               owner: BlockState.None,
               receiver: BlockState.None,
             },
-            paused,
+            pausedByQueue[exit.queueAddress] ?? paused,
             account,
             now,
           ),
         })),
-    [account, blocks, exits, now, paused, releasedIds],
+    [account, blocks, exits, now, paused, pausedByQueue, releasedIds],
   );
 
   const handleRelease = useCallback(
     (row: PerimeterExitRow) =>
-      executeExit(row.id, () => markReleased([row.id])),
+      executeExit(row.queueAddress, row.id, () => markReleased([row.id])),
     [executeExit, markReleased],
   );
 
   // The batch carries exactly the rows the per-row button would offer —
   // executeExits is atomic on-chain, so one uncertain id would revert every
-  // other release with it.
-  const releasableIds = useMemo(
-    () => rows.filter(row => canExecuteExit(row.state)).map(row => row.id),
-    [rows],
+  // other release with it. It is also grouped by queue, because an id belongs
+  // to the queue that holds it and no other contract will accept it.
+  const releasableByQueue = useMemo(() => {
+    const groups: Record<string, string[]> = {};
+    rows
+      .filter(row => canExecuteExit(row.state))
+      .forEach(row => {
+        groups[row.queueAddress] = [
+          ...(groups[row.queueAddress] ?? []),
+          row.id,
+        ];
+      });
+    return groups;
+  }, [rows]);
+
+  const releasableCount = useMemo(
+    () =>
+      Object.values(releasableByQueue).reduce(
+        (total, ids) => total + ids.length,
+        0,
+      ),
+    [releasableByQueue],
   );
 
   const handleReleaseAll = useCallback(
-    () => executeExits(releasableIds, () => markReleased(releasableIds)),
-    [executeExits, markReleased, releasableIds],
+    () =>
+      executeExits(
+        Object.entries(releasableByQueue).map(([queueAddress, requestIds]) => ({
+          queueAddress,
+          requestIds,
+        })),
+        markReleased,
+      ),
+    [executeExits, markReleased, releasableByQueue],
   );
 
   const columns = useMemo(
@@ -119,9 +153,20 @@ const PerimeterPage: FC = () => {
       {
         id: 'amount',
         title: t(translations.perimeterPage.table.amount),
-        cellRenderer: (row: PerimeterExitRow) => (
-          <AmountRenderer value={row.amount} />
-        ),
+        // One queue holds every asset the perimeter covers, so a bare number
+        // says nothing: 1.5 RBTC and 1.5 DOC are three orders of magnitude
+        // apart. An asset whose decimals could not be resolved carries no
+        // amount at all rather than one scaled by a guess.
+        cellRenderer: (row: PerimeterExitRow) =>
+          row.amount ? (
+            <AmountRenderer
+              value={row.amount}
+              suffix={row.tokenSymbol}
+              precision={precisionFor(row.tokenSymbol)}
+            />
+          ) : (
+            t(translations.perimeterPage.table.unknownAsset)
+          ),
       },
       {
         id: 'receiver',
@@ -169,9 +214,16 @@ const PerimeterPage: FC = () => {
     [handleRelease, now],
   );
 
-  const emptyMessage = account
-    ? t(translations.perimeterPage.inactive)
-    : t(translations.perimeterPage.connectWallet);
+  // "Not holding any withdrawals" is a definitive statement, and only a
+  // completed read earns it. A read that failed says so instead.
+  const emptyMessage = useMemo(() => {
+    if (!account) {
+      return t(translations.perimeterPage.connectWallet);
+    }
+    return unknown
+      ? t(translations.perimeterPage.unreadable)
+      : t(translations.perimeterPage.inactive);
+  }, [account, unknown]);
 
   return (
     <>
@@ -179,47 +231,65 @@ const PerimeterPage: FC = () => {
         <title>{t(translations.perimeterPage.meta.title)}</title>
       </Helmet>
       <div className="w-full flex flex-col items-center text-gray-10">
-        <Heading className="text-center mb-3">
-          {t(translations.perimeterPage.title)}
-        </Heading>
-        <Paragraph
-          size={ParagraphSize.base}
-          className="text-center max-w-2xl mb-6"
-        >
-          {t(translations.perimeterPage.subtitle)}
-        </Paragraph>
-        {paused && (
+        {/* Releases are signed on RSK. Without this the page would offer a
+            Release button on any connected chain, and a call to an address
+            with no code does not revert: the wallet reports success and
+            nothing is released. */}
+        <NetworkBanner requiredChainId={RSK_CHAIN_ID}>
+          <Heading className="text-center mb-3">
+            {t(translations.perimeterPage.title)}
+          </Heading>
           <Paragraph
-            size={ParagraphSize.small}
-            className="text-center mb-4"
-            dataAttribute="perimeter-paused"
+            size={ParagraphSize.base}
+            className="text-center max-w-2xl mb-6"
           >
-            {t(translations.perimeterPage.statusTooltip.paused)}
+            {t(translations.perimeterPage.subtitle)}
           </Paragraph>
-        )}
-        <div className="w-full max-w-5xl">
-          {releasableIds.length > 1 && (
-            <div className="flex justify-end mb-3">
-              <Button
-                text={t(translations.perimeterPage.releaseAll, {
-                  count: releasableIds.length,
-                })}
-                size={ButtonSize.small}
-                style={ButtonStyle.primary}
-                onClick={handleReleaseAll}
-                dataAttribute="perimeter-release-all"
-              />
-            </div>
+          {paused && (
+            <Paragraph
+              size={ParagraphSize.small}
+              className="text-center mb-4"
+              dataAttribute="perimeter-paused"
+            >
+              {t(translations.perimeterPage.statusTooltip.paused)}
+            </Paragraph>
           )}
-          <Table
-            columns={columns}
-            rows={rows}
-            rowKey={row => row.id}
-            isLoading={loading}
-            noData={emptyMessage}
-            dataAttribute="perimeter-vault-table"
-          />
-        </div>
+          {unknown && account && (
+            <Paragraph
+              size={ParagraphSize.small}
+              className="text-center mb-4"
+              dataAttribute="perimeter-unreadable"
+            >
+              {t(translations.perimeterPage.unreadable)}
+            </Paragraph>
+          )}
+          <div className="w-full max-w-5xl">
+            {releasableCount > 1 && (
+              <div className="flex justify-end mb-3">
+                <Button
+                  text={t(translations.perimeterPage.releaseAll, {
+                    count: releasableCount,
+                  })}
+                  size={ButtonSize.small}
+                  style={ButtonStyle.primary}
+                  onClick={handleReleaseAll}
+                  dataAttribute="perimeter-release-all"
+                />
+              </div>
+            )}
+            <Table
+              columns={columns}
+              rows={rows}
+              rowKey={row => row.id}
+              // Rows are withheld until the chain clock is known: every status
+              // and countdown is derived from it, and a row resolved against a
+              // missing time would read as locked for decades.
+              isLoading={loading || (!!account && !now)}
+              noData={emptyMessage}
+              dataAttribute="perimeter-vault-table"
+            />
+          </div>
+        </NetworkBanner>
       </div>
     </>
   );

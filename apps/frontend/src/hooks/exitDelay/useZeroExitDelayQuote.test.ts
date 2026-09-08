@@ -110,10 +110,7 @@ describe('useZeroExitDelayQuote', () => {
     const { result } = renderHook(() => useZeroExitDelayQuote());
 
     await waitFor(() => expect(result.current.loading).toBe(false));
-    expect(mockZeroContract).toHaveBeenCalledWith(
-      'borrowerOperations',
-      '0x1e',
-    );
+    expect(mockZeroContract).toHaveBeenCalledWith('borrowerOperations', '0x1e');
     expect(mockQuote).toHaveBeenCalledWith(
       ACCOUNT,
       ACCOUNT,

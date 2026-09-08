@@ -2049,6 +2049,12 @@
       "seconds_one": "{{count}} second",
       "seconds_other": "{{count}} seconds"
     },
+    "durationShort": {
+      "days": "{{count}}d",
+      "hours": "{{count}}h",
+      "minutes": "{{count}}m",
+      "seconds": "{{count}}s"
+    },
     "vaultNotice": "This amount goes to the Sovryn Perimeter vault when you sign, and reaches you after the hold.",
     "vaultLink": "Track and release it on the Perimeter page",
     "unknown": {
@@ -2072,13 +2078,15 @@
     "subtitle": "Withdrawals held by the Sovryn Perimeter appear here. The destination of each one was fixed when you signed it and cannot be changed. Release it yourself once its hold ends.",
     "connectWallet": "Connect your wallet to see withdrawals held for you.",
     "inactive": "The Sovryn Perimeter is not holding any withdrawals for this account.",
+    "unreadable": "We could not read the Sovryn Perimeter vault just now. Anything it is holding for you is still held — this list may be incomplete or empty for that reason alone. Try again in a moment.",
     "table": {
       "id": "Reference",
       "amount": "Amount",
       "receiver": "Destination",
       "unlocks": "Releases",
       "status": "Status",
-      "action": "Action"
+      "action": "Action",
+      "unknownAsset": "Unknown asset"
     },
     "status": {
       "locked": "On hold",

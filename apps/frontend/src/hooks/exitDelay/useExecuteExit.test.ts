@@ -13,6 +13,7 @@ import { useExecuteExit, useExecuteExits } from './useExecuteExit';
  */
 
 const QUEUE = '0x9999999999999999999999999999999999999999';
+const OTHER_QUEUE = '0x8888888888888888888888888888888888888888';
 
 const mockSetTransactions = jest.fn();
 const mockSetIsOpen = jest.fn();
@@ -42,10 +43,10 @@ describe('useExecuteExit', () => {
 
   it('attaches the caller-supplied callback to the release transaction', async () => {
     const onComplete = jest.fn();
-    const { result } = renderHook(() => useExecuteExit(QUEUE));
+    const { result } = renderHook(() => useExecuteExit());
 
     await act(async () => {
-      await result.current('7', onComplete);
+      await result.current(QUEUE, '7', onComplete);
     });
 
     expect(step().request.fnName).toBe('executeExit');
@@ -56,20 +57,20 @@ describe('useExecuteExit', () => {
   });
 
   it('opens the transaction dialog for the release', async () => {
-    const { result } = renderHook(() => useExecuteExit(QUEUE));
+    const { result } = renderHook(() => useExecuteExit());
 
     await act(async () => {
-      await result.current('7');
+      await result.current(QUEUE, '7');
     });
 
     expect(mockSetIsOpen).toHaveBeenCalledWith(true);
   });
 
   it('does nothing without a queue address', async () => {
-    const { result } = renderHook(() => useExecuteExit(undefined));
+    const { result } = renderHook(() => useExecuteExit());
 
     await act(async () => {
-      await result.current('7', jest.fn());
+      await result.current(undefined, '7', jest.fn());
     });
 
     expect(mockSetTransactions).not.toHaveBeenCalled();
@@ -81,24 +82,55 @@ describe('useExecuteExits', () => {
     await i18n;
   });
 
-  it('attaches the caller-supplied callback to the batch transaction', async () => {
+  it('reports the ids the batch settled, so the page can drop them', async () => {
     const onComplete = jest.fn();
-    const { result } = renderHook(() => useExecuteExits(QUEUE));
+    const { result } = renderHook(() => useExecuteExits());
 
     await act(async () => {
-      await result.current(['7', '8'], onComplete);
+      await result.current(
+        [{ queueAddress: QUEUE, requestIds: ['7', '8'] }],
+        onComplete,
+      );
     });
 
     expect(step().request.fnName).toBe('executeExits');
     expect(step().request.args).toEqual([['7', '8']]);
-    expect(step().onComplete).toBe(onComplete);
+    step().onComplete();
+    expect(onComplete).toHaveBeenCalledWith(['7', '8']);
+  });
+
+  it('signs one transaction per queue, in a single list', async () => {
+    // A second call would replace the first: the holder would sign only the
+    // last queue's release while believing they released everything.
+    const onComplete = jest.fn();
+    const { result } = renderHook(() => useExecuteExits());
+
+    await act(async () => {
+      await result.current(
+        [
+          { queueAddress: QUEUE, requestIds: ['7'] },
+          { queueAddress: OTHER_QUEUE, requestIds: ['8'] },
+        ],
+        onComplete,
+      );
+    });
+
+    const steps = mockSetTransactions.mock.calls[0][0];
+    expect(steps).toHaveLength(1 + 1);
+    expect(steps[0].request.contract.address).toBe(QUEUE);
+    expect(steps[1].request.contract.address).toBe(OTHER_QUEUE);
+    steps[1].onComplete();
+    expect(onComplete).toHaveBeenCalledWith(['8']);
   });
 
   it('does nothing for an empty batch', async () => {
-    const { result } = renderHook(() => useExecuteExits(QUEUE));
+    const { result } = renderHook(() => useExecuteExits());
 
     await act(async () => {
-      await result.current([], jest.fn());
+      await result.current(
+        [{ queueAddress: QUEUE, requestIds: [] }],
+        jest.fn(),
+      );
     });
 
     expect(mockSetTransactions).not.toHaveBeenCalled();

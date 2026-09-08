@@ -28,7 +28,11 @@ jest.mock('../../../../../hooks/exitFee/useExitFeeRate', () => ({
 }));
 
 jest.mock('../../../../../hooks/exitDelay/useExitDelayQuote', () => ({
-  useExitDelayQuote: () => ({ delaySeconds: 0, loading: false, unknown: false }),
+  useExitDelayQuote: () => ({
+    delaySeconds: 0,
+    loading: false,
+    unknown: false,
+  }),
 }));
 
 jest.mock('../../../../../hooks/useMaxAssetBalance', () => {

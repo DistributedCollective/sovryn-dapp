@@ -26,7 +26,11 @@ jest.mock('../../../../contexts/NotificationContext', () => {
 // factory can't close over the top-level `Decimal` import directly — pull it
 // via requireActual instead (same pattern as LendingForm.test.tsx).
 jest.mock('../../../../hooks/exitDelay/useZeroExitDelayQuote', () => ({
-  useZeroExitDelayQuote: () => ({ delaySeconds: 0, loading: false, unknown: false }),
+  useZeroExitDelayQuote: () => ({
+    delaySeconds: 0,
+    loading: false,
+    unknown: false,
+  }),
 }));
 
 jest.mock('../../../../hooks/exitFee/useZeroExitFee', () => {

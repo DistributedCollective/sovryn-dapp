@@ -3,6 +3,7 @@ import {
   ExitStatus,
   PendingExitState,
   canExecuteExit,
+  formatDelayCountdown,
   formatDelayDuration,
   getExitDelayDisplay,
   getPendingExitState,
@@ -66,6 +67,32 @@ describe('exitDelay utils', () => {
     expect(formatDelayDuration(3_601)).toEqual({ value: 2, unit: 'hours' });
     expect(formatDelayDuration(86_400)).toEqual({ value: 1, unit: 'days' });
     expect(formatDelayDuration(172_801)).toEqual({ value: 3, unit: 'days' });
+  });
+
+  it('counts down in two units without ever understating the wait', () => {
+    // The form rounds a policy duration up to one unit, which never promises
+    // money sooner than it arrives. On the screen where someone is watching a
+    // clock, 25 hours left reading as "2 days" is uselessly coarse.
+    expect(formatDelayCountdown(90_000)).toEqual([
+      { value: 1, unit: 'days' },
+      { value: 1, unit: 'hours' },
+    ]);
+    expect(formatDelayCountdown(172_801)).toEqual([
+      { value: 2, unit: 'days' },
+      { value: 1, unit: 'hours' },
+    ]);
+    expect(formatDelayCountdown(3_599)).toEqual([
+      { value: 59, unit: 'minutes' },
+      { value: 59, unit: 'seconds' },
+    ]);
+    expect(formatDelayCountdown(86_400)).toEqual([{ value: 1, unit: 'days' }]);
+    expect(formatDelayCountdown(45)).toEqual([{ value: 45, unit: 'seconds' }]);
+    expect(formatDelayCountdown(0)).toEqual([]);
+  });
+
+  it('rolls a carrying remainder into the unit above it', () => {
+    // 1h 59m 59s must not print as "1h 60m".
+    expect(formatDelayCountdown(7_199)).toEqual([{ value: 2, unit: 'hours' }]);
   });
 
   it('never reports a negative time to unlock', () => {

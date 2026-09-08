@@ -13,6 +13,12 @@ const QUEUE_ABI = [
   'function executeExits(uint256[] ids)',
 ];
 
+/** Ready exits from one queue. An id is only accepted by the queue holding it. */
+export type ExitBatch = {
+  queueAddress: string;
+  requestIds: string[];
+};
+
 /**
  * Release one delayed exit from the perimeter vault to its receiver.
  *
@@ -22,15 +28,20 @@ const QUEUE_ABI = [
  * the delay has elapsed — the page decides whether to offer the action, so a
  * button never leads to a reverting transaction.
  *
- * `onComplete` belongs to the call, not to the hook: it names the ids this
- * particular release settles, which the caller only knows at the click.
+ * The queue and the callback both belong to the call: an exit is held by the
+ * queue its own surface pointed at, and only the caller knows which id this
+ * release settles.
  */
-export const useExecuteExit = (queueAddress: string | undefined) => {
+export const useExecuteExit = () => {
   const { signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   return useCallback(
-    async (requestId: string, onComplete?: () => void) => {
+    async (
+      queueAddress: string | undefined,
+      requestId: string,
+      onComplete?: () => void,
+    ) => {
       if (!queueAddress || !signer) {
         return;
       }
@@ -51,47 +62,56 @@ export const useExecuteExit = (queueAddress: string | undefined) => {
       setTitle(t(translations.perimeterPage.tx.executeExitTitle));
       setIsOpen(true);
     },
-    [queueAddress, setIsOpen, setTitle, setTransactions, signer],
+    [setIsOpen, setTitle, setTransactions, signer],
   );
 };
 
 /**
- * Release several ready exits in one transaction.
+ * Release several ready exits, one transaction per queue.
  *
  * `executeExits` is atomic on-chain: one locked, blocked or paused id reverts
  * the whole batch. The page therefore passes only ids whose state it has
  * already resolved to releasable — the same rule that decides whether the
- * per-row button renders — so the batch is built from rows that will certainly
- * succeed, never from "everything".
+ * per-row button renders — so each batch is built from rows that will
+ * certainly succeed, never from "everything".
+ *
+ * Batches are per queue and go into ONE transaction list rather than one call
+ * each: a second call would replace the first, and the holder would sign only
+ * the last queue's release while believing they had released everything.
  */
-export const useExecuteExits = (queueAddress: string | undefined) => {
+export const useExecuteExits = () => {
   const { signer } = useAccount();
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   return useCallback(
-    async (requestIds: string[], onComplete?: () => void) => {
-      if (!queueAddress || !signer || requestIds.length === 0) {
+    async (
+      batches: ExitBatch[],
+      onComplete?: (requestIds: string[]) => void,
+    ) => {
+      const usable = batches.filter(
+        batch => batch.queueAddress && batch.requestIds.length > 0,
+      );
+      if (!signer || usable.length === 0) {
         return;
       }
-      const queue = new ethers.Contract(queueAddress, QUEUE_ABI, signer);
 
-      setTransactions([
-        {
+      setTransactions(
+        usable.map(({ queueAddress, requestIds }) => ({
           title: t(translations.perimeterPage.tx.executeExits, {
             count: requestIds.length,
           }),
           request: {
             type: TransactionType.signTransaction,
-            contract: queue,
+            contract: new ethers.Contract(queueAddress, QUEUE_ABI, signer),
             fnName: 'executeExits',
             args: [requestIds],
           },
-          onComplete,
-        },
-      ]);
+          onComplete: onComplete ? () => onComplete(requestIds) : undefined,
+        })),
+      );
       setTitle(t(translations.perimeterPage.tx.executeExitTitle));
       setIsOpen(true);
     },
-    [queueAddress, setIsOpen, setTitle, setTransactions, signer],
+    [setIsOpen, setTitle, setTransactions, signer],
   );
 };

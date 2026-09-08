@@ -1,0 +1,24 @@
+{
+  // Typecheck-only view of the project, used by `yarn typecheck`.
+  //
+  // `tsc -p tsconfig.json` reports nothing about src/: viem, ox and abitype
+  // ship declaration files written for a newer TypeScript, and their parse
+  // errors end the run before semantic checking begins. Those three are
+  // redirected to an `any` stub here so the check reaches our own code.
+  //
+  // Full coverage also wants the workspace packages built (`yarn build` at the
+  // repo root); without their .d.ts files a few call sites degrade to `any`.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "abitype": ["scripts/typecheck-stubs/opaque.d.ts"],
+      "abitype/*": ["scripts/typecheck-stubs/opaque.d.ts"],
+      "ox": ["scripts/typecheck-stubs/opaque.d.ts"],
+      "ox/*": ["scripts/typecheck-stubs/opaque.d.ts"],
+      "viem": ["scripts/typecheck-stubs/opaque.d.ts"],
+      "viem/*": ["scripts/typecheck-stubs/opaque.d.ts"]
+    }
+  }
+}

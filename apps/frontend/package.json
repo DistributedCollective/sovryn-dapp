@@ -102,6 +102,7 @@
     "test": "craco test --watchAll=false --passWithNoTests",
     "test:staged": "craco test --watchAll=false --passWithNoTests --bail --onlyChanged",
     "lint": "eslint -c .eslintrc.js ./",
+    "typecheck": "tsc -p tsconfig.typecheck.json",
     "generate:graphql": "graphql-codegen",
     "generate:graphql:fetch:testnet": "env-cmd -f .env.development.local graphql-codegen -c codegen.fetch.yml",
     "generate:graphql:fetch:mainnet": "env-cmd -f .env.staging graphql-codegen -c codegen.fetch.yml",

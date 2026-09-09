@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 
 import { BigNumber } from 'ethers';
 import 'jest-canvas-mock';
@@ -27,12 +28,10 @@ jest.mock('../../../../../hooks/exitFee/useExitFeeRate', () => ({
   useExitFeeRate: () => ({ active: true, rateBps: 50, loading: false }),
 }));
 
+let mockDelay: { delaySeconds: number; loading: boolean; unknown: boolean };
+
 jest.mock('../../../../../hooks/exitDelay/useExitDelayQuote', () => ({
-  useExitDelayQuote: () => ({
-    delaySeconds: 0,
-    loading: false,
-    unknown: false,
-  }),
+  useExitDelayQuote: () => mockDelay,
 }));
 
 jest.mock('../../../../../hooks/useMaxAssetBalance', () => {
@@ -66,10 +65,29 @@ describe('LendingForm perimeter fee', () => {
 
   beforeEach(() => {
     (asyncCall as jest.Mock).mockResolvedValue(BigNumber.from(0));
+    mockDelay = { delaySeconds: 0, loading: false, unknown: false };
   });
 
+  // The hold row links to the Perimeter page, so the form needs a router the
+  // way it has one in the app.
+  const renderForm = () =>
+    render(
+      <MemoryRouter>
+        <LendingForm state={state} onConfirm={jest.fn()} />
+      </MemoryRouter>,
+    );
+
+  /** Enter an amount on the withdraw tab, the way a lender would. */
+  const withdraw = (amount = '100') => {
+    renderForm();
+    fireEvent.click(screen.getByText('Withdraw'));
+    const input = screen.getByPlaceholderText('0');
+    fireEvent.change(input, { target: { value: amount } });
+    fireEvent.blur(input);
+  };
+
   it('shows the "You will receive" row on the withdraw tab once an amount is entered', () => {
-    render(<LendingForm state={state} onConfirm={jest.fn()} />);
+    renderForm();
     fireEvent.click(screen.getByText('Withdraw'));
     const input = screen.getByPlaceholderText('0');
     fireEvent.change(input, { target: { value: '100' } });
@@ -83,8 +101,40 @@ describe('LendingForm perimeter fee', () => {
     expect(screen.queryByText(/^Perimeter fee/)).not.toBeInTheDocument();
   });
 
+  it('tells the lender the withdrawal will be held, and for how long', () => {
+    // No test in this repo used to render a form with a real hold, so the row
+    // could have stopped appearing without anything failing.
+    mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
+
+    withdraw();
+
+    expect(screen.getByText('Withdrawal hold')).toBeInTheDocument();
+    expect(screen.getByText('2 days')).toBeInTheDocument();
+    expect(screen.getByText(/Perimeter vault/)).toBeInTheDocument();
+  });
+
+  it('admits it could not check whether the withdrawal will be held', () => {
+    mockDelay = { delaySeconds: 0, loading: false, unknown: true };
+
+    withdraw();
+
+    expect(screen.getByText('Could not be checked')).toBeInTheDocument();
+  });
+
+  it('shows no hold on the deposit tab, however long the hold would be', () => {
+    // Nothing leaves on a deposit, so nothing is held.
+    mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
+
+    renderForm();
+    const input = screen.getByPlaceholderText('0');
+    fireEvent.change(input, { target: { value: '100' } });
+    fireEvent.blur(input);
+
+    expect(screen.queryByText('Withdrawal hold')).not.toBeInTheDocument();
+  });
+
   it('shows no "You will receive" row on the deposit tab', () => {
-    render(<LendingForm state={state} onConfirm={jest.fn()} />);
+    renderForm();
     const input = screen.getByPlaceholderText('0');
     fireEvent.change(input, { target: { value: '100' } });
     fireEvent.blur(input);

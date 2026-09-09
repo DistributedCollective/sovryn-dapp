@@ -12,6 +12,20 @@ import {
 } from './constants';
 import { AmountType } from './types';
 
+/**
+ * Whether an adjust actually removes collateral.
+ *
+ * `withdrawCollateral` is the raw input string, assigned verbatim from the
+ * form, so a field that was typed into and cleared leaves '0.0' or '0.00' —
+ * truthy, and not equal to '0'. The form's own hold row is gated on the amount
+ * being greater than zero, so a string comparison made the row and the
+ * post-signature notice disagree: a repay that moved no collateral told the
+ * holder their funds had gone to the Perimeter vault.
+ */
+export const isCollateralWithdrawal = (
+  withdrawCollateral: string | undefined,
+): boolean => decimalic(withdrawCollateral).gt(0);
+
 export const normalizeAmountByType = (
   amount: Decimal,
   amountType: AmountType,

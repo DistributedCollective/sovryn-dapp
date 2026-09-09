@@ -16,6 +16,7 @@ import {
 } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { isTransactionRequest } from '../../../3_organisms/TransactionStepDialog/helpers';
 import { CreditLineSubmitValue } from '../../../3_organisms/ZeroLocForm/types';
+import { isCollateralWithdrawal } from '../../../3_organisms/ZeroLocForm/utils';
 import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
@@ -305,13 +306,10 @@ export const useHandleTrove = (
             },
             onComplete: result => {
               callbacks?.onTroveAdjusted?.();
-              // withdrawCollateral is a string; a debt-only adjust can carry
-              // '0' here, which is truthy — gate on a real withdrawal so the
-              // hold notice never fires for a borrow or repay.
-              if (
-                value.withdrawCollateral &&
-                value.withdrawCollateral !== '0'
-              ) {
+              // A debt-only adjust holds nothing back, and the notice must not
+              // claim otherwise. Same test the form's hold row uses, so the two
+              // cannot disagree.
+              if (isCollateralWithdrawal(value.withdrawCollateral)) {
                 notifyHold();
               }
               return result;

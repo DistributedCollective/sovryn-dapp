@@ -33,9 +33,13 @@ jest.mock('../useCacheCall', () => {
         value: defaultValue,
         loading: true,
       });
+      // Holds the latest fn without making the mount effect below re-run:
+      // fn's identity changes every render, but this mock fetches once.
+      const fnRef = React.useRef(fn);
+      fnRef.current = fn;
       React.useEffect(() => {
         let alive = true;
-        Promise.resolve(fn()).then((value: unknown) => {
+        Promise.resolve(fnRef.current()).then((value: unknown) => {
           if (alive) setState({ value, loading: false });
         });
         return () => {
@@ -69,9 +73,13 @@ describe('useChainTime', () => {
     const { result } = renderHook(() => useChainTime('0x1e' as never));
     await waitFor(() => expect(result.current).toBeGreaterThan(0));
 
-    // Ninety seconds pass on a clock that is still an hour off.
+    // Ninety seconds pass on a clock that is still an hour off. The hook only
+    // re-reads the clock on its one-second tick, so the wait must outlast at
+    // least one full tick; waitFor's default of one second races it.
     (Date.now as jest.Mock).mockReturnValue(LOCAL_NOW + 90_000);
-    await waitFor(() => expect(result.current).toBe(BLOCK_TIMESTAMP + 90));
+    await waitFor(() => expect(result.current).toBe(BLOCK_TIMESTAMP + 90), {
+      timeout: 2_500,
+    });
   });
 
   it('reports 0 until a block has been read', () => {

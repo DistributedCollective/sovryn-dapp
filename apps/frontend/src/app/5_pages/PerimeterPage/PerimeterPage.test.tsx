@@ -81,6 +81,7 @@ const exit = (overrides: Record<string, unknown> = {}) => ({
   subProduct: '0x0000000000000000000000000000000000000000',
   status: ExitStatus.Queued,
   unwrapOnDelivery: false,
+  ownerHasCode: false,
   ...overrides,
 });
 
@@ -364,5 +365,30 @@ describe('PerimeterPage', () => {
     ];
     render(<PerimeterPage />);
     expect(screen.queryByText(/Release all ready/)).not.toBeInTheDocument();
+  });
+
+  it('shows the contract-owner notice on a row whose owner has code', () => {
+    mockVault.exits = [exit({ ownerHasCode: true })];
+    mockVault.blocks = { '7': clear };
+    const { container } = render(<PerimeterPage />);
+
+    expect(
+      container.querySelector('[data-layout-id="perimeter-contract-owner-7"]'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByText(
+        'Held in escrow for the product you used; delivered automatically once the hold expires.',
+      ).length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('hides the contract-owner notice on a row whose owner is a plain wallet', () => {
+    mockVault.exits = [exit({ ownerHasCode: false })];
+    mockVault.blocks = { '7': clear };
+    const { container } = render(<PerimeterPage />);
+
+    expect(
+      container.querySelector('[data-layout-id="perimeter-contract-owner-7"]'),
+    ).not.toBeInTheDocument();
   });
 });

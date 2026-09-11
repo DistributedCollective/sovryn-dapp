@@ -183,13 +183,23 @@ const PerimeterPage: FC = () => {
         id: 'status',
         title: t(translations.perimeterPage.table.status),
         cellRenderer: (row: PerimeterExitRow) => (
-          <span className="flex flex-row items-center gap-1 whitespace-nowrap">
-            {getStatusLabel(row.state)}
-            <HelperButton
-              content={getStatusTooltip(row.state)}
-              trigger={TooltipTrigger.click}
-              dataAttribute={`perimeter-status-${row.id}`}
-            />
+          <span className="flex flex-col gap-1">
+            <span className="flex flex-row items-center gap-1 whitespace-nowrap">
+              {getStatusLabel(row.state)}
+              <HelperButton
+                content={getStatusTooltip(row.state)}
+                trigger={TooltipTrigger.click}
+                dataAttribute={`perimeter-status-${row.id}`}
+              />
+            </span>
+            {row.ownerHasCode && (
+              <Paragraph
+                size={ParagraphSize.small}
+                dataAttribute={`perimeter-contract-owner-${row.id}`}
+              >
+                {t(translations.perimeterPage.contractOwnerNotice)}
+              </Paragraph>
+            )}
           </span>
         ),
       },

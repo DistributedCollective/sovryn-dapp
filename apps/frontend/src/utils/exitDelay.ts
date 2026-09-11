@@ -62,6 +62,12 @@ export type PendingExit = {
   subProduct: string;
   status: ExitStatus;
   unwrapOnDelivery: boolean;
+  /**
+   * Whether the recorded owner address carries code, per `extcodesize`. The
+   * queue lets anyone deliver such a request, so the page can note that
+   * instead of asking the holder to press anything.
+   */
+  ownerHasCode: boolean;
 };
 
 export type PartyBlockStates = {
@@ -199,7 +205,12 @@ export const formatDelayCountdown = (
 export const secondsUntilUnlock = (unlockAt: number, now: number): number =>
   Math.max(0, unlockAt - now);
 
-/** The executor set is `{originator, owner}` — the receiver is NEVER an executor. */
+/**
+ * Whether the given account is one of THIS account's own executors,
+ * `{originator, owner}` — the receiver is NEVER an executor. When the owner
+ * has code, the queue also lets anyone else deliver the request; that does
+ * not change what this check reports for the connected account.
+ */
 export const isExecutor = (
   exit: Pick<PendingExit, 'originator' | 'owner'>,
   account: string | undefined,

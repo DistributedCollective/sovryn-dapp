@@ -122,6 +122,36 @@ const resolveQueue = async (
 };
 
 /**
+ * Whether each of the given owner addresses carries code, deduplicated so an
+ * owner shared by several requests is only read once.
+ *
+ * A failed read reports no code for that owner: this drives a display-only
+ * notice, and hiding the notice on an unreadable owner changes nothing else
+ * the page states or offers.
+ */
+const resolveOwnerCode = async (
+  owners: string[],
+): Promise<Map<string, boolean>> => {
+  const provider = getProvider(RSK_CHAIN_ID);
+  const uniqueOwners = [...new Set(owners.map(owner => owner.toLowerCase()))];
+  const entries = await Promise.all(
+    uniqueOwners.map(async (owner): Promise<[string, boolean]> => {
+      try {
+        const code = await asyncCall(
+          `exitDelay/ownerCode/${RSK_CHAIN_ID}/${owner}`,
+          () => provider.getCode(owner),
+          { ttl: EXIT_DELAY_TTL },
+        );
+        return [owner, code !== '0x'];
+      } catch (error) {
+        return [owner, false];
+      }
+    }),
+  );
+  return new Map(entries);
+};
+
+/**
  * Resolve the asset an escrowed amount is denominated in.
  *
  * One queue holds every asset the perimeter covers, so a bare number is
@@ -273,6 +303,10 @@ export const usePerimeterVault = (): PerimeterVault => {
           const blockStateOf = (address: string): BlockState =>
             partyStates.get(address.toLowerCase()) ?? BlockState.None;
 
+          const ownerCode = await resolveOwnerCode(
+            requests.map(request => request.owner),
+          );
+
           uniqueIds.forEach((id, index) => {
             const request = requests[index];
             exits.push({
@@ -293,6 +327,7 @@ export const usePerimeterVault = (): PerimeterVault => {
               subProduct: request.subProduct,
               status: Number(request.status) as ExitStatus,
               unwrapOnDelivery: request.unwrapOnDelivery,
+              ownerHasCode: ownerCode.get(request.owner.toLowerCase()) ?? false,
             });
             blocks[id] = {
               originator: blockStateOf(request.originator),

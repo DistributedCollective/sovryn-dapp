@@ -2109,6 +2109,7 @@
     },
     "release": "Release",
     "readyNow": "Now",
+    "contractOwnerNotice": "Held in escrow for the product you used; delivered automatically once the hold expires.",
     "tx": {
       "executeExit": "Release held withdrawal",
       "executeExitTitle": "Release from the Perimeter vault",

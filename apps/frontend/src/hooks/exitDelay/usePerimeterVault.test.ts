@@ -32,6 +32,7 @@ const mockGetRequest = jest.fn();
 const mockBlockStateOf = jest.fn();
 const mockPaused = jest.fn();
 const mockZeroContract = jest.fn();
+const mockGetCode = jest.fn();
 
 const networkError = () =>
   Object.assign(new Error('missing response'), { code: 'SERVER_ERROR' });
@@ -65,7 +66,7 @@ jest.mock('@sovryn/contracts', () => ({
 // amount go through the real network mapping.
 jest.mock('@sovryn/ethers-provider', () => ({
   ...jest.requireActual('@sovryn/ethers-provider'),
-  getProvider: () => ({}),
+  getProvider: () => ({ getCode: mockGetCode }),
 }));
 
 jest.mock('../../config/chains', () => ({
@@ -151,6 +152,7 @@ describe('usePerimeterVault', () => {
     mockPaused.mockResolvedValue(false);
     mockBlockStateOf.mockResolvedValue(0);
     mockGetRequest.mockResolvedValue(request());
+    mockGetCode.mockResolvedValue('0x');
   });
 
   it('reports an empty queue as empty, not as unread', async () => {
@@ -290,5 +292,56 @@ describe('usePerimeterVault', () => {
 
     expect(result.current.exits[0].amount).toBeUndefined();
     expect(result.current.exits[0].tokenSymbol).toBeUndefined();
+  });
+
+  it('flags a request whose recorded owner is a contract', async () => {
+    mockGetActive.mockResolvedValue({
+      ids: [BigNumber.from(7)],
+      nextCursor: BigNumber.from(0),
+    });
+    mockGetCode.mockResolvedValue('0x6001600101');
+
+    const result = await settled();
+
+    expect(result.current.exits[0].ownerHasCode).toBe(true);
+  });
+
+  it('does not flag a request whose recorded owner is a plain wallet', async () => {
+    mockGetActive.mockResolvedValue({
+      ids: [BigNumber.from(7)],
+      nextCursor: BigNumber.from(0),
+    });
+    mockGetCode.mockResolvedValue('0x');
+
+    const result = await settled();
+
+    expect(result.current.exits[0].ownerHasCode).toBe(false);
+  });
+
+  it('does not flag a request when the owner code read fails, and reports the vault as read', async () => {
+    mockGetActive.mockResolvedValue({
+      ids: [BigNumber.from(7)],
+      nextCursor: BigNumber.from(0),
+    });
+    mockGetCode.mockRejectedValue(networkError());
+
+    const result = await settled();
+
+    expect(result.current.exits[0].ownerHasCode).toBe(false);
+    expect(result.current.unknown).toBe(false);
+  });
+
+  it('reads an owner shared by several requests only once', async () => {
+    mockGetActive.mockResolvedValue({
+      ids: [BigNumber.from(7), BigNumber.from(8)],
+      nextCursor: BigNumber.from(0),
+    });
+    mockGetRequest.mockImplementation(async (_address: string, id: string) =>
+      request({ owner: ACCOUNT }),
+    );
+
+    await settled();
+
+    expect(mockGetCode).toHaveBeenCalledTimes(1);
   });
 });

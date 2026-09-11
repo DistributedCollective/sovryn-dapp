@@ -98,9 +98,13 @@ jest.mock('../useCacheCall', () => {
         value: defaultValue,
         loading: true,
       });
+      // Holds the latest fn without making the mount effect below re-run:
+      // fn's identity changes every render, but this mock fetches once.
+      const fnRef = React.useRef(fn);
+      fnRef.current = fn;
       React.useEffect(() => {
         let alive = true;
-        Promise.resolve(fn()).then((value: unknown) => {
+        Promise.resolve(fnRef.current()).then((value: unknown) => {
           if (alive) setState({ value, loading: false });
         });
         return () => {

@@ -37,9 +37,14 @@ jest.mock('@sovryn/ethers-provider', () => {
   };
 });
 
-// Caching is not under test here: every read goes to the node.
+// Every read goes to the node; only the keys the reads are cached under are
+// recorded.
+let mockCacheKeys: string[] = [];
 jest.mock('../../store/rxjs/provider-cache', () => ({
-  asyncCall: (_key: string, fn: () => unknown) => fn(),
+  asyncCall: (key: string, fn: () => unknown) => {
+    mockCacheKeys.push(key);
+    return fn();
+  },
 }));
 
 const ACCOUNT = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
@@ -95,7 +100,10 @@ describe('quoteExitDelay', () => {
     mockRpcUrl = stub.url;
   });
 
-  afterEach(() => stub.reset());
+  afterEach(() => {
+    stub.reset();
+    mockCacheKeys = [];
+  });
 
   afterAll(() => stub.close());
 
@@ -193,6 +201,27 @@ describe('quoteExitDelay', () => {
       stub.onCall(CONTROLLER, QUOTE, delayResult(0));
 
       expect(await quote()).toEqual(NO_DELAY);
+    });
+
+    it('caches the quote under a key naming the chain, controller, queue, surface, product and account', async () => {
+      // A rotated controller or queue asks a new question; its answer must not
+      // be served from the old pair's entry.
+      wire();
+      stub.onCall(CONTROLLER, QUOTE, delayResult(3600));
+
+      await quote();
+
+      expect(mockCacheKeys).toContain(
+        [
+          'exitDelay/quoteFor',
+          '0x1e',
+          CONTROLLER.toLowerCase(),
+          QUEUE.toLowerCase(),
+          SURFACE,
+          SUB_PRODUCT.toLowerCase(),
+          ACCOUNT.toLowerCase(),
+        ].join('/'),
+      );
     });
 
     it('reports unreadable when the controller reverts the quote', async () => {

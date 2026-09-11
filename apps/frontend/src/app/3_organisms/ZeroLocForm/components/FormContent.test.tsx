@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
 
 import 'jest-canvas-mock';
+import { MemoryRouter } from 'react-router-dom';
 
 import { Decimal } from '@sovryn/utils';
 
@@ -160,5 +160,45 @@ describe('FormContent perimeter fee', () => {
     renderForm();
 
     expect(screen.getByText('Could not be checked')).toBeInTheDocument();
+  });
+
+  describe('Confirm and the delay quote', () => {
+    const confirm = (container: HTMLElement) =>
+      container.querySelector(
+        '[data-layout-id="adjust-credit-line-confirm-button"]',
+      );
+
+    it('waits for the delay quote on a collateral withdrawal, and says it is checking', () => {
+      mockDelay = { delaySeconds: 0, loading: true, unknown: false };
+
+      const { container } = renderForm();
+
+      expect(screen.getByText(/^Checking/)).toBeInTheDocument();
+      expect(confirm(container)).toBeDisabled();
+    });
+
+    it('offers Confirm once a quote arrived', () => {
+      mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
+
+      const { container } = renderForm();
+
+      expect(confirm(container)).toBeEnabled();
+    });
+
+    it('offers Confirm when the quote could not be read', () => {
+      mockDelay = { delaySeconds: 0, loading: false, unknown: true };
+
+      const { container } = renderForm();
+
+      expect(confirm(container)).toBeEnabled();
+    });
+
+    it('does not hold an adjust that removes no collateral back for the quote', () => {
+      mockDelay = { delaySeconds: 0, loading: true, unknown: false };
+
+      const { container } = renderForm({ collateralType: AmountType.Add });
+
+      expect(confirm(container)).toBeEnabled();
+    });
   });
 });

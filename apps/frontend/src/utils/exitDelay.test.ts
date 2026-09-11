@@ -49,13 +49,15 @@ describe('exitDelay utils', () => {
     ).toBe('unknown');
   });
 
-  it('shows nothing while the quote is still in flight', () => {
+  it('reports a quote still in flight as checking, never as no hold', () => {
+    // The delay fails CLOSED on chain, so a quote that has not arrived says
+    // nothing about whether the money is paid now.
     expect(
       getExitDelayDisplay({ delaySeconds: 0, loading: true, unknown: false }),
-    ).toBe('none');
+    ).toBe('checking');
     expect(
       getExitDelayDisplay({ delaySeconds: 0, loading: true, unknown: true }),
-    ).toBe('none');
+    ).toBe('checking');
   });
 
   it('formats a duration in whole units, rounding up', () => {

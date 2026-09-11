@@ -20,7 +20,11 @@ export type ExitDelayRowProps = {
    * the withdrawal is held or it reverts, never that it is paid straight out.
    */
   unknown: boolean;
-  loading?: boolean;
+  /**
+   * Whether the quote is still on its way. Required: a caller that forgot it
+   * would render a quote that has not arrived as a withdrawal paid now.
+   */
+  loading: boolean;
 };
 
 const VaultLink: FC = () => (
@@ -41,20 +45,31 @@ const VaultLink: FC = () => (
  * only told about a fee would read that as money missing.
  *
  * Silence is reserved for the one case that earns it: a quote that ARRIVED and
- * said nothing is held. A quote we could not obtain gets its own row saying so,
- * because on chain the delay fails closed — the exit is escrowed, or it reverts
- * with `PERIMETER:delay-quote-failed`. Rendering nothing there would state, in
- * the only way a form can, that the money arrives now.
+ * said nothing is held. A quote still on its way, and a quote we could not
+ * obtain, each get a row saying so, because on chain the delay fails closed —
+ * the exit is escrowed, or it reverts with `PERIMETER:delay-quote-failed`.
+ * Rendering nothing there would state, in the only way a form can, that the
+ * money arrives now.
  */
 export const ExitDelayRow: FC<ExitDelayRowProps> = ({
   delaySeconds,
   unknown,
-  loading = false,
+  loading,
 }) => {
   const display = getExitDelayDisplay({ delaySeconds, unknown, loading });
 
   if (display === 'none') {
     return null;
+  }
+
+  if (display === 'checking') {
+    return (
+      <SimpleTableRow
+        label={t(translations.exitDelay.checking.label)}
+        value={t(translations.exitDelay.checking.value)}
+        dataAttribute="exit-delay-checking"
+      />
+    );
   }
 
   if (display === 'unknown') {

@@ -2,7 +2,8 @@ import { Contract, constants } from 'ethers';
 
 import { ChainId, getProvider } from '@sovryn/ethers-provider';
 
-import { ExitDelayQuote } from '../../utils/exitDelay';
+import { asyncCall } from '../../store/rxjs/provider-cache';
+import { EXIT_DELAY_TTL, ExitDelayQuote } from '../../utils/exitDelay';
 import { readPerimeterPointer } from './readPerimeterPointer';
 
 /** A quote before the caller's own loading state is attached to it. */
@@ -90,11 +91,26 @@ export const quoteExitDelay = async ({
 
   let delaySeconds: number;
   try {
-    const quote = await new Contract(
-      controller.address,
-      CONTROLLER_ABI,
-      getProvider(chainId),
-    ).quoteExitDelayFor(account, account, account, surfaceId, subProduct);
+    // Keyed on the pointers it was read through as well as the question, so
+    // a rotated controller or queue never answers from the old pair's entry.
+    const quote = await asyncCall(
+      [
+        'exitDelay/quoteFor',
+        chainId,
+        controller.address.toLowerCase(),
+        queue.address.toLowerCase(),
+        surfaceId,
+        subProduct.toLowerCase(),
+        account.toLowerCase(),
+      ].join('/'),
+      () =>
+        new Contract(
+          controller.address,
+          CONTROLLER_ABI,
+          getProvider(chainId),
+        ).quoteExitDelayFor(account, account, account, surfaceId, subProduct),
+      { ttl: EXIT_DELAY_TTL },
+    );
     delaySeconds = Number(quote.d);
   } catch (error) {
     // A pinned controller that could not be quoted: on chain the same failure

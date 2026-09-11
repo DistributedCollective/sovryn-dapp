@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
 
 import 'jest-canvas-mock';
+import { MemoryRouter } from 'react-router-dom';
 
 import { Decimal } from '@sovryn/utils';
 
@@ -21,6 +21,12 @@ let AdjustLoanForm: typeof import('./AdjustLoanForm').AdjustLoanForm;
  */
 
 let mockDelay: { delaySeconds: number; loading: boolean; unknown: boolean };
+
+// The real submit hooks return the submit function itself, so these do too.
+const mockHandleRepay = jest.fn();
+const mockHandleBorrow = jest.fn();
+const mockHandleWithdrawCollateral = jest.fn();
+const mockHandleDepositCollateral = jest.fn();
 
 jest.mock('nanoid', () => ({ nanoid: () => '1234' }));
 
@@ -84,7 +90,7 @@ jest.mock('../../hooks/useGetMinCollateralRatio', () => {
 });
 
 jest.mock('../NewLoanForm/hooks/useBorrow', () => ({
-  useBorrow: () => ({ handleSubmit: jest.fn() }),
+  useBorrow: () => mockHandleBorrow,
 }));
 
 jest.mock('../NewLoanForm/hooks/useGetMaximumCollateralAmount', () => {
@@ -102,7 +108,7 @@ jest.mock('./hooks/useCloseWithDepositIsTinyPosition', () => ({
 }));
 
 jest.mock('./hooks/useDepositCollateral', () => ({
-  useDepositCollateral: () => ({ handleSubmit: jest.fn() }),
+  useDepositCollateral: () => mockHandleDepositCollateral,
 }));
 
 jest.mock('./hooks/useDrawdown', () => ({
@@ -135,11 +141,11 @@ jest.mock('./hooks/useGetMaximumBorrowAmount', () => {
 });
 
 jest.mock('./hooks/useRepayLoan', () => ({
-  useRepayLoan: () => ({ handleSubmit: jest.fn() }),
+  useRepayLoan: () => mockHandleRepay,
 }));
 
 jest.mock('./hooks/useWithdrawCollateral', () => ({
-  useWithdrawCollateral: () => ({ handleSubmit: jest.fn() }),
+  useWithdrawCollateral: () => mockHandleWithdrawCollateral,
 }));
 
 const loan = {
@@ -223,5 +229,49 @@ describe('AdjustLoanForm perimeter hold', () => {
 
     expect(screen.queryByText('Withdrawal hold')).not.toBeInTheDocument();
     expect(screen.queryByText('Could not be checked')).not.toBeInTheDocument();
+  });
+
+  describe('Confirm and the delay quote', () => {
+    const confirm = () =>
+      document.querySelector(
+        '[data-layout-id="adjust-loan-confirm-button"]',
+      ) as HTMLButtonElement;
+
+    const withdrawCollateral = () => {
+      renderForm();
+      fireEvent.click(screen.getByText('Withdraw collateral'));
+      enterCollateral('0.1');
+    };
+
+    it('waits for the delay quote on a collateral withdrawal, and says it is checking', () => {
+      mockDelay = { delaySeconds: 0, loading: true, unknown: false };
+
+      withdrawCollateral();
+
+      expect(screen.getByText(/^Checking/)).toBeInTheDocument();
+      expect(confirm()).toBeDisabled();
+    });
+
+    it('offers Confirm once a quote arrived, and hands the post-signature notice to the withdrawal', () => {
+      mockDelay = HOLD;
+
+      withdrawCollateral();
+      expect(confirm()).toBeEnabled();
+      fireEvent.click(confirm());
+
+      expect(mockHandleWithdrawCollateral).toHaveBeenCalledWith(
+        '0.1',
+        loan.id,
+        expect.any(Function),
+      );
+    });
+
+    it('offers Confirm when the quote could not be read', () => {
+      mockDelay = { delaySeconds: 0, loading: false, unknown: true };
+
+      withdrawCollateral();
+
+      expect(confirm()).toBeEnabled();
+    });
   });
 });

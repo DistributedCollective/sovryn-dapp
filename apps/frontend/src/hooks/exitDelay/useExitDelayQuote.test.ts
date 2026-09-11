@@ -5,22 +5,29 @@ import { useExitDelayQuote } from './useExitDelayQuote';
 
 /**
  * How a quote is classified from the chain's answers is pinned in
- * quoteExitDelay.test.ts, against a local node. This file pins the route: the
- * lending surfaces are quoted through the lending protocol's own pointers, for
- * this account, and the classification reaches the form unchanged.
+ * quoteExitDelay.test.ts, against a local node. This file runs the hook on the
+ * real shared cache and pins the route: the lending surfaces are quoted through
+ * the lending protocol's own pointers, for this account — and a quote asked
+ * before the protocol contract has loaded is never kept as the answer.
  */
 
-const ACCOUNT = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 const PROTOCOL = '0x5A0D867e0D70Fcc6Ade25C3F1B89d618b5B4Eaa7';
 const SURFACE =
   '0xd4896528a9fba849e3d3db442dea05ef8f08c93e00cc760acac34c42a7dacffe';
 const SUB_PRODUCT = '0x0000000000000000000000000000000000000123';
 
+let mockAccount = '';
+let mockProtocol: { address: string } | undefined;
+
 const mockQuoteExitDelay = jest.fn();
 
 jest.mock('./quoteExitDelay', () => ({
-  NO_DELAY: { delaySeconds: 0, unknown: false },
   quoteExitDelay: (...args: unknown[]) => mockQuoteExitDelay(...args),
+}));
+
+jest.mock('@sovryn/ethers-provider', () => ({
+  ...jest.requireActual('@sovryn/ethers-provider'),
+  getProvider: () => ({ getBlockNumber: () => Promise.resolve(100) }),
 }));
 
 jest.mock('../../config/chains', () => ({
@@ -28,83 +35,68 @@ jest.mock('../../config/chains', () => ({
 }));
 
 jest.mock('../useAccount', () => ({
-  useAccount: () => ({ account: ACCOUNT }),
+  useAccount: () => ({ account: mockAccount }),
 }));
 
 jest.mock('../useGetContract', () => ({
-  useGetProtocolContract: () => ({ address: PROTOCOL }),
+  useGetProtocolContract: () => mockProtocol,
 }));
 
-jest.mock('../useCacheCall', () => {
-  const React = jest.requireActual('react');
-  return {
-    useCacheCall: (
-      _key: string,
-      _chainId: string,
-      fn: () => Promise<unknown>,
-      _deps: unknown[],
-      defaultValue: unknown,
-    ) => {
-      const [state, setState] = React.useState({
-        value: defaultValue,
-        loading: true,
-      });
-      // Holds the latest fn without making the mount effect below re-run:
-      // fn's identity changes every render, but this mock fetches once.
-      const fnRef = React.useRef(fn);
-      fnRef.current = fn;
-      React.useEffect(() => {
-        let alive = true;
-        Promise.resolve(fnRef.current()).then((value: unknown) => {
-          if (alive) setState({ value, loading: false });
-        });
-        return () => {
-          alive = false;
-        };
-      }, []);
-      return state;
-    },
-  };
-});
-
-const render = () => renderHook(() => useExitDelayQuote(SURFACE, SUB_PRODUCT));
+// The shared cache is module-global: each test quotes for its own account.
+let nextAccount = 1;
+const freshAccount = () =>
+  `0x${(nextAccount++).toString(16).padStart(40, '0')}`;
 
 describe('useExitDelayQuote', () => {
+  beforeEach(() => {
+    mockAccount = freshAccount();
+    mockProtocol = { address: PROTOCOL };
+  });
+
   it("quotes through the lending protocol's pointers, for this account", async () => {
     mockQuoteExitDelay.mockResolvedValue({ delaySeconds: 0, unknown: false });
 
-    const { result } = render();
+    const { result } = renderHook(() =>
+      useExitDelayQuote(SURFACE, SUB_PRODUCT),
+    );
 
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(mockQuoteExitDelay).toHaveBeenCalledWith({
       chainId: '0x1e',
       consumerAddress: PROTOCOL,
-      account: ACCOUNT,
+      account: mockAccount,
       surfaceId: SURFACE,
       subProduct: SUB_PRODUCT,
     });
+    expect(getExitDelayDisplay(result.current)).toBe('none');
   });
 
-  it('reports the hold the chain quoted', async () => {
+  it('reports checking while the protocol contract has not loaded, and the real quote once it has', async () => {
     mockQuoteExitDelay.mockResolvedValue({
       delaySeconds: 172800,
       unknown: false,
     });
+    mockProtocol = undefined;
 
-    const { result } = render();
+    const { result, rerender } = renderHook(() =>
+      useExitDelayQuote(SURFACE, SUB_PRODUCT),
+    );
+    await new Promise(resolve => setTimeout(resolve, 50));
 
-    await waitFor(() => expect(result.current.loading).toBe(false));
-    expect(result.current.delaySeconds).toBe(172800);
+    expect(getExitDelayDisplay(result.current)).toBe('checking');
+
+    mockProtocol = { address: PROTOCOL };
+    rerender();
+
+    await waitFor(() => expect(result.current.delaySeconds).toBe(172800));
     expect(getExitDelayDisplay(result.current)).toBe('held');
   });
 
-  it('reports a quote that could not be read as unknown', async () => {
-    mockQuoteExitDelay.mockResolvedValue({ delaySeconds: 0, unknown: true });
+  it('reports checking while the product has not loaded', async () => {
+    const { result } = renderHook(() => useExitDelayQuote(SURFACE, undefined));
+    await new Promise(resolve => setTimeout(resolve, 50));
 
-    const { result } = render();
-
-    await waitFor(() => expect(result.current.loading).toBe(false));
-    expect(result.current.unknown).toBe(true);
-    expect(getExitDelayDisplay(result.current)).toBe('unknown');
+    expect(getExitDelayDisplay(result.current)).toBe('checking');
+    expect(mockQuoteExitDelay).not.toHaveBeenCalled();
   });
 });

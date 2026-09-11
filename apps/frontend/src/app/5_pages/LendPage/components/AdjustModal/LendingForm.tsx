@@ -231,7 +231,9 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
 
       <Button
         text={t(translations.common.buttons.confirm)}
-        disabled={!amountIsValid}
+        // A withdrawal waits for its delay quote: until it arrives the form
+        // cannot say whether the money is paid now or held.
+        disabled={!amountIsValid || (!isDeposit && exitDelayLoading)}
         onClick={handleSubmit}
         className="mt-8 w-full"
       />

@@ -114,21 +114,21 @@ export const NO_EXIT_DELAY: ExitDelayQuote = {
 const isExitDelayShown = (delaySeconds: number): boolean => delaySeconds > 0;
 
 /**
- * What the UI shows: the hold rows, an admission that we could not check, or
- * nothing at all.
+ * What the UI shows: the hold rows, a note that the quote is still being
+ * checked, an admission that we could not check, or nothing at all.
  *
- * Three states, because the chain gives three answers. `held` and `none` are
- * the two the chain stated. `unknown` is the one it did not: unlike the fee,
- * an unread delay is not equivalent to no delay, so it gets its own display
- * rather than borrowing silence from a fact we do not have.
+ * `held` and `none` are the two answers the chain stated. `unknown` is the one
+ * it did not, and `checking` is the one it has not yet: unlike the fee, an
+ * unread delay is not equivalent to no delay, so neither borrows silence from
+ * a fact we do not have. Silence is reserved for `none`.
  */
-export type ExitDelayDisplay = 'held' | 'unknown' | 'none';
+export type ExitDelayDisplay = 'held' | 'unknown' | 'checking' | 'none';
 
 export const getExitDelayDisplay = (
   quote: ExitDelayQuote,
 ): ExitDelayDisplay => {
   if (quote.loading) {
-    return 'none';
+    return 'checking';
   }
   if (quote.unknown) {
     return 'unknown';

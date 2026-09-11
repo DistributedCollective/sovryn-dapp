@@ -1,9 +1,9 @@
 import { renderHook } from '@testing-library/react';
 
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
 
 import 'jest-canvas-mock';
+import { MemoryRouter } from 'react-router-dom';
 
 import { i18n } from '../../locales/i18n';
 import { usePerimeterHoldToast } from './usePerimeterHoldToast';
@@ -72,9 +72,17 @@ describe('usePerimeterHoldToast', () => {
     expect(mockAddNotification).not.toHaveBeenCalled();
   });
 
-  it('stays silent while the quote has not arrived', () => {
-    notify({ delaySeconds: 0, loading: true, unknown: true });
+  it('says the withdrawal may be held when the quote had not arrived', () => {
+    // Silence is the notice's way of saying "paid now", which a quote that
+    // never arrived cannot support.
+    const notification = notify({
+      delaySeconds: 0,
+      loading: true,
+      unknown: false,
+    });
 
-    expect(mockAddNotification).not.toHaveBeenCalled();
+    expect(notification.title).toBe(
+      'Withdrawal may be held by the Sovryn Perimeter',
+    );
   });
 });

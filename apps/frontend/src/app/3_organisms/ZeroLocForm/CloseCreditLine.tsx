@@ -104,9 +104,10 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
     [closeLocked, dllrLocked, creditToken],
   );
 
+  // A close always returns collateral, so it always waits for the delay quote.
   const submitButtonDisabled = useMemo(
-    () => hasError || isInMaintenance || isRecoveryMode,
-    [isInMaintenance, hasError, isRecoveryMode],
+    () => hasError || isInMaintenance || isRecoveryMode || exitDelayLoading,
+    [isInMaintenance, hasError, isRecoveryMode, exitDelayLoading],
   );
 
   const tokenOptions = useMemo(

@@ -23,8 +23,9 @@ const HOLD_TOAST_TIMEOUT_MS = 30_000;
  *
  * Pass the same quote the form displayed, so the notice and the form agree. A
  * quote that arrived saying nothing is held makes the callback a no-op and
- * unheld flows keep their exact current behaviour; a quote we could not obtain
- * says so, because the transaction that just succeeded is then one whose funds
+ * unheld flows keep their exact current behaviour. A quote we could not obtain,
+ * or one that had not arrived when the callback was made, gets the "may be
+ * held" notice: the transaction that just succeeded is then one whose funds
  * may be sitting in the vault.
  */
 export const usePerimeterHoldToast = (quote: ExitDelayQuote) => {
@@ -35,7 +36,7 @@ export const usePerimeterHoldToast = (quote: ExitDelayQuote) => {
     if (display === 'none') {
       return;
     }
-    const isUnknown = display === 'unknown';
+    const isUnknown = display !== 'held';
     addNotification(
       {
         type: NotificationType.info,

@@ -1,10 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
 
 import { BigNumber } from 'ethers';
 import 'jest-canvas-mock';
+import { MemoryRouter } from 'react-router-dom';
 
 import { Decimal } from '@sovryn/utils';
 
@@ -119,6 +119,47 @@ describe('LendingForm perimeter fee', () => {
     withdraw();
 
     expect(screen.getByText('Could not be checked')).toBeInTheDocument();
+  });
+
+  describe('Confirm and the delay quote', () => {
+    const confirm = () => screen.getByRole('button', { name: 'Confirm' });
+
+    it('waits for the delay quote on a withdrawal, and says it is checking', () => {
+      mockDelay = { delaySeconds: 0, loading: true, unknown: false };
+
+      withdraw();
+
+      expect(screen.getByText(/^Checking/)).toBeInTheDocument();
+      expect(confirm()).toBeDisabled();
+    });
+
+    it('offers Confirm once a quote arrived', () => {
+      mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
+
+      withdraw();
+
+      expect(confirm()).toBeEnabled();
+    });
+
+    it('offers Confirm when the quote could not be read, with the warning shown', () => {
+      mockDelay = { delaySeconds: 0, loading: false, unknown: true };
+
+      withdraw();
+
+      expect(screen.getByText('Could not be checked')).toBeInTheDocument();
+      expect(confirm()).toBeEnabled();
+    });
+
+    it('does not hold a deposit back for the delay quote', () => {
+      mockDelay = { delaySeconds: 0, loading: true, unknown: false };
+
+      renderForm();
+      const input = screen.getByPlaceholderText('0');
+      fireEvent.change(input, { target: { value: '100' } });
+      fireEvent.blur(input);
+
+      expect(confirm()).toBeEnabled();
+    });
   });
 
   it('shows no hold on the deposit tab, however long the hold would be', () => {

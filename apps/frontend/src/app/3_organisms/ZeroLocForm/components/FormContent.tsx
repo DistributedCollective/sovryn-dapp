@@ -217,7 +217,9 @@ export const FormContent: FC<FormContentProps> = props => {
       isInMaintenance ||
       (isBorrowDisabled && Number(props.debtAmount) > 0) ||
       isInvalidOriginationFee ||
-      (!props.hasTrove && !hasDisclaimerBeenChecked)
+      (!props.hasTrove && !hasDisclaimerBeenChecked) ||
+      // A collateral withdrawal waits for its delay quote.
+      (exitFeeGross.gt(0) && exitDelayLoading)
     );
   }, [
     props.errors,
@@ -231,6 +233,8 @@ export const FormContent: FC<FormContentProps> = props => {
     isBorrowDisabled,
     isInvalidOriginationFee,
     hasDisclaimerBeenChecked,
+    exitFeeGross,
+    exitDelayLoading,
   ]);
 
   const handleDebtTypeChange = useCallback(

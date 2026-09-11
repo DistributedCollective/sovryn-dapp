@@ -2060,6 +2060,10 @@
     },
     "vaultNotice": "This amount goes to the Sovryn Perimeter vault when you sign, and reaches you after the hold.",
     "vaultLink": "Track and release it on the Perimeter page",
+    "checking": {
+      "label": "Withdrawal delay",
+      "value": "Checking…"
+    },
     "unknown": {
       "label": "Withdrawal hold",
       "value": "Could not be checked",

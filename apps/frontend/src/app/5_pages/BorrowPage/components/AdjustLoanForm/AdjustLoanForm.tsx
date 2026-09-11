@@ -1012,7 +1012,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           onClick={handleFormSubmit}
           dataAttribute="adjust-loan-confirm-button"
           disabled={
-            submitButtonDisabled || (isBorrowTab && debtSize.gt(maxBorrow))
+            submitButtonDisabled ||
+            (isBorrowTab && debtSize.gt(maxBorrow)) ||
+            // Collateral leaving the protocol waits for its delay quote.
+            (exitFeeGross.gt(0) && exitDelay.loading)
           }
         />
       </div>

@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
 
 import 'jest-canvas-mock';
+import { MemoryRouter } from 'react-router-dom';
 
 import { i18n } from '../../../locales/i18n';
 import { ExitDelayRow } from './ExitDelayRow';
@@ -96,9 +96,17 @@ describe('ExitDelayRow', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders nothing while the quote is still in flight', () => {
-    const { container } = renderRow(0, true, true);
-    expect(container).toBeEmptyDOMElement();
+  it('says it is still checking while the quote is in flight, instead of rendering as an unheld withdrawal', () => {
+    const { container } = renderRow(0, false, true);
+    expect(
+      container.querySelector('[data-layout-id="exit-delay-checking"]'),
+    ).toHaveTextContent(/Checking/);
+    expect(
+      container.querySelector('[data-layout-id="exit-delay-duration"]'),
+    ).not.toBeInTheDocument();
+    expect(
+      container.querySelector('[data-layout-id="exit-delay-unknown"]'),
+    ).not.toBeInTheDocument();
   });
 
   it('explains where the funds go, on click', () => {

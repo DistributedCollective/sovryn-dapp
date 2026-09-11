@@ -21,7 +21,7 @@ import {
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 import { useGetProtocolContract } from '../useGetContract';
-import { isCallRevert } from './quoteExitDelay';
+import { readPerimeterPointer } from './readPerimeterPointer';
 
 export type PerimeterVault = {
   exits: PendingExit[];
@@ -56,8 +56,6 @@ const UNREADABLE: Omit<PerimeterVault, 'loading'> = { ...EMPTY, unknown: true };
 /** No fetch stamps its result with this, so a default value is never "fresh". */
 const PENDING_KEY = '';
 
-const QUEUE_GETTER_ABI = ['function exitDelayQueue() view returns (address)'];
-
 const QUEUE_ABI = [
   'function getActive(address party, uint256 cursor, uint256 n) view returns (uint256[] ids, uint256 nextCursor)',
   'function getRequest(uint256 id) view returns (tuple(uint128 amount, uint64 createdAt, uint64 unlockAt, address originator, address owner, address receiver, address token, bytes32 surfaceId, address subProduct, uint8 status, bool unwrapOnDelivery))',
@@ -75,67 +73,56 @@ const PAGE = 500;
 const MAX_PAGES = 50;
 
 /**
- * Queue addresses seen for a consumer, remembered for the life of the tab.
+ * Every queue address each consumer has resolved to, remembered for the life
+ * of the tab.
  *
- * Clearing `exitDelayQueue` is one of the ways the perimeter can be switched
- * off, and it must not take already-escrowed funds off the screen with it: the
- * queue still holds them and still releases them. So a pointer that goes to
- * zero falls back to the address it last resolved to. Deliberately in memory
- * only — a persisted address would be an attacker-supplied contract for the
- * release button to call after someone edited local storage.
+ * The consumers' setters refuse the zero address but accept a new queue, and
+ * requests left in the old queue are still held and still released there. So
+ * a queue seen once stays listed after the pointer moves on. Deliberately in
+ * memory only — a persisted address would be an attacker-supplied contract for
+ * the release button to call after someone edited local storage.
  */
-const lastKnownQueues = new Map<string, string>();
+const knownQueues = new Map<string, Set<string>>();
 
 /**
  * Follow one consumer's queue pointer.
  *
- * A reverted call is an answer (this consumer has no queue leg); an
- * unreachable node is not, and is reported so the page can say it could not
+ * A getter the consumer does not have is a completed read with no queue; a
+ * read that did not complete is reported so the page can say it could not
  * read rather than that nothing is held.
  */
-const resolveQueue = async (
+const resolveQueues = async (
   consumerAddress: string,
-): Promise<{ address?: string; unknown: boolean }> => {
+): Promise<{ addresses: string[]; unknown: boolean }> => {
   const memoKey = `${RSK_CHAIN_ID}/${consumerAddress.toLowerCase()}`;
-  try {
-    const pointer = new Contract(
-      consumerAddress,
-      QUEUE_GETTER_ABI,
-      getProvider(RSK_CHAIN_ID),
-    );
-    const address: string = await asyncCall(
-      `exitDelay/queueAddress/${RSK_CHAIN_ID}/${consumerAddress}`,
-      () => pointer.exitDelayQueue(),
-      { ttl: EXIT_DELAY_TTL },
-    );
-    if (address && address !== constants.AddressZero) {
-      lastKnownQueues.set(memoKey, address);
-      return { address, unknown: false };
-    }
-    return { address: lastKnownQueues.get(memoKey), unknown: false };
-  } catch (error) {
-    if (isCallRevert(error)) {
-      return { address: lastKnownQueues.get(memoKey), unknown: false };
-    }
-    return { address: lastKnownQueues.get(memoKey), unknown: true };
+  const remembered = knownQueues.get(memoKey) ?? new Set<string>();
+  const pointer = await readPerimeterPointer(
+    RSK_CHAIN_ID,
+    consumerAddress,
+    'exitDelayQueue',
+  );
+  if (pointer.kind === 'address' && pointer.address !== constants.AddressZero) {
+    remembered.add(pointer.address.toLowerCase());
+    knownQueues.set(memoKey, remembered);
   }
+  return {
+    addresses: [...remembered],
+    unknown: pointer.kind === 'unreadable',
+  };
 };
 
 /**
  * Whether each of the given owner addresses carries code, deduplicated so an
- * owner shared by several requests is only read once.
- *
- * A failed read reports no code for that owner: this drives a display-only
- * notice, and hiding the notice on an unreadable owner changes nothing else
- * the page states or offers.
+ * owner shared by several requests is only read once. An owner whose code
+ * read did not complete maps to undefined, never to "a plain wallet".
  */
 const resolveOwnerCode = async (
   owners: string[],
-): Promise<Map<string, boolean>> => {
+): Promise<Map<string, boolean | undefined>> => {
   const provider = getProvider(RSK_CHAIN_ID);
   const uniqueOwners = [...new Set(owners.map(owner => owner.toLowerCase()))];
   const entries = await Promise.all(
-    uniqueOwners.map(async (owner): Promise<[string, boolean]> => {
+    uniqueOwners.map(async (owner): Promise<[string, boolean | undefined]> => {
       try {
         const code = await asyncCall(
           `exitDelay/ownerCode/${RSK_CHAIN_ID}/${owner}`,
@@ -144,7 +131,7 @@ const resolveOwnerCode = async (
         );
         return [owner, code !== '0x'];
       } catch (error) {
-        return [owner, false];
+        return [owner, undefined];
       }
     }),
   );
@@ -218,6 +205,7 @@ export const usePerimeterVault = (): PerimeterVault => {
       }
       try {
         const consumers = [protocol.address];
+        let zeroUnresolved = false;
         try {
           const { address } = await getZeroContract(
             'borrowerOperations',
@@ -225,19 +213,16 @@ export const usePerimeterVault = (): PerimeterVault => {
           );
           consumers.push(address);
         } catch (error) {
-          // Zero's address could not be resolved; the protocol's queue is
-          // still worth listing, and `unknown` below records what was missed.
+          // Zero's queue cannot be followed without its address, so whatever
+          // it holds is unread; the protocol's queue is still worth listing.
+          zeroUnresolved = true;
         }
 
-        const resolved = await Promise.all(consumers.map(resolveQueue));
-        const pointerUnknown = resolved.some(entry => entry.unknown);
+        const resolved = await Promise.all(consumers.map(resolveQueues));
+        const pointerUnknown =
+          zeroUnresolved || resolved.some(entry => entry.unknown);
         const queueAddresses = [
-          ...new Set(
-            resolved
-              .map(entry => entry.address)
-              .filter((address): address is string => !!address)
-              .map(address => address.toLowerCase()),
-          ),
+          ...new Set(resolved.flatMap(entry => entry.addresses)),
         ];
 
         if (queueAddresses.length === 0) {
@@ -280,7 +265,7 @@ export const usePerimeterVault = (): PerimeterVault => {
           pausedByQueue[queueAddress] = await queue.securityPerimeterPaused();
 
           // One wave of requests rather than one round trip per id: the read
-          // runs every block, and a queue of ten was twenty sequential trips.
+          // runs every block.
           const requests = await Promise.all(
             uniqueIds.map(id => queue.getRequest(id)),
           );
@@ -327,7 +312,7 @@ export const usePerimeterVault = (): PerimeterVault => {
               subProduct: request.subProduct,
               status: Number(request.status) as ExitStatus,
               unwrapOnDelivery: request.unwrapOnDelivery,
-              ownerHasCode: ownerCode.get(request.owner.toLowerCase()) ?? false,
+              ownerHasCode: ownerCode.get(request.owner.toLowerCase()),
             });
             blocks[id] = {
               originator: blockStateOf(request.originator),

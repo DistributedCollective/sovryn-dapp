@@ -49,10 +49,6 @@ export const useZeroExitDelayQuote = (): ZeroExitDelayQuote => {
       return quoteExitDelay({
         chainId,
         consumerAddress: address,
-        // Shared with the vault page and useZeroExitFee: one read of each
-        // pointer serves every consumer of it.
-        queueKey: `exitDelay/queueAddress/${chainId}/${address}`,
-        controllerKey: `exitFee/zeroController/${chainId}/${address}`,
         account,
         surfaceId: SURFACE_ZERO_WITHDRAW_COLL,
         subProduct: constants.AddressZero,

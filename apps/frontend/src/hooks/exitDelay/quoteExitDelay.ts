@@ -2,8 +2,8 @@ import { Contract, constants } from 'ethers';
 
 import { ChainId, getProvider } from '@sovryn/ethers-provider';
 
-import { asyncCall } from '../../store/rxjs/provider-cache';
-import { EXIT_DELAY_TTL, ExitDelayQuote } from '../../utils/exitDelay';
+import { ExitDelayQuote } from '../../utils/exitDelay';
+import { readPerimeterPointer } from './readPerimeterPointer';
 
 /** A quote before the caller's own loading state is attached to it. */
 export type ResolvedExitDelay = Omit<ExitDelayQuote, 'loading'>;
@@ -21,27 +21,9 @@ export const UNREADABLE: ResolvedExitDelay = {
   unknown: true,
 };
 
-const QUEUE_GETTER_ABI = ['function exitDelayQueue() view returns (address)'];
-
-const CONTROLLER_GETTER_ABI = [
-  'function exitFeeController() view returns (address)',
-];
-
 const CONTROLLER_ABI = [
   'function quoteExitDelayFor(address rawOriginator, address owner, address receiver, bytes32 surfaceId, address subProduct) view returns (uint32 d, address effOrig, address effOwner)',
 ];
-
-/**
- * A reverted call answers the question; an unreachable node does not.
- *
- * `exitDelayQueue()` and `exitFeeController()` revert on a consumer that
- * predates the perimeter, and that revert IS the answer "this surface holds
- * nothing" — the same consumer has no delay leg to escrow with. A network,
- * timeout or server failure carries no such information and must not be read
- * as an absent pointer.
- */
-export const isCallRevert = (error: unknown): boolean =>
-  (error as { code?: string })?.code === 'CALL_EXCEPTION';
 
 /**
  * How long the perimeter would hold a withdrawal from one surface, resolved
@@ -52,19 +34,21 @@ export const isCallRevert = (error: unknown): boolean =>
  * Three outcomes, kept distinct all the way to the screen: a hold, a stated
  * absence of one, and a read that did not complete.
  *
- * The consumer's queue pointer is checked FIRST, and a surface without one is
- * quoted as no hold whatever the controller says. The controller resolves a
- * delay from a global default for every surface that has no bypass tier, so it
- * answers for surfaces whose consumer has no queue leg to escrow with — and a
- * single `setGlobalDelaySeconds` would otherwise announce a hold on every
- * surface at once, including ones that pay straight to the wallet. The
- * announcement must not get ahead of the enforcement.
+ * The consumer's queue getter is read FIRST. The controller resolves a delay
+ * from a global default for every surface without a bypass tier, including
+ * surfaces whose consumer has no delay leg, so its answer alone would announce
+ * a hold the consumer cannot impose. Only a getter the node positively
+ * reported as reverting means "no delay leg"; every read that did not complete
+ * is unreadable, because the consumer reads its pointers from chain state that
+ * the browser's RPC trouble does not touch.
+ *
+ * A consumer whose queue pointer is unset still asks the controller: at a
+ * delay of zero it pays direct, and at a delay above zero it reverts the
+ * withdrawal for want of a queue, which is not "paid now" either.
  */
 export const quoteExitDelay = async ({
   chainId,
   consumerAddress,
-  queueKey,
-  controllerKey,
   account,
   surfaceId,
   subProduct,
@@ -72,85 +56,57 @@ export const quoteExitDelay = async ({
   chainId: ChainId;
   /** The consumer contract holding the perimeter pointers for this surface. */
   consumerAddress: string;
-  /**
-   * Cache key for the queue-pointer read. Shared with the vault page, which
-   * follows the same pointer to list what is held.
-   */
-  queueKey: string;
-  /**
-   * Cache key for the controller-pointer read. The fee hooks read the same
-   * pointer off the same consumer, so passing their key makes the two share
-   * one round trip rather than each issuing its own.
-   */
-  controllerKey: string;
   account: string;
   surfaceId: string;
   subProduct: string;
 }): Promise<ResolvedExitDelay> => {
-  const provider = getProvider(chainId);
-
-  let queueAddress: string;
-  try {
-    const queuePointer = new Contract(
-      consumerAddress,
-      QUEUE_GETTER_ABI,
-      provider,
-    );
-    queueAddress = await asyncCall(
-      queueKey,
-      () => queuePointer.exitDelayQueue(),
-      { ttl: EXIT_DELAY_TTL },
-    );
-  } catch (error) {
-    return isCallRevert(error) ? NO_DELAY : UNREADABLE;
-  }
-
-  // No queue on this consumer means no leg that can escrow: whatever the
-  // controller would quote, this withdrawal is paid to the wallet at signing.
-  if (!queueAddress || queueAddress === constants.AddressZero) {
-    return NO_DELAY;
-  }
-
-  let controllerAddress: string;
-  try {
-    const pointer = new Contract(
-      consumerAddress,
-      CONTROLLER_GETTER_ABI,
-      provider,
-    );
-    controllerAddress = await asyncCall(
-      controllerKey,
-      () => pointer.exitFeeController(),
-      { ttl: EXIT_DELAY_TTL },
-    );
-  } catch (error) {
-    return isCallRevert(error) ? NO_DELAY : UNREADABLE;
-  }
-
-  // No controller pinned is the one case where zero is the chain's own answer:
-  // `safeQuoteDelay` returns (0, …) for it and the withdrawal pays direct.
-  if (!controllerAddress || controllerAddress === constants.AddressZero) {
-    return NO_DELAY;
-  }
-
-  try {
-    const controller = new Contract(
-      controllerAddress,
-      CONTROLLER_ABI,
-      provider,
-    );
-    const quote = await controller.quoteExitDelayFor(
-      account,
-      account,
-      account,
-      surfaceId,
-      subProduct,
-    );
-    return { delaySeconds: Number(quote.d), unknown: false };
-  } catch (error) {
-    // A controller IS pinned and it could not be quoted. On chain that same
-    // failure reverts the withdrawal, so there is no reading of this in which
-    // the user is paid straight out.
+  const queue = await readPerimeterPointer(
+    chainId,
+    consumerAddress,
+    'exitDelayQueue',
+  );
+  if (queue.kind === 'unreadable') {
     return UNREADABLE;
   }
+  if (queue.kind === 'absent') {
+    return NO_DELAY;
+  }
+
+  const controller = await readPerimeterPointer(
+    chainId,
+    consumerAddress,
+    'exitFeeController',
+  );
+  // The queue getter answered, so this consumer has a delay leg; a controller
+  // read that did not produce an address is no statement that nothing is held.
+  if (controller.kind !== 'address') {
+    return UNREADABLE;
+  }
+  // No controller pinned is the one wired case where zero is the chain's own
+  // answer: the consumer quotes no delay and pays direct.
+  if (controller.address === constants.AddressZero) {
+    return NO_DELAY;
+  }
+
+  let delaySeconds: number;
+  try {
+    const quote = await new Contract(
+      controller.address,
+      CONTROLLER_ABI,
+      getProvider(chainId),
+    ).quoteExitDelayFor(account, account, account, surfaceId, subProduct);
+    delaySeconds = Number(quote.d);
+  } catch (error) {
+    // A pinned controller that could not be quoted: on chain the same failure
+    // reverts the withdrawal, so there is no reading in which it pays out.
+    return UNREADABLE;
+  }
+
+  if (delaySeconds === 0) {
+    return NO_DELAY;
+  }
+  if (queue.address === constants.AddressZero) {
+    return UNREADABLE;
+  }
+  return { delaySeconds, unknown: false };
 };

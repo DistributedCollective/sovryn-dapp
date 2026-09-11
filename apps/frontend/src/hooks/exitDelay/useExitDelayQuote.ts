@@ -45,10 +45,6 @@ export const useExitDelayQuote = (
       return quoteExitDelay({
         chainId: RSK_CHAIN_ID,
         consumerAddress: protocol.address,
-        // Shared with the vault page and useExitFeeRate: one read of each
-        // pointer serves every consumer of it.
-        queueKey: `exitDelay/queueAddress/${RSK_CHAIN_ID}/${protocol.address}`,
-        controllerKey: `exitFee/controllerAddress/${RSK_CHAIN_ID}/${protocol.address}`,
         account,
         surfaceId,
         subProduct,

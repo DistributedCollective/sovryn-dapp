@@ -65,9 +65,10 @@ export type PendingExit = {
   /**
    * Whether the recorded owner address carries code, per `extcodesize`. The
    * queue lets anyone deliver such a request, so the page can note that
-   * instead of asking the holder to press anything.
+   * instead of asking the holder to press anything. Undefined when the code
+   * read did not complete.
    */
-  ownerHasCode: boolean;
+  ownerHasCode?: boolean;
 };
 
 export type PartyBlockStates = {

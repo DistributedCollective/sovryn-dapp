@@ -6,7 +6,6 @@ import { getZeroContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { asyncCall } from '../../store/rxjs/provider-cache';
 import { getRskChainId } from '../../utils/chain';
 import {
   EXIT_FEE_MAX_BPS,
@@ -14,6 +13,7 @@ import {
   EXIT_FEE_TTL,
   ExitFeeQuote,
 } from '../../utils/exitFee';
+import { readPerimeterPointer } from '../exitDelay/readPerimeterPointer';
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 
@@ -41,11 +41,7 @@ const stamped = async <T extends object>(
   fetch: () => Promise<T>,
 ) => ({ ...(await fetch()), forKey });
 
-// The Z-1 kept preview — same _safeQuote path as the live charge hook.
-const CONTROLLER_GETTER_ABI = [
-  'function exitFeeController() view returns (address)',
-];
-
+// The preview runs the same `_safeQuote` path as the live charge.
 const PREVIEW_ABI = [
   'function previewZeroCollWithdrawExitFee(address borrower, uint256 grossColl) view returns (uint16 rateBps, uint256 feeAmount, uint256 netAmount, address feeReceiver, bool active, uint8 reason)',
 ];
@@ -82,30 +78,24 @@ export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
             getRskChainId(),
           );
           /**
-           * Same split as the lending hook. A missing or reverting
-           * `exitFeeController()` is what Zero looks like before the perimeter
-           * ships: nothing is charged, and the form must look untouched. Only
-           * once that pointer resolves does a failing preview mean we genuinely
-           * do not know the rate.
+           * Same split as the lending hook. A controller getter
+           * BorrowerOperations does not have, or no controller pinned, charges
+           * nothing: a stated "no fee", and the form looks untouched. A pointer
+           * read that did not complete is unknown. Only once the pointer
+           * resolves does a failing preview mean we genuinely do not know the
+           * rate.
            */
-          const pointer = new Contract(
+          const pointer = await readPerimeterPointer(
+            getRskChainId(),
             address,
-            CONTROLLER_GETTER_ABI,
-            getProvider(getRskChainId()),
+            'exitFeeController',
           );
-          let controllerAddress;
-          try {
-            controllerAddress = await asyncCall(
-              `exitFee/zeroController/${getRskChainId()}/${address}`,
-              () => pointer.exitFeeController(),
-              { ttl: EXIT_FEE_TTL },
-            );
-          } catch (error) {
-            return INACTIVE;
+          if (pointer.kind === 'unreadable') {
+            return { ...INACTIVE, unknown: true };
           }
           if (
-            !controllerAddress ||
-            controllerAddress === constants.AddressZero
+            pointer.kind === 'absent' ||
+            pointer.address === constants.AddressZero
           ) {
             return INACTIVE;
           }

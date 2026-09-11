@@ -2,31 +2,40 @@ import { renderHook, waitFor } from '@testing-library/react';
 
 import { BigNumber } from 'ethers';
 
+import {
+  JsonRpcStub,
+  captureCallFailure,
+  startJsonRpcStub,
+} from '../../utils/testing/jsonRpcStub';
+import { PointerRead } from './readPerimeterPointer';
 import { usePerimeterVault } from './usePerimeterVault';
 
 /**
- * The whole read used to be wrapped in one catch returning an empty vault, and
- * the page printed "not holding any withdrawals" for it. An RPC timeout, a
- * rate limit and an honest empty queue are the same value there, and only one
- * of the three is safe to state. These tests drive each of those shapes and
- * hold them apart.
+ * "Not holding any withdrawals" is a definitive statement. These tests hold
+ * apart an honest empty queue, a consumer with no delay leg, and every read
+ * that did not complete — which must reach the page as unknown.
  */
 
 const ACCOUNT = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 const PROTOCOL = '0x5A0D867e0D70Fcc6Ade25C3F1B89d618b5B4Eaa7';
 const BORROWER_OPERATIONS = '0x5B9dB4B8bdeF3e57323187a9AC2639C5DEe5FD39';
-// The hook remembers a queue address for the life of the tab, keyed by the
-// consumer it came from. The divergence test uses its own BorrowerOperations
-// so its queue is not still remembered when the fallback test runs.
+// The hook remembers queue addresses for the life of the tab, keyed by the
+// consumer they came from. Tests that move a pointer use their own consumer so
+// nothing they leave behind is remembered by another test.
 const OTHER_BORROWER_OPERATIONS = '0x6B9dB4B8bdeF3e57323187a9AC2639C5DEe5FD39';
+const MOVING_PROTOCOL = '0x7A0D867e0D70Fcc6Ade25C3F1B89d618b5B4Eaa7';
+const UNWIRED_PROTOCOL = '0x8A0D867e0D70Fcc6Ade25C3F1B89d618b5B4Eaa7';
 const QUEUE = '0x1111111111111111111111111111111111111111';
 const ZERO_QUEUE = '0x2222222222222222222222222222222222222222';
+const NEW_QUEUE = '0x4444444444444444444444444444444444444444';
 const RECEIVER = '0x3333333333333333333333333333333333333333';
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 /** rUSDT on RSK — 18 decimals, like every asset on these surfaces today. */
 const RUSDT = '0xEf213441a85DF4d7acBdAe0Cf78004E1e486BB96';
 
-const mockQueuePointer = jest.fn();
+let mockProtocolAddress = PROTOCOL;
+
+const mockReadPointer = jest.fn();
 const mockGetActive = jest.fn();
 const mockGetRequest = jest.fn();
 const mockBlockStateOf = jest.fn();
@@ -34,17 +43,15 @@ const mockPaused = jest.fn();
 const mockZeroContract = jest.fn();
 const mockGetCode = jest.fn();
 
-const networkError = () =>
-  Object.assign(new Error('missing response'), { code: 'SERVER_ERROR' });
+jest.mock('./readPerimeterPointer', () => ({
+  readPerimeterPointer: (...args: unknown[]) => mockReadPointer(...args),
+}));
 
 jest.mock('ethers', () => {
   const actual = jest.requireActual('ethers');
   return {
     ...actual,
-    Contract: function (address: string, abi: string[]) {
-      if (JSON.stringify(abi).includes('exitDelayQueue')) {
-        return { exitDelayQueue: () => mockQueuePointer(address) };
-      }
+    Contract: function (address: string) {
       return {
         getActive: (...args: unknown[]) => mockGetActive(address, ...args),
         getRequest: (id: string) => mockGetRequest(address, id),
@@ -82,7 +89,7 @@ jest.mock('../useAccount', () => ({
 }));
 
 jest.mock('../useGetContract', () => ({
-  useGetProtocolContract: () => ({ address: PROTOCOL }),
+  useGetProtocolContract: () => ({ address: mockProtocolAddress }),
 }));
 
 jest.mock('../useCacheCall', () => {
@@ -117,6 +124,13 @@ jest.mock('../useCacheCall', () => {
   };
 });
 
+const address = (value: string): PointerRead => ({
+  kind: 'address',
+  address: value,
+});
+const ABSENT: PointerRead = { kind: 'absent' };
+const UNREADABLE: PointerRead = { kind: 'unreadable' };
+
 /** A queued request in the contract's own field order. */
 const request = (overrides: Record<string, unknown> = {}) => ({
   amount: BigNumber.from('1500000000000000000'),
@@ -133,6 +147,12 @@ const request = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
+const holding = (...ids: number[]) =>
+  mockGetActive.mockResolvedValue({
+    ids: ids.map(id => BigNumber.from(id)),
+    nextCursor: BigNumber.from(0),
+  });
+
 const settled = async () => {
   const hook = renderHook(() => usePerimeterVault());
   await waitFor(() => expect(hook.result.current.loading).toBe(false));
@@ -140,15 +160,26 @@ const settled = async () => {
 };
 
 describe('usePerimeterVault', () => {
-  beforeEach(() => {
-    mockZeroContract.mockResolvedValue({ address: BORROWER_OPERATIONS });
-    mockQueuePointer.mockImplementation(async (address: string) =>
-      address === PROTOCOL ? QUEUE : ZERO_ADDRESS,
-    );
-    mockGetActive.mockResolvedValue({
-      ids: [],
-      nextCursor: BigNumber.from(0),
+  let stub: JsonRpcStub;
+  let transportFailure: unknown;
+
+  beforeAll(async () => {
+    stub = await startJsonRpcStub();
+    transportFailure = await captureCallFailure(stub, {
+      status: 503,
+      body: '<html>Service Unavailable</html>',
     });
+  });
+
+  afterAll(() => stub.close());
+
+  beforeEach(() => {
+    mockProtocolAddress = PROTOCOL;
+    mockZeroContract.mockResolvedValue({ address: BORROWER_OPERATIONS });
+    mockReadPointer.mockImplementation(async (_chainId, consumer: string) =>
+      consumer === PROTOCOL ? address(QUEUE) : address(ZERO_ADDRESS),
+    );
+    holding();
     mockPaused.mockResolvedValue(false);
     mockBlockStateOf.mockResolvedValue(0);
     mockGetRequest.mockResolvedValue(request());
@@ -162,35 +193,66 @@ describe('usePerimeterVault', () => {
     expect(result.current.unknown).toBe(false);
   });
 
-  it('reports unknown when the read fails, never an empty vault', async () => {
-    mockGetActive.mockRejectedValue(networkError());
+  it("reads each consumer's queue pointer", async () => {
+    await settled();
 
-    const result = await settled();
-
-    expect(result.current.unknown).toBe(true);
-    expect(result.current.exits).toHaveLength(0);
-  });
-
-  it('reports unknown when a queue pointer cannot be reached', async () => {
-    mockQueuePointer.mockRejectedValue(networkError());
-
-    const result = await settled();
-
-    expect(result.current.unknown).toBe(true);
-  });
-
-  it('treats a reverting queue pointer as an answer, not as an unread', async () => {
-    // A consumer that predates the perimeter has no exitDelayQueue and no leg
-    // to escrow with, so "nothing held" is the truth for it.
-    mockQueuePointer.mockRejectedValue(
-      Object.assign(new Error('call revert exception'), {
-        code: 'CALL_EXCEPTION',
-      }),
+    expect(mockReadPointer).toHaveBeenCalledWith(
+      '0x1e',
+      PROTOCOL,
+      'exitDelayQueue',
     );
+    expect(mockReadPointer).toHaveBeenCalledWith(
+      '0x1e',
+      BORROWER_OPERATIONS,
+      'exitDelayQueue',
+    );
+  });
+
+  it('reports nothing held, as a completed read, when no consumer has a delay leg', async () => {
+    mockProtocolAddress = UNWIRED_PROTOCOL;
+    mockReadPointer.mockResolvedValue(ABSENT);
 
     const result = await settled();
 
     expect(result.current.unknown).toBe(false);
+    expect(result.current.exits).toHaveLength(0);
+    expect(mockGetActive).not.toHaveBeenCalled();
+  });
+
+  it('reports unknown when a queue pointer could not be read', async () => {
+    mockReadPointer.mockResolvedValue(UNREADABLE);
+
+    const result = await settled();
+
+    expect(result.current.unknown).toBe(true);
+  });
+
+  it("reports unknown when Zero's pointer could not be read, and still lists the protocol's holds", async () => {
+    holding(7);
+    mockReadPointer.mockImplementation(async (_chainId, consumer: string) =>
+      consumer === PROTOCOL ? address(QUEUE) : UNREADABLE,
+    );
+
+    const result = await settled();
+
+    expect(result.current.exits.map(exit => exit.id)).toEqual(['7']);
+    expect(result.current.unknown).toBe(true);
+  });
+
+  it("reports unknown when Zero's BorrowerOperations address cannot be resolved", async () => {
+    mockZeroContract.mockRejectedValue(new Error('no artifact'));
+
+    const result = await settled();
+
+    expect(result.current.unknown).toBe(true);
+  });
+
+  it('reports unknown when a queue read fails, never an empty vault', async () => {
+    mockGetActive.mockRejectedValue(transportFailure);
+
+    const result = await settled();
+
+    expect(result.current.unknown).toBe(true);
     expect(result.current.exits).toHaveLength(0);
   });
 
@@ -199,9 +261,6 @@ describe('usePerimeterVault', () => {
 
     const { result } = renderHook(() => usePerimeterVault());
 
-    // The cache seeds its state with the default value and loading false, so
-    // the page rendered its "nothing held" message before a single request had
-    // been issued.
     expect(result.current.loading).toBe(true);
   });
 
@@ -209,10 +268,7 @@ describe('usePerimeterVault', () => {
     // The contract documents getActive as best-effort over a mutating set. A
     // repeated id puts the same id twice into one executeExits call, where the
     // second pass reverts AlreadyTerminal and takes the batch with it.
-    mockGetActive.mockResolvedValue({
-      ids: [BigNumber.from(7), BigNumber.from(7), BigNumber.from(8)],
-      nextCursor: BigNumber.from(0),
-    });
+    holding(7, 7, 8);
 
     const result = await settled();
 
@@ -224,8 +280,8 @@ describe('usePerimeterVault', () => {
     // close form promises the holder they can release on this page, and the
     // page must not be looking at a different queue.
     mockZeroContract.mockResolvedValue({ address: OTHER_BORROWER_OPERATIONS });
-    mockQueuePointer.mockImplementation(async (address: string) =>
-      address === PROTOCOL ? QUEUE : ZERO_QUEUE,
+    mockReadPointer.mockImplementation(async (_chainId, consumer: string) =>
+      consumer === PROTOCOL ? address(QUEUE) : address(ZERO_QUEUE),
     );
     mockGetActive.mockImplementation(async (queueAddress: string) => ({
       ids: [BigNumber.from(queueAddress === QUEUE.toLowerCase() ? 7 : 9)],
@@ -246,29 +302,33 @@ describe('usePerimeterVault', () => {
     ]);
   });
 
-  it('keeps showing escrowed funds after the queue pointer is cleared', async () => {
-    // Unwiring the pointer is one of the ways the perimeter is switched off,
-    // and the queue still holds and still releases. Held funds must not
-    // disappear from the page that releases them.
-    mockGetActive.mockResolvedValue({
-      ids: [BigNumber.from(7)],
+  it('keeps listing the queue a consumer pointed at earlier in the tab after the pointer moves', async () => {
+    // The setters refuse zero but accept a new queue. Requests left in the old
+    // queue are still held there and still released there.
+    mockProtocolAddress = MOVING_PROTOCOL;
+    mockReadPointer.mockImplementation(async (_chainId, consumer: string) =>
+      consumer === MOVING_PROTOCOL ? address(QUEUE) : ABSENT,
+    );
+    mockGetActive.mockImplementation(async (queueAddress: string) => ({
+      ids: [BigNumber.from(queueAddress === QUEUE.toLowerCase() ? 7 : 9)],
       nextCursor: BigNumber.from(0),
-    });
+    }));
     const first = await settled();
-    expect(first.current.exits).toHaveLength(1);
+    expect(first.current.exits.map(exit => exit.id)).toEqual(['7']);
 
-    mockQueuePointer.mockResolvedValue(ZERO_ADDRESS);
+    mockReadPointer.mockImplementation(async (_chainId, consumer: string) =>
+      consumer === MOVING_PROTOCOL ? address(NEW_QUEUE) : ABSENT,
+    );
     const second = await settled();
 
-    expect(second.current.exits).toHaveLength(1);
-    expect(second.current.exits[0].queueAddress).toBe(QUEUE.toLowerCase());
+    expect(second.current.exits.map(exit => exit.queueAddress).sort()).toEqual([
+      QUEUE.toLowerCase(),
+      NEW_QUEUE.toLowerCase(),
+    ]);
   });
 
   it('names the asset each amount is denominated in', async () => {
-    mockGetActive.mockResolvedValue({
-      ids: [BigNumber.from(7)],
-      nextCursor: BigNumber.from(0),
-    });
+    holding(7);
     mockGetRequest.mockResolvedValue(request({ token: RUSDT }));
 
     const result = await settled();
@@ -280,12 +340,9 @@ describe('usePerimeterVault', () => {
   it('prints no amount for an asset whose decimals it cannot resolve', async () => {
     // Scaling by an assumed 18 would be silently wrong by orders of magnitude
     // for a 6- or 8-decimal asset.
-    mockGetActive.mockResolvedValue({
-      ids: [BigNumber.from(7)],
-      nextCursor: BigNumber.from(0),
-    });
+    holding(7);
     mockGetRequest.mockResolvedValue(
-      request({ token: '0x4444444444444444444444444444444444444444' }),
+      request({ token: '0x5555555555555555555555555555555555555555' }),
     );
 
     const result = await settled();
@@ -295,10 +352,7 @@ describe('usePerimeterVault', () => {
   });
 
   it('flags a request whose recorded owner is a contract', async () => {
-    mockGetActive.mockResolvedValue({
-      ids: [BigNumber.from(7)],
-      nextCursor: BigNumber.from(0),
-    });
+    holding(7);
     mockGetCode.mockResolvedValue('0x6001600101');
 
     const result = await settled();
@@ -306,11 +360,8 @@ describe('usePerimeterVault', () => {
     expect(result.current.exits[0].ownerHasCode).toBe(true);
   });
 
-  it('does not flag a request whose recorded owner is a plain wallet', async () => {
-    mockGetActive.mockResolvedValue({
-      ids: [BigNumber.from(7)],
-      nextCursor: BigNumber.from(0),
-    });
+  it('flags a request whose recorded owner is a plain wallet as such', async () => {
+    holding(7);
     mockGetCode.mockResolvedValue('0x');
 
     const result = await settled();
@@ -318,27 +369,21 @@ describe('usePerimeterVault', () => {
     expect(result.current.exits[0].ownerHasCode).toBe(false);
   });
 
-  it('does not flag a request when the owner code read fails, and reports the vault as read', async () => {
-    mockGetActive.mockResolvedValue({
-      ids: [BigNumber.from(7)],
-      nextCursor: BigNumber.from(0),
-    });
-    mockGetCode.mockRejectedValue(networkError());
+  it('leaves the owner flag unset when the code read fails, and reports the vault as read', async () => {
+    // The flag only drives a notice, so the vault itself was read; but "could
+    // not tell" is not "a plain wallet".
+    holding(7);
+    mockGetCode.mockRejectedValue(transportFailure);
 
     const result = await settled();
 
-    expect(result.current.exits[0].ownerHasCode).toBe(false);
+    expect(result.current.exits[0].ownerHasCode).toBeUndefined();
     expect(result.current.unknown).toBe(false);
   });
 
   it('reads an owner shared by several requests only once', async () => {
-    mockGetActive.mockResolvedValue({
-      ids: [BigNumber.from(7), BigNumber.from(8)],
-      nextCursor: BigNumber.from(0),
-    });
-    mockGetRequest.mockImplementation(async (_address: string, id: string) =>
-      request({ owner: ACCOUNT }),
-    );
+    holding(7, 8);
+    mockGetRequest.mockImplementation(async () => request({ owner: ACCOUNT }));
 
     await settled();
 

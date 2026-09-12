@@ -583,28 +583,72 @@ const estimateReleaseGas = async (
 };
 
 /**
- * The gas limit a release is sent with, given its fresh estimate. With no
- * typed limit, the estimate with `RELEASE_GAS_MARGIN_PERCENT` added. A limit
- * the holder typed in Advanced settings is kept when it is at least the
- * estimate; when it is below the estimate, or not a whole number, this is
- * undefined and the release is not sent.
+ * A limit the holder typed in Advanced settings, kept only when it is at
+ * least the fresh estimate; undefined when it is below the estimate, or not a
+ * whole number, so the release is not sent on it.
  */
-const releaseGasLimit = (
+const typedReleaseGasLimit = (
   estimate: BigNumber,
-  typedGasLimit: string | undefined,
+  typedGasLimit: string,
 ): string | undefined => {
-  if (typedGasLimit === undefined) {
-    return estimate
-      .mul(100 + RELEASE_GAS_MARGIN_PERCENT)
-      .div(100)
-      .toString();
-  }
   try {
     const typed = BigNumber.from(typedGasLimit);
     return typed.gte(estimate) ? typed.toString() : undefined;
   } catch (error) {
     return undefined;
   }
+};
+
+/**
+ * The latest block's own gas limit, read fresh; undefined when the read did
+ * not complete.
+ */
+const readBlockGasLimit = async (): Promise<BigNumber | undefined> => {
+  try {
+    const block = await boundedBy(
+      getProvider(RSK_CHAIN_ID).getBlock('latest'),
+      RELEASE_READ_TIMEOUT_MS,
+    );
+    return block?.gasLimit;
+  } catch (error) {
+    return undefined;
+  }
+};
+
+type AutoGasLimit =
+  | { kind: 'ok'; gasLimit: string }
+  /** The latest block's own gas limit could not be read. */
+  | { kind: 'blockUnreadable' }
+  /** The estimate alone is above the latest block's own gas limit: no margin can be sent. */
+  | { kind: 'tooLarge' };
+
+/**
+ * The gas limit an untyped release is sent with: the fresh estimate plus
+ * `RELEASE_GAS_MARGIN_PERCENT`, never above the latest block's own gas limit.
+ * The block's own gas limit is read fresh, because the margin is added for a
+ * release that executes in a later block, and that block's own limit can
+ * change between reads. An estimate that alone is above it cannot be sent at
+ * any margin, and a block read that does not complete leaves the ceiling
+ * unknown, so neither is sent on a guess.
+ */
+const autoReleaseGasLimit = async (
+  estimate: BigNumber,
+): Promise<AutoGasLimit> => {
+  const blockGasLimit = await readBlockGasLimit();
+  if (!blockGasLimit) {
+    return { kind: 'blockUnreadable' };
+  }
+  if (estimate.gt(blockGasLimit)) {
+    return { kind: 'tooLarge' };
+  }
+  const withMargin = estimate.mul(100 + RELEASE_GAS_MARGIN_PERCENT).div(100);
+  return {
+    kind: 'ok',
+    gasLimit: (withMargin.lt(blockGasLimit)
+      ? withMargin
+      : blockGasLimit
+    ).toString(),
+  };
 };
 
 /**
@@ -639,10 +683,12 @@ const releaseGasLimit = (
  * released and why, and the rest opens in the dialog: one row as
  * `executeExit`, several grouped by queue into one transaction list. In the
  * send step the check also estimates the gas for exactly what passed and sets
- * the gas limit from that estimate (`releaseGasLimit`), and reads the wallet
- * once more as its last step. A withdrawal that does not pass at that moment
- * is named and dropped. When nothing passes, the gas cannot be estimated, a
- * gas limit the holder typed is below the estimate, or the wallet signs as
+ * the gas limit from that estimate, capped at the latest block's own gas
+ * limit (`autoReleaseGasLimit`), and reads the wallet once more as its last
+ * step. A withdrawal that does not pass at that moment is named and dropped.
+ * When nothing passes, the gas cannot be estimated, its own gas limit could
+ * not be checked, a gas limit the holder typed is below the estimate, or the
+ * wallet signs as
  * another account, the wallet is not asked at all; otherwise it is handed the
  * release from the account the check ran for. `onReleased` receives the keys
  * (queue and id) of rows found delivered
@@ -759,30 +805,41 @@ export const usePerimeterRelease = () => {
           const estimate = passed
             ? await estimateReleaseGas(passed, single, account)
             : undefined;
-          const gasLimit = estimate
-            ? releaseGasLimit(estimate, typedGasLimit)
-            : undefined;
-          if (passed && !estimate) {
-            refusals.push(
-              rowsRefusal(
-                passed,
-                t(
-                  translations.perimeterPage.releaseRefused.reason
-                    .gasUnestimated,
-                ),
-              ),
+
+          const reasons = translations.perimeterPage.releaseRefused.reason;
+          /** "We could not get it a usable gas limit": the batch-aware ending. */
+          const noUsableGasLimit = () =>
+            t(
+              passed && passed.length > 1
+                ? reasons.gasUnestimatedBatch
+                : reasons.gasUnestimated,
             );
-          } else if (passed && estimate && !gasLimit) {
-            refusals.push(
-              rowsRefusal(
-                passed,
-                t(
-                  translations.perimeterPage.releaseRefused.reason
-                    .gasLimitTooLow,
-                  { limit: typedGasLimit, needed: estimate.toString() },
+
+          let gasLimit: string | undefined;
+          if (passed && estimate && typedGasLimit !== undefined) {
+            gasLimit = typedReleaseGasLimit(estimate, typedGasLimit);
+            if (!gasLimit) {
+              refusals.push(
+                rowsRefusal(
+                  passed,
+                  t(reasons.gasLimitTooLow, {
+                    limit: typedGasLimit,
+                    needed: estimate.toString(),
+                  }),
                 ),
-              ),
-            );
+              );
+            }
+          } else if (passed && estimate) {
+            const auto = await autoReleaseGasLimit(estimate);
+            if (auto.kind === 'ok') {
+              gasLimit = auto.gasLimit;
+            } else if (auto.kind === 'blockUnreadable') {
+              refusals.push(rowsRefusal(passed, t(reasons.gasLimitUnreadable)));
+            } else {
+              refusals.push(rowsRefusal(passed, noUsableGasLimit()));
+            }
+          } else if (passed && !estimate) {
+            refusals.push(rowsRefusal(passed, noUsableGasLimit()));
           }
 
           // The wallet is read once more, as the last step before it is asked

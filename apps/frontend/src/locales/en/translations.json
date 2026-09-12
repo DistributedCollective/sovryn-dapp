@@ -2149,6 +2149,8 @@
         "refused": "the queue would refuse it",
         "unchecked": "we could not check whether it would go through. Try again in a moment",
         "gasUnestimated": "we could not estimate the gas it needs, and a release is never sent on a guess. Try again in a moment",
+        "gasUnestimatedBatch": "we could not estimate the gas it needs, and a release is never sent on a guess. Release fewer at once",
+        "gasLimitUnreadable": "we could not read the current network gas limit, so the gas limit it needs could not be checked. Try again in a moment",
         "gasLimitTooLow": "the gas limit set in Advanced settings is too low: {{limit}} is below the {{needed}} it needs. Raise it or reset the values, then retry"
       },
       "party": {

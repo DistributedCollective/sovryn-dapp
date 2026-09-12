@@ -143,6 +143,26 @@ const SEND_OPTIONS = expect.objectContaining({
 /** The node's gas estimate for a release: 50,000. */
 const GAS_ESTIMATE: StubAnswer = { result: '0xc350' };
 
+/** Rootstock's own block gas limit, unless a test says otherwise: 10,000,000. */
+const BLOCK_GAS_LIMIT = 10_000_000;
+
+/** A full block, carrying the given gas limit, as a node answers `eth_getBlockByNumber`. */
+const blockResult = (gasLimit: number): StubAnswer => ({
+  result: {
+    number: '0x10',
+    hash: `0x${'11'.repeat(32)}`,
+    parentHash: `0x${'22'.repeat(32)}`,
+    nonce: '0x0000000000000000',
+    timestamp: '0x60000000',
+    difficulty: '0x0',
+    gasLimit: `0x${gasLimit.toString(16)}`,
+    gasUsed: '0x5208',
+    miner: ZERO_ADDRESS,
+    extraData: '0x',
+    transactions: [],
+  },
+});
+
 const row = (overrides: Partial<ReleaseRow> = {}): ReleaseRow => ({
   id: '7',
   queueAddress: QUEUE,
@@ -182,6 +202,9 @@ describe('usePerimeterRelease', () => {
     stub.onMethod('eth_estimateGas', GAS_ESTIMATE);
     // The queue address carries code unless a test says otherwise.
     stub.onMethod('eth_getCode', { result: '0x6080604052' });
+    // The latest block carries Rootstock's own gas limit unless a test says
+    // otherwise.
+    stub.onMethod('eth_getBlockByNumber', blockResult(BLOCK_GAS_LIMIT));
   });
 
   afterEach(() => stub.reset());
@@ -767,6 +790,90 @@ describe('usePerimeterRelease', () => {
       expect(refusalText()).toContain(
         'Withdrawal #7 was not released because the gas limit set in Advanced settings is too low: 40000 is below the 50000 it needs.',
       );
+    });
+  });
+
+  describe("the latest block's own gas limit", () => {
+    // The margin above the estimate must never ask for more gas than a block
+    // can include. The block's own gas limit is read fresh at the send step,
+    // because the network's own limit can change between reads.
+    it("caps the gas limit at the latest block's own gas limit when the margin above the estimate would exceed it", async () => {
+      stub.onMethod('eth_getBlockByNumber', blockResult(55_000));
+
+      await release([row()]);
+
+      await expect(confirmInDialog()).resolves.toEqual({
+        requestIds: ['7'],
+        gasLimit: '55000',
+        from: ACCOUNT,
+      });
+    });
+
+    it('sends nothing when the latest block could not be read, and says the gas limit could not be checked', async () => {
+      stub.onMethod('eth_getBlockByNumber', {
+        status: 503,
+        body: 'unavailable',
+      });
+
+      await release([row()]);
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(refusalText()).toContain(
+        'Withdrawal #7 was not released because we could not read the current network gas limit, so the gas limit it needs could not be checked.',
+      );
+    });
+
+    it('sends nothing when the latest block cannot be read in time, and says the gas limit could not be checked', async () => {
+      stub.onMethod('eth_getBlockByNumber', { hang: true });
+
+      await release([row()]);
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(refusalText()).toContain(
+        'we could not read the current network gas limit, so the gas limit it needs could not be checked',
+      );
+    });
+
+    it("tells the holder to release fewer at once when a batch's estimate could not be made", async () => {
+      await release([row({ id: '7' }), row({ id: '9' })]);
+      stub.onMethod('eth_estimateGas', { status: 503, body: 'unavailable' });
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(refusalText()).toContain(
+        'Withdrawals #7, #9 were not released because we could not estimate the gas it needs, and a release is never sent on a guess. Release fewer at once.',
+      );
+    });
+
+    it("tells the holder to release fewer at once when a batch's estimate exceeds the latest block's own gas limit", async () => {
+      await release([row({ id: '7' }), row({ id: '9' })]);
+      stub.onMethod('eth_getBlockByNumber', blockResult(40_000));
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(refusalText()).toContain(
+        'Withdrawals #7, #9 were not released because we could not estimate the gas it needs, and a release is never sent on a guess. Release fewer at once.',
+      );
+    });
+
+    it("keeps the single-withdrawal wording when one withdrawal's estimate exceeds the latest block's own gas limit", async () => {
+      await release([row()]);
+      stub.onMethod('eth_getBlockByNumber', blockResult(40_000));
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(refusalText()).toContain(
+        'Withdrawal #7 was not released because we could not estimate the gas it needs, and a release is never sent on a guess. Try again in a moment.',
+      );
+    });
+
+    it('does not cap a gas limit typed in Advanced settings at the latest block gas limit', async () => {
+      stub.onMethod('eth_getBlockByNumber', blockResult(55_000));
+
+      await release([row()]);
+
+      await expect(confirmInDialog('75000')).resolves.toEqual({
+        requestIds: ['7'],
+        gasLimit: '75000',
+        from: ACCOUNT,
+      });
     });
   });
 

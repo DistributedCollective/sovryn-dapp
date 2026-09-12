@@ -11,22 +11,19 @@ import { RSK_CHAIN_ID } from '../../config/chains';
 
 import { asyncCall } from '../../store/rxjs/provider-cache';
 import { findAssetByAddress, findNativeAsset } from '../../utils/asset';
-import {
-  BlockState,
-  EXIT_DELAY_TTL,
-  ExitStatus,
-  PartyBlockStates,
-  PendingExit,
-} from '../../utils/exitDelay';
+import { EXIT_DELAY_TTL, ExitStatus, PendingExit } from '../../utils/exitDelay';
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 import { useGetProtocolContract } from '../useGetContract';
 import { readPerimeterPointer } from './readPerimeterPointer';
 
+/**
+ * What the vault page lists. Block states are not read here: a withdrawal whose
+ * party is frozen or blacklisted is listed like any other, and its block is
+ * read when the holder releases it.
+ */
 export type PerimeterVault = {
   exits: PendingExit[];
-  /** Block state of every party of every exit, keyed by exit id. */
-  blocks: Record<string, PartyBlockStates>;
   /** Whether releases are paused, per queue address (lower-cased). */
   pausedByQueue: Record<string, boolean>;
   /** True while any queue holding this account's exits is paused. */
@@ -45,7 +42,6 @@ type StampedVault = Omit<PerimeterVault, 'loading'> & { forKey: string };
 
 const EMPTY: Omit<PerimeterVault, 'loading'> = {
   exits: [],
-  blocks: {},
   pausedByQueue: {},
   paused: false,
   unknown: false,
@@ -59,7 +55,6 @@ const PENDING_KEY = '';
 const QUEUE_ABI = [
   'function getActive(address party, uint256 cursor, uint256 n) view returns (uint256[] ids, uint256 nextCursor)',
   'function getRequest(uint256 id) view returns (tuple(uint128 amount, uint64 createdAt, uint64 unlockAt, address originator, address owner, address receiver, address token, bytes32 surfaceId, address subProduct, uint8 status, bool unwrapOnDelivery))',
-  'function blockStateOf(address a) view returns (uint8)',
   'function securityPerimeterPaused() view returns (bool)',
 ];
 
@@ -234,7 +229,6 @@ export const usePerimeterVault = (): PerimeterVault => {
         }
 
         const exits: PendingExit[] = [];
-        const blocks: Record<string, PartyBlockStates> = {};
         const pausedByQueue: Record<string, boolean> = {};
 
         for (const queueAddress of queueAddresses) {
@@ -270,24 +264,6 @@ export const usePerimeterVault = (): PerimeterVault => {
             uniqueIds.map(id => queue.getRequest(id)),
           );
 
-          const parties = [
-            ...new Set(
-              requests.flatMap(request => [
-                request.originator.toLowerCase(),
-                request.owner.toLowerCase(),
-                request.receiver.toLowerCase(),
-              ]),
-            ),
-          ];
-          const partyStates = new Map<string, BlockState>();
-          await Promise.all(
-            parties.map(async party => {
-              partyStates.set(party, Number(await queue.blockStateOf(party)));
-            }),
-          );
-          const blockStateOf = (address: string): BlockState =>
-            partyStates.get(address.toLowerCase()) ?? BlockState.None;
-
           const ownerCode = await resolveOwnerCode(
             requests.map(request => request.owner),
           );
@@ -314,11 +290,6 @@ export const usePerimeterVault = (): PerimeterVault => {
               unwrapOnDelivery: request.unwrapOnDelivery,
               ownerHasCode: ownerCode.get(request.owner.toLowerCase()),
             });
-            blocks[id] = {
-              originator: blockStateOf(request.originator),
-              owner: blockStateOf(request.owner),
-              receiver: blockStateOf(request.receiver),
-            };
           });
         }
 
@@ -328,7 +299,6 @@ export const usePerimeterVault = (): PerimeterVault => {
 
         return {
           exits,
-          blocks,
           pausedByQueue,
           paused: Object.values(pausedByQueue).some(Boolean),
           unknown: pointerUnknown,

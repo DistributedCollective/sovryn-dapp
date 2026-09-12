@@ -31,8 +31,6 @@ export enum PendingExitState {
   Unlocked = 'unlocked',
   /** Past its unlock time, but this account is not an executor for it. */
   NotExecutor = 'notExecutor',
-  /** One of the parties is frozen or blacklisted. */
-  Blocked = 'blocked',
   /** The whole queue is paused. */
   Paused = 'paused',
   /** Already paid out, or resolved away by recovery or governance. */
@@ -71,11 +69,13 @@ export type PendingExit = {
   ownerHasCode?: boolean;
 };
 
-export type PartyBlockStates = {
-  originator: BlockState;
-  owner: BlockState;
-  receiver: BlockState;
-};
+/**
+ * An exit's identity on the page: its queue and its id. Ids restart in each
+ * queue, so an id alone can name two different requests.
+ */
+export const exitKey = (
+  exit: Pick<PendingExit, 'queueAddress' | 'id'>,
+): string => `${exit.queueAddress.toLowerCase()}:${exit.id}`;
 
 /**
  * A hold quote, including whether we managed to get one.
@@ -223,22 +223,17 @@ export const isExecutor = (
   return exit.originator.toLowerCase() === a || exit.owner.toLowerCase() === a;
 };
 
-const anyBlocked = (blocks: PartyBlockStates): boolean =>
-  blocks.originator !== BlockState.None ||
-  blocks.owner !== BlockState.None ||
-  blocks.receiver !== BlockState.None;
-
 /**
- * Resolve what an exit can do right now.
+ * Resolve what an exit shows right now.
  *
- * Order matters and follows `_executeOne`: a terminal status wins over
- * everything, then the global pause, then the unlock time, then the block
- * gate, then the executor check. Reordering would let the UI show "ready" for
- * an exit the contract would refuse.
+ * Order follows `_executeOne`: a terminal status wins over everything, then
+ * the global pause, then the unlock time, then the executor check. Block
+ * states are not part of it: a withdrawal whose party is frozen or blacklisted
+ * looks like any other row, and the block is read and named when the holder
+ * presses Release.
  */
 export const getPendingExitState = (
   exit: Pick<PendingExit, 'status' | 'unlockAt' | 'originator' | 'owner'>,
-  blocks: PartyBlockStates,
   paused: boolean,
   account: string | undefined,
   now: number,
@@ -251,9 +246,6 @@ export const getPendingExitState = (
   }
   if (now < exit.unlockAt) {
     return PendingExitState.Locked;
-  }
-  if (anyBlocked(blocks)) {
-    return PendingExitState.Blocked;
   }
   return isExecutor(exit, account)
     ? PendingExitState.Unlocked

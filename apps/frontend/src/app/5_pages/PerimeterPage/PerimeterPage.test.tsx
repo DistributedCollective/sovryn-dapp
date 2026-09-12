@@ -9,19 +9,18 @@ import { Decimal } from '@sovryn/utils';
 import { RSK_CHAIN_ID } from '../../../config/chains';
 
 import { i18n } from '../../../locales/i18n';
-import { BlockState, ExitStatus } from '../../../utils/exitDelay';
+import { ExitStatus, exitKey } from '../../../utils/exitDelay';
 import { PerimeterPage } from './PerimeterPage';
 
 const ACCOUNT = '0x1111111111111111111111111111111111111111';
 const RECEIVER = '0x3333333333333333333333333333333333333333';
 const QUEUE = '0x9999999999999999999999999999999999999999';
+const OTHER_QUEUE = '0x8888888888888888888888888888888888888888';
 
-const mockExecuteExit = jest.fn();
-const mockExecuteExits = jest.fn();
+const mockRelease = jest.fn();
 
 let mockVault: {
   exits: any[];
-  blocks: Record<string, any>;
   pausedByQueue: Record<string, boolean>;
   paused: boolean;
   loading: boolean;
@@ -48,9 +47,8 @@ jest.mock('../../../hooks/exitDelay/usePerimeterVault', () => ({
   usePerimeterVault: () => mockVault,
 }));
 
-jest.mock('../../../hooks/exitDelay/useExecuteExit', () => ({
-  useExecuteExit: () => mockExecuteExit,
-  useExecuteExits: () => mockExecuteExits,
+jest.mock('../../../hooks/exitDelay/usePerimeterRelease', () => ({
+  usePerimeterRelease: () => mockRelease,
 }));
 
 jest.mock('../../../hooks/exitDelay/useChainTime', () => ({
@@ -85,11 +83,13 @@ const exit = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
-const clear = {
-  originator: BlockState.None,
-  owner: BlockState.None,
-  receiver: BlockState.None,
-};
+const releaseButton = (container: HTMLElement, queue: string, id: string) =>
+  container.querySelector(
+    `[data-layout-id="perimeter-release-${exitKey({
+      queueAddress: queue,
+      id,
+    })}"]`,
+  );
 
 describe('PerimeterPage', () => {
   beforeAll(async () => {
@@ -100,13 +100,10 @@ describe('PerimeterPage', () => {
     // Re-applied per test: this project's jest config resets mocks between
     // tests, and a reset Date.now would make every row read as unlocked.
     jest.spyOn(Date, 'now').mockReturnValue(NOW * 1000);
-    mockExecuteExit.mockClear();
-    mockExecuteExits.mockClear();
     mockChainTime = NOW;
     mockCurrentChainId = RSK_CHAIN_ID;
     mockVault = {
       exits: [],
-      blocks: {},
       pausedByQueue: {},
       paused: false,
       loading: false,
@@ -149,7 +146,6 @@ describe('PerimeterPage', () => {
   it('says the read failed even while it lists what it did get', () => {
     mockVault.unknown = true;
     mockVault.exits = [exit()];
-    mockVault.blocks = { '7': clear };
     const { container } = render(<PerimeterPage />);
 
     expect(
@@ -163,12 +159,9 @@ describe('PerimeterPage', () => {
     // missing time would read as locked for decades.
     mockChainTime = 0;
     mockVault.exits = [exit()];
-    mockVault.blocks = { '7': clear };
     const { container } = render(<PerimeterPage />);
 
-    expect(
-      container.querySelector('[data-layout-id="perimeter-release-7"]'),
-    ).not.toBeInTheDocument();
+    expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
   });
 
   it('decides readiness from the chain clock, not the browser clock', () => {
@@ -177,20 +170,16 @@ describe('PerimeterPage', () => {
     // ready hold with it.
     jest.spyOn(Date, 'now').mockReturnValue((NOW + 7200) * 1000);
     mockVault.exits = [exit({ unlockAt: NOW + 3600 })];
-    mockVault.blocks = { '7': clear };
     const { container } = render(<PerimeterPage />);
 
     expect(screen.getAllByText('On hold').length).toBeGreaterThan(0);
-    expect(
-      container.querySelector('[data-layout-id="perimeter-release-7"]'),
-    ).not.toBeInTheDocument();
+    expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
   });
 
   it('names the asset an amount is denominated in', () => {
     // One queue holds every asset the perimeter covers: 1.5 RBTC and 1.5 DOC
     // are adjacent rows three orders of magnitude apart.
     mockVault.exits = [exit()];
-    mockVault.blocks = { '7': clear };
     render(<PerimeterPage />);
 
     expect(screen.getAllByText(/1\.5/).length).toBeGreaterThan(0);
@@ -199,7 +188,6 @@ describe('PerimeterPage', () => {
 
   it('prints no amount for an asset it could not resolve', () => {
     mockVault.exits = [exit({ amount: undefined, tokenSymbol: undefined })];
-    mockVault.blocks = { '7': clear };
     render(<PerimeterPage />);
 
     expect(screen.getAllByText('Unknown asset').length).toBeGreaterThan(0);
@@ -207,68 +195,53 @@ describe('PerimeterPage', () => {
 
   it('counts down to two units rather than rounding up to one', () => {
     mockVault.exits = [exit({ unlockAt: NOW + 90_000 })];
-    mockVault.blocks = { '7': clear };
     render(<PerimeterPage />);
 
     expect(screen.getAllByText('1d 1h').length).toBeGreaterThan(0);
   });
 
   it('withholds the release controls on the wrong network', () => {
-    // A call to an address with no code does not revert: on most chains the
-    // wallet reports success and nothing is released.
     mockCurrentChainId = '0x1';
     mockVault.exits = [exit()];
-    mockVault.blocks = { '7': clear };
     const { container } = render(<PerimeterPage />);
 
     expect(container.querySelector('.pointer-events-none')).toBeInTheDocument();
     expect(screen.getAllByText(/switch/i).length).toBeGreaterThan(0);
   });
 
-  it('offers Release for an unlocked exit this account can execute', () => {
+  it('offers Release on an unlocked row and hands the row to the release check', () => {
     mockVault.exits = [exit()];
-    mockVault.blocks = { '7': clear };
     const { container } = render(<PerimeterPage />);
 
     expect(screen.getAllByText('Ready').length).toBeGreaterThan(0);
-    const button = container.querySelector(
-      '[data-layout-id="perimeter-release-7"]',
-    );
+    const button = releaseButton(container, QUEUE, '7');
     expect(button).toBeInTheDocument();
     fireEvent.click(button!);
-    expect(mockExecuteExit).toHaveBeenCalledWith(
-      QUEUE,
-      '7',
+
+    expect(mockRelease).toHaveBeenCalledWith(
+      [expect.objectContaining({ id: '7', queueAddress: QUEUE })],
       expect.any(Function),
     );
   });
 
+  it('shows no review state for any row: a blocked party is named on release', () => {
+    mockVault.exits = [exit()];
+    render(<PerimeterPage />);
+
+    expect(screen.queryByText('Under review')).not.toBeInTheDocument();
+  });
+
   it('withholds Release while an exit is still on hold', () => {
     mockVault.exits = [exit({ unlockAt: NOW + 3600 })];
-    mockVault.blocks = { '7': clear };
     const { container } = render(<PerimeterPage />);
 
     expect(screen.getAllByText('On hold').length).toBeGreaterThan(0);
     expect(screen.getAllByText('1h').length).toBeGreaterThan(0);
-    expect(
-      container.querySelector('[data-layout-id="perimeter-release-7"]'),
-    ).not.toBeInTheDocument();
-  });
-
-  it('withholds Release when a party is blocked, and says why', () => {
-    mockVault.exits = [exit()];
-    mockVault.blocks = { '7': { ...clear, receiver: BlockState.Frozen } };
-    const { container } = render(<PerimeterPage />);
-
-    expect(screen.getAllByText('Under review').length).toBeGreaterThan(0);
-    expect(
-      container.querySelector('[data-layout-id="perimeter-release-7"]'),
-    ).not.toBeInTheDocument();
+    expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
   });
 
   it('withholds Release for the whole queue while releases are paused', () => {
     mockVault.exits = [exit()];
-    mockVault.blocks = { '7': clear };
     mockVault.paused = true;
     mockVault.pausedByQueue = { [QUEUE]: true };
     const { container } = render(<PerimeterPage />);
@@ -276,9 +249,7 @@ describe('PerimeterPage', () => {
     expect(
       container.querySelector('[data-layout-id="perimeter-paused"]'),
     ).toBeInTheDocument();
-    expect(
-      container.querySelector('[data-layout-id="perimeter-release-7"]'),
-    ).not.toBeInTheDocument();
+    expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
   });
 
   it('withholds Release from an account that is only the receiver', () => {
@@ -289,61 +260,51 @@ describe('PerimeterPage', () => {
         receiver: ACCOUNT,
       }),
     ];
-    mockVault.blocks = { '7': clear };
     const { container } = render(<PerimeterPage />);
 
     expect(
       screen.getAllByText('Releasable by the owner').length,
     ).toBeGreaterThan(0);
-    expect(
-      container.querySelector('[data-layout-id="perimeter-release-7"]'),
-    ).not.toBeInTheDocument();
+    expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
   });
 
-  it('offers one batch release for exactly the certainly-succeeding rows', () => {
+  it('hands every ready row, and no other, to one release', () => {
     mockVault.exits = [
       exit({ id: '7' }),
       exit({ id: '8' }),
       exit({ id: '9', unlockAt: NOW + 3600 }),
     ];
     render(<PerimeterPage />);
-    const all = screen.getByText('Release all ready (2)');
-    fireEvent.click(all);
-    expect(mockExecuteExits).toHaveBeenCalledWith(
-      [{ queueAddress: QUEUE, requestIds: ['7', '8'] }],
-      expect.any(Function),
-    );
+
+    fireEvent.click(screen.getByText('Release all ready (2)'));
+
+    expect(mockRelease).toHaveBeenCalledTimes(1);
+    const [rows] = mockRelease.mock.calls[0];
+    expect(rows.map((row: { id: string }) => row.id)).toEqual(['7', '8']);
   });
 
-  it('drops a just-released row so a later batch cannot carry it', () => {
+  it('drops a row once its release completes, so a later batch cannot carry it', () => {
     // executeExits is atomic on-chain: a terminal id reverts the batch and
-    // takes every other ready release down with it. The page therefore has to
-    // forget a row the moment its release is signed, ahead of the refetch —
-    // which only works if the callback it passes actually reaches the hook.
-    mockExecuteExit.mockImplementation(
-      (_queue: string, _id: string, onComplete?: () => void) => onComplete?.(),
+    // takes every other ready release down with it.
+    mockRelease.mockImplementation(
+      (rows: { queueAddress: string; id: string }[], onReleased) =>
+        onReleased(rows.map(exitKey)),
     );
     mockVault.exits = [exit({ id: '7' }), exit({ id: '8' }), exit({ id: '9' })];
     const { container } = render(<PerimeterPage />);
 
     expect(screen.getByText('Release all ready (3)')).toBeInTheDocument();
 
-    fireEvent.click(
-      container.querySelector('[data-layout-id="perimeter-release-7"]')!,
-    );
+    fireEvent.click(releaseButton(container, QUEUE, '7')!);
 
-    expect(
-      container.querySelector('[data-layout-id="perimeter-release-7"]'),
-    ).not.toBeInTheDocument();
+    expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
     expect(screen.getByText('Release all ready (2)')).toBeInTheDocument();
   });
 
-  it('drops every id a batch release settled', () => {
-    mockExecuteExits.mockImplementation(
-      (
-        batches: { requestIds: string[] }[],
-        onComplete?: (ids: string[]) => void,
-      ) => onComplete?.(batches.flatMap(batch => batch.requestIds)),
+  it('drops every row a batch release completed', () => {
+    mockRelease.mockImplementation(
+      (rows: { queueAddress: string; id: string }[], onReleased) =>
+        onReleased(rows.map(exitKey)),
     );
     mockVault.exits = [exit({ id: '7' }), exit({ id: '8' })];
     render(<PerimeterPage />);
@@ -358,6 +319,28 @@ describe('PerimeterPage', () => {
     ).toBeGreaterThan(0);
   });
 
+  it('keeps two queues’ requests that share an id apart', () => {
+    // Ids restart in each queue. Releasing request 7 in one queue must not
+    // take request 7 of the other off the page.
+    mockRelease.mockImplementation(
+      (rows: { queueAddress: string; id: string }[], onReleased) =>
+        onReleased(rows.map(exitKey)),
+    );
+    mockVault.exits = [
+      exit({ id: '7', queueAddress: QUEUE }),
+      exit({ id: '7', queueAddress: OTHER_QUEUE }),
+    ];
+    const { container } = render(<PerimeterPage />);
+
+    expect(releaseButton(container, QUEUE, '7')).toBeInTheDocument();
+    expect(releaseButton(container, OTHER_QUEUE, '7')).toBeInTheDocument();
+
+    fireEvent.click(releaseButton(container, QUEUE, '7')!);
+
+    expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
+    expect(releaseButton(container, OTHER_QUEUE, '7')).toBeInTheDocument();
+  });
+
   it('withholds the batch button when only one row is ready', () => {
     mockVault.exits = [
       exit({ id: '7' }),
@@ -369,11 +352,15 @@ describe('PerimeterPage', () => {
 
   it('shows the contract-owner notice on a row whose owner has code', () => {
     mockVault.exits = [exit({ ownerHasCode: true })];
-    mockVault.blocks = { '7': clear };
     const { container } = render(<PerimeterPage />);
 
     expect(
-      container.querySelector('[data-layout-id="perimeter-contract-owner-7"]'),
+      container.querySelector(
+        `[data-layout-id="perimeter-contract-owner-${exitKey({
+          queueAddress: QUEUE,
+          id: '7',
+        })}"]`,
+      ),
     ).toBeInTheDocument();
     expect(
       screen.getAllByText(
@@ -384,11 +371,12 @@ describe('PerimeterPage', () => {
 
   it('hides the contract-owner notice on a row whose owner is a plain wallet', () => {
     mockVault.exits = [exit({ ownerHasCode: false })];
-    mockVault.blocks = { '7': clear };
-    const { container } = render(<PerimeterPage />);
+    render(<PerimeterPage />);
 
     expect(
-      container.querySelector('[data-layout-id="perimeter-contract-owner-7"]'),
+      screen.queryByText(
+        'Held in escrow for the product you used; delivered automatically once the hold expires.',
+      ),
     ).not.toBeInTheDocument();
   });
 });

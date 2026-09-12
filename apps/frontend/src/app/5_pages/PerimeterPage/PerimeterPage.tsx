@@ -24,16 +24,13 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../constants/currencies';
 import { useChainTime } from '../../../hooks/exitDelay/useChainTime';
-import {
-  useExecuteExit,
-  useExecuteExits,
-} from '../../../hooks/exitDelay/useExecuteExit';
+import { usePerimeterRelease } from '../../../hooks/exitDelay/usePerimeterRelease';
 import { usePerimeterVault } from '../../../hooks/exitDelay/usePerimeterVault';
 import { useAccount } from '../../../hooks/useAccount';
 import { translations } from '../../../locales/i18n';
 import {
-  BlockState,
   canExecuteExit,
+  exitKey,
   getPendingExitState,
 } from '../../../utils/exitDelay';
 import {
@@ -52,7 +49,7 @@ const precisionFor = (symbol?: string): number =>
 
 const PerimeterPage: FC = () => {
   const { account } = useAccount();
-  const { exits, blocks, pausedByQueue, paused, loading, unknown } =
+  const { exits, pausedByQueue, paused, loading, unknown } =
     usePerimeterVault();
 
   // Chain time, not the browser's: the queue compares block.timestamp, and a
@@ -61,86 +58,53 @@ const PerimeterPage: FC = () => {
   // clock has not been read, which the loader below covers.
   const now = useChainTime(RSK_CHAIN_ID);
 
-  // Ids released in this session, held until the next block refetch drops them
-  // from the vault. The queue refetches each block, but a row released one
-  // moment and included in a "release all" the next would revert the whole
-  // atomic batch (its status is no longer Queued). Excluding released ids until
-  // the fetch catches up keeps a just-released row from poisoning a later batch.
-  const [releasedIds, setReleasedIds] = useState<Set<string>>(new Set());
-  const markReleased = useCallback((ids: string[]) => {
-    setReleasedIds(prev => {
+  // Withdrawals released in this session, by queue and id, held until the next
+  // vault read drops them. A row released one moment and carried by a "release
+  // all" the next would revert the whole atomic batch, since its status is no
+  // longer Queued. Ids restart in each queue, so the queue is part of the key.
+  const [releasedKeys, setReleasedKeys] = useState<Set<string>>(new Set());
+  const markReleased = useCallback((keys: string[]) => {
+    setReleasedKeys(prev => {
       const next = new Set(prev);
-      ids.forEach(id => next.add(id));
+      keys.forEach(key => next.add(key));
       return next;
     });
   }, []);
 
-  const executeExit = useExecuteExit();
-  const executeExits = useExecuteExits();
+  const release = usePerimeterRelease();
 
   const rows: PerimeterExitRow[] = useMemo(
     () =>
       exits
-        .filter(exit => !releasedIds.has(exit.id))
+        .filter(exit => !releasedKeys.has(exitKey(exit)))
         .map(exit => ({
           ...exit,
           state: getPendingExitState(
             exit,
-            blocks[exit.id] ?? {
-              originator: BlockState.None,
-              owner: BlockState.None,
-              receiver: BlockState.None,
-            },
             pausedByQueue[exit.queueAddress] ?? paused,
             account,
             now,
           ),
         })),
-    [account, blocks, exits, now, paused, pausedByQueue, releasedIds],
+    [account, exits, now, paused, pausedByQueue, releasedKeys],
   );
 
   const handleRelease = useCallback(
-    (row: PerimeterExitRow) =>
-      executeExit(row.queueAddress, row.id, () => markReleased([row.id])),
-    [executeExit, markReleased],
+    (row: PerimeterExitRow) => release([row], markReleased),
+    [markReleased, release],
   );
 
-  // The batch carries exactly the rows the per-row button would offer —
-  // executeExits is atomic on-chain, so one uncertain id would revert every
-  // other release with it. It is also grouped by queue, because an id belongs
-  // to the queue that holds it and no other contract will accept it.
-  const releasableByQueue = useMemo(() => {
-    const groups: Record<string, string[]> = {};
-    rows
-      .filter(row => canExecuteExit(row.state))
-      .forEach(row => {
-        groups[row.queueAddress] = [
-          ...(groups[row.queueAddress] ?? []),
-          row.id,
-        ];
-      });
-    return groups;
-  }, [rows]);
-
-  const releasableCount = useMemo(
-    () =>
-      Object.values(releasableByQueue).reduce(
-        (total, ids) => total + ids.length,
-        0,
-      ),
-    [releasableByQueue],
+  // Release all offers exactly the rows the per-row button would. Whether each
+  // one's parties are blocked is read when it is pressed, and only the rows
+  // that read clear are sent.
+  const releasableRows = useMemo(
+    () => rows.filter(row => canExecuteExit(row.state)),
+    [rows],
   );
 
   const handleReleaseAll = useCallback(
-    () =>
-      executeExits(
-        Object.entries(releasableByQueue).map(([queueAddress, requestIds]) => ({
-          queueAddress,
-          requestIds,
-        })),
-        markReleased,
-      ),
-    [executeExits, markReleased, releasableByQueue],
+    () => release(releasableRows, markReleased),
+    [markReleased, release, releasableRows],
   );
 
   const columns = useMemo(
@@ -189,13 +153,13 @@ const PerimeterPage: FC = () => {
               <HelperButton
                 content={getStatusTooltip(row.state)}
                 trigger={TooltipTrigger.click}
-                dataAttribute={`perimeter-status-${row.id}`}
+                dataAttribute={`perimeter-status-${exitKey(row)}`}
               />
             </span>
             {row.ownerHasCode && (
               <Paragraph
                 size={ParagraphSize.small}
-                dataAttribute={`perimeter-contract-owner-${row.id}`}
+                dataAttribute={`perimeter-contract-owner-${exitKey(row)}`}
               >
                 {t(translations.perimeterPage.contractOwnerNotice)}
               </Paragraph>
@@ -207,16 +171,15 @@ const PerimeterPage: FC = () => {
         id: 'action',
         title: t(translations.perimeterPage.table.action),
         cellRenderer: (row: PerimeterExitRow) =>
-          // Offered for exactly the one state the contract would accept; every
-          // other state explains itself through the status tooltip instead of
-          // a button that reverts.
+          // Offered for exactly the states the contract's time, pause and
+          // executor checks accept; the block check runs on the press itself.
           canExecuteExit(row.state) ? (
             <Button
               text={t(translations.perimeterPage.release)}
               size={ButtonSize.small}
               style={ButtonStyle.secondary}
               onClick={() => handleRelease(row)}
-              dataAttribute={`perimeter-release-${row.id}`}
+              dataAttribute={`perimeter-release-${exitKey(row)}`}
             />
           ) : null,
       },
@@ -274,11 +237,11 @@ const PerimeterPage: FC = () => {
             </Paragraph>
           )}
           <div className="w-full max-w-5xl">
-            {releasableCount > 1 && (
+            {releasableRows.length > 1 && (
               <div className="flex justify-end mb-3">
                 <Button
                   text={t(translations.perimeterPage.releaseAll, {
-                    count: releasableCount,
+                    count: releasableRows.length,
                   })}
                   size={ButtonSize.small}
                   style={ButtonStyle.primary}
@@ -290,7 +253,7 @@ const PerimeterPage: FC = () => {
             <Table
               columns={columns}
               rows={rows}
-              rowKey={row => row.id}
+              rowKey={row => exitKey(row)}
               // Rows are withheld until the chain clock is known: every status
               // and countdown is derived from it, and a row resolved against a
               // missing time would read as locked for decades.

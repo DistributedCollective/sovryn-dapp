@@ -84,10 +84,7 @@ export const useExecuteExits = () => {
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   return useCallback(
-    async (
-      batches: ExitBatch[],
-      onComplete?: (requestIds: string[]) => void,
-    ) => {
+    async (batches: ExitBatch[], onComplete?: (batch: ExitBatch) => void) => {
       const usable = batches.filter(
         batch => batch.queueAddress && batch.requestIds.length > 0,
       );
@@ -106,7 +103,10 @@ export const useExecuteExits = () => {
             fnName: 'executeExits',
             args: [requestIds],
           },
-          onComplete: onComplete ? () => onComplete(requestIds) : undefined,
+          // The batch, not its ids alone: ids restart in each queue.
+          onComplete: onComplete
+            ? () => onComplete({ queueAddress, requestIds })
+            : undefined,
         })),
       );
       setTitle(t(translations.perimeterPage.tx.executeExitTitle));

@@ -1,8 +1,8 @@
 import {
-  BlockState,
   ExitStatus,
   PendingExitState,
   canExecuteExit,
+  exitKey,
   formatDelayCountdown,
   formatDelayDuration,
   getExitDelayDisplay,
@@ -17,12 +17,6 @@ const RECEIVER = '0x3333333333333333333333333333333333333333';
 const STRANGER = '0x4444444444444444444444444444444444444444';
 
 const NOW = 1_800_000_000;
-
-const clear = {
-  originator: BlockState.None,
-  owner: BlockState.None,
-  receiver: BlockState.None,
-};
 
 const queued = (unlockAt: number) => ({
   status: ExitStatus.Queued,
@@ -111,39 +105,39 @@ describe('exitDelay utils', () => {
     expect(isExecutor(exit, undefined)).toBe(false);
   });
 
+  it('keys an exit by its queue and id, so equal ids in two queues stay apart', () => {
+    expect(exitKey({ queueAddress: '0xAbC', id: '7' })).toBe('0xabc:7');
+    expect(exitKey({ queueAddress: '0xabc', id: '7' })).not.toBe(
+      exitKey({ queueAddress: '0xdef', id: '7' }),
+    );
+  });
+
   describe('pending exit state', () => {
     it('is locked before the unlock time', () => {
-      expect(
-        getPendingExitState(queued(NOW + 60), clear, false, OWNER, NOW),
-      ).toEqual(PendingExitState.Locked);
+      expect(getPendingExitState(queued(NOW + 60), false, OWNER, NOW)).toEqual(
+        PendingExitState.Locked,
+      );
     });
 
     it('is unlocked for an executor once the window passes', () => {
-      expect(
-        getPendingExitState(queued(NOW), clear, false, OWNER, NOW),
-      ).toEqual(PendingExitState.Unlocked);
+      expect(getPendingExitState(queued(NOW), false, OWNER, NOW)).toEqual(
+        PendingExitState.Unlocked,
+      );
     });
 
     it('tells a non-executor it cannot execute, rather than offering a reverting button', () => {
-      expect(
-        getPendingExitState(queued(NOW), clear, false, RECEIVER, NOW),
-      ).toEqual(PendingExitState.NotExecutor);
-      expect(
-        getPendingExitState(queued(NOW), clear, false, STRANGER, NOW),
-      ).toEqual(PendingExitState.NotExecutor);
+      expect(getPendingExitState(queued(NOW), false, RECEIVER, NOW)).toEqual(
+        PendingExitState.NotExecutor,
+      );
+      expect(getPendingExitState(queued(NOW), false, STRANGER, NOW)).toEqual(
+        PendingExitState.NotExecutor,
+      );
     });
 
-    it('reports blocked when ANY party is frozen or blacklisted', () => {
-      const cases = [
-        { ...clear, originator: BlockState.Frozen },
-        { ...clear, owner: BlockState.Blacklisted },
-        { ...clear, receiver: BlockState.Frozen },
-      ];
-      for (const blocks of cases) {
-        expect(
-          getPendingExitState(queued(NOW), blocks, false, OWNER, NOW),
-        ).toEqual(PendingExitState.Blocked);
-      }
+    it('has no state for a blocked party: a block is checked when the holder releases', () => {
+      // A withdrawal whose party is frozen or blacklisted looks like any other
+      // row, and the block is named when Release is pressed.
+      expect(Object.values(PendingExitState)).not.toContain('blocked');
     });
 
     it('ranks a terminal status above every other condition', () => {
@@ -155,7 +149,6 @@ describe('exitDelay utils', () => {
         expect(
           getPendingExitState(
             { ...queued(NOW + 60), status },
-            { ...clear, owner: BlockState.Frozen },
             true,
             OWNER,
             NOW,
@@ -165,21 +158,9 @@ describe('exitDelay utils', () => {
     });
 
     it('ranks the global pause above the unlock time', () => {
-      expect(getPendingExitState(queued(NOW), clear, true, OWNER, NOW)).toEqual(
+      expect(getPendingExitState(queued(NOW), true, OWNER, NOW)).toEqual(
         PendingExitState.Paused,
       );
-    });
-
-    it('ranks the unlock time above the block gate, matching the contract order', () => {
-      expect(
-        getPendingExitState(
-          queued(NOW + 60),
-          { ...clear, owner: BlockState.Frozen },
-          false,
-          OWNER,
-          NOW,
-        ),
-      ).toEqual(PendingExitState.Locked);
     });
   });
 
@@ -188,7 +169,6 @@ describe('exitDelay utils', () => {
     for (const state of [
       PendingExitState.Locked,
       PendingExitState.NotExecutor,
-      PendingExitState.Blocked,
       PendingExitState.Paused,
       PendingExitState.Settled,
     ]) {

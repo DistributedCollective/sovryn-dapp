@@ -2099,7 +2099,6 @@
       "locked": "On hold",
       "unlocked": "Ready",
       "notExecutor": "Releasable by the owner",
-      "blocked": "Under review",
       "paused": "Paused",
       "settled": "Settled"
     },
@@ -2107,7 +2106,6 @@
       "locked": "Still inside its hold window. It becomes releasable at the time shown.",
       "unlocked": "The hold has ended. Release it to send the funds to their destination.",
       "notExecutor": "This withdrawal is released by the account that made it or by the position owner.",
-      "blocked": "One of the accounts involved is under review, so this withdrawal cannot be released right now. Contact support.",
       "paused": "Releases are paused across the whole perimeter. Nothing is lost; try again once they resume.",
       "settled": "Already paid out or otherwise resolved. Nothing left to do."
     },
@@ -2119,6 +2117,21 @@
       "executeExitTitle": "Release from the Perimeter vault",
       "executeExits": "Release {{count}} withdrawals from the Perimeter vault"
     },
-    "releaseAll": "Release all ready ({{count}})"
+    "releaseAll": "Release all ready ({{count}})",
+    "releaseRefused": {
+      "title": "Not released",
+      "blocked": "Withdrawal #{{id}} was not released because {{party}} is {{state}}.",
+      "unreadable": "Withdrawal #{{id}} was not released because we could not check whether its addresses are frozen or blacklisted. Try again in a moment.",
+      "party": {
+        "account": "your address",
+        "originator": "the address that started it",
+        "owner": "the position owner",
+        "receiver": "the receiver"
+      },
+      "state": {
+        "frozen": "frozen",
+        "blacklisted": "blacklisted"
+      }
+    }
   }
 }

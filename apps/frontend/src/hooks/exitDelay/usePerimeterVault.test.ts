@@ -275,6 +275,16 @@ describe('usePerimeterVault', () => {
     expect(result.current.exits.map(exit => exit.id)).toEqual(['7', '8']);
   });
 
+  it("reads no party's block state: a block is checked when the holder releases", async () => {
+    holding(7);
+
+    const result = await settled();
+
+    expect(result.current.exits).toHaveLength(1);
+    expect(mockBlockStateOf).not.toHaveBeenCalled();
+    expect(result.current).not.toHaveProperty('blocks');
+  });
+
   it("lists holds from Zero's queue as well as the protocol's", async () => {
     // The two pointers are independently settable. If they diverge, a Zero
     // close form promises the holder they can release on this page, and the

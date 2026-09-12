@@ -82,7 +82,9 @@ describe('useExecuteExits', () => {
     await i18n;
   });
 
-  it('reports the ids the batch settled, so the page can drop them', async () => {
+  it('reports the batch it settled, queue and ids, so the page can drop exactly those rows', async () => {
+    // Ids restart in each queue: an id alone would also drop another queue's
+    // request that shares it.
     const onComplete = jest.fn();
     const { result } = renderHook(() => useExecuteExits());
 
@@ -96,7 +98,10 @@ describe('useExecuteExits', () => {
     expect(step().request.fnName).toBe('executeExits');
     expect(step().request.args).toEqual([['7', '8']]);
     step().onComplete();
-    expect(onComplete).toHaveBeenCalledWith(['7', '8']);
+    expect(onComplete).toHaveBeenCalledWith({
+      queueAddress: QUEUE,
+      requestIds: ['7', '8'],
+    });
   });
 
   it('signs one transaction per queue, in a single list', async () => {
@@ -120,7 +125,10 @@ describe('useExecuteExits', () => {
     expect(steps[0].request.contract.address).toBe(QUEUE);
     expect(steps[1].request.contract.address).toBe(OTHER_QUEUE);
     steps[1].onComplete();
-    expect(onComplete).toHaveBeenCalledWith(['8']);
+    expect(onComplete).toHaveBeenCalledWith({
+      queueAddress: OTHER_QUEUE,
+      requestIds: ['8'],
+    });
   });
 
   it('does nothing for an empty batch', async () => {

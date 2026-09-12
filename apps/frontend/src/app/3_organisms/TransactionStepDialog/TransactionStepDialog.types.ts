@@ -45,7 +45,7 @@ export type SendRefusal = Error & { notSentReasons: string[] };
 
 export type TransactionPreflight = {
   /**
-   * Runs inside the send step, after the holder confirms and immediately
+   * Runs inside the send step, after the user confirms and immediately
    * before the wallet is asked to sign. The request and config it resolves to
    * are what is sent in place of the step's own. When it rejects, nothing is
    * sent: the step fails saying nothing was sent, with the reasons of a

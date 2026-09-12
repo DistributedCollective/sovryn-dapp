@@ -848,6 +848,44 @@ describe('usePerimeterRelease', () => {
       expect(estimates()).toHaveLength(0);
     });
 
+    it.each<[string, () => void, string | undefined, string]>([
+      [
+        'the queue is paused',
+        () => stub.onCall(QUEUE, EXECUTE_EXITS, queueRefusal('QueuePaused')),
+        undefined,
+        'Withdrawals #7, #9 were not released because releases are paused.',
+      ],
+      [
+        'the wallet switched account',
+        () =>
+          mockWalletSend.mockImplementation(async (method: string) => {
+            if (method === 'eth_chainId') {
+              return '0x1e';
+            }
+            return method === 'eth_accounts' ? [OTHER] : null;
+          }),
+        undefined,
+        'Your wallet switched to a different account, so nothing was sent. Switch back to the account these withdrawals belong to, then release again.',
+      ],
+      [
+        'the typed gas limit is too low',
+        () => undefined,
+        '40000',
+        'Withdrawals #7, #9 were not released because the gas limit set in Advanced settings is too low: 40000 is below the 50000 it needs. Raise it or reset the values, then retry.',
+      ],
+    ])(
+      'refuses the send with the lines its notice shows when %s, so the dialog can say why nothing was sent',
+      async (_case, change, typedGasLimit, line) => {
+        await release([row({ id: '7' }), row({ id: '9' })]);
+        change();
+
+        await expect(confirmInDialog(typedGasLimit)).rejects.toMatchObject({
+          notSentReasons: [line],
+        });
+        expect(refusalText()).toContain(line);
+      },
+    );
+
     it('sends nothing for a withdrawal someone else delivers before the holder confirms, takes it off the page, and says why', async () => {
       const onReleased = await release([row()]);
       statusOf(QUEUE, 7, requestResult(ExitStatus.Executed));

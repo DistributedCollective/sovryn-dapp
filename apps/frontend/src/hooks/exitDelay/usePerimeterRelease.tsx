@@ -9,6 +9,7 @@ import { NotificationType } from '@sovryn/ui';
 
 import { RSK_CHAIN_ID } from '../../config/chains';
 
+import { sendRefusal } from '../../app/3_organisms/TransactionStepDialog/helpers';
 import { useNotificationContext } from '../../contexts/NotificationContext';
 import { translations } from '../../locales/i18n';
 import {
@@ -606,9 +607,6 @@ const releaseGasLimit = (
   }
 };
 
-const notSent = () =>
-  new Error('The release does not pass its check, so nothing is sent.');
-
 /**
  * Release withdrawals from the Perimeter vault, one row or several, sending
  * only what the queue will still accept, from the network it lives on.
@@ -680,17 +678,33 @@ export const usePerimeterRelease = () => {
           REFUSAL_TIMEOUT_MS,
         );
 
-      /** Whether the wallet is on RSK and signs as `account`; says why not when it is not. */
-      const walletReady = async (): Promise<boolean> => {
+      /**
+       * Why the wallet is not ready to release — not on RSK, or not signing as
+       * `account` — or undefined when it is.
+       */
+      const walletRefusal = async (): Promise<string | undefined> => {
         const wallet = await readWallet(signer, account);
         if (wallet === 'ready') {
-          return true;
+          return undefined;
         }
-        notify([t(WALLET_REFUSALS[wallet])]);
-        return false;
+        const refusal: string = t(WALLET_REFUSALS[wallet]);
+        return refusal;
       };
 
-      if (!(await walletReady())) {
+      /**
+       * Refuse a send step: the holder is told why in the notice, and the
+       * dialog is handed the same lines to say why nothing was sent.
+       */
+      const refuseSend = (lines: string[]) => {
+        if (lines.length > 0) {
+          notify(lines);
+        }
+        return sendRefusal(lines);
+      };
+
+      const walletAtPress = await walletRefusal();
+      if (walletAtPress) {
+        notify([walletAtPress]);
         return;
       }
 
@@ -711,8 +725,9 @@ export const usePerimeterRelease = () => {
       const preflight =
         (single: boolean): ExitPreflight =>
         async (batch, typedGasLimit) => {
-          if (!(await walletReady())) {
-            throw notSent();
+          const walletAtSend = await walletRefusal();
+          if (walletAtSend) {
+            throw refuseSend([walletAtSend]);
           }
           const batchRows = batch.requestIds
             .map(id =>
@@ -773,14 +788,16 @@ export const usePerimeterRelease = () => {
           // The wallet is read once more, as the last step before it is asked
           // to sign: an account switched during the reads above cancels the
           // send.
-          if (passed && gasLimit && !(await walletReady())) {
-            throw notSent();
+          const walletAtSign =
+            passed && gasLimit ? await walletRefusal() : undefined;
+          if (walletAtSign) {
+            throw refuseSend([walletAtSign]);
+          }
+          if (!passed || !gasLimit) {
+            throw refuseSend(refusals);
           }
           if (refusals.length > 0) {
             notify(refusals);
-          }
-          if (!passed || !gasLimit) {
-            throw notSent();
           }
           return {
             requestIds: passed.map(row => row.id),

@@ -57,6 +57,8 @@ export type TransactionStepProps = {
   updateConfig: (config: TransactionConfig) => void;
   gasPrice: string;
   isLoading: boolean;
+  /** Set when the step failed because its send check refused: why nothing was sent. */
+  notSent?: string[];
 };
 
 export const TransactionStep: FC<TransactionStepProps> = ({
@@ -68,6 +70,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   gasPrice,
   updateConfig,
   isLoading,
+  notSent,
 }) => {
   const chainId = useCurrentChain();
   const chain = useMemo(() => getChainById(chainId), [chainId]);
@@ -257,7 +260,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
     <div className="flex flex-col">
       <StatusItem content={step} label={title} status={status} />
       <div className="ml-10">
-        {status === StatusType.error && (
+        {status === StatusType.error && !notSent && (
           <Paragraph className="text-error-light">
             <span className="block">
               {t(translations.transactionStep.transactionFailedTitle)}
@@ -265,6 +268,19 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             <span>
               {t(translations.transactionStep.transactionFailedSubtitle)}
             </span>
+          </Paragraph>
+        )}
+        {status === StatusType.error && notSent && (
+          <Paragraph className="text-error-light">
+            <span className="block">
+              {t(translations.transactionStep.notSentTitle)}
+            </span>
+            {notSent.map(reason => (
+              <span className="block" key={reason}>
+                {reason}
+              </span>
+            ))}
+            <span>{t(translations.transactionStep.notSentSubtitle)}</span>
           </Paragraph>
         )}
         {subtitle && status !== StatusType.error && (

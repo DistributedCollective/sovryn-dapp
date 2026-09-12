@@ -11,18 +11,22 @@ import React from 'react';
 import { BigNumber } from 'ethers';
 import 'jest-canvas-mock';
 
+import { StatusType } from '@sovryn/ui';
+
 import { i18n } from '../../../../../locales/i18n';
 import {
   Transaction,
   TransactionType,
 } from '../../TransactionStepDialog.types';
+import { sendRefusal } from '../../helpers';
 import { TransactionSteps } from './TransactionSteps';
 
 /**
  * A transaction may carry a check that runs inside the send step, after the
  * holder presses Confirm and immediately before the wallet is asked to sign.
- * What it returns is what the wallet is handed; when it refuses, the wallet is
- * never asked and the step fails with Retry offered.
+ * What it returns is what the wallet is handed. When it refuses, the wallet is
+ * never asked, and the step says nothing was sent and why, with Retry offered;
+ * the dialog reports a failed transaction only when the wallet was asked.
  */
 
 const ACCOUNT = '0x1111111111111111111111111111111111111111';
@@ -126,12 +130,16 @@ describe('TransactionSteps', () => {
     );
   });
 
-  it('never asks the wallet when the send check refuses, and fails the step with Retry offered', async () => {
-    const beforeSend = jest.fn().mockRejectedValue(new Error('refused'));
+  it('never asks the wallet when the send check refuses, and says nothing was sent and why, with Retry offered', async () => {
+    const reason =
+      'Withdrawal #8 was not released because the receiver is frozen.';
+    const beforeSend = jest.fn().mockRejectedValue(sendRefusal([reason]));
+    const onTxStatusChange = jest.fn();
     render(
       <TransactionSteps
         transactions={[releaseTransaction(beforeSend)]}
         gasPrice="0.065"
+        onTxStatusChange={onTxStatusChange}
         setTxTrigger={jest.fn()}
       />,
     );
@@ -145,8 +153,65 @@ describe('TransactionSteps', () => {
     );
     expect(beforeSend).toHaveBeenCalledTimes(1);
     expect(mockSend).not.toHaveBeenCalled();
-    expect(screen.getByText('Your transaction has failed')).toBeInTheDocument();
+    expect(screen.getByText('Nothing was sent')).toBeInTheDocument();
+    expect(screen.getByText(reason)).toBeInTheDocument();
+    expect(
+      screen.queryByText('Your transaction has failed'),
+    ).not.toBeInTheDocument();
+    // No failed transaction is reported, so closing the dialog does not
+    // announce one.
+    expect(onTxStatusChange).not.toHaveBeenCalledWith(StatusType.error);
   });
+
+  it('says nothing was sent when the send check rejects without naming a reason', async () => {
+    const beforeSend = jest.fn().mockRejectedValue(new Error('node error'));
+    render(
+      <TransactionSteps
+        transactions={[releaseTransaction(beforeSend)]}
+        gasPrice="0.065"
+        setTxTrigger={jest.fn()}
+      />,
+    );
+
+    await confirm();
+
+    await waitFor(() =>
+      expect(screen.getByText('Nothing was sent')).toBeInTheDocument(),
+    );
+    expect(mockSend).not.toHaveBeenCalled();
+    expect(
+      screen.queryByText('Your transaction has failed'),
+    ).not.toBeInTheDocument();
+  });
+
+  it.each<[string, Transaction['beforeSend']]>([
+    ['a transaction with no send check', undefined],
+    ['a transaction whose send check passed', async step => step],
+  ])(
+    'says the transaction failed when the wallet does not send %s',
+    async (_case, beforeSend) => {
+      mockSend.mockRejectedValue(new Error('user rejected transaction'));
+      const onTxStatusChange = jest.fn();
+      render(
+        <TransactionSteps
+          transactions={[releaseTransaction(beforeSend)]}
+          gasPrice="0.065"
+          onTxStatusChange={onTxStatusChange}
+          setTxTrigger={jest.fn()}
+        />,
+      );
+
+      await confirm();
+
+      await waitFor(() =>
+        expect(
+          screen.getByText('Your transaction has failed'),
+        ).toBeInTheDocument(),
+      );
+      expect(screen.queryByText('Nothing was sent')).not.toBeInTheDocument();
+      expect(onTxStatusChange).toHaveBeenCalledWith(StatusType.error);
+    },
+  );
 
   it('runs the send check again on Retry', async () => {
     const beforeSend = jest

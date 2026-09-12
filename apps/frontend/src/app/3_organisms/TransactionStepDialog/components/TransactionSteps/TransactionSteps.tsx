@@ -35,6 +35,7 @@ import {
   isSignTransactionDataRequest,
   isTransactionRequest,
   isTypedDataRequest,
+  notSentReasonsOf,
 } from '../../helpers';
 import { sendOrSimulateTx } from '../../utils';
 import { TransactionStep } from '../TransactionStep/TransactionStep';
@@ -60,6 +61,9 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   const [stepData, setStepData] = useState<TransactionStepData[]>([]);
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
+  // Set when the failed step's send check refused it: nothing reached the
+  // wallet, for these reasons.
+  const [notSent, setNotSent] = useState<string[] | undefined>();
   const [estimatedGasFee, setEstimatedGasFee] = useState(0);
   const { balance: nativeBalance, loading } = useNativeAssetBalance(chainId);
   const { account } = useAccount();
@@ -209,10 +213,13 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   }, [stepData]);
 
   const submit = useCallback(async () => {
+    // Set when a send check refuses: nothing reached the wallet.
+    let notSentReasons: string[] | undefined;
     try {
       let i = 0;
       if (error) {
         setError(false);
+        setNotSent(undefined);
         i = step;
       }
       for (; i < transactions.length; i++) {
@@ -221,7 +228,12 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
         let { request } = transactions[i];
         const { beforeSend } = transactions[i];
         if (beforeSend) {
-          ({ request, config } = await beforeSend({ request, config }));
+          try {
+            ({ request, config } = await beforeSend({ request, config }));
+          } catch (refusal) {
+            notSentReasons = notSentReasonsOf(refusal);
+            throw refusal;
+          }
           updateConfig(i, config);
         }
         if (isTransactionRequest(request)) {
@@ -359,13 +371,18 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
       setTimeout(() => setTxTrigger(nanoid()), 1000);
     } catch (error) {
-      onTxStatusChange?.(StatusType.error);
+      // A step its send check refused was never sent, so no failed
+      // transaction is reported for it.
+      if (!notSentReasons) {
+        onTxStatusChange?.(StatusType.error);
+      }
       console.error('error:', error);
 
       transactions[0].onChangeStatus?.(StatusType.error);
 
       handleUpdates();
 
+      setNotSent(notSentReasons);
       setError(true);
     }
   }, [
@@ -436,6 +453,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           receipt={getReceipt(i)}
           updateConfig={(config: TransactionConfig) => updateConfig(i, config)}
           gasPrice={gasPrice}
+          notSent={i === step ? notSent : undefined}
         />
       ))}
       {!isLoading && transactions.length > step && (

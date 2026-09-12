@@ -598,13 +598,13 @@ describe('usePerimeterRelease', () => {
     // Only a withdrawal paid to its receiver has been delivered. A request the
     // answering node does not hold reads as status None, which says nothing
     // about the withdrawal. The two recovery outcomes paid it elsewhere, and
-    // the holder is told what happened to it.
+    // the holder is told who acted and what happened to it.
     const UNREAD =
       'Withdrawal #7 was not released because we could not check whether it is still waiting.';
     const TO_PROTOCOL =
-      'cannot be released: it was returned to the protocol because the address that started it or the position owner was blacklisted.';
-    const BY_OWNER =
-      'cannot be released: the owner of the Sovryn Perimeter sent it to another destination.';
+      "cannot be released: the address that started it or the position owner was blacklisted, so the Perimeter's operators — the multisig that runs the withdrawal delay — sent it to a recovery destination approved in advance for the product it came from.";
+    const BY_OPERATORS =
+      "cannot be released: the Perimeter's operators — the multisig that runs the withdrawal delay — sent it to a recovery destination they chose, which they can do only while it is still inside its withdrawal delay, releases are paused, or one of its addresses is frozen or blacklisted.";
 
     it('keeps a row whose status the node reports as unknown, sends nothing, and says it could not check', async () => {
       statusOf(QUEUE, 7, requestResult(ExitStatus.None));
@@ -628,9 +628,13 @@ describe('usePerimeterRelease', () => {
 
     it.each([
       ['returned to the protocol', ExitStatus.ResolvedToProtocol, TO_PROTOCOL],
-      ['sent elsewhere by the owner', ExitStatus.ResolvedBySIP, BY_OWNER],
+      [
+        "sent elsewhere by the Perimeter's operators",
+        ExitStatus.ResolvedBySIP,
+        BY_OPERATORS,
+      ],
     ])(
-      'takes a withdrawal %s off the page, says what happened to it, and sends the rest',
+      'takes a withdrawal %s off the page, says who acted and what happened to it, and sends the rest',
       async (_case, status, line) => {
         statusOf(QUEUE, 8, requestResult(status));
 
@@ -653,7 +657,7 @@ describe('usePerimeterRelease', () => {
       expect(refusalText()).toContain(UNREAD);
     });
 
-    it('takes a withdrawal the owner sent elsewhere off the page when the holder confirms, and says so', async () => {
+    it("takes a withdrawal the Perimeter's operators sent elsewhere off the page when the holder confirms, and says so", async () => {
       const onReleased = await release([row()]);
       statusOf(QUEUE, 7, requestResult(ExitStatus.ResolvedBySIP));
 
@@ -661,7 +665,7 @@ describe('usePerimeterRelease', () => {
       expect(onReleased).toHaveBeenCalledWith([
         exitKey({ queueAddress: QUEUE, id: '7' }),
       ]);
-      expect(refusalText()).toContain(`Withdrawal #7 ${BY_OWNER}`);
+      expect(refusalText()).toContain(`Withdrawal #7 ${BY_OPERATORS}`);
       expect(refusalText()).not.toContain('already delivered');
     });
   });

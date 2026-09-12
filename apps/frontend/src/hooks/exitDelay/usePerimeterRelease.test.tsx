@@ -484,6 +484,78 @@ describe('usePerimeterRelease', () => {
     });
   });
 
+  describe('a status other than queued', () => {
+    // Only a withdrawal paid to its receiver has been delivered. A request the
+    // answering node does not hold reads as status None, which says nothing
+    // about the withdrawal. The two recovery outcomes paid it elsewhere, and
+    // the holder is told what happened to it.
+    const UNREAD =
+      'Withdrawal #7 was not released because we could not check whether it is still waiting.';
+    const TO_PROTOCOL =
+      'cannot be released: it was returned to the protocol because the address that started it or the position owner was blacklisted.';
+    const BY_OWNER =
+      'cannot be released: the owner of the Sovryn Perimeter sent it to another destination.';
+
+    it('keeps a row whose status the node reports as unknown, sends nothing, and says it could not check', async () => {
+      statusOf(QUEUE, 7, requestResult(ExitStatus.None));
+
+      const onReleased = await release([row()]);
+
+      expect(onReleased).not.toHaveBeenCalled();
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(UNREAD);
+    });
+
+    it('keeps a row whose status is outside the known values, sends nothing, and says it could not check', async () => {
+      statusOf(QUEUE, 7, requestResult(9 as ExitStatus));
+
+      const onReleased = await release([row()]);
+
+      expect(onReleased).not.toHaveBeenCalled();
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(UNREAD);
+    });
+
+    it.each([
+      ['returned to the protocol', ExitStatus.ResolvedToProtocol, TO_PROTOCOL],
+      ['sent elsewhere by the owner', ExitStatus.ResolvedBySIP, BY_OWNER],
+    ])(
+      'takes a withdrawal %s off the page, says what happened to it, and sends the rest',
+      async (_case, status, line) => {
+        statusOf(QUEUE, 8, requestResult(status));
+
+        const onReleased = await release([row({ id: '7' }), row({ id: '8' })]);
+
+        expect(onReleased).toHaveBeenCalledWith([
+          exitKey({ queueAddress: QUEUE, id: '8' }),
+        ]);
+        expect(mockExecuteExit).toHaveBeenCalledWith(QUEUE, '7', SEND_OPTIONS);
+        expect(refusalText()).toContain(`Withdrawal #8 ${line}`);
+      },
+    );
+
+    it('keeps a row the node reports as unknown when the holder confirms, and sends nothing', async () => {
+      const onReleased = await release([row()]);
+      statusOf(QUEUE, 7, requestResult(ExitStatus.None));
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(onReleased).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(UNREAD);
+    });
+
+    it('takes a withdrawal the owner sent elsewhere off the page when the holder confirms, and says so', async () => {
+      const onReleased = await release([row()]);
+      statusOf(QUEUE, 7, requestResult(ExitStatus.ResolvedBySIP));
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(onReleased).toHaveBeenCalledWith([
+        exitKey({ queueAddress: QUEUE, id: '7' }),
+      ]);
+      expect(refusalText()).toContain(`Withdrawal #7 ${BY_OWNER}`);
+      expect(refusalText()).not.toContain('already delivered');
+    });
+  });
+
   describe('a withdrawal still unlocking', () => {
     // The dry run executes against the latest block, whose timestamp trails
     // wall time by up to about a minute on RSK mainnet. A withdrawal the queue

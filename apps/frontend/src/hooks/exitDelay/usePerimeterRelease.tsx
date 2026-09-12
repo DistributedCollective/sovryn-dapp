@@ -407,8 +407,10 @@ const byQueue = (rows: ReleaseRow[]): ReleaseRow[][] => {
 };
 
 type ReleaseCheck = {
-  /** Rows whose status is not Queued: someone has delivered them. */
+  /** Rows paid to their receiver: someone has delivered them. */
   delivered: ReleaseRow[];
+  /** Rows the queue resolved away by recovery; each is named in `refusals`. */
+  resolved: ReleaseRow[];
   /** One line per withdrawal, or group of withdrawals, not released, and why. */
   refusals: string[];
   /** Whether the dry run asked about `executeExit` rather than `executeExits`. */
@@ -434,21 +436,41 @@ const checkRelease = async (
 
   const statuses = await Promise.all(rows.map(readStatus));
   const delivered: ReleaseRow[] = [];
+  const resolved: ReleaseRow[] = [];
   const queued = rows.filter((row, index) => {
-    const status = statuses[index];
-    if (status === undefined) {
-      refusals.push(
-        t(translations.perimeterPage.releaseRefused.statusUnreadable, {
-          id: row.id,
-        }),
-      );
-      return false;
+    switch (statuses[index]) {
+      case ExitStatus.Queued:
+        return true;
+      case ExitStatus.Executed:
+        delivered.push(row);
+        return false;
+      case ExitStatus.ResolvedToProtocol:
+        resolved.push(row);
+        refusals.push(
+          t(translations.perimeterPage.releaseRefused.resolvedToProtocol, {
+            id: row.id,
+          }),
+        );
+        return false;
+      case ExitStatus.ResolvedBySIP:
+        resolved.push(row);
+        refusals.push(
+          t(translations.perimeterPage.releaseRefused.resolvedByOwner, {
+            id: row.id,
+          }),
+        );
+        return false;
+      default:
+        // A read that failed, None from a node that does not hold the
+        // request, or a value outside the known ones: nothing is known about
+        // the withdrawal, so nothing is sent and the row stays.
+        refusals.push(
+          t(translations.perimeterPage.releaseRefused.statusUnreadable, {
+            id: row.id,
+          }),
+        );
+        return false;
     }
-    if (status !== ExitStatus.Queued) {
-      delivered.push(row);
-      return false;
-    }
-    return true;
   });
 
   const checks = await Promise.all(
@@ -479,6 +501,7 @@ const checkRelease = async (
 
   return {
     delivered,
+    resolved,
     refusals,
     single: asSingle,
     accepted: asked
@@ -527,8 +550,10 @@ const notSent = () =>
  *    succeeds and does nothing, and one signed by an account other than the
  *    one checked reverts, so on any other answer, or none, nothing is read or
  *    sent;
- * 2. reads each row's status fresh. A row whose status is not Queued has been
- *    delivered by someone else and leaves the page through `onReleased`;
+ * 2. reads each row's status fresh. A row paid to its receiver by someone else
+ *    leaves the page through `onReleased`; a row resolved away by recovery
+ *    leaves it too, and is named with what happened to it. A status that says
+ *    nothing about the request, or no answer, keeps the row and sends nothing;
  * 3. gives the rows still queued the block check. A withdrawal whose party is
  *    frozen or blacklisted looks like any other row, and this is where the
  *    block is revealed: that row is not sent;
@@ -591,8 +616,9 @@ export const usePerimeterRelease = () => {
       }
 
       const check = await checkRelease(rows, account);
-      if (check.delivered.length > 0) {
-        onReleased(check.delivered.map(exitKey));
+      const settled = [...check.delivered, ...check.resolved];
+      if (settled.length > 0) {
+        onReleased(settled.map(exitKey));
       }
       if (check.refusals.length > 0) {
         notify(check.refusals);
@@ -617,21 +643,22 @@ export const usePerimeterRelease = () => {
 
           const again = await checkRelease(batchRows, account, single);
           const refusals: string[] = [];
-          if (again.delivered.length > 0) {
-            onReleased(again.delivered.map(exitKey));
-            again.delivered.forEach(row =>
-              refusals.push(
-                rowsRefusal(
-                  [row],
-                  t(
-                    translations.perimeterPage.releaseRefused.reason
-                      .alreadyTerminal,
-                    { id: row.id },
-                  ),
+          const settledAgain = [...again.delivered, ...again.resolved];
+          if (settledAgain.length > 0) {
+            onReleased(settledAgain.map(exitKey));
+          }
+          again.delivered.forEach(row =>
+            refusals.push(
+              rowsRefusal(
+                [row],
+                t(
+                  translations.perimeterPage.releaseRefused.reason
+                    .alreadyTerminal,
+                  { id: row.id },
                 ),
               ),
-            );
-          }
+            ),
+          );
           refusals.push(...again.refusals);
 
           const [passed] = again.accepted;

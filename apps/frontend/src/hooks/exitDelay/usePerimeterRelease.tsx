@@ -67,29 +67,58 @@ const BLOCK_NAMES: Partial<Record<number, BlockName>> = {
   [BlockState.Blacklisted]: 'blacklisted',
 };
 
-type WalletNetwork = 'expected' | 'other' | 'unreadable';
+type WalletState =
+  | 'ready'
+  | 'otherNetwork'
+  | 'networkUnreadable'
+  | 'otherAccount'
+  | 'accountUnreadable';
+
+/** What the holder is told when the wallet is not ready to release. */
+const WALLET_REFUSALS: Record<Exclude<WalletState, 'ready'>, string> = {
+  otherNetwork: translations.perimeterPage.releaseRefused.wrongNetwork,
+  networkUnreadable:
+    translations.perimeterPage.releaseRefused.networkUnreadable,
+  otherAccount: translations.perimeterPage.releaseRefused.accountChanged,
+  accountUnreadable:
+    translations.perimeterPage.releaseRefused.accountUnreadable,
+};
 
 /**
- * Which network the wallet itself says it is on.
+ * Whether the wallet itself is on RSK and signs as `account`.
  *
- * The wallet is asked directly with `eth_chainId`: the signer's provider keeps
- * the network it first detected, and a switch made in the wallet afterwards
- * does not show there. No signer, a rejected request, or an answer that is not
- * a chain id is unreadable.
+ * The wallet is asked directly, with `eth_chainId` and then `eth_accounts`:
+ * the signer's provider keeps the network it first detected, and the signer
+ * resolves its address only when it signs, so a switch made in the wallet
+ * shows in the wallet's own answers and nowhere else. No signer, a rejected
+ * request, or an answer that is not a chain id or an account is unreadable.
  */
-const readWalletNetwork = async (
+const readWallet = async (
   signer: providers.JsonRpcSigner | undefined,
-): Promise<WalletNetwork> => {
+  account: string,
+): Promise<WalletState> => {
   if (!signer || typeof signer.provider?.send !== 'function') {
-    return 'unreadable';
+    return 'networkUnreadable';
   }
   try {
     const chainId = await signer.provider.send('eth_chainId', []);
-    return BigNumber.from(chainId).eq(BigNumber.from(RSK_CHAIN_ID))
-      ? 'expected'
-      : 'other';
+    if (!BigNumber.from(chainId).eq(BigNumber.from(RSK_CHAIN_ID))) {
+      return 'otherNetwork';
+    }
   } catch (error) {
-    return 'unreadable';
+    return 'networkUnreadable';
+  }
+  try {
+    const accounts: unknown = await signer.provider.send('eth_accounts', []);
+    const active = Array.isArray(accounts) ? accounts[0] : undefined;
+    if (typeof active !== 'string') {
+      return 'accountUnreadable';
+    }
+    return active.toLowerCase() === account.toLowerCase()
+      ? 'ready'
+      : 'otherAccount';
+  } catch (error) {
+    return 'accountUnreadable';
   }
 };
 
@@ -449,9 +478,11 @@ const notSent = () =>
  * the transaction dialog's send step, immediately before the wallet is asked
  * to sign: the holder may confirm long after pressing. Each run:
  *
- * 1. asks the wallet which network it is on. A release signed on another chain
- *    reaches an address with no code, succeeds and does nothing, so on any
- *    other answer, or none, nothing is read or sent;
+ * 1. asks the wallet which network it is on and which account it signs as. A
+ *    release signed on another chain reaches an address with no code,
+ *    succeeds and does nothing, and one signed by an account other than the
+ *    one checked reverts, so on any other answer, or none, nothing is read or
+ *    sent;
  * 2. reads each row's status fresh. A row whose status is not Queued has been
  *    delivered by someone else and leaves the page through `onReleased`;
  * 3. gives the rows still queued the block check. A withdrawal whose party is
@@ -463,12 +494,13 @@ const notSent = () =>
  * At the press, one notice tells the holder which withdrawals are not
  * released and why, and the rest opens in the dialog: one row as
  * `executeExit`, several grouped by queue into one transaction list. In the
- * send step the check also estimates the gas for exactly what passed. A
- * withdrawal that does not pass at that moment is named and dropped; when
- * nothing passes,
- * or the gas cannot be estimated, the wallet is not asked at all. `onReleased`
- * receives the keys (queue and id) of rows found delivered and of rows a
- * completed transaction settled.
+ * send step the check also estimates the gas for exactly what passed, and
+ * reads the wallet once more as its last step. A withdrawal that does not pass
+ * at that moment is named and dropped. When nothing passes, the gas cannot be
+ * estimated, or the wallet signs as another account, the wallet is not asked
+ * at all; otherwise it is handed the release from the account the check ran
+ * for. `onReleased` receives the keys (queue and id) of rows found delivered
+ * and of rows a completed transaction settled.
  */
 export const usePerimeterRelease = () => {
   const { account, signer } = useAccount();
@@ -500,19 +532,13 @@ export const usePerimeterRelease = () => {
           REFUSAL_TIMEOUT_MS,
         );
 
-      /** Whether the wallet is on RSK; says why not when it is not. */
+      /** Whether the wallet is on RSK and signs as `account`; says why not when it is not. */
       const walletReady = async (): Promise<boolean> => {
-        const network = await readWalletNetwork(signer);
-        if (network === 'expected') {
+        const wallet = await readWallet(signer, account);
+        if (wallet === 'ready') {
           return true;
         }
-        notify([
-          t(
-            network === 'other'
-              ? translations.perimeterPage.releaseRefused.wrongNetwork
-              : translations.perimeterPage.releaseRefused.networkUnreadable,
-          ),
-        ]);
+        notify([t(WALLET_REFUSALS[wallet])]);
         return false;
       };
 
@@ -580,13 +606,23 @@ export const usePerimeterRelease = () => {
             );
           }
 
+          // The wallet is read once more, as the last step before it is asked
+          // to sign: an account switched during the reads above cancels the
+          // send.
+          if (passed && gasLimit && !(await walletReady())) {
+            throw notSent();
+          }
           if (refusals.length > 0) {
             notify(refusals);
           }
           if (!passed || !gasLimit) {
             throw notSent();
           }
-          return { requestIds: passed.map(row => row.id), gasLimit };
+          return {
+            requestIds: passed.map(row => row.id),
+            gasLimit,
+            from: account,
+          };
         };
 
       if (check.single) {

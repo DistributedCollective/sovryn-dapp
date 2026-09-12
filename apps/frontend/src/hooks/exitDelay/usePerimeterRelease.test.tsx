@@ -155,10 +155,14 @@ describe('usePerimeterRelease', () => {
   });
 
   beforeEach(() => {
-    // The wallet is on RSK unless a test says otherwise.
-    mockWalletSend.mockImplementation(async (method: string) =>
-      method === 'eth_chainId' ? '0x1e' : null,
-    );
+    // The wallet is on RSK and signs as the account the page shows, unless a
+    // test says otherwise.
+    mockWalletSend.mockImplementation(async (method: string) => {
+      if (method === 'eth_chainId') {
+        return '0x1e';
+      }
+      return method === 'eth_accounts' ? [ACCOUNT] : null;
+    });
     mockSigner = { provider: { send: mockWalletSend } };
     // Every request is still queued, every party clear, and the queue accepts
     // every dry run, unless a test says otherwise.
@@ -497,6 +501,7 @@ describe('usePerimeterRelease', () => {
       await expect(confirmInDialog()).resolves.toEqual({
         requestIds: ['7', '9'],
         gasLimit: '50000',
+        from: ACCOUNT,
       });
       expect(stub.callsTo(QUEUE, EXECUTE_EXITS)).toHaveLength(2);
       expect(estimates()).toEqual([
@@ -521,6 +526,7 @@ describe('usePerimeterRelease', () => {
       await expect(confirmInDialog()).resolves.toEqual({
         requestIds: ['7', '9'],
         gasLimit: '50000',
+        from: ACCOUNT,
       });
       expect(refusalText()).toContain(
         'Withdrawal #8 was not released because the receiver is frozen.',
@@ -545,6 +551,7 @@ describe('usePerimeterRelease', () => {
       await expect(confirmInDialog()).resolves.toEqual({
         requestIds: ['7', '9'],
         gasLimit: '50000',
+        from: ACCOUNT,
       });
       expect(refusalText()).toContain(
         'Withdrawal #8 was not released because #8 was already delivered.',
@@ -664,6 +671,93 @@ describe('usePerimeterRelease', () => {
       expect(mockExecuteExit).not.toHaveBeenCalled();
       expect(refusalText()).toContain(
         'We could not check which network your wallet is on',
+      );
+    });
+  });
+
+  describe("the wallet's account", () => {
+    // The checks ask about the account the page shows, but the wallet signs as
+    // whichever account is active in it at that moment, and a release from an
+    // account that is neither the originator nor the owner reverts. So the
+    // wallet's own answer is compared with that account at the press, when the
+    // send step starts, and as the last read before the wallet is asked to sign.
+    const ACCOUNT_CHANGED =
+      'Your wallet switched to a different account, so nothing was sent. Switch back to the account that holds these withdrawals, then release again.';
+
+    /** The wallet answers `eth_accounts` with each list in turn, then the last one. */
+    const accountsInTurn = (...answers: string[][]) =>
+      mockWalletSend.mockImplementation(async (method: string) => {
+        if (method === 'eth_chainId') {
+          return '0x1e';
+        }
+        if (method !== 'eth_accounts') {
+          return null;
+        }
+        return answers.length > 1 ? answers.shift() : answers[0];
+      });
+
+    it('asks the wallet itself which account it signs as before releasing', async () => {
+      await release([row()]);
+
+      expect(mockWalletSend).toHaveBeenCalledWith('eth_accounts', []);
+      expect(mockExecuteExit).toHaveBeenCalled();
+    });
+
+    it('reads and sends nothing when the wallet signs as another account than the page shows, and says so', async () => {
+      accountsInTurn([OTHER]);
+
+      await release([row()]);
+
+      expect(stub.callCount(QUEUE)).toBe(0);
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(mockExecuteExits).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(ACCOUNT_CHANGED);
+    });
+
+    it('sends nothing when the wallet switches account before the holder confirms, and says so', async () => {
+      await release([row()]);
+      accountsInTurn([OTHER]);
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(refusalText()).toContain(ACCOUNT_CHANGED);
+      expect(stub.requestsFor('eth_estimateGas')).toHaveLength(0);
+    });
+
+    it('sends nothing when the wallet switches account while the check inside the send step runs, and says so', async () => {
+      await release([row({ id: '7' }), row({ id: '9' })]);
+      accountsInTurn([ACCOUNT], [OTHER]);
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(refusalText()).toContain(ACCOUNT_CHANGED);
+    });
+
+    it('sends nothing when the wallet cannot say which account it signs as, and says so', async () => {
+      // How an EIP-1193 wallet refuses a method the site is not authorised for.
+      mockWalletSend.mockImplementation(async (method: string) => {
+        if (method === 'eth_chainId') {
+          return '0x1e';
+        }
+        throw Object.assign(
+          new Error(
+            'The requested method has not been authorized by the user.',
+          ),
+          { code: 4100 },
+        );
+      });
+
+      await release([row()]);
+
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(
+        'We could not check which account your wallet is using, so nothing was released.',
+      );
+    });
+
+    it('names the account the checks ran for as the one to send from', async () => {
+      await release([row()]);
+
+      await expect(confirmInDialog()).resolves.toEqual(
+        expect.objectContaining({ from: ACCOUNT }),
       );
     });
   });

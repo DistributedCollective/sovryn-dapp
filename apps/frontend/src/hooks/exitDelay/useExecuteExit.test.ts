@@ -18,13 +18,24 @@ import { useExecuteExit, useExecuteExits } from './useExecuteExit';
 
 const QUEUE = '0x9999999999999999999999999999999999999999';
 const OTHER_QUEUE = '0x8888888888888888888888888888888888888888';
+const HOLDER = '0x1111111111111111111111111111111111111111';
 
 const mockSetTransactions = jest.fn();
 const mockSetIsOpen = jest.fn();
 const mockSetTitle = jest.fn();
 // ethers only accepts a real Signer here; this is the smallest object that
-// satisfies `Signer.isSigner` without reaching a network.
-const mockSigner = { _isSigner: true, provider: {} };
+// satisfies `Signer.isSigner` without reaching a network. Its provider hands
+// out a signer bound to one address, as a wallet's provider does.
+const mockSigner = {
+  _isSigner: true,
+  provider: {
+    getSigner: (address: string) => ({
+      _isSigner: true,
+      provider: {},
+      getAddress: async () => address,
+    }),
+  },
+};
 
 jest.mock('../useAccount', () => ({
   useAccount: () => ({ signer: mockSigner }),
@@ -47,7 +58,10 @@ const OPENED_CONFIG = { gasLimit: '6000000', gasPrice: '0.065' };
 const sendStep = (transaction: {
   request: unknown;
   beforeSend: (step: { request: unknown; config: unknown }) => Promise<{
-    request: { args: unknown[] };
+    request: {
+      args: unknown[];
+      contract: { signer: { getAddress: () => Promise<string> } };
+    };
     config: { gasLimit?: string };
   }>;
 }) =>
@@ -87,9 +101,11 @@ describe('useExecuteExit', () => {
   });
 
   it('checks the release again inside the send step, and sends it with the gas that check estimated', async () => {
-    const preflight = jest
-      .fn()
-      .mockResolvedValue({ requestIds: ['7'], gasLimit: '50000' });
+    const preflight = jest.fn().mockResolvedValue({
+      requestIds: ['7'],
+      gasLimit: '50000',
+      from: HOLDER,
+    });
     const { result } = renderHook(() => useExecuteExit());
 
     await act(async () => {
@@ -103,6 +119,35 @@ describe('useExecuteExit', () => {
     });
     expect(sent.request.args).toEqual(['7']);
     expect(sent.config).toEqual({ ...OPENED_CONFIG, gasLimit: '50000' });
+  });
+
+  it('hands the wallet the release from the account the check ran for, whichever account is active later', async () => {
+    const preflight = jest.fn().mockResolvedValue({
+      requestIds: ['7'],
+      gasLimit: '50000',
+      from: HOLDER,
+    });
+    const { result } = renderHook(() => useExecuteExit());
+
+    await act(async () => {
+      await result.current(QUEUE, '7', { preflight });
+    });
+    const sent = await sendStep(step());
+
+    expect(await sent.request.contract.signer.getAddress()).toBe(HOLDER);
+  });
+
+  it('sends nothing when the check inside the send step names no account to send from', async () => {
+    const preflight = jest
+      .fn()
+      .mockResolvedValue({ requestIds: ['7'], gasLimit: '50000', from: '' });
+    const { result } = renderHook(() => useExecuteExit());
+
+    await act(async () => {
+      await result.current(QUEUE, '7', { preflight });
+    });
+
+    await expect(sendStep(step())).rejects.toThrow();
   });
 
   it('sends nothing when the check inside the send step refuses', async () => {
@@ -152,9 +197,11 @@ describe('useExecuteExits', () => {
     // Ids restart in each queue: an id alone would also drop another queue's
     // request that shares it.
     const onComplete = jest.fn();
-    const preflight = jest
-      .fn()
-      .mockResolvedValue({ requestIds: ['7', '8'], gasLimit: '50000' });
+    const preflight = jest.fn().mockResolvedValue({
+      requestIds: ['7', '8'],
+      gasLimit: '50000',
+      from: HOLDER,
+    });
     const { result } = renderHook(() => useExecuteExits());
 
     await act(async () => {
@@ -176,9 +223,11 @@ describe('useExecuteExits', () => {
 
   it('sends only the ids the check inside the send step still passes, with the gas estimated for them, and settles exactly those', async () => {
     const onComplete = jest.fn();
-    const preflight = jest
-      .fn()
-      .mockResolvedValue({ requestIds: ['7', '9'], gasLimit: '50000' });
+    const preflight = jest.fn().mockResolvedValue({
+      requestIds: ['7', '9'],
+      gasLimit: '50000',
+      from: HOLDER,
+    });
     const { result } = renderHook(() => useExecuteExits());
 
     await act(async () => {
@@ -195,11 +244,27 @@ describe('useExecuteExits', () => {
     });
     expect(sent.request.args).toEqual([['7', '9']]);
     expect(sent.config).toEqual({ ...OPENED_CONFIG, gasLimit: '50000' });
+    expect(await sent.request.contract.signer.getAddress()).toBe(HOLDER);
     step().onComplete();
     expect(onComplete).toHaveBeenCalledWith({
       queueAddress: QUEUE,
       requestIds: ['7', '9'],
     });
+  });
+
+  it('sends no batch when the check inside the send step names no account to send from', async () => {
+    const preflight = jest
+      .fn()
+      .mockResolvedValue({ requestIds: ['7'], gasLimit: '50000', from: '' });
+    const { result } = renderHook(() => useExecuteExits());
+
+    await act(async () => {
+      await result.current([{ queueAddress: QUEUE, requestIds: ['7', '8'] }], {
+        preflight,
+      });
+    });
+
+    await expect(sendStep(step())).rejects.toThrow();
   });
 
   it('never sends an empty batch when the check inside the send step passes no id', async () => {

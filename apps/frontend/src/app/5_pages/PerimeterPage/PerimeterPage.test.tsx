@@ -17,8 +17,11 @@ const RECEIVER = '0x3333333333333333333333333333333333333333';
 const QUEUE = '0x9999999999999999999999999999999999999999';
 const OTHER_QUEUE = '0x8888888888888888888888888888888888888888';
 
-const NOT_HOLDING =
-  'The Sovryn Perimeter is not holding any withdrawals for this account.';
+const NO_DELAYED =
+  'The Sovryn Perimeter has no delayed withdrawals for this account.';
+
+const UNREADABLE =
+  /Any withdrawal delayed for this account is still in the vault/;
 
 const mockRelease = jest.fn();
 
@@ -42,8 +45,10 @@ jest.mock('../../../contexts/NotificationContext', () => ({
   useNotificationContext: () => ({ addNotification: jest.fn() }),
 }));
 
+let mockAccount: string | undefined;
+
 jest.mock('../../../hooks/useAccount', () => ({
-  useAccount: () => ({ account: ACCOUNT, signer: undefined }),
+  useAccount: () => ({ account: mockAccount, signer: undefined }),
 }));
 
 jest.mock('../../../hooks/exitDelay/usePerimeterVault', () => ({
@@ -103,6 +108,7 @@ describe('PerimeterPage', () => {
     // Re-applied per test: this project's jest config resets mocks between
     // tests, and a reset Date.now would make every row read as unlocked.
     jest.spyOn(Date, 'now').mockReturnValue(NOW * 1000);
+    mockAccount = ACCOUNT;
     mockChainTime = { now: NOW, blockTime: NOW, unreadable: false };
     mockCurrentChainId = RSK_CHAIN_ID;
     mockVault = {
@@ -118,24 +124,36 @@ describe('PerimeterPage', () => {
     jest.restoreAllMocks();
   });
 
-  it('says nothing is held when the queue holds nothing for this account', () => {
+  it('asks for a wallet to show delayed withdrawals when none is connected', () => {
+    mockAccount = undefined;
+    render(<PerimeterPage />);
+
+    expect(
+      screen.getAllByText(
+        'Connect your wallet to see your delayed withdrawals.',
+      ).length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('says there are no delayed withdrawals when the queue has none for this account', () => {
     render(<PerimeterPage />);
     // The table renders a desktop and a mobile variant, so the empty message
     // legitimately appears more than once.
-    expect(screen.getAllByText(NOT_HOLDING).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(NO_DELAYED).length).toBeGreaterThan(0);
   });
 
-  it('never states nothing is held when the read failed', () => {
+  it('never states there are no delayed withdrawals when the read failed', () => {
     // An account with queued exits produces exactly this empty list when a
     // round trip fails. Printing the definitive negative for it is the one
     // thing this page must not do.
     mockVault.unknown = true;
     const { container } = render(<PerimeterPage />);
 
-    expect(screen.queryByText(NOT_HOLDING)).not.toBeInTheDocument();
+    expect(screen.queryByText(NO_DELAYED)).not.toBeInTheDocument();
     expect(
       container.querySelector('[data-layout-id="perimeter-unreadable"]'),
     ).toBeInTheDocument();
+    expect(screen.getAllByText(UNREADABLE).length).toBeGreaterThan(0);
   });
 
   it('says the read failed even while it lists what it did get', () => {
@@ -169,7 +187,7 @@ describe('PerimeterPage', () => {
       container.querySelector('[data-layout-id="perimeter-unreadable"]'),
     ).toBeInTheDocument();
     expect(screen.queryAllByText('#7')).toHaveLength(0);
-    expect(screen.queryByText(NOT_HOLDING)).not.toBeInTheDocument();
+    expect(screen.queryByText(NO_DELAYED)).not.toBeInTheDocument();
   });
 
   it('decides readiness from the chain clock, not the browser clock', () => {
@@ -421,7 +439,7 @@ describe('PerimeterPage', () => {
     fireEvent.click(screen.getByText('Release all ready (2)'));
 
     expect(screen.queryByText(/Release all ready/)).not.toBeInTheDocument();
-    expect(screen.getAllByText(NOT_HOLDING).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(NO_DELAYED).length).toBeGreaterThan(0);
   });
 
   it('keeps two queues’ requests that share an id apart', () => {

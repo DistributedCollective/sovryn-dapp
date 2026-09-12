@@ -230,7 +230,7 @@ const PerimeterPage: FC = () => {
     [checking, handleRelease, now],
   );
 
-  // "Not holding any withdrawals" is a definitive statement, and only a
+  // "No delayed withdrawals" is a definitive statement, and only a
   // completed read earns it. A read that failed says so instead.
   const emptyMessage = useMemo(() => {
     if (!account) {

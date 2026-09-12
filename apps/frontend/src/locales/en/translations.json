@@ -2083,9 +2083,9 @@
     },
     "title": "Perimeter vault",
     "subtitle": "Withdrawals delayed by the Sovryn Perimeter appear here. The destination of each one was fixed when you signed it and cannot be changed. Release it yourself once its delay ends.",
-    "connectWallet": "Connect your wallet to see withdrawals held for you.",
-    "inactive": "The Sovryn Perimeter is not holding any withdrawals for this account.",
-    "unreadable": "We could not read the Sovryn Perimeter vault just now. Anything it is holding for you is still held — this list may be incomplete or empty for that reason alone. Try again in a moment.",
+    "connectWallet": "Connect your wallet to see your delayed withdrawals.",
+    "inactive": "The Sovryn Perimeter has no delayed withdrawals for this account.",
+    "unreadable": "We could not read the Sovryn Perimeter vault just now. Any withdrawal delayed for this account is still in the vault — this list may be incomplete or empty for that reason alone. Try again in a moment.",
     "table": {
       "id": "Reference",
       "amount": "Amount",
@@ -2116,7 +2116,7 @@
     "readyNow": "Now",
     "contractOwnerNotice": "Held in escrow for the product you used; delivered automatically once the hold expires.",
     "tx": {
-      "executeExit": "Release held withdrawal",
+      "executeExit": "Release delayed withdrawal",
       "executeExitTitle": "Release from the Perimeter vault",
       "executeExits": "Release {{count}} withdrawals from the Perimeter vault"
     },
@@ -2130,7 +2130,7 @@
       "resolvedByOwner": "Withdrawal #{{id}} cannot be released: the owner of the Sovryn Perimeter sent it to another destination.",
       "wrongNetwork": "Your wallet is connected to another network. Switch it to Rootstock, then release again.",
       "networkUnreadable": "We could not check which network your wallet is on, so nothing was released.",
-      "accountChanged": "Your wallet switched to a different account, so nothing was sent. Switch back to the account that holds these withdrawals, then release again.",
+      "accountChanged": "Your wallet switched to a different account, so nothing was sent. Switch back to the account these withdrawals belong to, then release again.",
       "accountUnreadable": "We could not check which account your wallet is using, so nothing was released.",
       "batch": "Withdrawals {{ids}} were not released because {{reason}}.",
       "batch_one": "Withdrawal {{ids}} was not released because {{reason}}.",

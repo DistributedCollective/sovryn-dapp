@@ -11,7 +11,7 @@ import { PointerRead } from './readPerimeterPointer';
 import { usePerimeterVault } from './usePerimeterVault';
 
 /**
- * "Not holding any withdrawals" is a definitive statement. These tests hold
+ * "No delayed withdrawals" is a definitive statement. These tests hold
  * apart an honest empty queue, a consumer with no delay leg, and every read
  * that did not complete — which must reach the page as unknown.
  */

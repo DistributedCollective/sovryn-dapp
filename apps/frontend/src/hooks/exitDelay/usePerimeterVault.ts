@@ -320,7 +320,7 @@ export const usePerimeterVault = (): PerimeterVault => {
     // A value stamped for another key belongs to the previous account, or to
     // no fetch at all — the seeded default the cache hands back before the
     // first attempt resolves. Either way nothing has been read yet, and the
-    // page shows its loader instead of "not holding any withdrawals".
+    // page shows its loader instead of "no delayed withdrawals".
     const fresh = value.forKey === key;
     if (!fresh) {
       return { ...EMPTY, loading: true };

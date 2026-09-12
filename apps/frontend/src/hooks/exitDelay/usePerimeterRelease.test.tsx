@@ -917,7 +917,7 @@ describe('usePerimeterRelease', () => {
     // wallet's own answer is compared with that account at the press, when the
     // send step starts, and as the last read before the wallet is asked to sign.
     const ACCOUNT_CHANGED =
-      'Your wallet switched to a different account, so nothing was sent. Switch back to the account that holds these withdrawals, then release again.';
+      'Your wallet switched to a different account, so nothing was sent. Switch back to the account these withdrawals belong to, then release again.';
 
     /** The wallet answers `eth_accounts` with each list in turn, then the last one. */
     const accountsInTurn = (...answers: string[][]) =>

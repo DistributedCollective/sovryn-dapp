@@ -83,6 +83,7 @@ describe('useExecuteExit', () => {
       await result.current(QUEUE, '7', { onComplete, preflight: jest.fn() });
     });
 
+    expect(step().title).toBe('Release delayed withdrawal');
     expect(step().request.fnName).toBe('executeExit');
     expect(step().request.args).toEqual(['7']);
     // Not `expect.any(Function)`: the exact callback must survive, since it is

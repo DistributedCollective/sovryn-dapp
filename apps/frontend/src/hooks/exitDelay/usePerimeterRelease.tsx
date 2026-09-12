@@ -214,11 +214,21 @@ const rowsRefusal = (rows: ReleaseRow[], reason: string): string =>
     reason,
   });
 
-type Refusal = {
-  reason: string;
-  /** The ids the refusal names; undefined when it holds for the whole call. */
-  ids?: string[];
-};
+type Refusal =
+  | {
+      kind: 'refused';
+      reason: string;
+      /** The ids the refusal names; undefined when it holds for the whole call. */
+      ids?: string[];
+    }
+  | {
+      /**
+       * The named withdrawals are not unlocked in the block the dry run
+       * executed in, whose timestamp can trail the page's clock.
+       */
+      kind: 'unlocking';
+      ids: string[];
+    };
 
 /**
  * Why the queue would refuse a delivery, in plain words, from its revert data,
@@ -237,32 +247,39 @@ const refusalOf = (
     error = undefined;
   }
   if (!error) {
-    return { reason: t(reasons.refused) };
+    return { kind: 'refused', reason: t(reasons.refused) };
   }
   switch (error.name) {
     case 'QueuePaused':
-      return { reason: t(reasons.paused) };
-    case 'NotUnlocked': {
-      const id = error.args.id.toString();
-      return { reason: t(reasons.notUnlocked, { id }), ids: [id] };
-    }
+      return { kind: 'refused', reason: t(reasons.paused) };
+    case 'NotUnlocked':
+      return { kind: 'unlocking', ids: [error.args.id.toString()] };
     case 'AlreadyTerminal': {
       const id = error.args.id.toString();
-      return { reason: t(reasons.alreadyTerminal, { id }), ids: [id] };
+      return {
+        kind: 'refused',
+        reason: t(reasons.alreadyTerminal, { id }),
+        ids: [id],
+      };
     }
     case 'UnknownRequest': {
       const id = error.args.id.toString();
-      return { reason: t(reasons.unknownRequest, { id }), ids: [id] };
+      return {
+        kind: 'refused',
+        reason: t(reasons.unknownRequest, { id }),
+        ids: [id],
+      };
     }
     case 'NotExecutor':
-      return { reason: t(reasons.notExecutor) };
+      return { kind: 'refused', reason: t(reasons.notExecutor) };
     case 'ActorBlocked': {
       const state = BLOCK_NAMES[Number(error.args.state)];
       if (!state) {
-        return { reason: t(reasons.refused) };
+        return { kind: 'refused', reason: t(reasons.refused) };
       }
       const actor = String(error.args.actor).toLowerCase();
       return {
+        kind: 'refused',
         reason: t(reasons.actorBlocked, {
           address:
             actor === account.toLowerCase()
@@ -280,7 +297,7 @@ const refusalOf = (
       };
     }
     default:
-      return { reason: t(reasons.refused) };
+      return { kind: 'refused', reason: t(reasons.refused) };
   }
 };
 
@@ -292,7 +309,7 @@ const releaseData = (rows: ReleaseRow[], single: boolean): string =>
         rows.map(row => row.id),
       ]);
 
-type DryRun = { kind: 'accepted' } | ({ kind: 'refused' } & Refusal);
+type DryRun = { kind: 'accepted' } | Refusal;
 
 /**
  * Ask the queue, with `eth_call` from the holder's own address, whether it
@@ -314,7 +331,7 @@ const dryRun = async (
       return { kind: 'accepted' };
     }
     if (outcome.kind === 'reverted') {
-      return { kind: 'refused', ...refusalOf(outcome.data, rows, account) };
+      return refusalOf(outcome.data, rows, account);
     }
   } catch (error) {
     // Treated below as a dry run that could not be completed.
@@ -329,34 +346,52 @@ const dryRun = async (
  * Dry-run one queue's release, dropping what the queue refuses by name.
  *
  * `executeExits` is atomic, so one withdrawal the queue refuses would take the
- * others down with it. A refusal that names withdrawals — not yet unlocked,
- * already delivered, unknown to the queue, or with a blocked party — drops
- * those, and the queue is asked again about the rest. A refusal that holds for
- * the whole call, or a dry run that could not be completed, sends nothing from
- * this queue. Every pass drops at least one row or stops, so this ends.
+ * others down with it. A refusal that names withdrawals — already delivered,
+ * unknown to the queue, or with a blocked party — drops those, and the queue
+ * is asked again about the rest. A withdrawal not yet unlocked in the latest
+ * block is dropped the same way and set aside as unlocking. A refusal that
+ * holds for the whole call, or a dry run that could not be completed, sends
+ * nothing from this queue. Every pass drops at least one row or stops, so this
+ * ends.
  */
 const askQueue = async (
   rows: ReleaseRow[],
   single: boolean,
   account: string,
-): Promise<{ accepted: ReleaseRow[]; refusals: string[] }> => {
+): Promise<{
+  accepted: ReleaseRow[];
+  unlocking: ReleaseRow[];
+  refusals: string[];
+}> => {
   const refusals: string[] = [];
+  const unlocking: ReleaseRow[] = [];
   let remaining = rows;
   while (remaining.length > 0) {
     const outcome = await dryRun(remaining, single, account);
     if (outcome.kind === 'accepted') {
-      return { accepted: remaining, refusals };
+      return { accepted: remaining, unlocking, refusals };
     }
     const named = outcome.ids ?? [];
-    const refused = remaining.filter(row => named.includes(row.id));
-    if (refused.length === 0) {
-      refusals.push(rowsRefusal(remaining, outcome.reason));
-      return { accepted: [], refusals };
+    const dropped = remaining.filter(row => named.includes(row.id));
+    if (dropped.length === 0) {
+      refusals.push(
+        rowsRefusal(
+          remaining,
+          outcome.kind === 'refused'
+            ? outcome.reason
+            : t(translations.perimeterPage.releaseRefused.reason.refused),
+        ),
+      );
+      return { accepted: [], unlocking, refusals };
     }
-    refusals.push(rowsRefusal(refused, outcome.reason));
+    if (outcome.kind === 'unlocking') {
+      unlocking.push(...dropped);
+    } else {
+      refusals.push(rowsRefusal(dropped, outcome.reason));
+    }
     remaining = remaining.filter(row => !named.includes(row.id));
   }
-  return { accepted: [], refusals };
+  return { accepted: [], unlocking, refusals };
 };
 
 /** Rows grouped by the queue that holds them: a queue accepts only its own ids. */
@@ -432,6 +467,15 @@ const checkRelease = async (
     byQueue(clear).map(queueRows => askQueue(queueRows, asSingle, account)),
   );
   asked.forEach(outcome => refusals.push(...outcome.refusals));
+  const unlocking = asked.flatMap(outcome => outcome.unlocking);
+  if (unlocking.length > 0) {
+    refusals.push(
+      t(translations.perimeterPage.releaseRefused.unlocking, {
+        count: unlocking.length,
+        ids: unlocking.map(row => `#${row.id}`).join(', '),
+      }),
+    );
+  }
 
   return {
     delivered,

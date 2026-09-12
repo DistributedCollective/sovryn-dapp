@@ -113,25 +113,41 @@ describe('exitDelay utils', () => {
   });
 
   describe('pending exit state', () => {
+    // The countdown ticks on the page's clock; readiness waits for the latest
+    // block, because the queue compares that block's timestamp.
+    const at = (now: number, blockTime = now) => ({ now, blockTime });
+
     it('is locked before the unlock time', () => {
-      expect(getPendingExitState(queued(NOW + 60), false, OWNER, NOW)).toEqual(
-        PendingExitState.Locked,
-      );
+      expect(
+        getPendingExitState(queued(NOW + 60), false, OWNER, at(NOW)),
+      ).toEqual(PendingExitState.Locked);
     });
 
-    it('is unlocked for an executor once the window passes', () => {
-      expect(getPendingExitState(queued(NOW), false, OWNER, NOW)).toEqual(
+    it('is unlocked for an executor once the latest block reaches the unlock time', () => {
+      expect(getPendingExitState(queued(NOW), false, OWNER, at(NOW))).toEqual(
         PendingExitState.Unlocked,
       );
     });
 
+    it('is unlocking, not ready, while the countdown has ended but the latest block is still before the unlock time', () => {
+      // The latest block trails wall time, by up to about a minute on RSK
+      // mainnet, and the queue refuses a release until a block reaches the
+      // unlock time.
+      expect(
+        getPendingExitState(queued(NOW - 1), false, OWNER, at(NOW, NOW - 30)),
+      ).toEqual(PendingExitState.Unlocking);
+      expect(
+        getPendingExitState(queued(NOW - 30), false, OWNER, at(NOW, NOW - 30)),
+      ).toEqual(PendingExitState.Unlocked);
+    });
+
     it('tells a non-executor it cannot execute, rather than offering a reverting button', () => {
-      expect(getPendingExitState(queued(NOW), false, RECEIVER, NOW)).toEqual(
-        PendingExitState.NotExecutor,
-      );
-      expect(getPendingExitState(queued(NOW), false, STRANGER, NOW)).toEqual(
-        PendingExitState.NotExecutor,
-      );
+      expect(
+        getPendingExitState(queued(NOW), false, RECEIVER, at(NOW)),
+      ).toEqual(PendingExitState.NotExecutor);
+      expect(
+        getPendingExitState(queued(NOW), false, STRANGER, at(NOW)),
+      ).toEqual(PendingExitState.NotExecutor);
     });
 
     it('has no state for a blocked party: a block is checked when the holder releases', () => {
@@ -151,14 +167,14 @@ describe('exitDelay utils', () => {
             { ...queued(NOW + 60), status },
             true,
             OWNER,
-            NOW,
+            at(NOW),
           ),
         ).toEqual(PendingExitState.Settled);
       }
     });
 
     it('ranks the global pause above the unlock time', () => {
-      expect(getPendingExitState(queued(NOW), true, OWNER, NOW)).toEqual(
+      expect(getPendingExitState(queued(NOW), true, OWNER, at(NOW))).toEqual(
         PendingExitState.Paused,
       );
     });
@@ -168,6 +184,7 @@ describe('exitDelay utils', () => {
     expect(canExecuteExit(PendingExitState.Unlocked)).toBe(true);
     for (const state of [
       PendingExitState.Locked,
+      PendingExitState.Unlocking,
       PendingExitState.NotExecutor,
       PendingExitState.Paused,
       PendingExitState.Settled,

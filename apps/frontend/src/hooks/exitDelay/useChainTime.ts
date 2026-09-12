@@ -22,6 +22,12 @@ export type ChainClock = {
    */
   now: number;
   /**
+   * The latest block's own timestamp, in seconds, or 0 until one has been
+   * read. It does not tick: the queue compares it, so whether a release can
+   * pass is judged against it, not against `now`.
+   */
+  blockTime: number;
+  /**
    * True when the block read failed and no time is known, so a caller can say
    * it could not read instead of waiting for a time that will not arrive.
    */
@@ -73,5 +79,8 @@ export const useChainTime = (chainId: ChainId): ChainClock => {
 
   const unreadable = !anchor.timestamp && !!error;
 
-  return useMemo(() => ({ now, unreadable }), [now, unreadable]);
+  return useMemo(
+    () => ({ now, blockTime: anchor.timestamp, unreadable }),
+    [now, anchor.timestamp, unreadable],
+  );
 };

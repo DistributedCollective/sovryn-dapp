@@ -2097,6 +2097,7 @@
     },
     "status": {
       "locked": "Delayed",
+      "unlocking": "Unlocking",
       "unlocked": "Ready",
       "notExecutor": "Releasable by the owner",
       "paused": "Paused",
@@ -2104,6 +2105,7 @@
     },
     "statusTooltip": {
       "locked": "Still inside its withdrawal delay. It becomes releasable at the time shown.",
+      "unlocking": "The delay has ended. Release becomes available once the chain records a block past the unlock time, usually within a minute.",
       "unlocked": "The delay has ended. Release it to send the funds to their destination.",
       "notExecutor": "This withdrawal is released by the account that made it or by the position owner.",
       "paused": "Releases are paused across the whole perimeter. Nothing is lost; try again once they resume.",
@@ -2130,9 +2132,11 @@
       "batch": "Withdrawals {{ids}} were not released because {{reason}}.",
       "batch_one": "Withdrawal {{ids}} was not released because {{reason}}.",
       "batch_other": "Withdrawals {{ids}} were not released because {{reason}}.",
+      "unlocking": "Withdrawals {{ids}} are unlocking — try again in a minute.",
+      "unlocking_one": "Withdrawal {{ids}} is unlocking — try again in a minute.",
+      "unlocking_other": "Withdrawals {{ids}} are unlocking — try again in a minute.",
       "reason": {
         "paused": "releases are paused",
-        "notUnlocked": "#{{id}} is still inside its delay",
         "alreadyTerminal": "#{{id}} was already delivered",
         "unknownRequest": "the queue does not know #{{id}}",
         "notExecutor": "your address may not release it",

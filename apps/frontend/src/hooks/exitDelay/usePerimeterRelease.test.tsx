@@ -382,10 +382,6 @@ describe('usePerimeterRelease', () => {
 
     it.each([
       ['releases are paused', queueRefusal('QueuePaused')],
-      [
-        '#7 is still inside its delay',
-        queueRefusal('NotUnlocked', [7, 1_900_000_000]),
-      ],
       ['#7 was already delivered', queueRefusal('AlreadyTerminal', [7])],
       [
         'your address is frozen',
@@ -484,6 +480,64 @@ describe('usePerimeterRelease', () => {
       );
       expect(refusalText()).toContain(
         'Withdrawal #7 was not released because releases are paused.',
+      );
+    });
+  });
+
+  describe('a withdrawal still unlocking', () => {
+    // The dry run executes against the latest block, whose timestamp trails
+    // wall time by up to about a minute on RSK mainnet. A withdrawal the queue
+    // refuses as not yet unlocked is named as unlocking, and a batch sends the
+    // rest rather than failing whole.
+    const refuseAsLocked = (ids: number[], lockedId: number) =>
+      stub.onCall(
+        QUEUE,
+        QUEUE_ABI.encodeFunctionData('executeExits', [ids]),
+        queueRefusal('NotUnlocked', [lockedId, 1_800_000_000]),
+      );
+
+    it('says a withdrawal is unlocking and to try again in a minute, and sends nothing for it', async () => {
+      stub.onCall(
+        QUEUE,
+        EXECUTE_EXIT,
+        queueRefusal('NotUnlocked', [7, 1_800_000_000]),
+      );
+
+      await release([row()]);
+
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(
+        'Withdrawal #7 is unlocking — try again in a minute.',
+      );
+      expect(refusalText()).not.toContain('was not released');
+    });
+
+    it('drops the withdrawals still unlocking from a batch, names them, and sends the rest', async () => {
+      refuseAsLocked([7, 8, 9], 8);
+      refuseAsLocked([7, 9], 9);
+
+      await release([row({ id: '7' }), row({ id: '8' }), row({ id: '9' })]);
+
+      expect(mockExecuteExits).toHaveBeenCalledWith(
+        [{ queueAddress: QUEUE, requestIds: ['7'] }],
+        SEND_OPTIONS,
+      );
+      expect(refusalText()).toContain(
+        'Withdrawals #8, #9 are unlocking — try again in a minute.',
+      );
+    });
+
+    it('drops a withdrawal still unlocking when the holder confirms, names it, and sends the rest', async () => {
+      await release([row({ id: '7' }), row({ id: '9' })]);
+      refuseAsLocked([7, 9], 9);
+
+      await expect(confirmInDialog()).resolves.toEqual({
+        requestIds: ['7'],
+        gasLimit: '50000',
+        from: ACCOUNT,
+      });
+      expect(refusalText()).toContain(
+        'Withdrawal #9 is unlocking — try again in a minute.',
       );
     });
   });

@@ -29,7 +29,7 @@ let mockVault: {
   loading: boolean;
   unknown: boolean;
 };
-let mockChainTime: { now: number; unreadable: boolean };
+let mockChainTime: { now: number; blockTime: number; unreadable: boolean };
 let mockCurrentChainId: string;
 
 jest.mock('nanoid', () => ({ nanoid: () => '1234' }));
@@ -103,7 +103,7 @@ describe('PerimeterPage', () => {
     // Re-applied per test: this project's jest config resets mocks between
     // tests, and a reset Date.now would make every row read as unlocked.
     jest.spyOn(Date, 'now').mockReturnValue(NOW * 1000);
-    mockChainTime = { now: NOW, unreadable: false };
+    mockChainTime = { now: NOW, blockTime: NOW, unreadable: false };
     mockCurrentChainId = RSK_CHAIN_ID;
     mockVault = {
       exits: [],
@@ -152,7 +152,7 @@ describe('PerimeterPage', () => {
   it('draws no row until the chain clock has been read', () => {
     // Every status and countdown is derived from it; a row resolved against a
     // missing time reads as delayed for decades.
-    mockChainTime = { now: 0, unreadable: false };
+    mockChainTime = { now: 0, blockTime: 0, unreadable: false };
     mockVault.exits = [exit()];
     render(<PerimeterPage />);
 
@@ -161,7 +161,7 @@ describe('PerimeterPage', () => {
   });
 
   it('says the vault could not be read when the chain clock could not be read', () => {
-    mockChainTime = { now: 0, unreadable: true };
+    mockChainTime = { now: 0, blockTime: 0, unreadable: true };
     mockVault.exits = [exit()];
     const { container } = render(<PerimeterPage />);
 
@@ -182,6 +182,39 @@ describe('PerimeterPage', () => {
 
     expect(screen.getAllByText('Delayed').length).toBeGreaterThan(0);
     expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
+  });
+
+  describe('a row whose delay has ended on the page clock but not yet in the latest block', () => {
+    // The queue compares the latest block's timestamp, which trails wall time
+    // by up to about a minute on RSK mainnet. A row offered as Ready before
+    // that block arrives is refused, so it reads as unlocking until then.
+    it('shows it as Unlocking, offers no Release on it, and leaves it out of Release all', () => {
+      mockChainTime = { now: NOW, blockTime: NOW - 30, unreadable: false };
+      mockVault.exits = [
+        exit({ id: '7', unlockAt: NOW - 60 }),
+        exit({ id: '8', unlockAt: NOW - 1 }),
+        exit({ id: '9', unlockAt: NOW - 45 }),
+      ];
+      const { container } = render(<PerimeterPage />);
+
+      expect(screen.getAllByText('Unlocking').length).toBeGreaterThan(0);
+      expect(releaseButton(container, QUEUE, '8')).not.toBeInTheDocument();
+      expect(releaseButton(container, QUEUE, '7')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByText('Release all ready (2)'));
+
+      const [rows] = mockRelease.mock.calls[0];
+      expect(rows.map((row: { id: string }) => row.id)).toEqual(['7', '9']);
+    });
+
+    it('offers Release once the latest block reaches the unlock time', () => {
+      mockChainTime = { now: NOW + 30, blockTime: NOW, unreadable: false };
+      mockVault.exits = [exit({ unlockAt: NOW })];
+      const { container } = render(<PerimeterPage />);
+
+      expect(screen.getAllByText('Ready').length).toBeGreaterThan(0);
+      expect(releaseButton(container, QUEUE, '7')).toBeInTheDocument();
+    });
   });
 
   it('names the asset an amount is denominated in', () => {

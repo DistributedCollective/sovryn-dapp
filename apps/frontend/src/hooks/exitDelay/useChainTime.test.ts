@@ -115,6 +115,9 @@ describe('useChainTime', () => {
     await waitFor(() => expect(result.current.now).toBe(BLOCK_TIMESTAMP + 90), {
       timeout: 2_500,
     });
+    // The latest block's own timestamp does not tick: the queue compares it,
+    // so readiness is judged against it and not against the ticking clock.
+    expect(result.current.blockTime).toBe(BLOCK_TIMESTAMP);
   });
 
   it('reports 0, and not unreadable, until a block has been read', () => {
@@ -125,6 +128,7 @@ describe('useChainTime', () => {
     // Callers treat 0 as "not known yet": deciding a release against it would
     // be deciding against the epoch.
     expect(result.current.now).toBe(0);
+    expect(result.current.blockTime).toBe(0);
     expect(result.current.unreadable).toBe(false);
   });
 

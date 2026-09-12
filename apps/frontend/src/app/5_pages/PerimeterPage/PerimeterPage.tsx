@@ -54,9 +54,15 @@ const PerimeterPage: FC = () => {
 
   // Chain time, not the browser's: the queue compares block.timestamp, and a
   // machine whose clock runs fast would otherwise offer a release that reverts
-  // and, in a batch, revert every other release with it. Zero means the chain
-  // clock has not been read yet; `clockUnreadable` means it could not be.
-  const { now, unreadable: clockUnreadable } = useChainTime(RSK_CHAIN_ID);
+  // and, in a batch, revert every other release with it. `now` ticks and drives
+  // the countdown; `blockTime` is the latest block's own timestamp, and a row is
+  // ready only once that reaches its unlock time. Zero means the chain clock has
+  // not been read yet; `clockUnreadable` means it could not be.
+  const {
+    now,
+    blockTime,
+    unreadable: clockUnreadable,
+  } = useChainTime(RSK_CHAIN_ID);
 
   // Nothing on the page is stated from a read that did not complete: neither
   // the vault's own reads nor the clock every row is judged against.
@@ -87,10 +93,10 @@ const PerimeterPage: FC = () => {
             exit,
             pausedByQueue[exit.queueAddress] ?? paused,
             account,
-            now,
+            { now, blockTime },
           ),
         })),
-    [account, exits, now, paused, pausedByQueue, releasedKeys],
+    [account, blockTime, exits, now, paused, pausedByQueue, releasedKeys],
   );
 
   const handleRelease = useCallback(

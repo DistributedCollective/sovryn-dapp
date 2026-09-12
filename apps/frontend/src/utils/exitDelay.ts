@@ -27,6 +27,12 @@ export enum BlockState {
 export enum PendingExitState {
   /** Still inside its delay window. */
   Locked = 'locked',
+  /**
+   * Past its unlock time on the page's ticking clock, but the latest block read
+   * is still before it. The queue compares that block's timestamp, so a release
+   * is refused until a block reaches the unlock time.
+   */
+  Unlocking = 'unlocking',
   /** Past its unlock time and executable by this account. */
   Unlocked = 'unlocked',
   /** Past its unlock time, but this account is not an executor for it. */
@@ -223,20 +229,31 @@ export const isExecutor = (
   return exit.originator.toLowerCase() === a || exit.owner.toLowerCase() === a;
 };
 
+/** The chain's time as the page reads it, in seconds. */
+export type ChainTimes = {
+  /** The latest block's own timestamp: what the queue compares. */
+  blockTime: number;
+  /** That timestamp advanced by the local time elapsed since the read. */
+  now: number;
+};
+
 /**
  * Resolve what an exit shows right now.
  *
  * Order follows `_executeOne`: a terminal status wins over everything, then
- * the global pause, then the unlock time, then the executor check. Block
- * states are not part of it: a withdrawal whose party is frozen or blacklisted
- * looks like any other row, and the block is read and named when the holder
- * presses Release.
+ * the global pause, then the unlock time, then the executor check. The unlock
+ * time is judged twice: the ticking clock says when the delay has ended, and
+ * the latest block's own timestamp says when a release can pass, because the
+ * queue compares `block.timestamp`. Between the two the exit is unlocking.
+ * Block states are not part of it: a withdrawal whose party is frozen or
+ * blacklisted looks like any other row, and the block is read and named when
+ * the holder presses Release.
  */
 export const getPendingExitState = (
   exit: Pick<PendingExit, 'status' | 'unlockAt' | 'originator' | 'owner'>,
   paused: boolean,
   account: string | undefined,
-  now: number,
+  { now, blockTime }: ChainTimes,
 ): PendingExitState => {
   if (exit.status !== ExitStatus.Queued) {
     return PendingExitState.Settled;
@@ -246,6 +263,9 @@ export const getPendingExitState = (
   }
   if (now < exit.unlockAt) {
     return PendingExitState.Locked;
+  }
+  if (blockTime < exit.unlockAt) {
+    return PendingExitState.Unlocking;
   }
   return isExecutor(exit, account)
     ? PendingExitState.Unlocked

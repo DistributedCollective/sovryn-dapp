@@ -602,9 +602,9 @@ describe('usePerimeterRelease', () => {
     const UNREAD =
       'Withdrawal #7 was not released because we could not check whether it is still waiting.';
     const TO_PROTOCOL =
-      "cannot be released: the address that started it or the position owner was blacklisted, so the Perimeter's operators — the multisig that runs the withdrawal delay — sent it to a recovery destination approved in advance for the product it came from.";
+      "cannot be released: the address that started it or the position owner was blacklisted, so the withdrawal delay's operators sent it to a recovery destination approved in advance for the product it came from.";
     const BY_OPERATORS =
-      "cannot be released: the Perimeter's operators — the multisig that runs the withdrawal delay — sent it to a recovery destination they chose, which they can do only while it is still inside its withdrawal delay, releases are paused, or one of its addresses is frozen or blacklisted.";
+      "cannot be released: the withdrawal delay's operators sent it to a recovery destination they chose, which they can do only while it is still inside its withdrawal delay, releases are paused, or one of its addresses is frozen or blacklisted.";
 
     it('keeps a row whose status the node reports as unknown, sends nothing, and says it could not check', async () => {
       statusOf(QUEUE, 7, requestResult(ExitStatus.None));
@@ -629,7 +629,7 @@ describe('usePerimeterRelease', () => {
     it.each([
       ['returned to the protocol', ExitStatus.ResolvedToProtocol, TO_PROTOCOL],
       [
-        "sent elsewhere by the Perimeter's operators",
+        "sent elsewhere by the withdrawal delay's operators",
         ExitStatus.ResolvedBySIP,
         BY_OPERATORS,
       ],
@@ -657,7 +657,7 @@ describe('usePerimeterRelease', () => {
       expect(refusalText()).toContain(UNREAD);
     });
 
-    it("takes a withdrawal the Perimeter's operators sent elsewhere off the page when the holder confirms, and says so", async () => {
+    it("takes a withdrawal the withdrawal delay's operators sent elsewhere off the page when the holder confirms, and says so", async () => {
       const onReleased = await release([row()]);
       statusOf(QUEUE, 7, requestResult(ExitStatus.ResolvedBySIP));
 

@@ -20,9 +20,9 @@ import { isCollateralWithdrawal } from '../../../3_organisms/ZeroLocForm/utils';
 import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { getTokenDisplayName } from '../../../../constants/tokens';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
-import { useAccount } from '../../../../hooks/useAccount';
-import { useZeroExitDelayQuote } from '../../../../hooks/exitDelay/useZeroExitDelayQuote';
 import { usePerimeterHoldToast } from '../../../../hooks/exitDelay/usePerimeterHoldToast';
+import { useZeroExitDelayQuote } from '../../../../hooks/exitDelay/useZeroExitDelayQuote';
+import { useAccount } from '../../../../hooks/useAccount';
 import { translations } from '../../../../locales/i18n';
 import { COMMON_SYMBOLS, compareAssets } from '../../../../utils/asset';
 import { loadLiquity } from '../../../../utils/liquity';
@@ -184,7 +184,16 @@ export const useHandleTrove = (
               value: adjustedTrove.value,
               gasLimit: GAS_LIMIT.ADJUST_TROVE,
             },
-            onComplete: callbacks?.onTroveAdjusted,
+            onComplete: result => {
+              callbacks?.onTroveAdjusted?.();
+              // Only collateral leaving the line of credit can be held; a
+              // debt-only adjust must not claim otherwise. Same test the
+              // form's delay row uses, so the two cannot disagree.
+              if (isCollateralWithdrawal(value.withdrawCollateral)) {
+                notifyHold();
+              }
+              return result;
+            },
             updateHandler: permitHandler((req, res) => {
               if (isTransactionRequest(req) && isDllr && params.repayZUSD) {
                 req.args = [...adjustedTrove.args, permitTransferFrom, res];
@@ -226,9 +235,9 @@ export const useHandleTrove = (
     },
     [
       account,
-      callbacks?.onTroveAdjusted,
-      callbacks?.onTroveOpened,
+      callbacks,
       hasLoc,
+      notifyHold,
       setIsOpen,
       setTitle,
       setTransactions,
@@ -304,16 +313,7 @@ export const useHandleTrove = (
               value: adjustedTrove.value,
               gasLimit: GAS_LIMIT.ADJUST_TROVE,
             },
-            onComplete: result => {
-              callbacks?.onTroveAdjusted?.();
-              // A debt-only adjust holds nothing back, and the notice must not
-              // claim otherwise. Same test the form's hold row uses, so the two
-              // cannot disagree.
-              if (isCollateralWithdrawal(value.withdrawCollateral)) {
-                notifyHold();
-              }
-              return result;
-            },
+            onComplete: callbacks?.onTroveAdjusted,
             updateHandler: permitHandler((req, res) => {
               if (isTransactionRequest(req) && isDllr) {
                 req.args = [...adjustedTrove.args, res];
@@ -353,16 +353,7 @@ export const useHandleTrove = (
         }
       }
     },
-    [
-      account,
-      callbacks,
-      hasLoc,
-      notifyHold,
-      setIsOpen,
-      setTitle,
-      setTransactions,
-      signer,
-    ],
+    [account, callbacks, hasLoc, setIsOpen, setTitle, setTransactions, signer],
   );
 
   const handleTroveClose = useCallback(

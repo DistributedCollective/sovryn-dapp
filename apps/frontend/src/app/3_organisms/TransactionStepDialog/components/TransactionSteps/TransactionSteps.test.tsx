@@ -362,4 +362,76 @@ describe('TransactionSteps', () => {
       ).toBeFalsy();
     });
   });
+
+  describe('the dialog closed while the send check runs', () => {
+    // The check may still be reading the chain after the holder closes the
+    // dialog. A check that then passes must not reach the wallet: nobody is
+    // left to see a request they never asked to close out of.
+    const Harness: React.FC<{
+      transaction: Transaction;
+      register: (setOpen: (value: boolean) => void) => void;
+    }> = ({ transaction, register }) => {
+      const [isOpen, setIsOpen] = React.useState(true);
+      React.useEffect(() => {
+        register(setIsOpen);
+      }, [register]);
+      return (
+        <TransactionSteps
+          transactions={[transaction]}
+          gasPrice="0.065"
+          setTxTrigger={jest.fn()}
+          isOpen={isOpen}
+        />
+      );
+    };
+
+    it('does not ask the wallet once a send check passes after the dialog is closed', async () => {
+      let setOpen: (value: boolean) => void = () => {};
+      let resolveCheck: () => void = () => {};
+      const beforeSend = jest.fn(
+        (step: unknown) =>
+          new Promise(resolve => {
+            resolveCheck = () => resolve(step);
+          }),
+      );
+      render(
+        <Harness
+          transaction={releaseTransaction(beforeSend as never)}
+          register={fn => {
+            setOpen = fn;
+          }}
+        />,
+      );
+
+      await confirm();
+      await waitFor(() => expect(beforeSend).toHaveBeenCalledTimes(1));
+
+      act(() => setOpen(false));
+      await act(async () => {
+        resolveCheck();
+        await Promise.resolve();
+        await Promise.resolve();
+      });
+
+      expect(mockSend).not.toHaveBeenCalled();
+    });
+
+    it('still sends a transaction with no send check regardless of isOpen', async () => {
+      mockEstimate.mockResolvedValue(BigNumber.from(42_000));
+      let setOpen: (value: boolean) => void = () => {};
+      render(
+        <Harness
+          transaction={releaseTransaction()}
+          register={fn => {
+            setOpen = fn;
+          }}
+        />,
+      );
+
+      act(() => setOpen(false));
+      await confirm();
+
+      await waitFor(() => expect(mockSend).toHaveBeenCalled());
+    });
+  });
 });

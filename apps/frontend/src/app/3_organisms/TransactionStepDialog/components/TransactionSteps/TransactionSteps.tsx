@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import classNames from 'classnames';
 import { BigNumber, ethers } from 'ethers';
@@ -47,6 +54,8 @@ export type TransactionStepsProps = {
   gasPrice: string;
   onTxStatusChange?: (status: StatusType) => void;
   setTxTrigger: (id: string) => void;
+  /** Whether the dialog showing these steps is still open. Defaults to open. */
+  isOpen?: boolean;
 };
 
 export const TransactionSteps: FC<TransactionStepsProps> = ({
@@ -56,6 +65,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   gasPrice,
   onTxStatusChange,
   setTxTrigger,
+  isOpen = true,
 }) => {
   const chainId = useCurrentChain();
   const [stepData, setStepData] = useState<TransactionStepData[]>([]);
@@ -67,6 +77,14 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   const [estimatedGasFee, setEstimatedGasFee] = useState(0);
   const { balance: nativeBalance, loading } = useNativeAssetBalance(chainId);
   const { account } = useAccount();
+
+  // Read inside `submit`, so a send check that is still running when the
+  // dialog closes sees the closed state as soon as it finishes, not the open
+  // state it started with.
+  const isOpenRef = useRef(isOpen);
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
 
   const hasEnoughBalance = useMemo(
     () => account && !loading && nativeBalance.sub(estimatedGasFee).gt(0),
@@ -233,6 +251,12 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           } catch (refusal) {
             notSentReasons = notSentReasonsOf(refusal);
             throw refusal;
+          }
+          // The holder may have closed the dialog while the check above was
+          // still reading the chain. Nobody is left to see a wallet prompt,
+          // so a check that passed after that is not acted on.
+          if (!isOpenRef.current) {
+            return;
           }
           updateConfig(i, config);
         }

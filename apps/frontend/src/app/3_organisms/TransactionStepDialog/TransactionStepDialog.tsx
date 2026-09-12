@@ -59,6 +59,7 @@ export const TransactionStepDialog: FC<TransactionStepDialogProps> = ({
           gasPrice={gasPrice.toString()}
           onTxStatusChange={setTxStatus}
           setTxTrigger={setTxTrigger}
+          isOpen={isOpen}
         />
       </DialogBody>
     </Dialog>

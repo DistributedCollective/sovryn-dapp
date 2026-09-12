@@ -1674,7 +1674,7 @@
   "exitFee": {
     "label": "Perimeter fee ({{rate}}%)",
     "youWillReceive": "You will receive",
-    "tooltip": "The perimeter fee is deducted from the withdrawn amount when your transaction executes. Shown values are approximate — the final fee is determined at execution time."
+    "tooltip": "The Perimeter fee is deducted from the withdrawn amount when your transaction executes. Shown values are approximate — the final fee is determined at execution time."
   },
   "lending": {
     "title": "Deposit",
@@ -2036,8 +2036,8 @@
     }
   },
   "exitDelay": {
-    "label": "Withdrawal hold",
-    "tooltip": "While the Sovryn Perimeter is active this withdrawal is held in the Sovryn Perimeter vault before it reaches you. Nothing else changes: the destination is fixed when you sign, and you release the funds yourself from the Perimeter page once the hold ends.",
+    "label": "Withdrawal delay",
+    "tooltip": "While the Sovryn Perimeter is active this withdrawal is held in the Sovryn Perimeter vault before it reaches you. Nothing else changes: the destination is fixed when you sign, and you release the funds yourself from the Perimeter page once the delay ends.",
     "duration": {
       "days": "{{count}} days",
       "days_one": "{{count}} day",
@@ -2058,23 +2058,23 @@
       "minutes": "{{count}}m",
       "seconds": "{{count}}s"
     },
-    "vaultNotice": "This amount goes to the Sovryn Perimeter vault when you sign, and reaches you after the hold.",
+    "vaultNotice": "This amount goes to the Sovryn Perimeter vault when you sign, and reaches you after the delay.",
     "vaultLink": "Track and release it on the Perimeter page",
     "checking": {
       "label": "Withdrawal delay",
       "value": "Checking…"
     },
     "unknown": {
-      "label": "Withdrawal hold",
+      "label": "Withdrawal delay",
       "value": "Could not be checked",
-      "notice": "We could not check whether the Sovryn Perimeter will hold this withdrawal. If it does, the amount goes to the Perimeter vault when you sign instead of reaching your wallet; if the hold still cannot be read at that moment, the transaction fails and nothing moves.",
-      "tooltip": "The hold is quoted from the Sovryn Perimeter when you sign, not from this page. We could not reach it just now, so we cannot tell you whether this withdrawal is paid straight out or held in the Perimeter vault first. Try again in a moment."
+      "notice": "We could not check whether the Sovryn Perimeter will delay this withdrawal. If it does, the amount goes to the Perimeter vault when you sign instead of reaching your wallet; if the delay still cannot be read at that moment, the transaction fails and nothing moves.",
+      "tooltip": "The delay is quoted from the Sovryn Perimeter when you sign, not from this page. We could not reach it just now, so we cannot tell you whether this withdrawal is paid straight out or held in the Perimeter vault first. Try again in a moment."
     },
     "holdToast": {
-      "title": "Withdrawal held by the Sovryn Perimeter",
-      "content": "The funds went to the Sovryn Perimeter vault, not to your wallet. Release them from the Perimeter page once the hold ends.",
-      "unknownTitle": "Withdrawal may be held by the Sovryn Perimeter",
-      "unknownContent": "We could not check whether the Sovryn Perimeter is holding this withdrawal. If your wallet balance has not changed, look for the funds in the Perimeter vault."
+      "title": "Withdrawal delayed by the Sovryn Perimeter",
+      "content": "The funds went to the Sovryn Perimeter vault, not to your wallet. Release them from the Perimeter page once the delay ends.",
+      "unknownTitle": "Withdrawal may be delayed by the Sovryn Perimeter",
+      "unknownContent": "We could not check whether the Sovryn Perimeter delayed this withdrawal. If your wallet balance has not changed, look for the funds in the Perimeter vault."
     }
   },
   "perimeterPage": {
@@ -2082,7 +2082,7 @@
       "title": "Perimeter vault"
     },
     "title": "Perimeter vault",
-    "subtitle": "Withdrawals held by the Sovryn Perimeter appear here. The destination of each one was fixed when you signed it and cannot be changed. Release it yourself once its hold ends.",
+    "subtitle": "Withdrawals delayed by the Sovryn Perimeter appear here. The destination of each one was fixed when you signed it and cannot be changed. Release it yourself once its delay ends.",
     "connectWallet": "Connect your wallet to see withdrawals held for you.",
     "inactive": "The Sovryn Perimeter is not holding any withdrawals for this account.",
     "unreadable": "We could not read the Sovryn Perimeter vault just now. Anything it is holding for you is still held — this list may be incomplete or empty for that reason alone. Try again in a moment.",
@@ -2096,15 +2096,15 @@
       "unknownAsset": "Unknown asset"
     },
     "status": {
-      "locked": "On hold",
+      "locked": "Delayed",
       "unlocked": "Ready",
       "notExecutor": "Releasable by the owner",
       "paused": "Paused",
       "settled": "Settled"
     },
     "statusTooltip": {
-      "locked": "Still inside its hold window. It becomes releasable at the time shown.",
-      "unlocked": "The hold has ended. Release it to send the funds to their destination.",
+      "locked": "Still inside its withdrawal delay. It becomes releasable at the time shown.",
+      "unlocked": "The delay has ended. Release it to send the funds to their destination.",
       "notExecutor": "This withdrawal is released by the account that made it or by the position owner.",
       "paused": "Releases are paused across the whole perimeter. Nothing is lost; try again once they resume.",
       "settled": "Already paid out or otherwise resolved. Nothing left to do."

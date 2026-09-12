@@ -111,7 +111,7 @@ describe('CloseCreditLine perimeter fee', () => {
 
     renderForm();
 
-    expect(screen.getByText('Withdrawal hold')).toBeInTheDocument();
+    expect(screen.getByText('Withdrawal delay')).toBeInTheDocument();
     expect(screen.getByText('2 days')).toBeInTheDocument();
   });
 

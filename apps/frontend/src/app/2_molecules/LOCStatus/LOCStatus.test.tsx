@@ -130,7 +130,7 @@ describe('LOCStatus surplus claim', () => {
 
       const { container } = renderStatus();
 
-      expect(screen.getByText('Withdrawal hold')).toBeInTheDocument();
+      expect(screen.getByText('Withdrawal delay')).toBeInTheDocument();
       expect(screen.getByText('2 days')).toBeInTheDocument();
       expect(
         container.querySelector('[data-test-id="exit-delay-vault-notice"]'),
@@ -175,7 +175,7 @@ describe('LOCStatus surplus claim', () => {
 
       renderStatus(Decimal.ZERO);
 
-      expect(screen.queryByText('Withdrawal hold')).not.toBeInTheDocument();
+      expect(screen.queryByText('Withdrawal delay')).not.toBeInTheDocument();
     });
   });
 });

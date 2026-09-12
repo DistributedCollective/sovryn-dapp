@@ -108,7 +108,7 @@ describe('LendingForm perimeter fee', () => {
 
     withdraw();
 
-    expect(screen.getByText('Withdrawal hold')).toBeInTheDocument();
+    expect(screen.getByText('Withdrawal delay')).toBeInTheDocument();
     expect(screen.getByText('2 days')).toBeInTheDocument();
     expect(screen.getByText(/Perimeter vault/)).toBeInTheDocument();
   });
@@ -171,7 +171,7 @@ describe('LendingForm perimeter fee', () => {
     fireEvent.change(input, { target: { value: '100' } });
     fireEvent.blur(input);
 
-    expect(screen.queryByText('Withdrawal hold')).not.toBeInTheDocument();
+    expect(screen.queryByText('Withdrawal delay')).not.toBeInTheDocument();
   });
 
   it('shows no "You will receive" row on the deposit tab', () => {

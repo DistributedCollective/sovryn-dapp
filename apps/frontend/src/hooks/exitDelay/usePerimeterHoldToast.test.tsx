@@ -51,7 +51,9 @@ describe('usePerimeterHoldToast', () => {
       unknown: false,
     });
 
-    expect(notification.title).toBe('Withdrawal held by the Sovryn Perimeter');
+    expect(notification.title).toBe(
+      'Withdrawal delayed by the Sovryn Perimeter',
+    );
   });
 
   it('says it could not check, rather than staying silent', () => {
@@ -62,7 +64,7 @@ describe('usePerimeterHoldToast', () => {
     });
 
     expect(notification.title).toBe(
-      'Withdrawal may be held by the Sovryn Perimeter',
+      'Withdrawal may be delayed by the Sovryn Perimeter',
     );
   });
 
@@ -82,7 +84,7 @@ describe('usePerimeterHoldToast', () => {
     });
 
     expect(notification.title).toBe(
-      'Withdrawal may be held by the Sovryn Perimeter',
+      'Withdrawal may be delayed by the Sovryn Perimeter',
     );
   });
 });

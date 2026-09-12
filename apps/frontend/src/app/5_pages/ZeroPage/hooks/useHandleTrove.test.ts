@@ -125,7 +125,7 @@ describe('useHandleTrove', () => {
     expect(onTroveAdjusted).toHaveBeenCalled();
     expect(mockAddNotification).toHaveBeenCalledTimes(1);
     expect(mockAddNotification.mock.calls[0][0].title).toBe(
-      'Withdrawal held by the Sovryn Perimeter',
+      'Withdrawal delayed by the Sovryn Perimeter',
     );
   });
 

@@ -43,7 +43,7 @@ describe('ExitDelayRow', () => {
 
   it('shows the hold duration in whole units', () => {
     const { container } = renderRow(172800);
-    expect(screen.getByText('Withdrawal hold')).toBeInTheDocument();
+    expect(screen.getByText('Withdrawal delay')).toBeInTheDocument();
     expect(
       container.querySelector('[data-layout-id="exit-delay-duration"]'),
     ).toHaveTextContent('2 days');

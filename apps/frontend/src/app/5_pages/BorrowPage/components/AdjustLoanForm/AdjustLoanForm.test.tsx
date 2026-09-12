@@ -198,7 +198,7 @@ describe('AdjustLoanForm perimeter hold', () => {
 
     renderForm();
 
-    expect(screen.queryByText('Withdrawal hold')).not.toBeInTheDocument();
+    expect(screen.queryByText('Withdrawal delay')).not.toBeInTheDocument();
   });
 
   it('tells the borrower a collateral withdrawal will be held', () => {
@@ -208,7 +208,7 @@ describe('AdjustLoanForm perimeter hold', () => {
     fireEvent.click(screen.getByText('Withdraw collateral'));
     enterCollateral('0.1');
 
-    expect(screen.getByText('Withdrawal hold')).toBeInTheDocument();
+    expect(screen.getByText('Withdrawal delay')).toBeInTheDocument();
     expect(screen.getByText('2 days')).toBeInTheDocument();
   });
 
@@ -227,7 +227,7 @@ describe('AdjustLoanForm perimeter hold', () => {
     fireEvent.click(screen.getByText('Withdraw collateral'));
     enterCollateral('0.1');
 
-    expect(screen.queryByText('Withdrawal hold')).not.toBeInTheDocument();
+    expect(screen.queryByText('Withdrawal delay')).not.toBeInTheDocument();
     expect(screen.queryByText('Could not be checked')).not.toBeInTheDocument();
   });
 

@@ -94,7 +94,7 @@ describe('useClaimCollateralSurplus', () => {
     expect(refresh).toHaveBeenCalled();
     expect(mockAddNotification).toHaveBeenCalledTimes(1);
     expect(mockAddNotification.mock.calls[0][0].title).toBe(
-      'Withdrawal held by the Sovryn Perimeter',
+      'Withdrawal delayed by the Sovryn Perimeter',
     );
   });
 
@@ -105,7 +105,7 @@ describe('useClaimCollateralSurplus', () => {
     step.onComplete('0xhash');
 
     expect(mockAddNotification.mock.calls[0][0].title).toBe(
-      'Withdrawal may be held by the Sovryn Perimeter',
+      'Withdrawal may be delayed by the Sovryn Perimeter',
     );
   });
 

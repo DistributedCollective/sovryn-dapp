@@ -131,7 +131,7 @@ describe('FormContent perimeter fee', () => {
 
     renderForm();
 
-    expect(screen.getByText('Withdrawal hold')).toBeInTheDocument();
+    expect(screen.getByText('Withdrawal delay')).toBeInTheDocument();
     expect(screen.getByText('2 days')).toBeInTheDocument();
   });
 
@@ -142,7 +142,7 @@ describe('FormContent perimeter fee', () => {
 
     renderForm({ collateralType: AmountType.Add });
 
-    expect(screen.queryByText('Withdrawal hold')).not.toBeInTheDocument();
+    expect(screen.queryByText('Withdrawal delay')).not.toBeInTheDocument();
   });
 
   it('shows no hold for a debt-only adjust', () => {
@@ -151,7 +151,7 @@ describe('FormContent perimeter fee', () => {
     // A collateral field typed into and cleared leaves a truthy '0.0'.
     renderForm({ collateralAmount: '0.0' });
 
-    expect(screen.queryByText('Withdrawal hold')).not.toBeInTheDocument();
+    expect(screen.queryByText('Withdrawal delay')).not.toBeInTheDocument();
   });
 
   it('admits it could not check whether the collateral will be held', () => {

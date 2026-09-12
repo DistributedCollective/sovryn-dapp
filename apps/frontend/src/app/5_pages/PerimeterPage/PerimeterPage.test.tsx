@@ -151,13 +151,13 @@ describe('PerimeterPage', () => {
 
   it('draws no row until the chain clock has been read', () => {
     // Every status and countdown is derived from it; a row resolved against a
-    // missing time reads as on hold for decades.
+    // missing time reads as delayed for decades.
     mockChainTime = { now: 0, unreadable: false };
     mockVault.exits = [exit()];
     render(<PerimeterPage />);
 
     expect(screen.queryAllByText('#7')).toHaveLength(0);
-    expect(screen.queryAllByText('On hold')).toHaveLength(0);
+    expect(screen.queryAllByText('Delayed')).toHaveLength(0);
   });
 
   it('says the vault could not be read when the chain clock could not be read', () => {
@@ -180,7 +180,7 @@ describe('PerimeterPage', () => {
     mockVault.exits = [exit({ unlockAt: NOW + 3600 })];
     const { container } = render(<PerimeterPage />);
 
-    expect(screen.getAllByText('On hold').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Delayed').length).toBeGreaterThan(0);
     expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
   });
 
@@ -243,7 +243,7 @@ describe('PerimeterPage', () => {
     mockVault.exits = [exit({ unlockAt: NOW + 3600 })];
     const { container } = render(<PerimeterPage />);
 
-    expect(screen.getAllByText('On hold').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Delayed').length).toBeGreaterThan(0);
     expect(screen.getAllByText('1h').length).toBeGreaterThan(0);
     expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
   });

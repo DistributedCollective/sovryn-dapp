@@ -58,8 +58,11 @@ jest.mock('../../config/chains', () => ({
 
 jest.mock('nanoid', () => ({ nanoid: () => '1234' }));
 
+let mockSigner: unknown;
+const mockWalletSend = jest.fn();
+
 jest.mock('../useAccount', () => ({
-  useAccount: () => ({ account: ACCOUNT }),
+  useAccount: () => ({ account: ACCOUNT, signer: mockSigner }),
 }));
 
 jest.mock('./useExecuteExit', () => ({
@@ -143,6 +146,11 @@ describe('usePerimeterRelease', () => {
   });
 
   beforeEach(() => {
+    // The wallet is on RSK unless a test says otherwise.
+    mockWalletSend.mockImplementation(async (method: string) =>
+      method === 'eth_chainId' ? '0x1e' : null,
+    );
+    mockSigner = { provider: { send: mockWalletSend } };
     // Every request is still queued, every party clear, and the queue accepts
     // every dry run, unless a test says otherwise.
     [QUEUE, OTHER_QUEUE].forEach(queue => {
@@ -429,6 +437,60 @@ describe('usePerimeterRelease', () => {
       );
       expect(refusalText()).toContain(
         'Withdrawal #7 was not released because releases are paused.',
+      );
+    });
+  });
+
+  describe("the wallet's network", () => {
+    // The release is signed on the wallet's chain. Sent from another chain, a
+    // call to the queue's address finds no code, succeeds, and does nothing.
+    it('asks the wallet itself which network it is on before releasing', async () => {
+      await release([row()]);
+
+      expect(mockWalletSend).toHaveBeenCalledWith('eth_chainId', []);
+      expect(mockExecuteExit).toHaveBeenCalled();
+    });
+
+    it('reads and sends nothing when the wallet is on another network, and says so', async () => {
+      mockWalletSend.mockImplementation(async (method: string) =>
+        method === 'eth_chainId' ? '0x1' : null,
+      );
+
+      await release([row()]);
+
+      expect(stub.callCount(QUEUE)).toBe(0);
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(mockExecuteExits).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(
+        'Your wallet is connected to another network. Switch it to Rootstock, then release again.',
+      );
+    });
+
+    it('sends nothing when the wallet cannot say which network it is on, and says so', async () => {
+      // How an EIP-1193 wallet rejects a request once it is disconnected.
+      mockWalletSend.mockRejectedValue(
+        Object.assign(
+          new Error('The provider is disconnected from all chains.'),
+          { code: 4900 },
+        ),
+      );
+
+      await release([row()]);
+
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(
+        'We could not check which network your wallet is on, so nothing was released.',
+      );
+    });
+
+    it('sends nothing without a connected signer to ask', async () => {
+      mockSigner = undefined;
+
+      await release([row()]);
+
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(
+        'We could not check which network your wallet is on',
       );
     });
   });

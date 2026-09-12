@@ -2123,6 +2123,8 @@
       "blocked": "Withdrawal #{{id}} was not released because {{party}} is {{state}}.",
       "unreadable": "Withdrawal #{{id}} was not released because we could not check whether its addresses are frozen or blacklisted. Try again in a moment.",
       "statusUnreadable": "Withdrawal #{{id}} was not released because we could not check whether it is still waiting. Try again in a moment.",
+      "wrongNetwork": "Your wallet is connected to another network. Switch it to Rootstock, then release again.",
+      "networkUnreadable": "We could not check which network your wallet is on, so nothing was released.",
       "batch": "Withdrawals {{ids}} were not released because {{reason}}.",
       "batch_one": "Withdrawal {{ids}} was not released because {{reason}}.",
       "batch_other": "Withdrawals {{ids}} were not released because {{reason}}.",

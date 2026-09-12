@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { Contract, utils } from 'ethers';
+import { BigNumber, Contract, providers, utils } from 'ethers';
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 
@@ -61,6 +61,32 @@ type BlockCheck =
 const BLOCK_NAMES: Partial<Record<number, BlockName>> = {
   [BlockState.Frozen]: 'frozen',
   [BlockState.Blacklisted]: 'blacklisted',
+};
+
+type WalletNetwork = 'expected' | 'other' | 'unreadable';
+
+/**
+ * Which network the wallet itself says it is on.
+ *
+ * The wallet is asked directly with `eth_chainId`: the signer's provider keeps
+ * the network it first detected, and a switch made in the wallet afterwards
+ * does not show there. No signer, a rejected request, or an answer that is not
+ * a chain id is unreadable.
+ */
+const readWalletNetwork = async (
+  signer: providers.JsonRpcSigner | undefined,
+): Promise<WalletNetwork> => {
+  if (!signer || typeof signer.provider?.send !== 'function') {
+    return 'unreadable';
+  }
+  try {
+    const chainId = await signer.provider.send('eth_chainId', []);
+    return BigNumber.from(chainId).eq(BigNumber.from(RSK_CHAIN_ID))
+      ? 'expected'
+      : 'other';
+  } catch (error) {
+    return 'unreadable';
+  }
 };
 
 const queueReader = (queueAddress: string) =>
@@ -248,18 +274,21 @@ const byQueue = (rows: ReleaseRow[]): ExitBatch[] => {
 
 /**
  * Release withdrawals from the Perimeter vault, one row or several, sending
- * only what the queue will still accept.
+ * only what the queue will still accept, from the network it lives on.
  *
  * The page's rows are only as fresh as its last read, and `executeExits` is
  * atomic: one id that changed since then reverts every release in its batch.
  * So, when the holder presses Release:
  *
- * 1. each row's status is read fresh. A row no longer queued was delivered by
+ * 1. the wallet is asked which network it is on. A release signed on another
+ *    chain reaches an address with no code, succeeds and does nothing, so on
+ *    any other answer, or none, nothing is read or sent;
+ * 2. each row's status is read fresh. A row no longer queued was delivered by
  *    someone else and leaves the page through `onReleased`, with no error;
- * 2. the rows still queued get the block check. A withdrawal whose party is
+ * 3. the rows still queued get the block check. A withdrawal whose party is
  *    frozen or blacklisted looks like any other row, and this is where the
  *    block is revealed: that row is not sent;
- * 3. the queue is asked in a dry run, from the holder's address, whether it
+ * 4. the queue is asked in a dry run, from the holder's address, whether it
  *    would accept each queue's release. A refusal, or a dry run that could not
  *    be completed, sends nothing for that queue.
  *
@@ -269,7 +298,7 @@ const byQueue = (rows: ReleaseRow[]): ExitBatch[] => {
  * (queue and id) of the rows a completed transaction settled.
  */
 export const usePerimeterRelease = () => {
-  const { account } = useAccount();
+  const { account, signer } = useAccount();
   const executeExit = useExecuteExit();
   const executeExits = useExecuteExits();
   const { addNotification } = useNotificationContext();
@@ -277,6 +306,36 @@ export const usePerimeterRelease = () => {
   return useCallback(
     async (rows: ReleaseRow[], onReleased: (keys: string[]) => void) => {
       if (!account || rows.length === 0) {
+        return;
+      }
+
+      const notify = (lines: string[]) =>
+        addNotification(
+          {
+            type: NotificationType.warning,
+            id: nanoid(),
+            title: t(translations.perimeterPage.releaseRefused.title),
+            content: (
+              <>
+                {lines.map(line => (
+                  <p key={line}>{line}</p>
+                ))}
+              </>
+            ),
+            dismissible: true,
+          },
+          REFUSAL_TIMEOUT_MS,
+        );
+
+      const network = await readWalletNetwork(signer);
+      if (network !== 'expected') {
+        notify([
+          t(
+            network === 'other'
+              ? translations.perimeterPage.releaseRefused.wrongNetwork
+              : translations.perimeterPage.releaseRefused.networkUnreadable,
+          ),
+        ]);
         return;
       }
 
@@ -330,22 +389,7 @@ export const usePerimeterRelease = () => {
       });
 
       if (refusals.length > 0) {
-        addNotification(
-          {
-            type: NotificationType.warning,
-            id: nanoid(),
-            title: t(translations.perimeterPage.releaseRefused.title),
-            content: (
-              <>
-                {refusals.map(line => (
-                  <p key={line}>{line}</p>
-                ))}
-              </>
-            ),
-            dismissible: true,
-          },
-          REFUSAL_TIMEOUT_MS,
-        );
+        notify(refusals);
       }
 
       if (single && accepted.length === 1) {
@@ -363,6 +407,6 @@ export const usePerimeterRelease = () => {
         );
       }
     },
-    [account, addNotification, executeExit, executeExits],
+    [account, addNotification, executeExit, executeExits, signer],
   );
 };

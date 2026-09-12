@@ -38,7 +38,9 @@ jest.mock('../useCacheCall', () => {
     ) => {
       const [state, setState] = React.useState({
         value: defaultValue,
-        loading: true,
+        // Idle at first, as the shared cache is: a result still to come must
+        // be reported by the hook under test, not by this stand-in.
+        loading: false,
         error: null,
       });
       // Hold the latest fn and default without making the mount effect below

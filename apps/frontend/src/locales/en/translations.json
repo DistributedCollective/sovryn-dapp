@@ -2112,6 +2112,7 @@
       "settled": "Already paid out or otherwise resolved. Nothing left to do."
     },
     "release": "Release",
+    "checking": "Checking…",
     "readyNow": "Now",
     "contractOwnerNotice": "Held in escrow for the product you used; delivered automatically once the hold expires.",
     "tx": {

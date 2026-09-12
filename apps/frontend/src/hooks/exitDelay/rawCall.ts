@@ -68,6 +68,26 @@ export type RawCallOutcome =
 export type RawCall = { to: string; data: string; from?: string };
 
 /**
+ * `pending`, or a rejection once `timeoutMs` passes without it settling. The
+ * timer is cleared either way, and a late failure of the abandoned `pending`
+ * is not left unhandled.
+ */
+export const boundedBy = <T>(
+  pending: Promise<T>,
+  timeoutMs: number,
+): Promise<T> => {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const expiry = new Promise<never>((_, reject) => {
+    timer = setTimeout(
+      () => reject(new Error(`No answer within ${timeoutMs} ms.`)),
+      timeoutMs,
+    );
+  });
+  pending.catch(() => undefined);
+  return Promise.race([pending, expiry]).finally(() => clearTimeout(timer));
+};
+
+/**
  * Send `eth_call` straight to the provider's JSON-RPC backends and report the
  * node's own answer.
  *
@@ -82,16 +102,22 @@ export type RawCall = { to: string; data: string; from?: string };
  * and every caller states it: an address without code answers any call with
  * empty data, so taking any hex would read that as a yes. A backend that does
  * not answer, or whose result `isAnswer` rejects, is skipped for the next one;
- * when none answers the call is unreadable.
+ * when none answers the call is unreadable. `timeoutMs`, when given, bounds
+ * each backend's answer: a backend that does not answer within it is skipped
+ * like one that failed.
  */
 export const callRaw = async (
   provider: providers.Provider,
   call: RawCall,
   isAnswer: (result: string) => boolean,
+  timeoutMs?: number,
 ): Promise<RawCallOutcome> => {
   for (const sender of sendersOf(provider)) {
     try {
-      const result = await sender.send('eth_call', [call, 'latest']);
+      const sent = sender.send('eth_call', [call, 'latest']);
+      const result = await (timeoutMs === undefined
+        ? sent
+        : boundedBy(sent, timeoutMs));
       if (
         typeof result === 'string' &&
         utils.isHexString(result) &&

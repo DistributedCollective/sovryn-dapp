@@ -7,7 +7,26 @@ import {
   RSK_REVERT_WITHOUT_DATA,
   startJsonRpcStub,
 } from '../../utils/testing/jsonRpcStub';
-import { callRaw } from './rawCall';
+import { boundedBy, callRaw } from './rawCall';
+
+describe('boundedBy', () => {
+  it('passes on an answer that arrives within the time given', async () => {
+    await expect(boundedBy(Promise.resolve('0x'), 200)).resolves.toBe('0x');
+  });
+
+  it('passes on a failure that arrives within the time given', async () => {
+    await expect(
+      boundedBy(Promise.reject(new Error('refused')), 200),
+    ).rejects.toThrow('refused');
+  });
+
+  it('rejects once the time given passes with no answer', async () => {
+    const started = Date.now();
+
+    await expect(boundedBy(new Promise(() => undefined), 50)).rejects.toThrow();
+    expect(Date.now() - started).toBeLessThan(1_000);
+  });
+});
 
 /**
  * The app's provider path reports a revert and a transport failure alike and
@@ -103,6 +122,16 @@ describe('callRaw', () => {
     expect(stub.callsTo(QUEUE, EXECUTE_EXIT)).toEqual([
       { from: HOLDER, data: call.data },
     ]);
+  });
+
+  it('gives up on a backend that does not answer within the time it is given', async () => {
+    stub.onCall(QUEUE, EXECUTE_EXIT, { hang: true });
+    const started = Date.now();
+
+    expect(await callRaw(appProvider, call, VOID_RESULT, 200)).toEqual({
+      kind: 'unreadable',
+    });
+    expect(Date.now() - started).toBeLessThan(2_000);
   });
 
   it('treats a result the caller does not accept as no answer', async () => {

@@ -58,6 +58,13 @@ jest.mock('../../config/chains', () => ({
 
 jest.mock('nanoid', () => ({ nanoid: () => '1234' }));
 
+// Each chain read the checks make gives up after this bound; short here so a
+// read that never returns ends a test in about a second.
+jest.mock('../../utils/exitDelay', () => ({
+  ...jest.requireActual('../../utils/exitDelay'),
+  RELEASE_READ_TIMEOUT_MS: 1_000,
+}));
+
 let mockSigner: unknown;
 const mockWalletSend = jest.fn();
 
@@ -482,6 +489,62 @@ describe('usePerimeterRelease', () => {
       );
       expect(refusalText()).toContain(
         'Withdrawal #7 was not released because releases are paused.',
+      );
+    });
+  });
+
+  describe('a node that does not answer', () => {
+    // A read that never returns ends in a refusal saying what could not be
+    // checked, not in a Release that stays checking for minutes.
+    it('gives up on a status read, and says it could not check whether the withdrawal is still waiting', async () => {
+      statusOf(QUEUE, 7, { hang: true });
+
+      await release([row()]);
+
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(
+        'Withdrawal #7 was not released because we could not check whether it is still waiting.',
+      );
+    });
+
+    it('gives up on a block state read, and says it could not check the addresses', async () => {
+      blockOn(QUEUE, RECEIVER, { hang: true });
+
+      await release([row()]);
+
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(
+        'Withdrawal #7 was not released because we could not check whether its addresses are frozen or blacklisted.',
+      );
+    });
+
+    it.each([
+      [
+        'the code at the queue address',
+        () => stub.onMethod('eth_getCode', { hang: true }),
+      ],
+      ['a dry run', () => stub.onCall(QUEUE, EXECUTE_EXIT, { hang: true })],
+    ])(
+      'gives up on %s, and says it could not check whether the release would go through',
+      async (_case, hang) => {
+        hang();
+
+        await release([row()]);
+
+        expect(mockExecuteExit).not.toHaveBeenCalled();
+        expect(refusalText()).toContain(
+          'Withdrawal #7 was not released because we could not check whether it would go through.',
+        );
+      },
+    );
+
+    it('gives up on a gas estimate when the holder confirms, and sends nothing', async () => {
+      await release([row()]);
+      stub.onMethod('eth_estimateGas', { hang: true });
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(refusalText()).toContain(
+        'Withdrawal #7 was not released because we could not estimate the gas it needs',
       );
     });
   });

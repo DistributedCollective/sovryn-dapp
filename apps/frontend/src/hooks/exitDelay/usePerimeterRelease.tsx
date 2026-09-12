@@ -15,10 +15,11 @@ import {
   BlockState,
   ExitStatus,
   PendingExit,
+  RELEASE_READ_TIMEOUT_MS,
   exitKey,
 } from '../../utils/exitDelay';
 import { useAccount } from '../useAccount';
-import { callRaw } from './rawCall';
+import { boundedBy, callRaw } from './rawCall';
 import {
   ExitPreflight,
   useExecuteExit,
@@ -131,7 +132,10 @@ const shortAddress = (address: string): string =>
 /** A row's status, read fresh from its queue; undefined when the read failed. */
 const readStatus = async (row: ReleaseRow): Promise<number | undefined> => {
   try {
-    const request = await queueReader(row.queueAddress).getRequest(row.id);
+    const request = await boundedBy<{ status: number }>(
+      queueReader(row.queueAddress).getRequest(row.id),
+      RELEASE_READ_TIMEOUT_MS,
+    );
     return Number(request.status);
   } catch (error) {
     return undefined;
@@ -168,7 +172,10 @@ const checkBlocks = async (
       if (cached) {
         return cached;
       }
-      const read: Promise<number> = queue.blockStateOf(address).then(Number);
+      const read: Promise<number> = boundedBy(
+        queue.blockStateOf(address),
+        RELEASE_READ_TIMEOUT_MS,
+      ).then(Number);
       reads.set(key, read);
       return read;
     };
@@ -318,7 +325,10 @@ type DryRun = { kind: 'accepted' } | Refusal;
 const readHasCode = async (address: string): Promise<boolean | undefined> => {
   try {
     const length = utils.hexDataLength(
-      await getProvider(RSK_CHAIN_ID).getCode(address),
+      await boundedBy(
+        getProvider(RSK_CHAIN_ID).getCode(address),
+        RELEASE_READ_TIMEOUT_MS,
+      ),
     );
     return length === null ? undefined : length > 0;
   } catch (error) {
@@ -347,6 +357,7 @@ const dryRun = async (
       // The release functions return nothing: an executed release answers
       // with empty data, and any other result is not the queue's yes.
       result => result === '0x',
+      RELEASE_READ_TIMEOUT_MS,
     );
     if (outcome.kind === 'result') {
       return { kind: 'accepted' };
@@ -555,11 +566,14 @@ const estimateReleaseGas = async (
   account: string,
 ): Promise<string | undefined> => {
   try {
-    const gas = await getProvider(RSK_CHAIN_ID).estimateGas({
-      from: account,
-      to: rows[0].queueAddress,
-      data: releaseData(rows, single),
-    });
+    const gas = await boundedBy(
+      getProvider(RSK_CHAIN_ID).estimateGas({
+        from: account,
+        to: rows[0].queueAddress,
+        data: releaseData(rows, single),
+      }),
+      RELEASE_READ_TIMEOUT_MS,
+    );
     return gas.gt(0) ? gas.toString() : undefined;
   } catch (error) {
     return undefined;
@@ -593,6 +607,9 @@ const notSent = () =>
  *    block is revealed: that row is not sent;
  * 4. asks the queue, in a dry run from the holder's address, whether it would
  *    accept each queue's release, dropping each withdrawal it refuses by name.
+ *
+ * Each chain read a run makes gives up after `RELEASE_READ_TIMEOUT_MS`, and a
+ * read that gives up refuses like one that failed.
  *
  * At the press, one notice tells the holder which withdrawals are not
  * released and why, and the rest opens in the dialog: one row as

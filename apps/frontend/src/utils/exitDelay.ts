@@ -3,6 +3,13 @@ import { Decimal } from '@sovryn/utils';
 /** 30 s — the perimeter's operational admin can change policy instantly (no timelock), so cache briefly. */
 export const EXIT_DELAY_TTL = 30_000;
 
+/**
+ * How long each chain read a release check makes may take before the check
+ * gives up on it and refuses, saying what it could not check. Without a bound
+ * a node that never answers holds the release for ethers' two-minute timeout.
+ */
+export const RELEASE_READ_TIMEOUT_MS = 10_000;
+
 /** Mirrors ExitDelayQueue.ExitStatus. */
 export enum ExitStatus {
   None = 0,

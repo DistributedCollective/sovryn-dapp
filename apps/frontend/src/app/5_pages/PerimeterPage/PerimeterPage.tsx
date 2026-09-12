@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -99,9 +99,35 @@ const PerimeterPage: FC = () => {
     [account, blockTime, exits, now, paused, pausedByQueue, releasedKeys],
   );
 
-  const handleRelease = useCallback(
-    (row: PerimeterExitRow) => release([row], markReleased),
+  // The release checks take several round trips before the dialog opens. A
+  // second release started meanwhile would replace the first one's
+  // transaction list in the dialog, so every release control waits while one
+  // runs, and the control that started it says it is checking. The ref stops
+  // a second press that lands before the page renders again.
+  const releaseRunning = useRef(false);
+  const [checking, setChecking] = useState<
+    { keys: string[]; all: boolean } | undefined
+  >();
+  const releaseChecked = useCallback(
+    async (targets: PerimeterExitRow[], all: boolean) => {
+      if (releaseRunning.current) {
+        return;
+      }
+      releaseRunning.current = true;
+      setChecking({ keys: targets.map(exitKey), all });
+      try {
+        await release(targets, markReleased);
+      } finally {
+        releaseRunning.current = false;
+        setChecking(undefined);
+      }
+    },
     [markReleased, release],
+  );
+
+  const handleRelease = useCallback(
+    (row: PerimeterExitRow) => releaseChecked([row], false),
+    [releaseChecked],
   );
 
   // Release all offers exactly the rows the per-row button would. Whether each
@@ -113,8 +139,8 @@ const PerimeterPage: FC = () => {
   );
 
   const handleReleaseAll = useCallback(
-    () => release(releasableRows, markReleased),
-    [markReleased, release, releasableRows],
+    () => releaseChecked(releasableRows, true),
+    [releaseChecked, releasableRows],
   );
 
   const columns = useMemo(
@@ -185,16 +211,23 @@ const PerimeterPage: FC = () => {
           // executor checks accept; the block check runs on the press itself.
           canExecuteExit(row.state) ? (
             <Button
-              text={t(translations.perimeterPage.release)}
+              text={
+                checking &&
+                !checking.all &&
+                checking.keys.includes(exitKey(row))
+                  ? t(translations.perimeterPage.checking)
+                  : t(translations.perimeterPage.release)
+              }
               size={ButtonSize.small}
               style={ButtonStyle.secondary}
+              disabled={!!checking}
               onClick={() => handleRelease(row)}
               dataAttribute={`perimeter-release-${exitKey(row)}`}
             />
           ) : null,
       },
     ],
-    [handleRelease, now],
+    [checking, handleRelease, now],
   );
 
   // "Not holding any withdrawals" is a definitive statement, and only a
@@ -250,11 +283,16 @@ const PerimeterPage: FC = () => {
             {releasableRows.length > 1 && (
               <div className="flex justify-end mb-3">
                 <Button
-                  text={t(translations.perimeterPage.releaseAll, {
-                    count: releasableRows.length,
-                  })}
+                  text={
+                    checking?.all
+                      ? t(translations.perimeterPage.checking)
+                      : t(translations.perimeterPage.releaseAll, {
+                          count: releasableRows.length,
+                        })
+                  }
                   size={ButtonSize.small}
                   style={ButtonStyle.primary}
+                  disabled={!!checking}
                   onClick={handleReleaseAll}
                   dataAttribute="perimeter-release-all"
                 />

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 
 import React from 'react';
 
@@ -214,6 +214,74 @@ describe('PerimeterPage', () => {
 
       expect(screen.getAllByText('Ready').length).toBeGreaterThan(0);
       expect(releaseButton(container, QUEUE, '7')).toBeInTheDocument();
+    });
+  });
+
+  describe('while a release is being checked', () => {
+    // The checks before the dialog opens take several round trips. A second
+    // press meanwhile would start a second release whose transaction list
+    // replaces the first one's in the dialog, so every release control waits
+    // until the checks finish, and the pressed one says it is checking.
+    const releaseThatWaits = () => {
+      let finish: () => void = () => undefined;
+      mockRelease.mockImplementation(
+        () =>
+          new Promise<void>(resolve => {
+            finish = resolve;
+          }),
+      );
+      return () => finish();
+    };
+
+    const releaseAllButton = (container: HTMLElement) =>
+      container.querySelector('[data-layout-id="perimeter-release-all"]');
+
+    it('says Checking… on the pressed Release, and takes no other press until the checks finish', async () => {
+      const finish = releaseThatWaits();
+      mockVault.exits = [exit({ id: '7' }), exit({ id: '8' })];
+      const { container } = render(<PerimeterPage />);
+
+      fireEvent.click(releaseButton(container, QUEUE, '7')!);
+
+      expect(releaseButton(container, QUEUE, '7')).toHaveTextContent(
+        'Checking…',
+      );
+      expect(releaseButton(container, QUEUE, '7')).toBeDisabled();
+      expect(releaseButton(container, QUEUE, '8')).toHaveTextContent('Release');
+      expect(releaseButton(container, QUEUE, '8')).toBeDisabled();
+      expect(releaseAllButton(container)).toBeDisabled();
+      fireEvent.click(releaseButton(container, QUEUE, '7')!);
+      fireEvent.click(releaseButton(container, QUEUE, '8')!);
+      fireEvent.click(releaseAllButton(container)!);
+      expect(mockRelease).toHaveBeenCalledTimes(1);
+
+      await act(async () => finish());
+
+      expect(releaseButton(container, QUEUE, '7')).toHaveTextContent('Release');
+      expect(releaseButton(container, QUEUE, '7')).not.toBeDisabled();
+      expect(releaseAllButton(container)).not.toBeDisabled();
+    });
+
+    it('says Checking… on Release all, and takes no other press until the checks finish', async () => {
+      const finish = releaseThatWaits();
+      mockVault.exits = [exit({ id: '7' }), exit({ id: '8' })];
+      const { container } = render(<PerimeterPage />);
+
+      fireEvent.click(releaseAllButton(container)!);
+
+      expect(releaseAllButton(container)).toHaveTextContent('Checking…');
+      expect(releaseAllButton(container)).toBeDisabled();
+      expect(releaseButton(container, QUEUE, '7')).toBeDisabled();
+      fireEvent.click(releaseButton(container, QUEUE, '7')!);
+      fireEvent.click(releaseAllButton(container)!);
+      expect(mockRelease).toHaveBeenCalledTimes(1);
+
+      await act(async () => finish());
+
+      expect(releaseAllButton(container)).toHaveTextContent(
+        'Release all ready (2)',
+      );
+      expect(releaseAllButton(container)).not.toBeDisabled();
     });
   });
 

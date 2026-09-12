@@ -173,6 +173,8 @@ describe('usePerimeterRelease', () => {
       stub.onCall(queue, EXECUTE_EXITS, { result: '0x' });
     });
     stub.onMethod('eth_estimateGas', GAS_ESTIMATE);
+    // The queue address carries code unless a test says otherwise.
+    stub.onMethod('eth_getCode', { result: '0x6080604052' });
   });
 
   afterEach(() => stub.reset());
@@ -481,6 +483,50 @@ describe('usePerimeterRelease', () => {
       expect(refusalText()).toContain(
         'Withdrawal #7 was not released because releases are paused.',
       );
+    });
+  });
+
+  describe('the queue it asks', () => {
+    // A call to an address with no code executes nothing and returns empty
+    // data, which is also what an accepted release returns. The dry run takes
+    // a yes only from an address with code, and only as the empty result a
+    // release gives.
+    const UNCHECKED =
+      'Withdrawal #7 was not released because we could not check whether it would go through.';
+
+    it('does not take a yes from an address with no code: sends nothing, and says it could not check', async () => {
+      stub.onMethod('eth_getCode', { result: '0x' });
+
+      await release([row()]);
+
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(UNCHECKED);
+    });
+
+    it('sends nothing when the code at the queue address could not be read, and says so', async () => {
+      stub.onMethod('eth_getCode', { status: 503, body: 'unavailable' });
+
+      await release([row()]);
+
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(UNCHECKED);
+    });
+
+    it('does not take a result a release never returns as a yes', async () => {
+      stub.onCall(QUEUE, EXECUTE_EXIT, { result: `0x${'00'.repeat(32)}` });
+
+      await release([row()]);
+
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(UNCHECKED);
+    });
+
+    it('checks the code at the queue address again when the holder confirms', async () => {
+      await release([row()]);
+      stub.onMethod('eth_getCode', { result: '0x' });
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(refusalText()).toContain(UNCHECKED);
     });
   });
 

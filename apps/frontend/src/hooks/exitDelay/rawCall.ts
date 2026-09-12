@@ -78,13 +78,16 @@ export type RawCall = { to: string; data: string; from?: string };
  * recognised from the node's error object and keeps its data, so a caller can
  * both tell "the chain said no" from "no answer" and say why.
  *
- * A backend that does not answer, or whose result `isAnswer` rejects, is
- * skipped for the next one; when none answers the call is unreadable.
+ * `isAnswer` says what a result must look like to count as the node's answer,
+ * and every caller states it: an address without code answers any call with
+ * empty data, so taking any hex would read that as a yes. A backend that does
+ * not answer, or whose result `isAnswer` rejects, is skipped for the next one;
+ * when none answers the call is unreadable.
  */
 export const callRaw = async (
   provider: providers.Provider,
   call: RawCall,
-  isAnswer: (result: string) => boolean = () => true,
+  isAnswer: (result: string) => boolean,
 ): Promise<RawCallOutcome> => {
   for (const sender of sendersOf(provider)) {
     try {

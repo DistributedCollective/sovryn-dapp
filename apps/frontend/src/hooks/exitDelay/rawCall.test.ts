@@ -31,6 +31,9 @@ const call = {
   data: QUEUE_ABI.encodeFunctionData('executeExit', [7]),
 };
 
+/** What a function that returns nothing gives back when it executes. */
+const VOID_RESULT = (result: string) => result === '0x';
+
 describe('callRaw', () => {
   let stub: JsonRpcStub;
   let appProvider: providers.Provider;
@@ -53,7 +56,7 @@ describe('callRaw', () => {
   it('returns what a call the node executed returned', async () => {
     stub.onCall(QUEUE, EXECUTE_EXIT, { result: '0x' });
 
-    expect(await callRaw(appProvider, call)).toEqual({
+    expect(await callRaw(appProvider, call, VOID_RESULT)).toEqual({
       kind: 'result',
       data: '0x',
     });
@@ -69,7 +72,7 @@ describe('callRaw', () => {
       },
     });
 
-    expect(await callRaw(appProvider, call)).toEqual({
+    expect(await callRaw(appProvider, call, VOID_RESULT)).toEqual({
       kind: 'reverted',
       data,
     });
@@ -78,7 +81,7 @@ describe('callRaw', () => {
   it('reports a revert with no data as reverted', async () => {
     stub.onCall(QUEUE, EXECUTE_EXIT, RSK_REVERT_WITHOUT_DATA);
 
-    expect(await callRaw(appProvider, call)).toEqual({
+    expect(await callRaw(appProvider, call, VOID_RESULT)).toEqual({
       kind: 'reverted',
       data: '0x',
     });
@@ -87,13 +90,15 @@ describe('callRaw', () => {
   it('reports a call the node did not answer as unreadable', async () => {
     stub.onCall(QUEUE, EXECUTE_EXIT, { status: 503, body: 'unavailable' });
 
-    expect(await callRaw(appProvider, call)).toEqual({ kind: 'unreadable' });
+    expect(await callRaw(appProvider, call, VOID_RESULT)).toEqual({
+      kind: 'unreadable',
+    });
   });
 
   it("makes the call from the caller's address", async () => {
     stub.onCall(QUEUE, EXECUTE_EXIT, { result: '0x' });
 
-    await callRaw(appProvider, call);
+    await callRaw(appProvider, call, VOID_RESULT);
 
     expect(stub.callsTo(QUEUE, EXECUTE_EXIT)).toEqual([
       { from: HOLDER, data: call.data },

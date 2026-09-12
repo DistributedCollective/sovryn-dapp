@@ -312,6 +312,21 @@ const releaseData = (rows: ReleaseRow[], single: boolean): string =>
 type DryRun = { kind: 'accepted' } | Refusal;
 
 /**
+ * Whether an address carries code, read fresh; undefined when the read did not
+ * complete or its answer is not hex.
+ */
+const readHasCode = async (address: string): Promise<boolean | undefined> => {
+  try {
+    const length = utils.hexDataLength(
+      await getProvider(RSK_CHAIN_ID).getCode(address),
+    );
+    return length === null ? undefined : length > 0;
+  } catch (error) {
+    return undefined;
+  }
+};
+
+/**
  * Ask the queue, with `eth_call` from the holder's own address, whether it
  * would accept this release now. A dry run that could not be completed is a
  * refusal too: an unanswered check is not a yes.
@@ -322,11 +337,17 @@ const dryRun = async (
   account: string,
 ): Promise<DryRun> => {
   try {
-    const outcome = await callRaw(getProvider(RSK_CHAIN_ID), {
-      from: account,
-      to: rows[0].queueAddress,
-      data: releaseData(rows, single),
-    });
+    const outcome = await callRaw(
+      getProvider(RSK_CHAIN_ID),
+      {
+        from: account,
+        to: rows[0].queueAddress,
+        data: releaseData(rows, single),
+      },
+      // The release functions return nothing: an executed release answers
+      // with empty data, and any other result is not the queue's yes.
+      result => result === '0x',
+    );
     if (outcome.kind === 'result') {
       return { kind: 'accepted' };
     }
@@ -353,6 +374,10 @@ const dryRun = async (
  * holds for the whole call, or a dry run that could not be completed, sends
  * nothing from this queue. Every pass drops at least one row or stops, so this
  * ends.
+ *
+ * Nothing is asked of an address without code, or whose code could not be
+ * read: a call to it executes nothing and answers with the same empty data an
+ * accepted release gives.
  */
 const askQueue = async (
   rows: ReleaseRow[],
@@ -365,6 +390,15 @@ const askQueue = async (
 }> => {
   const refusals: string[] = [];
   const unlocking: ReleaseRow[] = [];
+  if ((await readHasCode(rows[0].queueAddress)) !== true) {
+    refusals.push(
+      rowsRefusal(
+        rows,
+        t(translations.perimeterPage.releaseRefused.reason.unchecked),
+      ),
+    );
+    return { accepted: [], unlocking, refusals };
+  }
   let remaining = rows;
   while (remaining.length > 0) {
     const outcome = await dryRun(remaining, single, account);

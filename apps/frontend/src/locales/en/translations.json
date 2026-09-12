@@ -2122,6 +2122,20 @@
       "title": "Not released",
       "blocked": "Withdrawal #{{id}} was not released because {{party}} is {{state}}.",
       "unreadable": "Withdrawal #{{id}} was not released because we could not check whether its addresses are frozen or blacklisted. Try again in a moment.",
+      "statusUnreadable": "Withdrawal #{{id}} was not released because we could not check whether it is still waiting. Try again in a moment.",
+      "batch": "Withdrawals {{ids}} were not released because {{reason}}.",
+      "batch_one": "Withdrawal {{ids}} was not released because {{reason}}.",
+      "batch_other": "Withdrawals {{ids}} were not released because {{reason}}.",
+      "reason": {
+        "paused": "releases are paused",
+        "notUnlocked": "#{{id}} is still inside its delay",
+        "alreadyTerminal": "#{{id}} was already delivered",
+        "unknownRequest": "the queue does not know #{{id}}",
+        "notExecutor": "your address may not release it",
+        "actorBlocked": "{{address}} is {{state}}",
+        "refused": "the queue would refuse it",
+        "unchecked": "we could not check whether it would go through. Try again in a moment"
+      },
       "party": {
         "account": "your address",
         "originator": "the address that started it",

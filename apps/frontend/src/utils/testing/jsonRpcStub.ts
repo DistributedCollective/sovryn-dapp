@@ -28,20 +28,31 @@ export type StubAnswer =
 
 type Rule = { to: string; dataPrefix: string; answer: StubAnswer };
 
-type RecordedCall = { method: string; to?: string; data?: string };
+type RecordedCall = {
+  method: string;
+  from?: string;
+  to?: string;
+  data?: string;
+};
 
 export type JsonRpcStub = {
   url: string;
   /**
    * Answer `eth_call` to `to` whose calldata starts with `dataPrefix`. When
    * several rules match, the longest prefix wins, so a rule for one exact
-   * argument can sit beside a rule for the whole function.
+   * argument can sit beside a rule for the whole function; among rules with
+   * the same prefix the latest wins, so a test can override a default.
    */
   onCall: (to: string, dataPrefix: string, answer: StubAnswer) => void;
   /** Answer every request for a method other than `eth_call`. */
   onMethod: (method: string, answer: StubAnswer) => void;
   /** How many `eth_call`s reached `to`, optionally only those starting with `dataPrefix`. */
   callCount: (to: string, dataPrefix?: string) => number;
+  /** The `eth_call`s that reached `to`, with the address each was made from (lower-cased). */
+  callsTo: (
+    to: string,
+    dataPrefix?: string,
+  ) => { from?: string; data: string }[];
   /** Forget every rule and recorded call; the default chain answers remain. */
   reset: () => void;
   close: () => Promise<void>;
@@ -152,13 +163,18 @@ export const startJsonRpcStub = async (): Promise<JsonRpcStub> => {
         }
       );
     }
-    const [tx] = params as [{ to?: string; data?: string }];
+    const [tx] = params as [{ from?: string; to?: string; data?: string }];
     const to = (tx?.to ?? '').toLowerCase();
     const data = (tx?.data ?? '').toLowerCase();
-    calls.push({ method, to, data });
+    calls.push({ method, from: tx?.from?.toLowerCase(), to, data });
     const match = rules
-      .filter(rule => rule.to === to && data.startsWith(rule.dataPrefix))
-      .sort((a, b) => b.dataPrefix.length - a.dataPrefix.length)[0];
+      .map((rule, index) => ({ rule, index }))
+      .filter(({ rule }) => rule.to === to && data.startsWith(rule.dataPrefix))
+      .sort(
+        (a, b) =>
+          b.rule.dataPrefix.length - a.rule.dataPrefix.length ||
+          b.index - a.index,
+      )[0]?.rule;
     return (
       match?.answer ?? {
         error: { code: -32601, message: 'stub: no answer for this call' },
@@ -216,6 +232,15 @@ export const startJsonRpcStub = async (): Promise<JsonRpcStub> => {
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   const { port } = server.address() as AddressInfo;
 
+  const callsTo = (to: string, dataPrefix = '') =>
+    calls
+      .filter(
+        call =>
+          call.to === to.toLowerCase() &&
+          (call.data ?? '').startsWith(dataPrefix.toLowerCase()),
+      )
+      .map(call => ({ from: call.from, data: call.data ?? '' }));
+
   return {
     url: `http://127.0.0.1:${port}`,
     onCall: (to, dataPrefix, answer) =>
@@ -227,12 +252,8 @@ export const startJsonRpcStub = async (): Promise<JsonRpcStub> => {
     onMethod: (method, answer) => {
       methods[method] = answer;
     },
-    callCount: (to, dataPrefix = '') =>
-      calls.filter(
-        call =>
-          call.to === to.toLowerCase() &&
-          (call.data ?? '').startsWith(dataPrefix.toLowerCase()),
-      ).length,
+    callCount: (to, dataPrefix = '') => callsTo(to, dataPrefix).length,
+    callsTo,
     reset: () => {
       rules = [];
       methods = defaultMethods();

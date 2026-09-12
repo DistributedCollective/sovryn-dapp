@@ -6,7 +6,7 @@ import { utils } from 'ethers';
 import 'jest-canvas-mock';
 
 import { i18n } from '../../locales/i18n';
-import { BlockState, exitKey } from '../../utils/exitDelay';
+import { BlockState, ExitStatus, exitKey } from '../../utils/exitDelay';
 import {
   JsonRpcStub,
   StubAnswer,
@@ -71,13 +71,57 @@ jest.mock('../../contexts/NotificationContext', () => ({
   useNotificationContext: () => ({ addNotification: mockAddNotification }),
 }));
 
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+const ZERO_BYTES32 = `0x${'00'.repeat(32)}`;
+
 const QUEUE_ABI = new utils.Interface([
   'function blockStateOf(address a) view returns (uint8)',
+  'function getRequest(uint256 id) view returns (tuple(uint128 amount, uint64 createdAt, uint64 unlockAt, address originator, address owner, address receiver, address token, bytes32 surfaceId, address subProduct, uint8 status, bool unwrapOnDelivery))',
+  'function executeExit(uint256 requestId)',
+  'function executeExits(uint256[] ids)',
+]);
+/** The queue's own errors for a delivery it refuses. */
+const QUEUE_ERRORS = new utils.Interface([
+  'error QueuePaused()',
+  'error AlreadyTerminal(uint256 id)',
+  'error NotUnlocked(uint256 id, uint64 unlockAt)',
+  'error NotExecutor(address caller)',
+  'error ActorBlocked(address actor, uint8 state)',
 ]);
 const BLOCK_STATE = selectorOf('blockStateOf(address)');
+const GET_REQUEST = QUEUE_ABI.getSighash('getRequest');
+const EXECUTE_EXIT = QUEUE_ABI.getSighash('executeExit');
+const EXECUTE_EXITS = QUEUE_ABI.getSighash('executeExits');
 
 const stateResult = (state: number): StubAnswer => ({
   result: utils.defaultAbiCoder.encode(['uint8'], [state]),
+});
+
+const requestResult = (status: ExitStatus): StubAnswer => ({
+  result: QUEUE_ABI.encodeFunctionResult('getRequest', [
+    [
+      1,
+      1,
+      1,
+      ACCOUNT,
+      ACCOUNT,
+      RECEIVER,
+      ZERO_ADDRESS,
+      ZERO_BYTES32,
+      ZERO_ADDRESS,
+      status,
+      false,
+    ],
+  ]),
+});
+
+/** How an RSK node answers a dry run the queue refuses with one of its errors. */
+const queueRefusal = (name: string, args: unknown[] = []): StubAnswer => ({
+  error: {
+    code: -32015,
+    message: 'VM Exception while processing transaction: revert',
+    data: QUEUE_ERRORS.encodeErrorResult(name, args),
+  },
 });
 
 const row = (overrides: Partial<ReleaseRow> = {}): ReleaseRow => ({
@@ -99,8 +143,14 @@ describe('usePerimeterRelease', () => {
   });
 
   beforeEach(() => {
-    stub.onCall(QUEUE, BLOCK_STATE, stateResult(BlockState.None));
-    stub.onCall(OTHER_QUEUE, BLOCK_STATE, stateResult(BlockState.None));
+    // Every request is still queued, every party clear, and the queue accepts
+    // every dry run, unless a test says otherwise.
+    [QUEUE, OTHER_QUEUE].forEach(queue => {
+      stub.onCall(queue, BLOCK_STATE, stateResult(BlockState.None));
+      stub.onCall(queue, GET_REQUEST, requestResult(ExitStatus.Queued));
+      stub.onCall(queue, EXECUTE_EXIT, { result: '0x' });
+      stub.onCall(queue, EXECUTE_EXITS, { result: '0x' });
+    });
   });
 
   afterEach(() => stub.reset());
@@ -251,5 +301,135 @@ describe('usePerimeterRelease', () => {
     expect(onReleased).toHaveBeenCalledWith([
       exitKey({ queueAddress: OTHER_QUEUE, id: '7' }),
     ]);
+  });
+
+  describe('what the queue will still accept', () => {
+    // executeExits is atomic: one id that changed since the page last read it
+    // takes every other release in the batch down with it.
+    const statusOf = (queue: string, id: number, answer: StubAnswer) =>
+      stub.onCall(
+        queue,
+        QUEUE_ABI.encodeFunctionData('getRequest', [id]),
+        answer,
+      );
+
+    it('leaves a row delivered by someone else off the page without an error, and sends the rest', async () => {
+      statusOf(QUEUE, 8, requestResult(ExitStatus.Executed));
+
+      const onReleased = await release([
+        row({ id: '7' }),
+        row({ id: '8' }),
+        row({ id: '9' }),
+      ]);
+
+      expect(onReleased).toHaveBeenCalledWith([
+        exitKey({ queueAddress: QUEUE, id: '8' }),
+      ]);
+      expect(mockExecuteExits).toHaveBeenCalledWith(
+        [{ queueAddress: QUEUE, requestIds: ['7', '9'] }],
+        expect.any(Function),
+      );
+      expect(mockAddNotification).not.toHaveBeenCalled();
+    });
+
+    it('does not send a row whose status could not be read, and says so', async () => {
+      statusOf(QUEUE, 7, { status: 503, body: 'unavailable' });
+
+      await release([row()]);
+
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(
+        'Withdrawal #7 was not released because we could not check whether it is still waiting.',
+      );
+    });
+
+    it.each([
+      ['releases are paused', queueRefusal('QueuePaused')],
+      [
+        '#7 is still inside its delay',
+        queueRefusal('NotUnlocked', [7, 1_900_000_000]),
+      ],
+      ['#7 was already delivered', queueRefusal('AlreadyTerminal', [7])],
+      [
+        'your address is frozen',
+        queueRefusal('ActorBlocked', [ACCOUNT, BlockState.Frozen]),
+      ],
+      [
+        'your address may not release it',
+        queueRefusal('NotExecutor', [ACCOUNT]),
+      ],
+      [
+        'the queue would refuse it',
+        {
+          error: {
+            code: -32015,
+            message: 'VM Exception while processing transaction: revert',
+            data: '0x',
+          },
+        },
+      ],
+    ])(
+      'does not send a release the queue would refuse, and says %s',
+      async (reason, answer) => {
+        stub.onCall(QUEUE, EXECUTE_EXIT, answer);
+
+        await release([row()]);
+
+        expect(mockExecuteExit).not.toHaveBeenCalled();
+        expect(refusalText()).toContain(
+          `Withdrawal #7 was not released because ${reason}.`,
+        );
+      },
+    );
+
+    it('does not send a batch the queue would refuse, and names every withdrawal in it', async () => {
+      stub.onCall(QUEUE, EXECUTE_EXITS, queueRefusal('QueuePaused'));
+
+      await release([row({ id: '7' }), row({ id: '9' })]);
+
+      expect(mockExecuteExits).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(
+        'Withdrawals #7, #9 were not released because releases are paused.',
+      );
+    });
+
+    it('does not send when the dry run could not be completed, and says so', async () => {
+      stub.onCall(QUEUE, EXECUTE_EXIT, { status: 503, body: 'unavailable' });
+
+      await release([row()]);
+
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(
+        'Withdrawal #7 was not released because we could not check whether it would go through.',
+      );
+    });
+
+    it("asks the queue from the holder's own address", async () => {
+      await release([row()]);
+
+      expect(stub.callsTo(QUEUE, EXECUTE_EXIT)).toEqual([
+        {
+          from: ACCOUNT,
+          data: QUEUE_ABI.encodeFunctionData('executeExit', [7]),
+        },
+      ]);
+    });
+
+    it("still sends another queue's batch when one queue would refuse", async () => {
+      stub.onCall(QUEUE, EXECUTE_EXITS, queueRefusal('QueuePaused'));
+
+      await release([
+        row({ id: '7' }),
+        row({ id: '7', queueAddress: OTHER_QUEUE }),
+      ]);
+
+      expect(mockExecuteExits).toHaveBeenCalledWith(
+        [{ queueAddress: OTHER_QUEUE, requestIds: ['7'] }],
+        expect.any(Function),
+      );
+      expect(refusalText()).toContain(
+        'Withdrawal #7 was not released because releases are paused.',
+      );
+    });
   });
 });

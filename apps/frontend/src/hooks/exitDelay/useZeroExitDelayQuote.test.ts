@@ -1,7 +1,10 @@
 import { renderHook, waitFor } from '@testing-library/react';
 
 import { getExitDelayDisplay } from '../../utils/exitDelay';
-import { SURFACE_ZERO_WITHDRAW_COLL } from '../../utils/exitFee';
+import {
+  SURFACE_ZERO_CLAIM_SURPLUS,
+  SURFACE_ZERO_WITHDRAW_COLL,
+} from '../../utils/exitFee';
 import { useZeroExitDelayQuote } from './useZeroExitDelayQuote';
 
 /**
@@ -70,6 +73,22 @@ describe('useZeroExitDelayQuote', () => {
       subProduct: ZERO_ADDRESS,
     });
     expect(getExitDelayDisplay(result.current)).toBe('held');
+  });
+
+  it("quotes the surplus claim's own surface through BorrowerOperations when asked", async () => {
+    mockQuoteExitDelay.mockResolvedValue({ delaySeconds: 0, unknown: false });
+
+    const { result } = renderHook(() =>
+      useZeroExitDelayQuote(SURFACE_ZERO_CLAIM_SURPLUS),
+    );
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(mockQuoteExitDelay).toHaveBeenCalledWith(
+      expect.objectContaining({
+        consumerAddress: BORROWER_OPERATIONS,
+        surfaceId: SURFACE_ZERO_CLAIM_SURPLUS,
+      }),
+    );
   });
 
   it('reports checking until BorrowerOperations has been resolved', async () => {

@@ -1,98 +1,181 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import React from 'react';
 
 import 'jest-canvas-mock';
+import { MemoryRouter } from 'react-router-dom';
 
 import { Decimal } from '@sovryn/utils';
 
 import { i18n } from '../../../locales/i18n';
+import { SURFACE_ZERO_CLAIM_SURPLUS } from '../../../utils/exitFee';
 import { LOCStatus } from './LOCStatus';
 
-const mockRate = {
-  active: true,
-  rateBps: 50,
-  loading: false,
+/**
+ * The surplus claim is a Zero exit like the others: charged a Perimeter fee
+ * through Zero's own controller pointer, and held by the withdrawal delay when
+ * it applies. The card shows both before the borrower presses Withdraw, and
+ * does not offer Withdraw while the delay quote is still on its way.
+ */
+
+let mockFee: {
+  active: boolean;
+  rateBps: number;
+  feeAmount: Decimal;
+  netAmount: Decimal;
+  loading: boolean;
+  unknown: boolean;
 };
+let mockFeeGross: { toString(): string } | undefined;
+let mockDelay: { delaySeconds: number; loading: boolean; unknown: boolean };
+let mockDelaySurface: string | undefined;
 
-jest.mock('nanoid', () => {
-  return { nanoid: () => '1234' };
-});
+jest.mock('nanoid', () => ({ nanoid: () => '1234' }));
 
-jest.mock('../../../contexts/NotificationContext', () => {
-  return {
-    useNotificationContext: () => ({
-      addNotification: jest.fn(),
-    }),
-  };
-});
-
-jest.mock('../../../hooks/exitFee/useExitFeeRate', () => ({
-  useExitFeeRate: () => mockRate,
+jest.mock('../../../contexts/NotificationContext', () => ({
+  useNotificationContext: () => ({ addNotification: jest.fn() }),
 }));
 
-describe('LOCStatus perimeter fee', () => {
+jest.mock('../../../hooks/exitFee/useZeroClaimExitFee', () => ({
+  useZeroClaimExitFee: (gross: { toString(): string }) => {
+    mockFeeGross = gross;
+    return mockFee;
+  },
+}));
+
+jest.mock('../../../hooks/exitDelay/useZeroExitDelayQuote', () => ({
+  useZeroExitDelayQuote: (surface: string) => {
+    mockDelaySurface = surface;
+    return mockDelay;
+  },
+}));
+
+const NO_DELAY = { delaySeconds: 0, loading: false, unknown: false };
+
+const renderStatus = (withdrawalSurplus = Decimal.from('0.4')) =>
+  render(
+    <MemoryRouter>
+      <LOCStatus
+        withdrawalSurplus={withdrawalSurplus}
+        collateral={Decimal.ZERO}
+        debt={Decimal.ZERO}
+        onWithdraw={jest.fn()}
+      />
+    </MemoryRouter>,
+  );
+
+const withdrawButton = (container: HTMLElement) =>
+  container.querySelector('[data-layout-id="zero-loc-surplus-withdraw"]');
+
+describe('LOCStatus surplus claim', () => {
   beforeAll(async () => {
     await i18n;
   });
 
   beforeEach(() => {
-    Object.assign(mockRate, { active: true, rateBps: 50, loading: false });
+    mockFee = {
+      active: true,
+      rateBps: 10,
+      feeAmount: Decimal.from('0.0004'),
+      netAmount: Decimal.from('0.3996'),
+      loading: false,
+      unknown: false,
+    };
+    mockFeeGross = undefined;
+    mockDelay = NO_DELAY;
+    mockDelaySurface = undefined;
   });
 
-  it('shows the NET surplus with a fee tooltip when the fee is active', () => {
-    const { container } = render(
-      <LOCStatus
-        withdrawalSurplus={Decimal.from('0.4')}
-        collateral={Decimal.ZERO}
-        debt={Decimal.ZERO}
-        onWithdraw={jest.fn()}
-      />,
-    );
+  describe('Perimeter fee', () => {
+    it("shows the claim quote's net, marked approximate, with the fee in the tooltip", () => {
+      const { container } = renderStatus();
 
-    expect(screen.getByText(/0\.398/)).toBeInTheDocument();
-    expect(screen.queryByText(/^0\.4 /)).not.toBeInTheDocument();
-    // "Perimeter fee" only lives inside the (closed) tooltip, not inline.
-    expect(screen.queryByText(/^Perimeter fee/)).not.toBeInTheDocument();
+      expect(mockFeeGross?.toString()).toBe('0.4');
+      expect(screen.getByText(/0\.3996/)).toBeInTheDocument();
+      expect(container.textContent).toContain('~');
 
-    const helperIcon = container.querySelector(
-      '[data-layout-id="exit-fee-helper"]',
-    );
-    expect(helperIcon).toBeInTheDocument();
+      fireEvent.click(
+        container.querySelector('[data-layout-id="exit-fee-helper"]')!,
+      );
+      expect(screen.getByText(/Perimeter fee \(0\.1%\)/)).toBeInTheDocument();
+    });
 
-    fireEvent.click(helperIcon as Element);
-    expect(screen.getByText(/Perimeter fee \(0\.5%\)/)).toBeInTheDocument();
+    it('shows the gross surplus with no fee helper when no fee is charged', () => {
+      mockFee = { ...mockFee, active: false, rateBps: 0 };
+
+      const { container } = renderStatus();
+
+      expect(screen.getByText('0.4 BTC')).toBeInTheDocument();
+      expect(
+        container.querySelector('[data-layout-id="exit-fee-helper"]'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render the surplus stat at all when there is no surplus', () => {
+      renderStatus(Decimal.ZERO);
+
+      expect(screen.queryByText('withdrawal surplus')).not.toBeInTheDocument();
+    });
   });
 
-  it('shows the gross surplus with no helper icon when the fee is inactive', () => {
-    Object.assign(mockRate, { active: false, rateBps: 0 });
+  describe('withdrawal delay', () => {
+    it('quotes the delay for the claim surface', () => {
+      renderStatus();
 
-    const { container } = render(
-      <LOCStatus
-        withdrawalSurplus={Decimal.from('0.4')}
-        collateral={Decimal.ZERO}
-        debt={Decimal.ZERO}
-        onWithdraw={jest.fn()}
-      />,
-    );
+      expect(mockDelaySurface).toBe(SURFACE_ZERO_CLAIM_SURPLUS);
+    });
 
-    expect(screen.getByText('0.4 BTC')).toBeInTheDocument();
-    expect(screen.queryByText(/Perimeter fee/)).not.toBeInTheDocument();
-    expect(
-      container.querySelector('[data-layout-id="exit-fee-helper"]'),
-    ).not.toBeInTheDocument();
-  });
+    it('tells the borrower the claim will be held, and for how long', () => {
+      mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
 
-  it('does not render the surplus stat at all when there is no surplus', () => {
-    render(
-      <LOCStatus
-        withdrawalSurplus={Decimal.ZERO}
-        collateral={Decimal.ZERO}
-        debt={Decimal.ZERO}
-        onWithdraw={jest.fn()}
-      />,
-    );
+      const { container } = renderStatus();
 
-    expect(screen.queryByText('withdrawal surplus')).not.toBeInTheDocument();
+      expect(screen.getByText('Withdrawal hold')).toBeInTheDocument();
+      expect(screen.getByText('2 days')).toBeInTheDocument();
+      expect(
+        container.querySelector('[data-test-id="exit-delay-vault-notice"]'),
+      ).toBeInTheDocument();
+    });
+
+    it('admits it could not check whether the claim will be held', () => {
+      mockDelay = { delaySeconds: 0, loading: false, unknown: true };
+
+      renderStatus();
+
+      expect(screen.getByText('Could not be checked')).toBeInTheDocument();
+    });
+
+    it('waits for the delay quote before offering Withdraw, and says it is checking', () => {
+      mockDelay = { delaySeconds: 0, loading: true, unknown: false };
+
+      const { container } = renderStatus();
+
+      expect(screen.getByText(/^Checking/)).toBeInTheDocument();
+      expect(withdrawButton(container)).toBeDisabled();
+    });
+
+    it('offers Withdraw once a quote arrived', () => {
+      mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
+
+      const { container } = renderStatus();
+
+      expect(withdrawButton(container)).toBeEnabled();
+    });
+
+    it('offers Withdraw when the quote could not be read', () => {
+      mockDelay = { delaySeconds: 0, loading: false, unknown: true };
+
+      const { container } = renderStatus();
+
+      expect(withdrawButton(container)).toBeEnabled();
+    });
+
+    it('shows no delay row without a surplus to claim', () => {
+      mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
+
+      renderStatus(Decimal.ZERO);
+
+      expect(screen.queryByText('Withdrawal hold')).not.toBeInTheDocument();
+    });
   });
 });

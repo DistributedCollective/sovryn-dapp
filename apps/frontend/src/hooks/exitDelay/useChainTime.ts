@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { ChainId, getProvider } from '@sovryn/ethers-provider';
 
@@ -14,6 +14,20 @@ type Anchor = {
 
 const NO_ANCHOR: Anchor = { timestamp: 0, readAt: 0 };
 
+export type ChainClock = {
+  /**
+   * The chain's time in seconds, or 0 until the first block has been read.
+   * Callers must treat 0 as "not known yet" rather than as the epoch — a
+   * countdown or a release decision made against 0 would be nonsense.
+   */
+  now: number;
+  /**
+   * True when the block read failed and no time is known, so a caller can say
+   * it could not read instead of waiting for a time that will not arrive.
+   */
+  unreadable: boolean;
+};
+
 /**
  * The chain's clock, ticking each second.
  *
@@ -27,13 +41,9 @@ const NO_ANCHOR: Anchor = { timestamp: 0, readAt: 0 };
  * block, and advanced between refreshes by ELAPSED local time. A wrong local
  * offset cancels out in the subtraction; only the machine's clock RATE could
  * drift, and no machine drifts a second per second.
- *
- * Returns 0 until the first block has been read. Callers must treat that as
- * "the time is not known yet" rather than as the epoch — a countdown or a
- * release decision made against 0 would be nonsense.
  */
-export const useChainTime = (chainId: ChainId): number => {
-  const { value: anchor } = useCacheCall<Anchor>(
+export const useChainTime = (chainId: ChainId): ChainClock => {
+  const { value: anchor, error } = useCacheCall<Anchor>(
     `exitDelay/chainTime/${chainId}`,
     chainId,
     async () => {
@@ -61,5 +71,7 @@ export const useChainTime = (chainId: ChainId): number => {
     return () => clearInterval(timer);
   }, [anchor.timestamp, anchor.readAt]);
 
-  return now;
+  const unreadable = !anchor.timestamp && !!error;
+
+  return useMemo(() => ({ now, unreadable }), [now, unreadable]);
 };

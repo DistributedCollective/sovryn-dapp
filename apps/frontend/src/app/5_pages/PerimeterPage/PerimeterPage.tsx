@@ -55,8 +55,12 @@ const PerimeterPage: FC = () => {
   // Chain time, not the browser's: the queue compares block.timestamp, and a
   // machine whose clock runs fast would otherwise offer a release that reverts
   // and, in a batch, revert every other release with it. Zero means the chain
-  // clock has not been read, which the loader below covers.
-  const now = useChainTime(RSK_CHAIN_ID);
+  // clock has not been read yet; `clockUnreadable` means it could not be.
+  const { now, unreadable: clockUnreadable } = useChainTime(RSK_CHAIN_ID);
+
+  // Nothing on the page is stated from a read that did not complete: neither
+  // the vault's own reads nor the clock every row is judged against.
+  const readFailed = unknown || clockUnreadable;
 
   // Withdrawals released in this session, by queue and id, held until the next
   // vault read drops them. A row released one moment and carried by a "release
@@ -98,8 +102,8 @@ const PerimeterPage: FC = () => {
   // one's parties are blocked is read when it is pressed, and only the rows
   // that read clear are sent.
   const releasableRows = useMemo(
-    () => rows.filter(row => canExecuteExit(row.state)),
-    [rows],
+    () => (now ? rows.filter(row => canExecuteExit(row.state)) : []),
+    [now, rows],
   );
 
   const handleReleaseAll = useCallback(
@@ -193,10 +197,10 @@ const PerimeterPage: FC = () => {
     if (!account) {
       return t(translations.perimeterPage.connectWallet);
     }
-    return unknown
+    return readFailed
       ? t(translations.perimeterPage.unreadable)
       : t(translations.perimeterPage.inactive);
-  }, [account, unknown]);
+  }, [account, readFailed]);
 
   return (
     <>
@@ -227,7 +231,7 @@ const PerimeterPage: FC = () => {
               {t(translations.perimeterPage.statusTooltip.paused)}
             </Paragraph>
           )}
-          {unknown && account && (
+          {readFailed && account && (
             <Paragraph
               size={ParagraphSize.small}
               className="text-center mb-4"
@@ -252,12 +256,15 @@ const PerimeterPage: FC = () => {
             )}
             <Table
               columns={columns}
-              rows={rows}
+              // Every status and countdown is derived from the chain clock,
+              // and the table draws whatever rows it is given even while it
+              // shows its loader: a row resolved against a missing time would
+              // read as on hold for decades. So no rows until the clock is
+              // known, the loader while it is still coming, and the empty
+              // message once its read has failed.
+              rows={now ? rows : []}
               rowKey={row => exitKey(row)}
-              // Rows are withheld until the chain clock is known: every status
-              // and countdown is derived from it, and a row resolved against a
-              // missing time would read as locked for decades.
-              isLoading={loading || (!!account && !now)}
+              isLoading={loading || (!!account && !now && !clockUnreadable)}
               noData={emptyMessage}
               dataAttribute="perimeter-vault-table"
             />

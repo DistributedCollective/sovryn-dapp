@@ -17,6 +17,9 @@ const RECEIVER = '0x3333333333333333333333333333333333333333';
 const QUEUE = '0x9999999999999999999999999999999999999999';
 const OTHER_QUEUE = '0x8888888888888888888888888888888888888888';
 
+const NOT_HOLDING =
+  'The Sovryn Perimeter is not holding any withdrawals for this account.';
+
 const mockRelease = jest.fn();
 
 let mockVault: {
@@ -26,7 +29,7 @@ let mockVault: {
   loading: boolean;
   unknown: boolean;
 };
-let mockChainTime: number;
+let mockChainTime: { now: number; unreadable: boolean };
 let mockCurrentChainId: string;
 
 jest.mock('nanoid', () => ({ nanoid: () => '1234' }));
@@ -100,7 +103,7 @@ describe('PerimeterPage', () => {
     // Re-applied per test: this project's jest config resets mocks between
     // tests, and a reset Date.now would make every row read as unlocked.
     jest.spyOn(Date, 'now').mockReturnValue(NOW * 1000);
-    mockChainTime = NOW;
+    mockChainTime = { now: NOW, unreadable: false };
     mockCurrentChainId = RSK_CHAIN_ID;
     mockVault = {
       exits: [],
@@ -119,11 +122,7 @@ describe('PerimeterPage', () => {
     render(<PerimeterPage />);
     // The table renders a desktop and a mobile variant, so the empty message
     // legitimately appears more than once.
-    expect(
-      screen.getAllByText(
-        'The Sovryn Perimeter is not holding any withdrawals for this account.',
-      ).length,
-    ).toBeGreaterThan(0);
+    expect(screen.getAllByText(NOT_HOLDING).length).toBeGreaterThan(0);
   });
 
   it('never states nothing is held when the read failed', () => {
@@ -133,11 +132,7 @@ describe('PerimeterPage', () => {
     mockVault.unknown = true;
     const { container } = render(<PerimeterPage />);
 
-    expect(
-      screen.queryByText(
-        'The Sovryn Perimeter is not holding any withdrawals for this account.',
-      ),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(NOT_HOLDING)).not.toBeInTheDocument();
     expect(
       container.querySelector('[data-layout-id="perimeter-unreadable"]'),
     ).toBeInTheDocument();
@@ -154,14 +149,27 @@ describe('PerimeterPage', () => {
     expect(screen.getAllByText('Ready').length).toBeGreaterThan(0);
   });
 
-  it('withholds the rows until the chain clock has been read', () => {
+  it('draws no row until the chain clock has been read', () => {
     // Every status and countdown is derived from it; a row resolved against a
-    // missing time would read as locked for decades.
-    mockChainTime = 0;
+    // missing time reads as on hold for decades.
+    mockChainTime = { now: 0, unreadable: false };
+    mockVault.exits = [exit()];
+    render(<PerimeterPage />);
+
+    expect(screen.queryAllByText('#7')).toHaveLength(0);
+    expect(screen.queryAllByText('On hold')).toHaveLength(0);
+  });
+
+  it('says the vault could not be read when the chain clock could not be read', () => {
+    mockChainTime = { now: 0, unreadable: true };
     mockVault.exits = [exit()];
     const { container } = render(<PerimeterPage />);
 
-    expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
+    expect(
+      container.querySelector('[data-layout-id="perimeter-unreadable"]'),
+    ).toBeInTheDocument();
+    expect(screen.queryAllByText('#7')).toHaveLength(0);
+    expect(screen.queryByText(NOT_HOLDING)).not.toBeInTheDocument();
   });
 
   it('decides readiness from the chain clock, not the browser clock', () => {
@@ -312,11 +320,7 @@ describe('PerimeterPage', () => {
     fireEvent.click(screen.getByText('Release all ready (2)'));
 
     expect(screen.queryByText(/Release all ready/)).not.toBeInTheDocument();
-    expect(
-      screen.getAllByText(
-        'The Sovryn Perimeter is not holding any withdrawals for this account.',
-      ).length,
-    ).toBeGreaterThan(0);
+    expect(screen.getAllByText(NOT_HOLDING).length).toBeGreaterThan(0);
   });
 
   it('keeps two queues’ requests that share an id apart', () => {

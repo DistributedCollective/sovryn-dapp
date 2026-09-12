@@ -359,6 +359,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                     updateConfig({
                       ...config,
                       gasLimit: e.target.value.replace(/[^0-9]/g, ''),
+                      gasLimitTypedByUser: true,
                     })
                   }
                   step="0"

@@ -10,6 +10,13 @@ export const EXIT_DELAY_TTL = 30_000;
  */
 export const RELEASE_READ_TIMEOUT_MS = 10_000;
 
+/**
+ * How far above the node's fresh gas estimate a release's gas limit is set, in
+ * percent, when the holder typed no limit: the estimate is made against the
+ * state the check read, and the release executes in a later block.
+ */
+export const RELEASE_GAS_MARGIN_PERCENT = 20;
+
 /** Mirrors ExitDelayQueue.ExitStatus. */
 export enum ExitStatus {
   None = 0,

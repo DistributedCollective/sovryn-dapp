@@ -114,12 +114,41 @@ describe('useExecuteExit', () => {
     });
     const sent = await sendStep(step());
 
-    expect(preflight).toHaveBeenCalledWith({
-      queueAddress: QUEUE,
-      requestIds: ['7'],
-    });
+    // The dialog prepared its gas limit itself, so the check is told of no
+    // typed limit.
+    expect(preflight).toHaveBeenCalledWith(
+      { queueAddress: QUEUE, requestIds: ['7'] },
+      undefined,
+    );
     expect(sent.request.args).toEqual(['7']);
     expect(sent.config).toEqual({ ...OPENED_CONFIG, gasLimit: '50000' });
+  });
+
+  it('hands the check inside the send step a gas limit the holder typed in Advanced settings, and sends the limit that check settles on', async () => {
+    const preflight = jest.fn().mockResolvedValue({
+      requestIds: ['7'],
+      gasLimit: '75000',
+      from: HOLDER,
+    });
+    const { result } = renderHook(() => useExecuteExit());
+
+    await act(async () => {
+      await result.current(QUEUE, '7', { preflight });
+    });
+    const sent = await step().beforeSend({
+      request: step().request,
+      config: {
+        ...OPENED_CONFIG,
+        gasLimit: '75000',
+        gasLimitTypedByUser: true,
+      },
+    });
+
+    expect(preflight).toHaveBeenCalledWith(
+      { queueAddress: QUEUE, requestIds: ['7'] },
+      '75000',
+    );
+    expect(sent.config.gasLimit).toBe('75000');
   });
 
   it('hands the wallet the release from the account the check ran for, whichever account is active later', async () => {
@@ -239,10 +268,10 @@ describe('useExecuteExits', () => {
     });
     const sent = await sendStep(step());
 
-    expect(preflight).toHaveBeenCalledWith({
-      queueAddress: QUEUE,
-      requestIds: ['7', '8', '9'],
-    });
+    expect(preflight).toHaveBeenCalledWith(
+      { queueAddress: QUEUE, requestIds: ['7', '8', '9'] },
+      undefined,
+    );
     expect(sent.request.args).toEqual([['7', '9']]);
     expect(sent.config).toEqual({ ...OPENED_CONFIG, gasLimit: '50000' });
     expect(await sent.request.contract.signer.getAddress()).toBe(HOLDER);
@@ -251,6 +280,35 @@ describe('useExecuteExits', () => {
       queueAddress: QUEUE,
       requestIds: ['7', '9'],
     });
+  });
+
+  it('hands the check inside the send step a gas limit the holder typed in Advanced settings for the batch', async () => {
+    const preflight = jest.fn().mockResolvedValue({
+      requestIds: ['7', '8'],
+      gasLimit: '90000',
+      from: HOLDER,
+    });
+    const { result } = renderHook(() => useExecuteExits());
+
+    await act(async () => {
+      await result.current([{ queueAddress: QUEUE, requestIds: ['7', '8'] }], {
+        preflight,
+      });
+    });
+    const sent = await step().beforeSend({
+      request: step().request,
+      config: {
+        ...OPENED_CONFIG,
+        gasLimit: '90000',
+        gasLimitTypedByUser: true,
+      },
+    });
+
+    expect(preflight).toHaveBeenCalledWith(
+      { queueAddress: QUEUE, requestIds: ['7', '8'] },
+      '90000',
+    );
+    expect(sent.config.gasLimit).toBe('90000');
   });
 
   it('sends no batch when the check inside the send step names no account to send from', async () => {

@@ -15,6 +15,7 @@ import {
   BlockState,
   ExitStatus,
   PendingExit,
+  RELEASE_GAS_MARGIN_PERCENT,
   RELEASE_READ_TIMEOUT_MS,
   exitKey,
 } from '../../utils/exitDelay';
@@ -564,7 +565,7 @@ const estimateReleaseGas = async (
   rows: ReleaseRow[],
   single: boolean,
   account: string,
-): Promise<string | undefined> => {
+): Promise<BigNumber | undefined> => {
   try {
     const gas = await boundedBy(
       getProvider(RSK_CHAIN_ID).estimateGas({
@@ -574,7 +575,32 @@ const estimateReleaseGas = async (
       }),
       RELEASE_READ_TIMEOUT_MS,
     );
-    return gas.gt(0) ? gas.toString() : undefined;
+    return gas.gt(0) ? gas : undefined;
+  } catch (error) {
+    return undefined;
+  }
+};
+
+/**
+ * The gas limit a release is sent with, given its fresh estimate. With no
+ * typed limit, the estimate with `RELEASE_GAS_MARGIN_PERCENT` added. A limit
+ * the holder typed in Advanced settings is kept when it is at least the
+ * estimate; when it is below the estimate, or not a whole number, this is
+ * undefined and the release is not sent.
+ */
+const releaseGasLimit = (
+  estimate: BigNumber,
+  typedGasLimit: string | undefined,
+): string | undefined => {
+  if (typedGasLimit === undefined) {
+    return estimate
+      .mul(100 + RELEASE_GAS_MARGIN_PERCENT)
+      .div(100)
+      .toString();
+  }
+  try {
+    const typed = BigNumber.from(typedGasLimit);
+    return typed.gte(estimate) ? typed.toString() : undefined;
   } catch (error) {
     return undefined;
   }
@@ -614,12 +640,14 @@ const notSent = () =>
  * At the press, one notice tells the holder which withdrawals are not
  * released and why, and the rest opens in the dialog: one row as
  * `executeExit`, several grouped by queue into one transaction list. In the
- * send step the check also estimates the gas for exactly what passed, and
- * reads the wallet once more as its last step. A withdrawal that does not pass
- * at that moment is named and dropped. When nothing passes, the gas cannot be
- * estimated, or the wallet signs as another account, the wallet is not asked
- * at all; otherwise it is handed the release from the account the check ran
- * for. `onReleased` receives the keys (queue and id) of rows found delivered
+ * send step the check also estimates the gas for exactly what passed and sets
+ * the gas limit from that estimate (`releaseGasLimit`), and reads the wallet
+ * once more as its last step. A withdrawal that does not pass at that moment
+ * is named and dropped. When nothing passes, the gas cannot be estimated, a
+ * gas limit the holder typed is below the estimate, or the wallet signs as
+ * another account, the wallet is not asked at all; otherwise it is handed the
+ * release from the account the check ran for. `onReleased` receives the keys
+ * (queue and id) of rows found delivered
  * and of rows a completed transaction settled.
  */
 export const usePerimeterRelease = () => {
@@ -682,7 +710,7 @@ export const usePerimeterRelease = () => {
 
       const preflight =
         (single: boolean): ExitPreflight =>
-        async batch => {
+        async (batch, typedGasLimit) => {
           if (!(await walletReady())) {
             throw notSent();
           }
@@ -713,16 +741,30 @@ export const usePerimeterRelease = () => {
           refusals.push(...again.refusals);
 
           const [passed] = again.accepted;
-          const gasLimit = passed
+          const estimate = passed
             ? await estimateReleaseGas(passed, single, account)
             : undefined;
-          if (passed && !gasLimit) {
+          const gasLimit = estimate
+            ? releaseGasLimit(estimate, typedGasLimit)
+            : undefined;
+          if (passed && !estimate) {
             refusals.push(
               rowsRefusal(
                 passed,
                 t(
                   translations.perimeterPage.releaseRefused.reason
                     .gasUnestimated,
+                ),
+              ),
+            );
+          } else if (passed && estimate && !gasLimit) {
+            refusals.push(
+              rowsRefusal(
+                passed,
+                t(
+                  translations.perimeterPage.releaseRefused.reason
+                    .gasLimitTooLow,
+                  { limit: typedGasLimit, needed: estimate.toString() },
                 ),
               ),
             );

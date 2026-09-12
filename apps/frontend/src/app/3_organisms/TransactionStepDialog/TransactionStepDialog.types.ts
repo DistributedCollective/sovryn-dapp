@@ -16,6 +16,8 @@ export interface TransactionConfig {
   amount?: BigNumberish;
   unlimitedAmount?: boolean;
   gasLimit?: BigNumberish;
+  /** Whether `gasLimit` was typed in Advanced settings rather than prepared by the dialog. */
+  gasLimitTypedByUser?: boolean;
   gasPrice?: string;
 }
 

@@ -6,6 +6,7 @@ import { t } from 'i18next';
 import {
   SignTransactionRequest,
   Transaction,
+  TransactionConfig,
   TransactionType,
 } from '../../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../contexts/TransactionContext';
@@ -25,12 +26,14 @@ export type ExitBatch = {
 
 /**
  * The release check, run inside the transaction dialog's send step,
- * immediately before the wallet is asked to sign. It resolves to the ids of the
- * batch that still pass, the gas estimated for sending exactly those, and the
- * account the check ran for, or rejects, and then nothing is sent.
+ * immediately before the wallet is asked to sign, and told the gas limit the
+ * holder typed in the dialog's Advanced settings, if any. It resolves to the
+ * ids of the batch that still pass, the gas limit to send exactly those with,
+ * and the account the check ran for, or rejects, and then nothing is sent.
  */
 export type ExitPreflight = (
   batch: ExitBatch,
+  typedGasLimit: string | undefined,
 ) => Promise<{ requestIds: string[]; gasLimit: string; from: string }>;
 
 export type ExitSendOptions<OnComplete> = {
@@ -53,6 +56,15 @@ const boundTo = (
 ) => request.contract.connect(provider.getSigner(from));
 
 /**
+ * A gas limit the holder typed in the dialog's Advanced settings; undefined
+ * when the step holds a limit the dialog prepared, or the field is empty.
+ */
+const typedGasLimitOf = (config: TransactionConfig): string | undefined => {
+  const limit = config.gasLimit?.toString() ?? '';
+  return config.gasLimitTypedByUser && limit !== '' ? limit : undefined;
+};
+
+/**
  * Release one delayed exit from the perimeter vault to its receiver.
  *
  * The destination is not a parameter: the queue pays the receiver frozen into
@@ -60,10 +72,10 @@ const boundTo = (
  * funds.
  *
  * The dialog hands the release to the wallet only after `preflight` passes it
- * inside the send step, with the gas `preflight` estimated for it and from the
- * account `preflight` checked: state and the wallet's active account can
- * change while the dialog is open, and the dialog's own estimate, made when it
- * opens, falls back to a flat limit when it fails.
+ * inside the send step, with the gas limit `preflight` settles on for it and
+ * from the account `preflight` checked: state and the wallet's active account
+ * can change while the dialog is open, and the dialog's own estimate, made
+ * when it opens, falls back to a flat limit when it fails.
  *
  * The queue and the callback both belong to the call: an exit is held by the
  * queue its own surface pointed at, and only the caller knows which id this
@@ -94,10 +106,10 @@ export const useExecuteExit = () => {
         title: t(translations.perimeterPage.tx.executeExit),
         request,
         beforeSend: async ({ config }) => {
-          const checked = await preflight({
-            queueAddress,
-            requestIds: [requestId],
-          });
+          const checked = await preflight(
+            { queueAddress, requestIds: [requestId] },
+            typedGasLimitOf(config),
+          );
           if (
             !checked.from ||
             checked.requestIds.length !== 1 ||
@@ -129,8 +141,8 @@ export const useExecuteExit = () => {
  *
  * `executeExits` is atomic on-chain: one locked, blocked or paused id reverts
  * the whole batch. Each transaction therefore sends only the ids `preflight`
- * still passes inside its send step, with the gas estimated for exactly those,
- * and reports exactly those as settled once it completes.
+ * still passes inside its send step, with the gas limit it settles on for
+ * exactly those, and reports exactly those as settled once it completes.
  *
  * Batches are per queue and go into ONE transaction list rather than one call
  * each: a second call would replace the first, and the holder would sign only
@@ -170,7 +182,10 @@ export const useExecuteExits = () => {
             }),
             request,
             beforeSend: async ({ config }) => {
-              const checked = await preflight({ queueAddress, requestIds });
+              const checked = await preflight(
+                { queueAddress, requestIds },
+                typedGasLimitOf(config),
+              );
               if (
                 !checked.from ||
                 checked.requestIds.length === 0 ||

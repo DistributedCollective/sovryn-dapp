@@ -214,16 +214,17 @@ describe('usePerimeterRelease', () => {
   /**
    * Run the check a release handed to the transaction dialog, the way the
    * dialog runs it when the holder presses Confirm: inside the send step,
-   * immediately before the wallet is asked to sign.
+   * immediately before the wallet is asked to sign, with the gas limit the
+   * holder typed in the dialog's Advanced settings, if any.
    */
-  const confirmInDialog = (): Promise<unknown> => {
+  const confirmInDialog = (typedGasLimit?: string): Promise<unknown> => {
     const [single] = mockExecuteExit.mock.calls;
     if (single) {
       const [queueAddress, id, { preflight }] = single;
-      return preflight({ queueAddress, requestIds: [id] });
+      return preflight({ queueAddress, requestIds: [id] }, typedGasLimit);
     }
     const [batches, { preflight }] = mockExecuteExits.mock.calls[0];
-    return preflight(batches[0]);
+    return preflight(batches[0], typedGasLimit);
   };
 
   /** What the latest refusal notice says, as the holder reads it. */
@@ -714,7 +715,7 @@ describe('usePerimeterRelease', () => {
 
       await expect(confirmInDialog()).resolves.toEqual({
         requestIds: ['7'],
-        gasLimit: '50000',
+        gasLimit: '60000',
         from: ACCOUNT,
       });
       expect(refusalText()).toContain(
@@ -723,19 +724,62 @@ describe('usePerimeterRelease', () => {
     });
   });
 
+  describe('the gas limit it is sent with', () => {
+    // The node estimates 50,000 for the state the check just read, and the
+    // release is mined in a later block. It is sent with 20% above that
+    // estimate, or with a gas limit the holder typed in the dialog's Advanced
+    // settings when that limit covers the estimate.
+    it('sends with 20% above the fresh estimate when the holder typed no gas limit', async () => {
+      await release([row()]);
+
+      await expect(confirmInDialog()).resolves.toEqual({
+        requestIds: ['7'],
+        gasLimit: '60000',
+        from: ACCOUNT,
+      });
+    });
+
+    it.each([
+      ['at', '50000'],
+      ['above', '75000'],
+    ])(
+      'keeps a gas limit typed in Advanced settings %s the fresh estimate',
+      async (_case, typed) => {
+        await release([row()]);
+
+        await expect(confirmInDialog(typed)).resolves.toEqual({
+          requestIds: ['7'],
+          gasLimit: typed,
+          from: ACCOUNT,
+        });
+        expect(mockAddNotification).not.toHaveBeenCalled();
+      },
+    );
+
+    it('sends nothing when a gas limit typed in Advanced settings is below the fresh estimate, and says the limit is too low', async () => {
+      await release([row()]);
+
+      await expect(confirmInDialog('40000')).rejects.toThrow();
+      expect(refusalText()).toContain(
+        'Withdrawal #7 was not released because the gas limit set in Advanced settings is too low: 40000 is below the 50000 it needs.',
+      );
+    });
+  });
+
   describe('at the moment of sending', () => {
     // The holder may press Confirm in the transaction dialog long after
     // Release. The same check runs again inside the send step, immediately
     // before the wallet is asked to sign: only what still passes is sent, with
-    // the gas estimated for exactly that, and never with a guessed gas limit.
+    // a gas limit set from a fresh estimate for exactly that, and never with a
+    // guessed gas limit.
     const estimates = () => stub.requestsFor('eth_estimateGas');
 
-    it('checks again on Confirm, and sends with the gas estimated for what it sends', async () => {
+    it('checks again on Confirm, and sends with a gas limit set from the estimate for what it sends', async () => {
       await release([row({ id: '7' }), row({ id: '9' })]);
 
       await expect(confirmInDialog()).resolves.toEqual({
         requestIds: ['7', '9'],
-        gasLimit: '50000',
+        gasLimit: '60000',
         from: ACCOUNT,
       });
       expect(stub.callsTo(QUEUE, EXECUTE_EXITS)).toHaveLength(2);
@@ -760,7 +804,7 @@ describe('usePerimeterRelease', () => {
 
       await expect(confirmInDialog()).resolves.toEqual({
         requestIds: ['7', '9'],
-        gasLimit: '50000',
+        gasLimit: '60000',
         from: ACCOUNT,
       });
       expect(refusalText()).toContain(
@@ -785,7 +829,7 @@ describe('usePerimeterRelease', () => {
 
       await expect(confirmInDialog()).resolves.toEqual({
         requestIds: ['7', '9'],
-        gasLimit: '50000',
+        gasLimit: '60000',
         from: ACCOUNT,
       });
       expect(refusalText()).toContain(

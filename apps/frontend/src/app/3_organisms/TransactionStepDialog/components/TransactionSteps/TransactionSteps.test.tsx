@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 
 import React from 'react';
 
@@ -193,5 +199,102 @@ describe('TransactionSteps', () => {
       ['7', '8', '9'],
       expect.objectContaining({ gasLimit: '42000' }),
     );
+  });
+
+  describe('a gas limit typed in Advanced settings', () => {
+    // A send check keeps a limit the holder typed and replaces one the dialog
+    // prepared, so the step's config says which it holds.
+    const passThrough = () =>
+      jest.fn(
+        async (step: Parameters<Required<Transaction>['beforeSend']>[0]) =>
+          step,
+      );
+
+    const openSettings = async () =>
+      fireEvent.click(
+        await waitFor(() => {
+          const found = document.querySelector(
+            '[data-layout-id="tx-dialog-settings"]',
+          );
+          expect(found).toBeInTheDocument();
+          return found!;
+        }),
+      );
+
+    const typeGasLimit = async (value: string) => {
+      const [gasLimit] = screen.getAllByRole('textbox');
+      fireEvent.change(gasLimit, { target: { value } });
+      // The input reports a change once typing pauses.
+      await act(async () => {
+        await new Promise(resolve => setTimeout(resolve, 600));
+      });
+    };
+
+    it('reaches the send check marked as typed', async () => {
+      const beforeSend = passThrough();
+      render(
+        <TransactionSteps
+          transactions={[releaseTransaction(beforeSend)]}
+          gasPrice="0.065"
+          setTxTrigger={jest.fn()}
+        />,
+      );
+
+      await openSettings();
+      await typeGasLimit('75000');
+      await confirm();
+
+      await waitFor(() => expect(beforeSend).toHaveBeenCalled());
+      expect(beforeSend.mock.calls[0][0].config).toEqual(
+        expect.objectContaining({
+          gasLimit: '75000',
+          gasLimitTypedByUser: true,
+        }),
+      );
+    });
+
+    it('is not marked as typed when the dialog prepared the limit', async () => {
+      const beforeSend = passThrough();
+      render(
+        <TransactionSteps
+          transactions={[releaseTransaction(beforeSend)]}
+          gasPrice="0.065"
+          setTxTrigger={jest.fn()}
+        />,
+      );
+
+      await confirm();
+
+      await waitFor(() => expect(beforeSend).toHaveBeenCalled());
+      expect(
+        beforeSend.mock.calls[0][0].config.gasLimitTypedByUser,
+      ).toBeFalsy();
+    });
+
+    it('is no longer marked as typed after Reset values', async () => {
+      const beforeSend = passThrough();
+      render(
+        <TransactionSteps
+          transactions={[releaseTransaction(beforeSend)]}
+          gasPrice="0.065"
+          setTxTrigger={jest.fn()}
+        />,
+      );
+
+      await openSettings();
+      await typeGasLimit('75000');
+      fireEvent.click(
+        document.querySelector('[data-layout-id="tx-dialog-settings-reset"]')!,
+      );
+      await waitFor(() =>
+        expect(screen.getAllByRole('textbox')[0]).toHaveValue('6000000'),
+      );
+      await confirm();
+
+      await waitFor(() => expect(beforeSend).toHaveBeenCalled());
+      expect(
+        beforeSend.mock.calls[0][0].config.gasLimitTypedByUser,
+      ).toBeFalsy();
+    });
   });
 });

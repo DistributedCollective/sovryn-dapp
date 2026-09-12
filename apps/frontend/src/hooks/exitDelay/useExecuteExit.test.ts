@@ -10,6 +10,10 @@ import { useExecuteExit, useExecuteExits } from './useExecuteExit';
  * is what drops a just-released id, and without it a second release of the
  * same id reverts the whole atomic batch. So it is asserted here, against the
  * real hook, all the way onto the transaction it is attached to.
+ *
+ * The release is checked again inside the send step, immediately before the
+ * wallet is asked to sign. What that check returns — the ids that still pass
+ * and the gas estimated for exactly those — is what is sent.
  */
 
 const QUEUE = '0x9999999999999999999999999999999999999999';
@@ -36,6 +40,22 @@ jest.mock('../../contexts/TransactionContext', () => ({
 
 const step = () => mockSetTransactions.mock.calls[0][0][0];
 
+/** A step's config as the dialog prepared it when it opened: its flat gas default. */
+const OPENED_CONFIG = { gasLimit: '6000000', gasPrice: '0.065' };
+
+/** Run a step's send check the way the dialog does when the holder confirms. */
+const sendStep = (transaction: {
+  request: unknown;
+  beforeSend: (step: { request: unknown; config: unknown }) => Promise<{
+    request: { args: unknown[] };
+    config: { gasLimit?: string };
+  }>;
+}) =>
+  transaction.beforeSend({
+    request: transaction.request,
+    config: OPENED_CONFIG,
+  });
+
 describe('useExecuteExit', () => {
   beforeAll(async () => {
     await i18n;
@@ -46,7 +66,7 @@ describe('useExecuteExit', () => {
     const { result } = renderHook(() => useExecuteExit());
 
     await act(async () => {
-      await result.current(QUEUE, '7', onComplete);
+      await result.current(QUEUE, '7', { onComplete, preflight: jest.fn() });
     });
 
     expect(step().request.fnName).toBe('executeExit');
@@ -60,17 +80,63 @@ describe('useExecuteExit', () => {
     const { result } = renderHook(() => useExecuteExit());
 
     await act(async () => {
-      await result.current(QUEUE, '7');
+      await result.current(QUEUE, '7', { preflight: jest.fn() });
     });
 
     expect(mockSetIsOpen).toHaveBeenCalledWith(true);
+  });
+
+  it('checks the release again inside the send step, and sends it with the gas that check estimated', async () => {
+    const preflight = jest
+      .fn()
+      .mockResolvedValue({ requestIds: ['7'], gasLimit: '50000' });
+    const { result } = renderHook(() => useExecuteExit());
+
+    await act(async () => {
+      await result.current(QUEUE, '7', { preflight });
+    });
+    const sent = await sendStep(step());
+
+    expect(preflight).toHaveBeenCalledWith({
+      queueAddress: QUEUE,
+      requestIds: ['7'],
+    });
+    expect(sent.request.args).toEqual(['7']);
+    expect(sent.config).toEqual({ ...OPENED_CONFIG, gasLimit: '50000' });
+  });
+
+  it('sends nothing when the check inside the send step refuses', async () => {
+    const preflight = jest.fn().mockRejectedValue(new Error('refused'));
+    const { result } = renderHook(() => useExecuteExit());
+
+    await act(async () => {
+      await result.current(QUEUE, '7', { preflight });
+    });
+
+    await expect(sendStep(step())).rejects.toThrow();
+  });
+
+  it('sends nothing when the check inside the send step does not pass the id', async () => {
+    const preflight = jest
+      .fn()
+      .mockResolvedValue({ requestIds: [], gasLimit: '50000' });
+    const { result } = renderHook(() => useExecuteExit());
+
+    await act(async () => {
+      await result.current(QUEUE, '7', { preflight });
+    });
+
+    await expect(sendStep(step())).rejects.toThrow();
   });
 
   it('does nothing without a queue address', async () => {
     const { result } = renderHook(() => useExecuteExit());
 
     await act(async () => {
-      await result.current(undefined, '7', jest.fn());
+      await result.current(undefined, '7', {
+        onComplete: jest.fn(),
+        preflight: jest.fn(),
+      });
     });
 
     expect(mockSetTransactions).not.toHaveBeenCalled();
@@ -86,22 +152,69 @@ describe('useExecuteExits', () => {
     // Ids restart in each queue: an id alone would also drop another queue's
     // request that shares it.
     const onComplete = jest.fn();
+    const preflight = jest
+      .fn()
+      .mockResolvedValue({ requestIds: ['7', '8'], gasLimit: '50000' });
     const { result } = renderHook(() => useExecuteExits());
 
     await act(async () => {
-      await result.current(
-        [{ queueAddress: QUEUE, requestIds: ['7', '8'] }],
+      await result.current([{ queueAddress: QUEUE, requestIds: ['7', '8'] }], {
         onComplete,
-      );
+        preflight,
+      });
     });
 
     expect(step().request.fnName).toBe('executeExits');
     expect(step().request.args).toEqual([['7', '8']]);
+    await sendStep(step());
     step().onComplete();
     expect(onComplete).toHaveBeenCalledWith({
       queueAddress: QUEUE,
       requestIds: ['7', '8'],
     });
+  });
+
+  it('sends only the ids the check inside the send step still passes, with the gas estimated for them, and settles exactly those', async () => {
+    const onComplete = jest.fn();
+    const preflight = jest
+      .fn()
+      .mockResolvedValue({ requestIds: ['7', '9'], gasLimit: '50000' });
+    const { result } = renderHook(() => useExecuteExits());
+
+    await act(async () => {
+      await result.current(
+        [{ queueAddress: QUEUE, requestIds: ['7', '8', '9'] }],
+        { onComplete, preflight },
+      );
+    });
+    const sent = await sendStep(step());
+
+    expect(preflight).toHaveBeenCalledWith({
+      queueAddress: QUEUE,
+      requestIds: ['7', '8', '9'],
+    });
+    expect(sent.request.args).toEqual([['7', '9']]);
+    expect(sent.config).toEqual({ ...OPENED_CONFIG, gasLimit: '50000' });
+    step().onComplete();
+    expect(onComplete).toHaveBeenCalledWith({
+      queueAddress: QUEUE,
+      requestIds: ['7', '9'],
+    });
+  });
+
+  it('never sends an empty batch when the check inside the send step passes no id', async () => {
+    const preflight = jest
+      .fn()
+      .mockResolvedValue({ requestIds: [], gasLimit: '50000' });
+    const { result } = renderHook(() => useExecuteExits());
+
+    await act(async () => {
+      await result.current([{ queueAddress: QUEUE, requestIds: ['7', '8'] }], {
+        preflight,
+      });
+    });
+
+    await expect(sendStep(step())).rejects.toThrow();
   });
 
   it('signs one transaction per queue, in a single list', async () => {
@@ -116,7 +229,7 @@ describe('useExecuteExits', () => {
           { queueAddress: QUEUE, requestIds: ['7'] },
           { queueAddress: OTHER_QUEUE, requestIds: ['8'] },
         ],
-        onComplete,
+        { onComplete, preflight: jest.fn() },
       );
     });
 
@@ -124,6 +237,8 @@ describe('useExecuteExits', () => {
     expect(steps).toHaveLength(1 + 1);
     expect(steps[0].request.contract.address).toBe(QUEUE);
     expect(steps[1].request.contract.address).toBe(OTHER_QUEUE);
+    expect(typeof steps[0].beforeSend).toBe('function');
+    expect(typeof steps[1].beforeSend).toBe('function');
     steps[1].onComplete();
     expect(onComplete).toHaveBeenCalledWith({
       queueAddress: OTHER_QUEUE,
@@ -135,10 +250,10 @@ describe('useExecuteExits', () => {
     const { result } = renderHook(() => useExecuteExits());
 
     await act(async () => {
-      await result.current(
-        [{ queueAddress: QUEUE, requestIds: [] }],
-        jest.fn(),
-      );
+      await result.current([{ queueAddress: QUEUE, requestIds: [] }], {
+        onComplete: jest.fn(),
+        preflight: jest.fn(),
+      });
     });
 
     expect(mockSetTransactions).not.toHaveBeenCalled();

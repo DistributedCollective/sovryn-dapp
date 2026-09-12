@@ -38,12 +38,26 @@ export type TransactionUpdateHandler = {
   ) => TransactionRequest | Promise<TransactionRequest>;
 };
 
+export type TransactionPreflight = {
+  /**
+   * Runs inside the send step, after the holder confirms and immediately
+   * before the wallet is asked to sign. The request and config it resolves to
+   * are what is sent in place of the step's own. When it rejects, nothing is
+   * sent and the step fails, with Retry running it again.
+   */
+  beforeSend: (step: {
+    request: TransactionRequest;
+    config: TransactionConfig;
+  }) => Promise<{ request: TransactionRequest; config: TransactionConfig }>;
+};
+
 export type Transaction = {
   title: string;
   subtitle?: string;
   request: TransactionRequest;
 } & Partial<TransactionCallbacks> &
-  Partial<TransactionUpdateHandler>;
+  Partial<TransactionUpdateHandler> &
+  Partial<TransactionPreflight>;
 
 export enum TransactionType {
   signMessage = 'sign',

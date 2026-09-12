@@ -53,6 +53,8 @@ export type JsonRpcStub = {
     to: string,
     dataPrefix?: string,
   ) => { from?: string; data: string }[];
+  /** The params of every request for `method`, other than `eth_call`, in the order they arrived. */
+  requestsFor: (method: string) => unknown[][];
   /** Forget every rule and recorded call; the default chain answers remain. */
   reset: () => void;
   close: () => Promise<void>;
@@ -153,10 +155,12 @@ export const startJsonRpcStub = async (): Promise<JsonRpcStub> => {
   let rules: Rule[] = [];
   let methods = defaultMethods();
   let calls: RecordedCall[] = [];
+  let requests: { method: string; params: unknown[] }[] = [];
   const sockets = new Set<Socket>();
 
   const answerFor = (method: string, params: unknown[]): StubAnswer => {
     if (method !== 'eth_call') {
+      requests.push({ method, params });
       return (
         methods[method] ?? {
           error: { code: -32601, message: `stub: no answer for ${method}` },
@@ -254,10 +258,15 @@ export const startJsonRpcStub = async (): Promise<JsonRpcStub> => {
     },
     callCount: (to, dataPrefix = '') => callsTo(to, dataPrefix).length,
     callsTo,
+    requestsFor: method =>
+      requests
+        .filter(request => request.method === method)
+        .map(request => request.params),
     reset: () => {
       rules = [];
       methods = defaultMethods();
       calls = [];
+      requests = [];
     },
     close: () =>
       new Promise<void>(resolve => {

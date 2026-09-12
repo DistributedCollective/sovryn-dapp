@@ -127,6 +127,15 @@ const queueRefusal = (name: string, args: unknown[] = []): StubAnswer => ({
   },
 });
 
+/** What a release hands the transaction dialog besides the ids: its completion callback and its check inside the send step. */
+const SEND_OPTIONS = expect.objectContaining({
+  onComplete: expect.any(Function),
+  preflight: expect.any(Function),
+});
+
+/** The node's gas estimate for a release: 50,000. */
+const GAS_ESTIMATE: StubAnswer = { result: '0xc350' };
+
 const row = (overrides: Partial<ReleaseRow> = {}): ReleaseRow => ({
   id: '7',
   queueAddress: QUEUE,
@@ -159,6 +168,7 @@ describe('usePerimeterRelease', () => {
       stub.onCall(queue, EXECUTE_EXIT, { result: '0x' });
       stub.onCall(queue, EXECUTE_EXITS, { result: '0x' });
     });
+    stub.onMethod('eth_estimateGas', GAS_ESTIMATE);
   });
 
   afterEach(() => stub.reset());
@@ -172,6 +182,13 @@ describe('usePerimeterRelease', () => {
       answer,
     );
 
+  const statusOf = (queue: string, id: number, answer: StubAnswer) =>
+    stub.onCall(
+      queue,
+      QUEUE_ABI.encodeFunctionData('getRequest', [id]),
+      answer,
+    );
+
   const release = async (rows: ReleaseRow[]) => {
     const onReleased = jest.fn();
     const { result } = renderHook(() => usePerimeterRelease());
@@ -181,9 +198,25 @@ describe('usePerimeterRelease', () => {
     return onReleased;
   };
 
-  /** What the refusal notice says, as the holder reads it. */
+  /**
+   * Run the check a release handed to the transaction dialog, the way the
+   * dialog runs it when the holder presses Confirm: inside the send step,
+   * immediately before the wallet is asked to sign.
+   */
+  const confirmInDialog = (): Promise<unknown> => {
+    const [single] = mockExecuteExit.mock.calls;
+    if (single) {
+      const [queueAddress, id, { preflight }] = single;
+      return preflight({ queueAddress, requestIds: [id] });
+    }
+    const [batches, { preflight }] = mockExecuteExits.mock.calls[0];
+    return preflight(batches[0]);
+  };
+
+  /** What the latest refusal notice says, as the holder reads it. */
   const refusalText = () => {
-    const notification = mockAddNotification.mock.calls[0]?.[0];
+    const { calls } = mockAddNotification.mock;
+    const notification = calls[calls.length - 1]?.[0];
     if (!notification) {
       return '';
     }
@@ -193,17 +226,16 @@ describe('usePerimeterRelease', () => {
 
   it('sends a release whose parties all read unblocked', async () => {
     mockExecuteExit.mockImplementation(
-      async (_queue: string, _id: string, onComplete: () => void) =>
-        onComplete(),
+      async (
+        _queue: string,
+        _id: string,
+        { onComplete }: { onComplete: () => void },
+      ) => onComplete(),
     );
 
     const onReleased = await release([row()]);
 
-    expect(mockExecuteExit).toHaveBeenCalledWith(
-      QUEUE,
-      '7',
-      expect.any(Function),
-    );
+    expect(mockExecuteExit).toHaveBeenCalledWith(QUEUE, '7', SEND_OPTIONS);
     expect(onReleased).toHaveBeenCalledWith([
       exitKey({ queueAddress: QUEUE, id: '7' }),
     ]);
@@ -273,7 +305,7 @@ describe('usePerimeterRelease', () => {
 
     expect(mockExecuteExits).toHaveBeenCalledWith(
       [{ queueAddress: QUEUE, requestIds: ['7', '9'] }],
-      expect.any(Function),
+      SEND_OPTIONS,
     );
     const text = refusalText();
     expect(text).toContain(
@@ -287,8 +319,8 @@ describe('usePerimeterRelease', () => {
     mockExecuteExits.mockImplementation(
       async (
         batches: { queueAddress: string; requestIds: string[] }[],
-        onComplete: (batch: unknown) => void,
-      ) => batches.forEach(onComplete),
+        { onComplete }: { onComplete: (batch: unknown) => void },
+      ) => batches.forEach(batch => onComplete(batch)),
     );
 
     const onReleased = await release([
@@ -301,7 +333,7 @@ describe('usePerimeterRelease', () => {
         { queueAddress: QUEUE, requestIds: ['7'] },
         { queueAddress: OTHER_QUEUE, requestIds: ['7'] },
       ],
-      expect.any(Function),
+      SEND_OPTIONS,
     );
     expect(onReleased).toHaveBeenCalledWith([
       exitKey({ queueAddress: QUEUE, id: '7' }),
@@ -314,13 +346,6 @@ describe('usePerimeterRelease', () => {
   describe('what the queue will still accept', () => {
     // executeExits is atomic: one id that changed since the page last read it
     // takes every other release in the batch down with it.
-    const statusOf = (queue: string, id: number, answer: StubAnswer) =>
-      stub.onCall(
-        queue,
-        QUEUE_ABI.encodeFunctionData('getRequest', [id]),
-        answer,
-      );
-
     it('leaves a row delivered by someone else off the page without an error, and sends the rest', async () => {
       statusOf(QUEUE, 8, requestResult(ExitStatus.Executed));
 
@@ -335,7 +360,7 @@ describe('usePerimeterRelease', () => {
       ]);
       expect(mockExecuteExits).toHaveBeenCalledWith(
         [{ queueAddress: QUEUE, requestIds: ['7', '9'] }],
-        expect.any(Function),
+        SEND_OPTIONS,
       );
       expect(mockAddNotification).not.toHaveBeenCalled();
     });
@@ -401,6 +426,24 @@ describe('usePerimeterRelease', () => {
       );
     });
 
+    it('drops a withdrawal the queue refuses by id, says why, and still sends the rest', async () => {
+      stub.onCall(
+        QUEUE,
+        QUEUE_ABI.encodeFunctionData('executeExits', [[7, 8, 9]]),
+        queueRefusal('AlreadyTerminal', [8]),
+      );
+
+      await release([row({ id: '7' }), row({ id: '8' }), row({ id: '9' })]);
+
+      expect(mockExecuteExits).toHaveBeenCalledWith(
+        [{ queueAddress: QUEUE, requestIds: ['7', '9'] }],
+        SEND_OPTIONS,
+      );
+      expect(refusalText()).toContain(
+        'Withdrawal #8 was not released because #8 was already delivered.',
+      );
+    });
+
     it('does not send when the dry run could not be completed, and says so', async () => {
       stub.onCall(QUEUE, EXECUTE_EXIT, { status: 503, body: 'unavailable' });
 
@@ -433,11 +476,141 @@ describe('usePerimeterRelease', () => {
 
       expect(mockExecuteExits).toHaveBeenCalledWith(
         [{ queueAddress: OTHER_QUEUE, requestIds: ['7'] }],
-        expect.any(Function),
+        SEND_OPTIONS,
       );
       expect(refusalText()).toContain(
         'Withdrawal #7 was not released because releases are paused.',
       );
+    });
+  });
+
+  describe('at the moment of sending', () => {
+    // The holder may press Confirm in the transaction dialog long after
+    // Release. The same check runs again inside the send step, immediately
+    // before the wallet is asked to sign: only what still passes is sent, with
+    // the gas estimated for exactly that, and never with a guessed gas limit.
+    const estimates = () => stub.requestsFor('eth_estimateGas');
+
+    it('checks again on Confirm, and sends with the gas estimated for what it sends', async () => {
+      await release([row({ id: '7' }), row({ id: '9' })]);
+
+      await expect(confirmInDialog()).resolves.toEqual({
+        requestIds: ['7', '9'],
+        gasLimit: '50000',
+      });
+      expect(stub.callsTo(QUEUE, EXECUTE_EXITS)).toHaveLength(2);
+      expect(estimates()).toEqual([
+        [
+          expect.objectContaining({
+            from: ACCOUNT,
+            to: QUEUE,
+            data: QUEUE_ABI.encodeFunctionData('executeExits', [[7, 9]]),
+          }),
+        ],
+      ]);
+    });
+
+    it('drops a withdrawal whose party is blocked by the time the holder confirms, says which and why, and sends the rest', async () => {
+      await release([
+        row({ id: '7' }),
+        row({ id: '8', receiver: OTHER_RECEIVER }),
+        row({ id: '9' }),
+      ]);
+      blockOn(QUEUE, OTHER_RECEIVER, stateResult(BlockState.Frozen));
+
+      await expect(confirmInDialog()).resolves.toEqual({
+        requestIds: ['7', '9'],
+        gasLimit: '50000',
+      });
+      expect(refusalText()).toContain(
+        'Withdrawal #8 was not released because the receiver is frozen.',
+      );
+      expect(estimates()).toEqual([
+        [
+          expect.objectContaining({
+            data: QUEUE_ABI.encodeFunctionData('executeExits', [[7, 9]]),
+          }),
+        ],
+      ]);
+    });
+
+    it('drops a withdrawal the queue refuses by id at the moment of sending, says why, and sends the rest', async () => {
+      await release([row({ id: '7' }), row({ id: '8' }), row({ id: '9' })]);
+      stub.onCall(
+        QUEUE,
+        QUEUE_ABI.encodeFunctionData('executeExits', [[7, 8, 9]]),
+        queueRefusal('AlreadyTerminal', [8]),
+      );
+
+      await expect(confirmInDialog()).resolves.toEqual({
+        requestIds: ['7', '9'],
+        gasLimit: '50000',
+      });
+      expect(refusalText()).toContain(
+        'Withdrawal #8 was not released because #8 was already delivered.',
+      );
+    });
+
+    it('sends nothing when the queue is paused by the time the holder confirms, and says so', async () => {
+      await release([row({ id: '7' }), row({ id: '9' })]);
+      stub.onCall(QUEUE, EXECUTE_EXITS, queueRefusal('QueuePaused'));
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(refusalText()).toContain(
+        'Withdrawals #7, #9 were not released because releases are paused.',
+      );
+      expect(estimates()).toHaveLength(0);
+    });
+
+    it('sends nothing for a withdrawal someone else delivers before the holder confirms, takes it off the page, and says why', async () => {
+      const onReleased = await release([row()]);
+      statusOf(QUEUE, 7, requestResult(ExitStatus.Executed));
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(onReleased).toHaveBeenCalledWith([
+        exitKey({ queueAddress: QUEUE, id: '7' }),
+      ]);
+      expect(refusalText()).toContain(
+        'Withdrawal #7 was not released because #7 was already delivered.',
+      );
+    });
+
+    it.each([
+      ['the node does not answer', { status: 503, body: 'unavailable' }],
+      [
+        'the node reports that the estimate reverted',
+        {
+          error: {
+            code: -32015,
+            message: 'VM Exception while processing transaction: revert',
+            data: '0x',
+          },
+        },
+      ],
+    ])(
+      'never sends on a guessed gas limit: when %s, nothing is sent, and it says so',
+      async (_case, answer) => {
+        await release([row()]);
+        stub.onMethod('eth_estimateGas', answer as StubAnswer);
+
+        await expect(confirmInDialog()).rejects.toThrow();
+        expect(refusalText()).toContain(
+          'Withdrawal #7 was not released because we could not estimate the gas it needs, and a release is never sent on a guess.',
+        );
+      },
+    );
+
+    it('sends nothing when the wallet is on another network by the time the holder confirms, and says so', async () => {
+      await release([row()]);
+      mockWalletSend.mockImplementation(async (method: string) =>
+        method === 'eth_chainId' ? '0x1' : null,
+      );
+
+      await expect(confirmInDialog()).rejects.toThrow();
+      expect(refusalText()).toContain(
+        'Your wallet is connected to another network. Switch it to Rootstock, then release again.',
+      );
+      expect(estimates()).toHaveLength(0);
     });
   });
 

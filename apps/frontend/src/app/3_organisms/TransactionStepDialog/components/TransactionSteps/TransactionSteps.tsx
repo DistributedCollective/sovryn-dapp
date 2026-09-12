@@ -217,8 +217,13 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
       }
       for (; i < transactions.length; i++) {
         setStep(i);
-        const config = stepData[i].config;
-        const { request } = transactions[i];
+        let config = stepData[i].config;
+        let { request } = transactions[i];
+        const { beforeSend } = transactions[i];
+        if (beforeSend) {
+          ({ request, config } = await beforeSend({ request, config }));
+          updateConfig(i, config);
+        }
         if (isTransactionRequest(request)) {
           const args = [...request.args];
           if (request.fnName === APPROVAL_FUNCTION) {
@@ -368,6 +373,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     transactions,
     step,
     stepData,
+    updateConfig,
     updateReceipt,
     onTxStatusChange,
     handleUpdates,

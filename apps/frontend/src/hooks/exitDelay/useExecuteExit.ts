@@ -3,7 +3,11 @@ import { useCallback } from 'react';
 import { ethers } from 'ethers';
 import { t } from 'i18next';
 
-import { TransactionType } from '../../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import {
+  SignTransactionRequest,
+  Transaction,
+  TransactionType,
+} from '../../app/3_organisms/TransactionStepDialog/TransactionStepDialog.types';
 import { useTransactionContext } from '../../contexts/TransactionContext';
 import { translations } from '../../locales/i18n';
 import { useAccount } from '../useAccount';
@@ -20,13 +24,34 @@ export type ExitBatch = {
 };
 
 /**
+ * The release check, run inside the transaction dialog's send step,
+ * immediately before the wallet is asked to sign. It resolves to the ids of the
+ * batch that still pass and the gas estimated for sending exactly those, or
+ * rejects, and then nothing is sent.
+ */
+export type ExitPreflight = (
+  batch: ExitBatch,
+) => Promise<{ requestIds: string[]; gasLimit: string }>;
+
+export type ExitSendOptions<OnComplete> = {
+  preflight: ExitPreflight;
+  onComplete?: OnComplete;
+};
+
+const notSendable = () =>
+  new Error('The release check passed nothing this transaction may send.');
+
+/**
  * Release one delayed exit from the perimeter vault to its receiver.
  *
  * The destination is not a parameter: the queue pays the receiver frozen into
  * the request at the moment the withdrawal was made, so this cannot redirect
- * funds. Only the originator or the position owner may call it, and only after
- * the delay has elapsed — the page decides whether to offer the action, so a
- * button never leads to a reverting transaction.
+ * funds.
+ *
+ * The dialog hands the release to the wallet only after `preflight` passes it
+ * inside the send step, and with the gas `preflight` estimated for it: state
+ * can change while the dialog is open, and the dialog's own estimate, made
+ * when it opens, falls back to a flat limit when it fails.
  *
  * The queue and the callback both belong to the call: an exit is held by the
  * queue its own surface pointed at, and only the caller knows which id this
@@ -40,25 +65,38 @@ export const useExecuteExit = () => {
     async (
       queueAddress: string | undefined,
       requestId: string,
-      onComplete?: () => void,
+      { preflight, onComplete }: ExitSendOptions<() => void>,
     ) => {
       if (!queueAddress || !signer) {
         return;
       }
-      const queue = new ethers.Contract(queueAddress, QUEUE_ABI, signer);
+      const request: SignTransactionRequest = {
+        type: TransactionType.signTransaction,
+        contract: new ethers.Contract(queueAddress, QUEUE_ABI, signer),
+        fnName: 'executeExit',
+        args: [requestId],
+      };
 
-      setTransactions([
-        {
-          title: t(translations.perimeterPage.tx.executeExit),
-          request: {
-            type: TransactionType.signTransaction,
-            contract: queue,
-            fnName: 'executeExit',
-            args: [requestId],
-          },
-          onComplete,
+      const transaction: Transaction = {
+        title: t(translations.perimeterPage.tx.executeExit),
+        request,
+        beforeSend: async ({ config }) => {
+          const checked = await preflight({
+            queueAddress,
+            requestIds: [requestId],
+          });
+          if (
+            checked.requestIds.length !== 1 ||
+            checked.requestIds[0] !== requestId
+          ) {
+            throw notSendable();
+          }
+          return { request, config: { ...config, gasLimit: checked.gasLimit } };
         },
-      ]);
+        onComplete,
+      };
+
+      setTransactions([transaction]);
       setTitle(t(translations.perimeterPage.tx.executeExitTitle));
       setIsOpen(true);
     },
@@ -70,10 +108,9 @@ export const useExecuteExit = () => {
  * Release several ready exits, one transaction per queue.
  *
  * `executeExits` is atomic on-chain: one locked, blocked or paused id reverts
- * the whole batch. The page therefore passes only ids whose state it has
- * already resolved to releasable — the same rule that decides whether the
- * per-row button renders — so each batch is built from rows that will
- * certainly succeed, never from "everything".
+ * the whole batch. Each transaction therefore sends only the ids `preflight`
+ * still passes inside its send step, with the gas estimated for exactly those,
+ * and reports exactly those as settled once it completes.
  *
  * Batches are per queue and go into ONE transaction list rather than one call
  * each: a second call would replace the first, and the holder would sign only
@@ -84,7 +121,10 @@ export const useExecuteExits = () => {
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   return useCallback(
-    async (batches: ExitBatch[], onComplete?: (batch: ExitBatch) => void) => {
+    async (
+      batches: ExitBatch[],
+      { preflight, onComplete }: ExitSendOptions<(batch: ExitBatch) => void>,
+    ) => {
       const usable = batches.filter(
         batch => batch.queueAddress && batch.requestIds.length > 0,
       );
@@ -93,21 +133,41 @@ export const useExecuteExits = () => {
       }
 
       setTransactions(
-        usable.map(({ queueAddress, requestIds }) => ({
-          title: t(translations.perimeterPage.tx.executeExits, {
-            count: requestIds.length,
-          }),
-          request: {
+        usable.map(({ queueAddress, requestIds }): Transaction => {
+          const request: SignTransactionRequest = {
             type: TransactionType.signTransaction,
             contract: new ethers.Contract(queueAddress, QUEUE_ABI, signer),
             fnName: 'executeExits',
             args: [requestIds],
-          },
-          // The batch, not its ids alone: ids restart in each queue.
-          onComplete: onComplete
-            ? () => onComplete({ queueAddress, requestIds })
-            : undefined,
-        })),
+          };
+          // The ids the latest send step handed to the wallet.
+          let sentIds = requestIds;
+
+          return {
+            title: t(translations.perimeterPage.tx.executeExits, {
+              count: requestIds.length,
+            }),
+            request,
+            beforeSend: async ({ config }) => {
+              const checked = await preflight({ queueAddress, requestIds });
+              if (
+                checked.requestIds.length === 0 ||
+                checked.requestIds.some(id => !requestIds.includes(id))
+              ) {
+                throw notSendable();
+              }
+              sentIds = checked.requestIds;
+              return {
+                request: { ...request, args: [checked.requestIds] },
+                config: { ...config, gasLimit: checked.gasLimit },
+              };
+            },
+            // The batch, not its ids alone: ids restart in each queue.
+            onComplete: onComplete
+              ? () => onComplete({ queueAddress, requestIds: sentIds })
+              : undefined,
+          };
+        }),
       );
       setTitle(t(translations.perimeterPage.tx.executeExitTitle));
       setIsOpen(true);

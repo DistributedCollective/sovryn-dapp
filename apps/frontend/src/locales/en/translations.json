@@ -2102,6 +2102,7 @@
       "unlocking": "Unlocking",
       "unlocked": "Ready",
       "notExecutor": "Releasable by the owner",
+      "frozen": "Under investigation",
       "paused": "Paused",
       "settled": "Settled"
     },
@@ -2110,26 +2111,32 @@
       "unlocking": "The delay has ended. Release becomes available once the chain records a block past the unlock time, usually within a minute.",
       "unlocked": "The delay has ended. Release it to send the funds to their destination.",
       "notExecutor": "This withdrawal is released by the account that made it or by the position owner.",
+      "frozen": "The delay has ended, but the withdrawal is held while it is being looked into. Nothing is lost; release becomes available once the review ends.",
       "paused": "Releases are paused across the whole perimeter. Nothing is lost; try again once they resume.",
       "settled": "Already paid out or otherwise resolved. Nothing left to do."
     },
     "release": "Release",
     "checking": "Checking…",
     "readyNow": "Now",
-    "contractOwnerNotice": "Held in escrow for the product you used; delivered automatically once the hold expires.",
+    "contractOwnerNotice": "Owned by a contract: the product you used holds this withdrawal.",
     "tx": {
       "executeExit": "Release delayed withdrawal",
       "executeExitTitle": "Release from the Perimeter vault",
       "executeExits": "Release {{count}} withdrawals from the Perimeter vault"
     },
     "releaseAll": "Release all ready ({{count}})",
+    "history": {
+      "show": "Show history",
+      "hide": "Show waiting withdrawals",
+      "empty": "No released withdrawals are remembered on this device. Withdrawals released elsewhere can be found on the block explorer.",
+      "unreadable": "We could not read the remembered withdrawals just now. Try again in a moment."
+    },
     "releaseRefused": {
       "title": "Not released",
-      "blocked": "Withdrawal #{{id}} was not released because {{party}} is {{state}}.",
       "unreadable": "Withdrawal #{{id}} was not released because we could not check whether its addresses are frozen or blacklisted. Try again in a moment.",
       "statusUnreadable": "Withdrawal #{{id}} was not released because we could not check whether it is still waiting. Try again in a moment.",
       "resolvedToProtocol": "Withdrawal #{{id}} cannot be released: the address that started it or the position owner was blacklisted, so the withdrawal delay's operators sent it to a recovery destination approved in advance for the product it came from.",
-      "resolvedByOwner": "Withdrawal #{{id}} cannot be released: the withdrawal delay's operators sent it to a recovery destination they chose, which they can do only while it is still inside its withdrawal delay, releases are paused, or one of its addresses is frozen or blacklisted.",
+      "resolvedByOwner": "Withdrawal #{{id}} cannot be released: the withdrawal delay's operators sent it to a recovery destination they chose, which they can do only once one of its addresses has been blacklisted.",
       "wrongNetwork": "Your wallet is connected to another network. Switch it to Rootstock, then release again.",
       "networkUnreadable": "We could not check which network your wallet is on, so nothing was released.",
       "accountChanged": "Your wallet switched to a different account, so nothing was sent. Switch back to the account these withdrawals belong to, then release again.",
@@ -2145,23 +2152,12 @@
         "alreadyTerminal": "#{{id}} was already delivered",
         "unknownRequest": "the queue does not know #{{id}}",
         "notExecutor": "your address may not release it",
-        "actorBlocked": "{{address}} is {{state}}",
         "refused": "the queue would refuse it",
         "unchecked": "we could not check whether it would go through. Try again in a moment",
         "gasUnestimated": "we could not estimate the gas it needs, and a release is never sent on a guess. Try again in a moment",
         "gasUnestimatedBatch": "we could not estimate the gas it needs, and a release is never sent on a guess. Release fewer at once",
         "gasLimitUnreadable": "we could not read the current network gas limit, so the gas limit it needs could not be checked. Try again in a moment",
         "gasLimitTooLow": "the gas limit set in Advanced settings is too low: {{limit}} is below the {{needed}} it needs. Raise it or reset the values, then retry"
-      },
-      "party": {
-        "account": "your address",
-        "originator": "the address that started it",
-        "owner": "the position owner",
-        "receiver": "the receiver"
-      },
-      "state": {
-        "frozen": "frozen",
-        "blacklisted": "blacklisted"
       }
     }
   }

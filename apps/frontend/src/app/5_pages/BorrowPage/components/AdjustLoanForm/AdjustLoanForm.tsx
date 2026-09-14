@@ -1014,8 +1014,8 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           disabled={
             submitButtonDisabled ||
             (isBorrowTab && debtSize.gt(maxBorrow)) ||
-            // Collateral leaving the protocol waits for its delay quote.
-            (exitFeeGross.gt(0) && exitDelay.loading)
+            // Collateral leaving the protocol waits for its delay and fee figures.
+            (exitFeeGross.gt(0) && (exitDelay.loading || exitFeeLoading))
           }
         />
       </div>

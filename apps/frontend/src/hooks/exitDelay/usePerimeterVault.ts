@@ -11,7 +11,12 @@ import { RSK_CHAIN_ID } from '../../config/chains';
 
 import { asyncCall } from '../../store/rxjs/provider-cache';
 import { findAssetByAddress, findNativeAsset } from '../../utils/asset';
-import { EXIT_DELAY_TTL, ExitStatus, PendingExit } from '../../utils/exitDelay';
+import {
+  BlockState,
+  EXIT_DELAY_TTL,
+  ExitStatus,
+  PendingExit,
+} from '../../utils/exitDelay';
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 import { useGetProtocolContract } from '../useGetContract';
@@ -56,7 +61,43 @@ const QUEUE_ABI = [
   'function getActive(address party, uint256 cursor, uint256 n) view returns (uint256[] ids, uint256 nextCursor)',
   'function getRequest(uint256 id) view returns (tuple(uint128 amount, uint64 createdAt, uint64 unlockAt, address originator, address owner, address receiver, address token, bytes32 surfaceId, address subProduct, uint8 status, bool unwrapOnDelivery))',
   'function securityPerimeterPaused() view returns (bool)',
+  'function blockStateOf(address a) view returns (uint8)',
 ];
+
+/**
+ * The block state of each given address, deduplicated. An address whose read
+ * did not complete maps to undefined, never to "clear".
+ */
+const resolveBlockStates = async (
+  queue: Contract,
+  addresses: string[],
+): Promise<Map<string, BlockState | undefined>> => {
+  const unique = [...new Set(addresses.map(a => a.toLowerCase()))];
+  const entries = await Promise.all(
+    unique.map(async (address): Promise<[string, BlockState | undefined]> => {
+      try {
+        return [
+          address,
+          Number(await queue.blockStateOf(address)) as BlockState,
+        ];
+      } catch (error) {
+        return [address, undefined];
+      }
+    }),
+  );
+  return new Map(entries);
+};
+
+/** A frozen party wins over a blacklisted one; nothing set reads as undefined. */
+const blockedStateOf = (
+  parties: string[],
+  states: Map<string, BlockState | undefined>,
+): BlockState | undefined => {
+  const read = parties.map(party => states.get(party.toLowerCase()));
+  if (read.includes(BlockState.Frozen)) return BlockState.Frozen;
+  if (read.includes(BlockState.Blacklisted)) return BlockState.Blacklisted;
+  return undefined;
+};
 
 /** The contract clamps a page to MAX_GET_ACTIVE_PAGE; asking for more wastes a round trip. */
 const PAGE = 500;
@@ -143,7 +184,7 @@ const resolveOwnerCode = async (
  * number scaled by a guess would be silently wrong by orders of magnitude,
  * which is worse than an obvious gap.
  */
-const resolveAmount = (
+export const resolveAmount = (
   token: string,
   unwrapOnDelivery: boolean,
   amount: BigNumber,
@@ -267,6 +308,14 @@ export const usePerimeterVault = (): PerimeterVault => {
           const ownerCode = await resolveOwnerCode(
             requests.map(request => request.owner),
           );
+          const blockStates = await resolveBlockStates(
+            queue,
+            requests.flatMap(request => [
+              request.originator,
+              request.owner,
+              request.receiver,
+            ]),
+          );
 
           uniqueIds.forEach((id, index) => {
             const request = requests[index];
@@ -289,6 +338,10 @@ export const usePerimeterVault = (): PerimeterVault => {
               status: Number(request.status) as ExitStatus,
               unwrapOnDelivery: request.unwrapOnDelivery,
               ownerHasCode: ownerCode.get(request.owner.toLowerCase()),
+              blockedState: blockedStateOf(
+                [request.originator, request.owner, request.receiver],
+                blockStates,
+              ),
             });
           });
         }

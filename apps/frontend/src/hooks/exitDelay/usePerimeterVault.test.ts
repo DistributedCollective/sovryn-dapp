@@ -277,14 +277,64 @@ describe('usePerimeterVault', () => {
     expect(result.current.exits.map(exit => exit.id)).toEqual(['7', '8']);
   });
 
-  it("reads no party's block state: a block is checked when the holder releases", async () => {
+  it("reads every party's block state once and marks a clear hold as unblocked", async () => {
     holding(7);
 
     const result = await settled();
 
     expect(result.current.exits).toHaveLength(1);
-    expect(mockBlockStateOf).not.toHaveBeenCalled();
-    expect(result.current).not.toHaveProperty('blocks');
+    expect(result.current.exits[0].blockedState).toBeUndefined();
+    const parties = mockBlockStateOf.mock.calls.map(([, party]) =>
+      (party as string).toLowerCase(),
+    );
+    expect(new Set(parties)).toEqual(
+      new Set([ACCOUNT.toLowerCase(), RECEIVER.toLowerCase()]),
+    );
+    expect(parties).toHaveLength(2);
+  });
+
+  it('marks a hold whose receiver is frozen as frozen', async () => {
+    holding(7);
+    mockBlockStateOf.mockImplementation(async (_queue: string, party: string) =>
+      party.toLowerCase() === RECEIVER.toLowerCase() ? 1 : 0,
+    );
+
+    const result = await settled();
+
+    expect(result.current.exits[0].blockedState).toBe(1);
+  });
+
+  it('marks a hold whose originator is blacklisted as blacklisted', async () => {
+    holding(7);
+    mockGetRequest.mockResolvedValue(request({ originator: RECEIVER }));
+    mockBlockStateOf.mockImplementation(async (_queue: string, party: string) =>
+      party.toLowerCase() === RECEIVER.toLowerCase() ? 2 : 0,
+    );
+
+    const result = await settled();
+
+    expect(result.current.exits[0].blockedState).toBe(2);
+  });
+
+  it('lets a frozen party outrank a blacklisted one on the same hold', async () => {
+    holding(7);
+    mockBlockStateOf.mockImplementation(async (_queue: string, party: string) =>
+      party.toLowerCase() === RECEIVER.toLowerCase() ? 1 : 2,
+    );
+
+    const result = await settled();
+
+    expect(result.current.exits[0].blockedState).toBe(1);
+  });
+
+  it('leaves the block state unknown when a read fails, never clear', async () => {
+    holding(7);
+    mockBlockStateOf.mockRejectedValue(new Error('rpc down'));
+
+    const result = await settled();
+
+    expect(result.current.exits).toHaveLength(1);
+    expect(result.current.exits[0].blockedState).toBeUndefined();
   });
 
   it("lists holds from Zero's queue as well as the protocol's", async () => {

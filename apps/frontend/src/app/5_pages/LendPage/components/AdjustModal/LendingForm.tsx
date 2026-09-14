@@ -233,7 +233,9 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
         text={t(translations.common.buttons.confirm)}
         // A withdrawal waits for its delay quote: until it arrives the form
         // cannot say whether the money is paid now or held.
-        disabled={!amountIsValid || (!isDeposit && exitDelayLoading)}
+        disabled={
+          !amountIsValid || (!isDeposit && (exitDelayLoading || exitFeeLoading))
+        }
         onClick={handleSubmit}
         className="mt-8 w-full"
       />

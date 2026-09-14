@@ -128,9 +128,6 @@ const readWallet = async (
 const queueReader = (queueAddress: string) =>
   new Contract(queueAddress, QUEUE_READS, getProvider(RSK_CHAIN_ID));
 
-const shortAddress = (address: string): string =>
-  `${address.slice(0, 6)}…${address.slice(-4)}`;
-
 /** A row's status, read fresh from its queue; undefined when the read failed. */
 const readStatus = async (row: ReleaseRow): Promise<number | undefined> => {
   try {
@@ -206,13 +203,14 @@ const checkBlocks = async (
   return { kind: 'clear' };
 };
 
+// A refusal for a blocked party says only that the release was refused: which
+// party and which state are not told to whoever pressed the button.
 const blockRefusal = (row: ReleaseRow, check: BlockCheck): string =>
   check.kind === 'blocked'
-    ? t(translations.perimeterPage.releaseRefused.blocked, {
-        id: row.id,
-        party: t(translations.perimeterPage.releaseRefused.party[check.party]),
-        state: t(translations.perimeterPage.releaseRefused.state[check.state]),
-      })
+    ? rowsRefusal(
+        [row],
+        t(translations.perimeterPage.releaseRefused.reason.refused),
+      )
     : t(translations.perimeterPage.releaseRefused.unreadable, { id: row.id });
 
 /** One line naming withdrawals that are not released, and why. */
@@ -282,20 +280,11 @@ const refusalOf = (
     case 'NotExecutor':
       return { kind: 'refused', reason: t(reasons.notExecutor) };
     case 'ActorBlocked': {
-      const state = BLOCK_NAMES[Number(error.args.state)];
-      if (!state) {
-        return { kind: 'refused', reason: t(reasons.refused) };
-      }
+      // Which party, and whether frozen or blacklisted, is not said here.
       const actor = String(error.args.actor).toLowerCase();
       return {
         kind: 'refused',
-        reason: t(reasons.actorBlocked, {
-          address:
-            actor === account.toLowerCase()
-              ? t(translations.perimeterPage.releaseRefused.party.account)
-              : shortAddress(error.args.actor),
-          state: t(translations.perimeterPage.releaseRefused.state[state]),
-        }),
+        reason: t(reasons.refused),
         ids: rows
           .filter(row =>
             [row.originator, row.owner, row.receiver].some(
@@ -499,7 +488,7 @@ const checkRelease = async (
           }),
         );
         return false;
-      case ExitStatus.ResolvedBySIP:
+      case ExitStatus.ResolvedByOwner:
         resolved.push(row);
         refusals.push(
           t(translations.perimeterPage.releaseRefused.resolvedByOwner, {

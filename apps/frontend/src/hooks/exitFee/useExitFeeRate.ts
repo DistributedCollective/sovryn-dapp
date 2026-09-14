@@ -12,6 +12,10 @@ import {
   ExitFeeQuote,
 } from '../../utils/exitFee';
 import { readPerimeterPointer } from '../exitDelay/readPerimeterPointer';
+import {
+  EXIT_DELAY_QUOTE_TIMEOUT_MS,
+  useDeadlinePassed,
+} from '../exitDelay/useExitDelay';
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 import { useGetProtocolContract } from '../useGetContract';
@@ -132,16 +136,27 @@ export const useExitFeeRate = (
     { ttl: EXIT_FEE_TTL },
   );
 
+  // A rate that has not arrived within the same deadline the delay quote is
+  // given is reported as unreadable, so a form waiting on it can let the user
+  // sign with the warning rather than wait on a stalled read.
+  const fresh = value.forKey === key;
+  const passed = useDeadlinePassed(
+    key,
+    fresh && !loading,
+    EXIT_DELAY_QUOTE_TIMEOUT_MS,
+  );
   return useMemo(() => {
     // A value fetched for a different key is the previous account's or
     // pool's answer. Report it as still loading, which the display treats
     // as "nothing charged" — never as that other party's fee.
-    const fresh = value.forKey === key;
+    if (!fresh && passed) {
+      return { active: false, rateBps: 0, unknown: true, loading: false };
+    }
     return {
       active: fresh ? value.active : false,
       rateBps: fresh ? value.rateBps : 0,
       unknown: fresh ? value.unknown : true,
       loading: loading || !fresh,
     };
-  }, [value, loading, key]);
+  }, [value, loading, fresh, passed]);
 };

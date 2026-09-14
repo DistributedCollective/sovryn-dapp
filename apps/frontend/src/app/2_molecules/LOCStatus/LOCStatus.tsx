@@ -182,7 +182,7 @@ export const LOCStatus: FC<LOCStatusProps> = ({
             dataAttribute="zero-loc-surplus-withdraw"
             // Until the delay quote arrives the card cannot say whether the
             // claim is paid now or held.
-            disabled={claimDelay.loading}
+            disabled={claimDelay.loading || claimFee.loading}
           />
         )}
         {showOpenLOC && (

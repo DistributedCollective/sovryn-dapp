@@ -23,7 +23,7 @@ export enum ExitStatus {
   Queued = 1,
   Executed = 2,
   ResolvedToProtocol = 3,
-  ResolvedBySIP = 4,
+  ResolvedByOwner = 4,
 }
 
 /** Mirrors ExitDelayQueue.BlockState. */
@@ -51,6 +51,11 @@ export enum PendingExitState {
   Unlocked = 'unlocked',
   /** Past its unlock time, but this account is not an executor for it. */
   NotExecutor = 'notExecutor',
+  /**
+   * Past its unlock time, but a party to it is frozen while it is looked
+   * into. The holder waits; nothing is lost.
+   */
+  Frozen = 'frozen',
   /** The whole queue is paused. */
   Paused = 'paused',
   /** Already paid out, or resolved away by recovery or governance. */
@@ -87,6 +92,12 @@ export type PendingExit = {
    * read did not complete.
    */
   ownerHasCode?: boolean;
+  /**
+   * The block state on one of the request's parties, when one is set and the
+   * read completed; a frozen party wins over a blacklisted one. Undefined when
+   * nothing is set or the read did not complete.
+   */
+  blockedState?: BlockState;
 };
 
 /**
@@ -259,12 +270,15 @@ export type ChainTimes = {
  * time is judged twice: the ticking clock says when the delay has ended, and
  * the latest block's own timestamp says when a release can pass, because the
  * queue compares `block.timestamp`. Between the two the exit is unlocking.
- * Block states are not part of it: a withdrawal whose party is frozen or
- * blacklisted looks like any other row, and the block is read and named when
- * the holder presses Release.
+ * A frozen party shows as under investigation once the time has passed; a
+ * blacklisted party shows nothing — the row reads as ready and the release
+ * simply fails.
  */
 export const getPendingExitState = (
-  exit: Pick<PendingExit, 'status' | 'unlockAt' | 'originator' | 'owner'>,
+  exit: Pick<
+    PendingExit,
+    'status' | 'unlockAt' | 'originator' | 'owner' | 'blockedState'
+  >,
   paused: boolean,
   account: string | undefined,
   { now, blockTime }: ChainTimes,
@@ -280,6 +294,9 @@ export const getPendingExitState = (
   }
   if (blockTime < exit.unlockAt) {
     return PendingExitState.Unlocking;
+  }
+  if (exit.blockedState === BlockState.Frozen) {
+    return PendingExitState.Frozen;
   }
   return isExecutor(exit, account)
     ? PendingExitState.Unlocked

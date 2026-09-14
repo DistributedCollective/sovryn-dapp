@@ -51,7 +51,7 @@ const NO_WITHDRAWAL: ExitDelayQuote = {
 };
 
 /** Whether `timeoutMs` has passed since `key` was first asked without it settling. */
-const useDeadlinePassed = (
+export const useDeadlinePassed = (
   key: string,
   settled: boolean,
   timeoutMs: number,

@@ -297,7 +297,7 @@ describe('usePerimeterRelease', () => {
       BlockState.Blacklisted,
     ],
   ])(
-    'does not send, and says %s is %s',
+    'does not send when %s is %s, and says only that the queue would refuse it',
     async (party, state, exitRow, blockedAddress, blockState) => {
       blockOn(QUEUE, blockedAddress, stateResult(blockState));
 
@@ -305,9 +305,13 @@ describe('usePerimeterRelease', () => {
 
       expect(mockExecuteExit).not.toHaveBeenCalled();
       expect(mockExecuteExits).not.toHaveBeenCalled();
-      expect(refusalText()).toContain(
-        `Withdrawal #7 was not released because ${party} is ${state}.`,
+      const text = refusalText();
+      expect(text).toContain(
+        'Withdrawal #7 was not released because the queue would refuse it.',
       );
+      // Neither the party nor the state is told to whoever pressed the button.
+      expect(text).not.toContain(party);
+      expect(text).not.toContain(state);
     },
   );
 
@@ -346,7 +350,7 @@ describe('usePerimeterRelease', () => {
     );
     const text = refusalText();
     expect(text).toContain(
-      'Withdrawal #8 was not released because the receiver is frozen.',
+      'Withdrawal #8 was not released because the queue would refuse it.',
     );
     expect(text).not.toContain('#7');
     expect(text).not.toContain('#9');
@@ -417,7 +421,7 @@ describe('usePerimeterRelease', () => {
       ['releases are paused', queueRefusal('QueuePaused')],
       ['#7 was already delivered', queueRefusal('AlreadyTerminal', [7])],
       [
-        'your address is frozen',
+        'the queue would refuse it',
         queueRefusal('ActorBlocked', [ACCOUNT, BlockState.Frozen]),
       ],
       [
@@ -627,7 +631,7 @@ describe('usePerimeterRelease', () => {
     const TO_PROTOCOL =
       "cannot be released: the address that started it or the position owner was blacklisted, so the withdrawal delay's operators sent it to a recovery destination approved in advance for the product it came from.";
     const BY_OPERATORS =
-      "cannot be released: the withdrawal delay's operators sent it to a recovery destination they chose, which they can do only while it is still inside its withdrawal delay, releases are paused, or one of its addresses is frozen or blacklisted.";
+      "cannot be released: the withdrawal delay's operators sent it to a recovery destination they chose, which they can do only once one of its addresses has been blacklisted.";
 
     it('keeps a row whose status the node reports as unknown, sends nothing, and says it could not check', async () => {
       statusOf(QUEUE, 7, requestResult(ExitStatus.None));
@@ -653,7 +657,7 @@ describe('usePerimeterRelease', () => {
       ['returned to the protocol', ExitStatus.ResolvedToProtocol, TO_PROTOCOL],
       [
         "sent elsewhere by the withdrawal delay's operators",
-        ExitStatus.ResolvedBySIP,
+        ExitStatus.ResolvedByOwner,
         BY_OPERATORS,
       ],
     ])(
@@ -682,7 +686,7 @@ describe('usePerimeterRelease', () => {
 
     it("takes a withdrawal the withdrawal delay's operators sent elsewhere off the page when the holder confirms, and says so", async () => {
       const onReleased = await release([row()]);
-      statusOf(QUEUE, 7, requestResult(ExitStatus.ResolvedBySIP));
+      statusOf(QUEUE, 7, requestResult(ExitStatus.ResolvedByOwner));
 
       await expect(confirmInDialog()).rejects.toThrow();
       expect(onReleased).toHaveBeenCalledWith([
@@ -919,7 +923,7 @@ describe('usePerimeterRelease', () => {
         from: ACCOUNT,
       });
       expect(refusalText()).toContain(
-        'Withdrawal #8 was not released because the receiver is frozen.',
+        'Withdrawal #8 was not released because the queue would refuse it.',
       );
       expect(estimates()).toEqual([
         [

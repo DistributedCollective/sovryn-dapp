@@ -24,6 +24,7 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../constants/currencies';
 import { useChainTime } from '../../../hooks/exitDelay/useChainTime';
+import { usePerimeterHistory } from '../../../hooks/exitDelay/usePerimeterHistory';
 import { usePerimeterRelease } from '../../../hooks/exitDelay/usePerimeterRelease';
 import { usePerimeterVault } from '../../../hooks/exitDelay/usePerimeterVault';
 import { useAccount } from '../../../hooks/useAccount';
@@ -83,10 +84,15 @@ const PerimeterPage: FC = () => {
 
   const release = usePerimeterRelease();
 
+  // The live list holds only what is still waiting. What has been released
+  // is read back from the chain on request, under the history switch.
+  const [showHistory, setShowHistory] = useState(false);
+  const history = usePerimeterHistory(showHistory, exits);
+
   const rows: PerimeterExitRow[] = useMemo(
     () =>
-      exits
-        .filter(exit => !releasedKeys.has(exitKey(exit)))
+      (showHistory ? history.exits : exits)
+        .filter(exit => showHistory || !releasedKeys.has(exitKey(exit)))
         .map(exit => ({
           ...exit,
           state: getPendingExitState(
@@ -96,7 +102,17 @@ const PerimeterPage: FC = () => {
             { now, blockTime },
           ),
         })),
-    [account, blockTime, exits, now, paused, pausedByQueue, releasedKeys],
+    [
+      account,
+      blockTime,
+      exits,
+      history.exits,
+      now,
+      paused,
+      pausedByQueue,
+      releasedKeys,
+      showHistory,
+    ],
   );
 
   // The release checks take several round trips before the dialog opens. A
@@ -236,10 +252,15 @@ const PerimeterPage: FC = () => {
     if (!account) {
       return t(translations.perimeterPage.connectWallet);
     }
+    if (showHistory) {
+      return history.unknown
+        ? t(translations.perimeterPage.history.unreadable)
+        : t(translations.perimeterPage.history.empty);
+    }
     return readFailed
       ? t(translations.perimeterPage.unreadable)
       : t(translations.perimeterPage.inactive);
-  }, [account, readFailed]);
+  }, [account, readFailed, showHistory, history.unknown]);
 
   return (
     <>
@@ -280,7 +301,22 @@ const PerimeterPage: FC = () => {
             </Paragraph>
           )}
           <div className="w-full max-w-5xl">
-            {releasableRows.length > 1 && (
+            {account && (
+              <div className="flex justify-end mb-3">
+                <Button
+                  text={
+                    showHistory
+                      ? t(translations.perimeterPage.history.hide)
+                      : t(translations.perimeterPage.history.show)
+                  }
+                  size={ButtonSize.small}
+                  style={ButtonStyle.secondary}
+                  onClick={() => setShowHistory(current => !current)}
+                  dataAttribute="perimeter-history-toggle"
+                />
+              </div>
+            )}
+            {!showHistory && releasableRows.length > 1 && (
               <div className="flex justify-end mb-3">
                 <Button
                   text={
@@ -308,7 +344,11 @@ const PerimeterPage: FC = () => {
               // message once its read has failed.
               rows={now ? rows : []}
               rowKey={row => exitKey(row)}
-              isLoading={loading || (!!account && !now && !clockUnreadable)}
+              isLoading={
+                loading ||
+                (showHistory && history.loading) ||
+                (!!account && !now && !clockUnreadable)
+              }
               noData={emptyMessage}
               dataAttribute="perimeter-vault-table"
             />

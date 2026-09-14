@@ -33,6 +33,7 @@ let mockVault: {
   unknown: boolean;
 };
 let mockChainTime: { now: number; blockTime: number; unreadable: boolean };
+const mockHistory = jest.fn();
 let mockCurrentChainId: string;
 
 jest.mock('nanoid', () => ({ nanoid: () => '1234' }));
@@ -57,6 +58,11 @@ jest.mock('../../../hooks/exitDelay/usePerimeterVault', () => ({
 
 jest.mock('../../../hooks/exitDelay/usePerimeterRelease', () => ({
   usePerimeterRelease: () => mockRelease,
+}));
+
+jest.mock('../../../hooks/exitDelay/usePerimeterHistory', () => ({
+  usePerimeterHistory: (enabled: boolean, live: unknown[]) =>
+    mockHistory(enabled, live),
 }));
 
 jest.mock('../../../hooks/exitDelay/useChainTime', () => ({
@@ -118,6 +124,7 @@ describe('PerimeterPage', () => {
       loading: false,
       unknown: false,
     };
+    mockHistory.mockReturnValue({ exits: [], loading: false, unknown: false });
   });
 
   afterAll(() => {
@@ -351,11 +358,135 @@ describe('PerimeterPage', () => {
     );
   });
 
-  it('shows no review state for any row: a blocked party is named on release', () => {
-    mockVault.exits = [exit()];
+  it('shows an unlocked row with a frozen party as under investigation, with no Release', () => {
+    mockVault.exits = [exit({ blockedState: 1 })];
+    const { container } = render(<PerimeterPage />);
+
+    expect(screen.getAllByText('Under investigation').length).toBeGreaterThan(
+      0,
+    );
+    expect(screen.queryByText('Ready')).not.toBeInTheDocument();
+    expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
+    expect(screen.queryByText(/frozen/i)).not.toBeInTheDocument();
+  });
+
+  it('keeps a frozen party silent while the delay still runs', () => {
+    mockVault.exits = [exit({ blockedState: 1, unlockAt: NOW + 3600 })];
     render(<PerimeterPage />);
 
-    expect(screen.queryByText('Under review')).not.toBeInTheDocument();
+    expect(screen.queryByText('Under investigation')).not.toBeInTheDocument();
+    expect(screen.getAllByText('Delayed').length).toBeGreaterThan(0);
+  });
+
+  it('shows a blacklisted party as ready and says nothing about the block', () => {
+    // The block is checked on the press, and the refusal names no party.
+    mockVault.exits = [exit({ blockedState: 2 })];
+    const { container } = render(<PerimeterPage />);
+
+    expect(screen.getAllByText('Ready').length).toBeGreaterThan(0);
+    expect(releaseButton(container, QUEUE, '7')).toBeInTheDocument();
+    expect(screen.queryByText(/blacklist/i)).not.toBeInTheDocument();
+  });
+
+  it('marks a contract-owned row as held by the product, and offers no Release on it', () => {
+    mockVault.exits = [
+      exit({ owner: RECEIVER, originator: RECEIVER, ownerHasCode: true }),
+    ];
+    const { container } = render(<PerimeterPage />);
+
+    expect(
+      screen.getByText(
+        'Owned by a contract: the product you used holds this withdrawal.',
+      ),
+    ).toBeInTheDocument();
+    expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
+  });
+
+  describe('history', () => {
+    it('lists only waiting withdrawals until history is asked for, and hands the live list to be remembered', () => {
+      mockVault.exits = [exit({ id: '7' })];
+      mockHistory.mockReturnValue({
+        exits: [exit({ id: '5', status: ExitStatus.Executed })],
+        loading: false,
+        unknown: false,
+      });
+      render(<PerimeterPage />);
+
+      expect(screen.getByText('Show history')).toBeInTheDocument();
+      expect(screen.queryByText('Settled')).not.toBeInTheDocument();
+      expect(screen.getAllByText('Ready').length).toBeGreaterThan(0);
+      const [enabled, live] = mockHistory.mock.calls[0];
+      expect(enabled).toBe(false);
+      expect(live.map((row: { id: string }) => row.id)).toEqual(['7']);
+    });
+
+    it('swaps the list for the remembered, settled withdrawals when history is shown', () => {
+      mockVault.exits = [exit({ id: '7' }), exit({ id: '8' })];
+      mockHistory.mockImplementation((enabled: boolean) => ({
+        exits: enabled
+          ? [
+              exit({ id: '5', status: ExitStatus.Executed }),
+              exit({ id: '4', status: ExitStatus.ResolvedByOwner }),
+            ]
+          : [],
+        loading: false,
+        unknown: false,
+      }));
+      const { container } = render(<PerimeterPage />);
+
+      expect(screen.getByText('Release all ready (2)')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByText('Show history'));
+
+      expect(screen.getByText('Show waiting withdrawals')).toBeInTheDocument();
+      expect(screen.getAllByText('Settled')).toHaveLength(2);
+      expect(screen.queryByText('Ready')).not.toBeInTheDocument();
+      expect(screen.queryByText(/Release all ready/)).not.toBeInTheDocument();
+      expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
+      expect(releaseButton(container, QUEUE, '5')).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByText('Show waiting withdrawals'));
+
+      expect(screen.getByText('Release all ready (2)')).toBeInTheDocument();
+      expect(screen.queryByText('Settled')).not.toBeInTheDocument();
+    });
+
+    it('says nothing is remembered on this device when history is empty', () => {
+      render(<PerimeterPage />);
+
+      fireEvent.click(screen.getByText('Show history'));
+
+      expect(
+        screen.getAllByText(
+          /No released withdrawals are remembered on this device/,
+        ).length,
+      ).toBeGreaterThan(0);
+    });
+
+    it('says the remembered withdrawals could not be read rather than that there are none', () => {
+      mockHistory.mockImplementation((enabled: boolean) => ({
+        exits: [],
+        loading: false,
+        unknown: enabled,
+      }));
+      render(<PerimeterPage />);
+
+      fireEvent.click(screen.getByText('Show history'));
+
+      expect(
+        screen.getAllByText(/could not read the remembered withdrawals/).length,
+      ).toBeGreaterThan(0);
+      expect(
+        screen.queryByText(/No released withdrawals are remembered/),
+      ).not.toBeInTheDocument();
+    });
+
+    it('offers no history switch without a wallet', () => {
+      mockAccount = undefined;
+      render(<PerimeterPage />);
+
+      expect(screen.queryByText('Show history')).not.toBeInTheDocument();
+    });
   });
 
   it('withholds Release while an exit is still on hold', () => {
@@ -487,7 +618,7 @@ describe('PerimeterPage', () => {
     ).toBeInTheDocument();
     expect(
       screen.getAllByText(
-        'Held in escrow for the product you used; delivered automatically once the hold expires.',
+        'Owned by a contract: the product you used holds this withdrawal.',
       ).length,
     ).toBeGreaterThan(0);
   });
@@ -498,7 +629,7 @@ describe('PerimeterPage', () => {
 
     expect(
       screen.queryByText(
-        'Held in escrow for the product you used; delivered automatically once the hold expires.',
+        'Owned by a contract: the product you used holds this withdrawal.',
       ),
     ).not.toBeInTheDocument();
   });

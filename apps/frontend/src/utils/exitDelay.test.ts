@@ -1,4 +1,5 @@
 import {
+  BlockState,
   ExitStatus,
   PendingExitState,
   canExecuteExit,
@@ -150,17 +151,37 @@ describe('exitDelay utils', () => {
       ).toEqual(PendingExitState.NotExecutor);
     });
 
-    it('has no state for a blocked party: a block is checked when the holder releases', () => {
-      // A withdrawal whose party is frozen or blacklisted looks like any other
-      // row, and the block is named when Release is pressed.
-      expect(Object.values(PendingExitState)).not.toContain('blocked');
+    it('shows a frozen party as under investigation once the time has passed, and says nothing of a blacklisted one', () => {
+      const frozen = { ...queued(NOW - 60), blockedState: BlockState.Frozen };
+      expect(
+        getPendingExitState(frozen, false, OWNER, { now: NOW, blockTime: NOW }),
+      ).toBe(PendingExitState.Frozen);
+      // Before the time has passed the hold itself is what shows.
+      expect(
+        getPendingExitState(
+          { ...queued(NOW + 60), blockedState: BlockState.Frozen },
+          false,
+          OWNER,
+          { now: NOW, blockTime: NOW },
+        ),
+      ).toBe(PendingExitState.Locked);
+      // A blacklisted party reads as ready; the release simply fails.
+      expect(
+        getPendingExitState(
+          { ...queued(NOW - 60), blockedState: BlockState.Blacklisted },
+          false,
+          OWNER,
+          { now: NOW, blockTime: NOW },
+        ),
+      ).toBe(PendingExitState.Unlocked);
+      expect(canExecuteExit(PendingExitState.Frozen)).toBe(false);
     });
 
     it('ranks a terminal status above every other condition', () => {
       for (const status of [
         ExitStatus.Executed,
         ExitStatus.ResolvedToProtocol,
-        ExitStatus.ResolvedBySIP,
+        ExitStatus.ResolvedByOwner,
       ]) {
         expect(
           getPendingExitState(

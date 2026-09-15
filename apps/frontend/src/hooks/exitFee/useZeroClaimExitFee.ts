@@ -14,6 +14,10 @@ import {
   SURFACE_ZERO_CLAIM_SURPLUS,
 } from '../../utils/exitFee';
 import { readPerimeterPointer } from '../exitDelay/readPerimeterPointer';
+import {
+  EXIT_DELAY_QUOTE_TIMEOUT_MS,
+  useDeadlinePassed,
+} from '../exitDelay/useExitDelay';
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 
@@ -147,11 +151,24 @@ export const useZeroClaimExitFee = (gross: Decimal): ZeroClaimExitFee => {
     { ttl: EXIT_FEE_TTL },
   );
 
+  // A quote that has not arrived within the same deadline the delay quote is
+  // given is reported as unknown, so the surplus card can let the holder see
+  // Withdraw rather than wait on a stalled read.
+  const fresh = value.forKey === key;
+  const passed = useDeadlinePassed(
+    key,
+    fresh && !loading,
+    EXIT_DELAY_QUOTE_TIMEOUT_MS,
+  );
+
   return useMemo(() => {
-    if (value.forKey !== key) {
+    if (!fresh && passed) {
+      return { ...UNKNOWN, loading: false };
+    }
+    if (!fresh) {
       return { ...INACTIVE, loading: true };
     }
     const { forKey, ...quote } = value;
     return { ...quote, loading };
-  }, [value, loading, key]);
+  }, [value, loading, fresh, passed]);
 };

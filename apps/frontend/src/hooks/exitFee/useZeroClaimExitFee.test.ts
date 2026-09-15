@@ -64,6 +64,12 @@ jest.mock('../useAccount', () => ({
   useAccount: () => ({ account: ACCOUNT }),
 }));
 
+// Short enough that the deadline test below does not wait ten real seconds.
+jest.mock('../exitDelay/useExitDelay', () => ({
+  ...jest.requireActual('../exitDelay/useExitDelay'),
+  EXIT_DELAY_QUOTE_TIMEOUT_MS: 50,
+}));
+
 jest.mock('../useCacheCall', () => {
   const React = jest.requireActual('react');
   return {
@@ -226,5 +232,14 @@ describe('useZeroClaimExitFee', () => {
 
     expect(result.current.active).toBe(false);
     expect(mockQuoteExitFee).not.toHaveBeenCalled();
+  });
+
+  it('reports unknown, not still loading, once its deadline passes without an answer', async () => {
+    mockQuoteExitFee.mockReturnValue(new Promise(() => undefined)); // never settles
+
+    const result = await settled();
+
+    expect(result.current.unknown).toBe(true);
+    expect(result.current.active).toBe(false);
   });
 });

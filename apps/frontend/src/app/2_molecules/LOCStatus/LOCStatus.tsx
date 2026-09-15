@@ -180,8 +180,8 @@ export const LOCStatus: FC<LOCStatusProps> = ({
             onClick={onWithdraw}
             className="flex-1"
             dataAttribute="zero-loc-surplus-withdraw"
-            // Until the delay quote arrives the card cannot say whether the
-            // claim is paid now or held.
+            // Until the delay and fee quotes arrive the card cannot say
+            // whether the claim is paid now, held, or what it costs.
             disabled={claimDelay.loading || claimFee.loading}
           />
         )}

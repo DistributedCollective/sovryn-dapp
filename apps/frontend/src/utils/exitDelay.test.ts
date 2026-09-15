@@ -177,21 +177,37 @@ describe('exitDelay utils', () => {
       expect(canExecuteExit(PendingExitState.Frozen)).toBe(false);
     });
 
-    it('ranks a terminal status above every other condition', () => {
-      for (const status of [
-        ExitStatus.Executed,
-        ExitStatus.ResolvedToProtocol,
-        ExitStatus.ResolvedByOwner,
-      ]) {
-        expect(
-          getPendingExitState(
-            { ...queued(NOW + 60), status },
-            true,
-            OWNER,
-            at(NOW),
-          ),
-        ).toEqual(PendingExitState.Settled);
-      }
+    it('reads a delivered withdrawal as settled, above every other condition', () => {
+      expect(
+        getPendingExitState(
+          { ...queued(NOW + 60), status: ExitStatus.Executed },
+          true,
+          OWNER,
+          at(NOW),
+        ),
+      ).toEqual(PendingExitState.Settled);
+    });
+
+    it('names the Owner on a withdrawal it resolved, above every other condition', () => {
+      expect(
+        getPendingExitState(
+          { ...queued(NOW + 60), status: ExitStatus.ResolvedByOwner },
+          true,
+          OWNER,
+          at(NOW),
+        ),
+      ).toEqual(PendingExitState.ResolvedByOwner);
+    });
+
+    it('reads a withdrawal returned to the product as such, above every other condition', () => {
+      expect(
+        getPendingExitState(
+          { ...queued(NOW + 60), status: ExitStatus.ResolvedToProtocol },
+          true,
+          OWNER,
+          at(NOW),
+        ),
+      ).toEqual(PendingExitState.ResolvedToProtocol);
     });
 
     it('ranks the global pause above the unlock time', () => {
@@ -209,6 +225,8 @@ describe('exitDelay utils', () => {
       PendingExitState.NotExecutor,
       PendingExitState.Paused,
       PendingExitState.Settled,
+      PendingExitState.ResolvedByOwner,
+      PendingExitState.ResolvedToProtocol,
     ]) {
       expect(canExecuteExit(state)).toBe(false);
     }

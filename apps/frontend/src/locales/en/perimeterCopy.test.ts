@@ -49,4 +49,19 @@ describe('Perimeter copy', () => {
     expect(en.exitFee.label).toMatch(/^Perimeter fee\b/);
     expect(en.exitDelay.label).toBe('Withdrawal delay');
   });
+
+  it('never names a block state in a release refusal, except admitting one could not be checked', () => {
+    const releaseRefusedCopy = stringsOf(
+      en.perimeterPage.releaseRefused,
+      'perimeterPage.releaseRefused',
+    );
+
+    expect(
+      releaseRefusedCopy.filter(
+        ([path, text]) =>
+          path !== 'perimeterPage.releaseRefused.unreadable' &&
+          /\b(frozen|blacklisted)\b/i.test(text),
+      ),
+    ).toEqual([]);
+  });
 });

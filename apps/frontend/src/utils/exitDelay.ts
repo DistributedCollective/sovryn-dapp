@@ -58,8 +58,12 @@ export enum PendingExitState {
   Frozen = 'frozen',
   /** The whole queue is paused. */
   Paused = 'paused',
-  /** Already paid out, or resolved away by recovery or governance. */
+  /** Paid out to its receiver. */
   Settled = 'settled',
+  /** Sent by the Owner to a recovery destination it chose. */
+  ResolvedByOwner = 'resolvedByOwner',
+  /** Sent to a recovery destination approved in advance for its product. */
+  ResolvedToProtocol = 'resolvedToProtocol',
 }
 
 export type PendingExit = {
@@ -283,6 +287,12 @@ export const getPendingExitState = (
   account: string | undefined,
   { now, blockTime }: ChainTimes,
 ): PendingExitState => {
+  if (exit.status === ExitStatus.ResolvedByOwner) {
+    return PendingExitState.ResolvedByOwner;
+  }
+  if (exit.status === ExitStatus.ResolvedToProtocol) {
+    return PendingExitState.ResolvedToProtocol;
+  }
   if (exit.status !== ExitStatus.Queued) {
     return PendingExitState.Settled;
   }

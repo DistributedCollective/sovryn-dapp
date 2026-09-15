@@ -2104,7 +2104,9 @@
       "notExecutor": "Releasable by the owner",
       "frozen": "Under investigation",
       "paused": "Paused",
-      "settled": "Settled"
+      "settled": "Settled",
+      "resolvedByOwner": "Resolved by owner",
+      "resolvedToProtocol": "Returned to the product"
     },
     "statusTooltip": {
       "locked": "Still inside its withdrawal delay. It becomes releasable at the time shown.",
@@ -2113,7 +2115,9 @@
       "notExecutor": "This withdrawal is released by the account that made it or by the position owner.",
       "frozen": "The delay has ended, but this withdrawal stays in the vault while it is being looked into. Nothing is lost; release becomes available once the review ends.",
       "paused": "Releases are paused across the whole perimeter. Nothing is lost; try again once they resume.",
-      "settled": "Already paid out or otherwise resolved. Nothing left to do."
+      "settled": "Already paid out. Nothing left to do.",
+      "resolvedByOwner": "The Owner moved this withdrawal to a recovery destination.",
+      "resolvedToProtocol": "Sent to a recovery destination approved in advance for the product it came from."
     },
     "release": "Release",
     "checking": "Checking…",
@@ -2136,8 +2140,8 @@
       "title": "Not released",
       "unreadable": "Withdrawal #{{id}} was not released because we could not check whether its addresses are frozen or blacklisted. Try again in a moment.",
       "statusUnreadable": "Withdrawal #{{id}} was not released because we could not check whether it is still waiting. Try again in a moment.",
-      "resolvedToProtocol": "Withdrawal #{{id}} cannot be released: the address that started it or the position owner was blacklisted, so the withdrawal delay's operators sent it to a recovery destination approved in advance for the product it came from.",
-      "resolvedByOwner": "Withdrawal #{{id}} cannot be released: the withdrawal delay's operators sent it to a recovery destination they chose, which they can do only once one of its addresses has been blacklisted.",
+      "resolvedToProtocol": "Withdrawal #{{id}} cannot be released: it was sent to a recovery destination approved in advance for the product it came from.",
+      "resolvedByOwner": "Withdrawal #{{id}} cannot be released: it was resolved by the Owner.",
       "wrongNetwork": "Your wallet is connected to another network. Switch it to Rootstock, then release again.",
       "networkUnreadable": "We could not check which network your wallet is on, so nothing was released.",
       "accountChanged": "Your wallet switched to a different account, so nothing was sent. Switch back to the account these withdrawals belong to, then release again.",

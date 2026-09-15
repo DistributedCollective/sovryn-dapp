@@ -462,7 +462,8 @@ describe('PerimeterPage', () => {
       fireEvent.click(screen.getByText('Show history'));
 
       expect(screen.getByText('Show waiting withdrawals')).toBeInTheDocument();
-      expect(screen.getAllByText('Settled')).toHaveLength(2);
+      expect(screen.getByText('Settled')).toBeInTheDocument();
+      expect(screen.getByText('Resolved by owner')).toBeInTheDocument();
       expect(screen.queryByText('Ready')).not.toBeInTheDocument();
       expect(screen.queryByText(/Release all ready/)).not.toBeInTheDocument();
       expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();

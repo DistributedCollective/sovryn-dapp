@@ -327,7 +327,7 @@ describe('usePerimeterVault', () => {
     expect(result.current.exits[0].blockedState).toBe(1);
   });
 
-  it('leaves the block state unknown when a read fails, never clear', async () => {
+  it('reports the vault as unknown when a block-state read fails, and still lists the row', async () => {
     holding(7);
     mockBlockStateOf.mockRejectedValue(new Error('rpc down'));
 
@@ -335,6 +335,18 @@ describe('usePerimeterVault', () => {
 
     expect(result.current.exits).toHaveLength(1);
     expect(result.current.exits[0].blockedState).toBeUndefined();
+    expect(result.current.unknown).toBe(true);
+  });
+
+  it('reports the vault as unknown when a block state is outside the known values', async () => {
+    holding(7);
+    mockBlockStateOf.mockResolvedValue(3);
+
+    const result = await settled();
+
+    expect(result.current.exits).toHaveLength(1);
+    expect(result.current.exits[0].blockedState).toBeUndefined();
+    expect(result.current.unknown).toBe(true);
   });
 
   it("lists holds from Zero's queue as well as the protocol's", async () => {

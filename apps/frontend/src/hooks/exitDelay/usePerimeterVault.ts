@@ -23,9 +23,10 @@ import { useGetProtocolContract } from '../useGetContract';
 import { readPerimeterPointer } from './readPerimeterPointer';
 
 /**
- * What the vault page lists. Block states are not read here: a withdrawal whose
- * party is frozen or blacklisted is listed like any other, and its block is
- * read when the holder releases it.
+ * What the vault page lists. Every party's block state is read alongside the
+ * request itself, so a frozen or blacklisted hold reads that way from the
+ * list rather than only at the press. A block state that could not be read
+ * marks the whole vault unknown, the same as any other failed read here.
  */
 export type PerimeterVault = {
   exits: PendingExit[];
@@ -64,28 +65,42 @@ const QUEUE_ABI = [
   'function blockStateOf(address a) view returns (uint8)',
 ];
 
+/** Whether a raw `blockStateOf` answer is one of the values the queue defines. */
+const isKnownBlockState = (state: number): state is BlockState =>
+  state === BlockState.None ||
+  state === BlockState.Frozen ||
+  state === BlockState.Blacklisted;
+
 /**
  * The block state of each given address, deduplicated. An address whose read
- * did not complete maps to undefined, never to "clear".
+ * did not complete, or whose answer is outside the known values, maps to
+ * undefined, never to "clear", and marks the result unknown.
  */
 const resolveBlockStates = async (
   queue: Contract,
   addresses: string[],
-): Promise<Map<string, BlockState | undefined>> => {
+): Promise<{
+  states: Map<string, BlockState | undefined>;
+  unknown: boolean;
+}> => {
   const unique = [...new Set(addresses.map(a => a.toLowerCase()))];
+  let unknown = false;
   const entries = await Promise.all(
     unique.map(async (address): Promise<[string, BlockState | undefined]> => {
       try {
-        return [
-          address,
-          Number(await queue.blockStateOf(address)) as BlockState,
-        ];
+        const raw = Number(await queue.blockStateOf(address));
+        if (!isKnownBlockState(raw)) {
+          unknown = true;
+          return [address, undefined];
+        }
+        return [address, raw];
       } catch (error) {
+        unknown = true;
         return [address, undefined];
       }
     }),
   );
-  return new Map(entries);
+  return { states: new Map(entries), unknown };
 };
 
 /** A frozen party wins over a blacklisted one; nothing set reads as undefined. */
@@ -271,6 +286,7 @@ export const usePerimeterVault = (): PerimeterVault => {
 
         const exits: PendingExit[] = [];
         const pausedByQueue: Record<string, boolean> = {};
+        let blockStateUnknown = false;
 
         for (const queueAddress of queueAddresses) {
           const queue = new Contract(
@@ -308,14 +324,16 @@ export const usePerimeterVault = (): PerimeterVault => {
           const ownerCode = await resolveOwnerCode(
             requests.map(request => request.owner),
           );
-          const blockStates = await resolveBlockStates(
-            queue,
-            requests.flatMap(request => [
-              request.originator,
-              request.owner,
-              request.receiver,
-            ]),
-          );
+          const { states: blockStates, unknown: theseBlockStatesUnknown } =
+            await resolveBlockStates(
+              queue,
+              requests.flatMap(request => [
+                request.originator,
+                request.owner,
+                request.receiver,
+              ]),
+            );
+          blockStateUnknown = blockStateUnknown || theseBlockStatesUnknown;
 
           uniqueIds.forEach((id, index) => {
             const request = requests[index];
@@ -354,7 +372,7 @@ export const usePerimeterVault = (): PerimeterVault => {
           exits,
           pausedByQueue,
           paused: Object.values(pausedByQueue).some(Boolean),
-          unknown: pointerUnknown,
+          unknown: pointerUnknown || blockStateUnknown,
           forKey: key,
         };
       } catch (error) {

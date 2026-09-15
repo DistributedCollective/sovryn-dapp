@@ -80,10 +80,16 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
   // Read inside `submit`, so a send check that is still running when the
   // dialog closes sees the closed state as soon as it finishes, not the open
-  // state it started with.
+  // state it started with. The dialog's Overlay unmounts this component in
+  // the same commit that flips `isOpen` to false, so an unmounted component
+  // never runs this effect again with the closed value; the cleanup covers
+  // that by reading unmounting itself as closed.
   const isOpenRef = useRef(isOpen);
   useEffect(() => {
     isOpenRef.current = isOpen;
+    return () => {
+      isOpenRef.current = false;
+    };
   }, [isOpen]);
 
   const hasEnoughBalance = useMemo(

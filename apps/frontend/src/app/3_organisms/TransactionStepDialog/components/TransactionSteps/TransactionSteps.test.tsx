@@ -11,7 +11,7 @@ import React from 'react';
 import { BigNumber } from 'ethers';
 import 'jest-canvas-mock';
 
-import { StatusType } from '@sovryn/ui';
+import { Overlay, StatusType } from '@sovryn/ui';
 
 import { i18n } from '../../../../../locales/i18n';
 import {
@@ -385,6 +385,30 @@ describe('TransactionSteps', () => {
       );
     };
 
+    // The dialog's own Overlay unmounts its children the moment it closes, so
+    // this renders through it the way the app does — a harness that only
+    // flips the isOpen prop on a component that stays mounted proves nothing
+    // about a check that finishes after the dialog is gone.
+    const MountedHarness: React.FC<{
+      transaction: Transaction;
+      register: (setOpen: (value: boolean) => void) => void;
+    }> = ({ transaction, register }) => {
+      const [isOpen, setIsOpen] = React.useState(true);
+      React.useEffect(() => {
+        register(setIsOpen);
+      }, [register]);
+      return (
+        <Overlay isOpen={isOpen} fixed portalTarget="body">
+          <TransactionSteps
+            transactions={[transaction]}
+            gasPrice="0.065"
+            setTxTrigger={jest.fn()}
+            isOpen={isOpen}
+          />
+        </Overlay>
+      );
+    };
+
     it('does not ask the wallet once a send check passes after the dialog is closed', async () => {
       let setOpen: (value: boolean) => void = () => {};
       let resolveCheck: () => void = () => {};
@@ -395,7 +419,7 @@ describe('TransactionSteps', () => {
           }),
       );
       render(
-        <Harness
+        <MountedHarness
           transaction={releaseTransaction(beforeSend as never)}
           register={fn => {
             setOpen = fn;

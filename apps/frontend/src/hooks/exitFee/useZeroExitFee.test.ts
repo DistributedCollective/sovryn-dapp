@@ -70,6 +70,12 @@ jest.mock('../../utils/chain', () => ({
   getRskChainId: () => '0x1e',
 }));
 
+// Short enough that the deadline test below does not wait ten real seconds.
+jest.mock('../exitDelay/useExitDelay', () => ({
+  ...jest.requireActual('../exitDelay/useExitDelay'),
+  EXIT_DELAY_QUOTE_TIMEOUT_MS: 50,
+}));
+
 jest.mock('../../store/rxjs/provider-cache', () => ({
   asyncCall: (_key: string, fn: () => unknown) => fn(),
 }));
@@ -228,5 +234,15 @@ describe('useZeroExitFee', () => {
     expect(getExitFeeDisplay(result.current, result.current.feeAmount)).toBe(
       'none',
     );
+  });
+
+  it('reports unknown, not still loading, once its deadline passes without an answer', async () => {
+    mockPreview.mockReturnValue(new Promise(() => undefined)); // never settles
+
+    const { result } = renderHook(() => useZeroExitFee(Decimal.from(1)));
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.unknown).toBe(true);
+    expect(result.current.active).toBe(false);
   });
 });

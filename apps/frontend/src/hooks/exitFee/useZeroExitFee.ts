@@ -14,6 +14,10 @@ import {
   ExitFeeQuote,
 } from '../../utils/exitFee';
 import { readPerimeterPointer } from '../exitDelay/readPerimeterPointer';
+import {
+  EXIT_DELAY_QUOTE_TIMEOUT_MS,
+  useDeadlinePassed,
+} from '../exitDelay/useExitDelay';
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 
@@ -148,11 +152,23 @@ export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
     { ttl: EXIT_FEE_TTL },
   );
 
+  // A quote that has not arrived within the same deadline the delay quote is
+  // given is reported as unreadable, so a form waiting on it can let the
+  // holder sign with the warning rather than wait on a stalled read.
+  const fresh = value.forKey === key;
+  const passed = useDeadlinePassed(
+    key,
+    fresh && !loading,
+    EXIT_DELAY_QUOTE_TIMEOUT_MS,
+  );
+
   return useMemo(() => {
     // A value fetched for a different key belongs to the previous account or
     // gross. Report it as still loading — displayed as nothing charged — rather
     // than showing that other quote's numbers for one frame.
-    const fresh = value.forKey === key;
+    if (!fresh && passed) {
+      return { ...INACTIVE, unknown: true, loading: false };
+    }
     return fresh ? { ...value, loading } : { ...INACTIVE, loading: true };
-  }, [value, loading, key]);
+  }, [value, loading, fresh, passed]);
 };

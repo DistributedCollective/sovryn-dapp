@@ -62,6 +62,13 @@ describe('CloseCreditLine perimeter fee', () => {
 
   beforeEach(() => {
     mockDelay = { delaySeconds: 0, loading: false, unknown: false };
+    Object.assign(mockQuote, {
+      active: true,
+      rateBps: 50,
+      feeAmount: Decimal.from('0.002'),
+      netAmount: Decimal.from('0.398'),
+      loading: false,
+    });
   });
 
   // The hold row links to the Perimeter page, so the form needs a router the
@@ -148,6 +155,27 @@ describe('CloseCreditLine perimeter fee', () => {
 
     it('offers Confirm when the quote could not be read', () => {
       mockDelay = { delaySeconds: 0, loading: false, unknown: true };
+
+      const { container } = renderForm();
+
+      expect(confirm(container)).toBeEnabled();
+    });
+  });
+
+  describe('Confirm and the fee quote', () => {
+    const confirm = (container: HTMLElement) =>
+      container.querySelector('[data-layout-id="close-credit-line-confirm"]');
+
+    it('waits for the fee quote even once the delay has settled', () => {
+      mockQuote.loading = true;
+
+      const { container } = renderForm();
+
+      expect(confirm(container)).toBeDisabled();
+    });
+
+    it('offers Confirm once the fee quote has settled', () => {
+      mockQuote.loading = false;
 
       const { container } = renderForm();
 

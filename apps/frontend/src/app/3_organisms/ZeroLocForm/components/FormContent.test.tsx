@@ -27,23 +27,21 @@ jest.mock('../../../../contexts/NotificationContext', () => {
 // factory can't close over the top-level `Decimal` import directly — pull it
 // via requireActual instead (same pattern as LendingForm.test.tsx).
 let mockDelay: { delaySeconds: number; loading: boolean; unknown: boolean };
+let mockFee: {
+  active: boolean;
+  rateBps: number;
+  feeAmount: Decimal;
+  netAmount: Decimal;
+  loading: boolean;
+};
 
 jest.mock('../../../../hooks/exitDelay/useZeroExitDelayQuote', () => ({
   useZeroExitDelayQuote: () => mockDelay,
 }));
 
-jest.mock('../../../../hooks/exitFee/useZeroExitFee', () => {
-  const { Decimal: ActualDecimal } = jest.requireActual('@sovryn/utils');
-  return {
-    useZeroExitFee: () => ({
-      active: true,
-      rateBps: 50,
-      feeAmount: ActualDecimal.ZERO,
-      netAmount: ActualDecimal.ZERO,
-      loading: false,
-    }),
-  };
-});
+jest.mock('../../../../hooks/exitFee/useZeroExitFee', () => ({
+  useZeroExitFee: () => mockFee,
+}));
 
 jest.mock('../../../../hooks/useMaintenance', () => ({
   useMaintenance: () => ({
@@ -103,6 +101,13 @@ describe('FormContent perimeter fee', () => {
 
   beforeEach(() => {
     mockDelay = { delaySeconds: 0, loading: false, unknown: false };
+    mockFee = {
+      active: true,
+      rateBps: 50,
+      feeAmount: Decimal.ZERO,
+      netAmount: Decimal.ZERO,
+      loading: false,
+    };
   });
 
   // The hold row links to the Perimeter page, so the form needs a router the
@@ -195,6 +200,37 @@ describe('FormContent perimeter fee', () => {
 
     it('does not hold an adjust that removes no collateral back for the quote', () => {
       mockDelay = { delaySeconds: 0, loading: true, unknown: false };
+
+      const { container } = renderForm({ collateralType: AmountType.Add });
+
+      expect(confirm(container)).toBeEnabled();
+    });
+  });
+
+  describe('Confirm and the fee quote', () => {
+    const confirm = (container: HTMLElement) =>
+      container.querySelector(
+        '[data-layout-id="adjust-credit-line-confirm-button"]',
+      );
+
+    it('waits for the fee quote on a collateral withdrawal even once the delay has settled', () => {
+      mockFee.loading = true;
+
+      const { container } = renderForm();
+
+      expect(confirm(container)).toBeDisabled();
+    });
+
+    it('offers Confirm once the fee quote has settled', () => {
+      mockFee.loading = false;
+
+      const { container } = renderForm();
+
+      expect(confirm(container)).toBeEnabled();
+    });
+
+    it('does not hold an adjust that removes no collateral back for the fee quote', () => {
+      mockFee.loading = true;
 
       const { container } = renderForm({ collateralType: AmountType.Add });
 

@@ -47,6 +47,12 @@ jest.mock('../useAccount', () => ({
   useAccount: () => ({ account: mockAccount }),
 }));
 
+// Short enough that the hung-read test below does not wait ten real seconds.
+jest.mock('../../utils/exitDelay', () => ({
+  ...jest.requireActual('../../utils/exitDelay'),
+  RELEASE_READ_TIMEOUT_MS: 50,
+}));
+
 const request = (overrides: Record<string, unknown> = {}) => ({
   amount: BigNumber.from('1500000000000000000'),
   createdAt: BigNumber.from(1_800_000_000),
@@ -161,6 +167,34 @@ describe('usePerimeterHistory', () => {
     await waitFor(() => expect(result.current.exits).toHaveLength(1));
 
     expect(result.current.exits[0].id).toBe('8');
+    expect(result.current.unknown).toBe(true);
+  });
+
+  it('reports a remembered withdrawal the queue no longer holds as unknown, not as nothing remembered', async () => {
+    // A remembered id was seen queued in this same queue, so a node reporting
+    // no such request means the node does not hold it, not that it never
+    // existed. The release path already treats status None this way.
+    const { rerender, result } = await settled(false, live('7', '8'));
+    mockGetRequest.mockImplementation(async (_queue: string, id: string) =>
+      request({ status: id === '7' ? ExitStatus.None : ExitStatus.Executed }),
+    );
+
+    rerender({ on: true, rows: [] });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await waitFor(() => expect(result.current.exits).toHaveLength(1));
+
+    expect(result.current.exits[0].id).toBe('8');
+    expect(result.current.unknown).toBe(true);
+  });
+
+  it('gives up on a read that never answers, and reports the history as unknown', async () => {
+    const { rerender, result } = await settled(false, live('7'));
+    mockGetRequest.mockReturnValue(new Promise(() => undefined));
+
+    rerender({ on: true, rows: [] });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    expect(result.current.exits).toEqual([]);
     expect(result.current.unknown).toBe(true);
   });
 

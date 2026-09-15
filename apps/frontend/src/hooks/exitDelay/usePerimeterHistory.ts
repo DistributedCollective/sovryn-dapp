@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Contract } from 'ethers';
 
@@ -6,9 +6,15 @@ import { getProvider } from '@sovryn/ethers-provider';
 
 import { RSK_CHAIN_ID } from '../../config/chains';
 
-import { ExitStatus, PendingExit, exitKey } from '../../utils/exitDelay';
+import {
+  ExitStatus,
+  PendingExit,
+  RELEASE_READ_TIMEOUT_MS,
+  exitKey,
+} from '../../utils/exitDelay';
 import { rememberExits, rememberedExits } from '../../utils/exitDelayHistory';
 import { useAccount } from '../useAccount';
+import { boundedBy } from './rawCall';
 import { resolveAmount } from './usePerimeterVault';
 
 const QUEUE_ABI = [
@@ -25,6 +31,11 @@ export type PerimeterHistory = {
 
 const EMPTY: PerimeterHistory = { exits: [], loading: false, unknown: false };
 
+/** Stamped with whether the state below is this hook's answer for `enabled`. */
+type HistoryState = PerimeterHistory & { forEnabled: boolean };
+
+const EMPTY_STATE: HistoryState = { ...EMPTY, forEnabled: false };
+
 /**
  * Released, or otherwise settled, withdrawals: the ids this browser has seen
  * for the account that are not in the live list, each read back from its
@@ -36,7 +47,7 @@ export const usePerimeterHistory = (
   live: PendingExit[],
 ): PerimeterHistory => {
   const { account } = useAccount();
-  const [history, setHistory] = useState<PerimeterHistory>(EMPTY);
+  const [history, setHistory] = useState<HistoryState>(EMPTY_STATE);
 
   const liveKeys = live.map(exitKey).join(',');
 
@@ -49,11 +60,11 @@ export const usePerimeterHistory = (
 
   useEffect(() => {
     if (!enabled || !account) {
-      setHistory(EMPTY);
+      setHistory({ ...EMPTY, forEnabled: enabled });
       return;
     }
     let cancelled = false;
-    setHistory({ ...EMPTY, loading: true });
+    setHistory({ ...EMPTY, loading: true, forEnabled: true });
     const remembered = rememberedExits(RSK_CHAIN_ID, account).filter(
       entry => !live.some(exit => exitKey(exit) === exitKey(entry)),
     );
@@ -65,9 +76,19 @@ export const usePerimeterHistory = (
         remembered.map(async entry => {
           try {
             const queue = new Contract(entry.queueAddress, QUEUE_ABI, provider);
-            const request = await queue.getRequest(entry.id);
+            const request = await boundedBy(
+              queue.getRequest(entry.id),
+              RELEASE_READ_TIMEOUT_MS,
+            );
             const status = Number(request.status) as ExitStatus;
-            if (status === ExitStatus.None || status === ExitStatus.Queued) {
+            if (status === ExitStatus.Queued) {
+              return;
+            }
+            if (status === ExitStatus.None) {
+              // A remembered id was seen queued in this same queue, so a node
+              // answering that it holds no such request has not read it, not
+              // told us it never existed.
+              unknown = true;
               return;
             }
             exits.push({
@@ -96,7 +117,7 @@ export const usePerimeterHistory = (
       );
       if (!cancelled) {
         exits.sort((a, b) => b.unlockAt - a.unlockAt);
-        setHistory({ exits, loading: false, unknown });
+        setHistory({ exits, loading: false, unknown, forEnabled: true });
       }
     })();
     return () => {
@@ -105,5 +126,15 @@ export const usePerimeterHistory = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, account, liveKeys]);
 
-  return history;
+  // A history not yet read for the current value of `enabled` still belongs
+  // to the previous one — off, or a different account's read — so the render
+  // that flips the switch on reports loading immediately rather than
+  // painting "nothing remembered" for a frame before the read has started.
+  return useMemo(() => {
+    if (enabled && !history.forEnabled) {
+      return { exits: [], loading: true, unknown: false };
+    }
+    const { forEnabled, ...rest } = history;
+    return rest;
+  }, [enabled, history]);
 };

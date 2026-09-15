@@ -557,6 +557,24 @@ describe('PerimeterPage', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('says a partial history could not be fully read even while it lists what it did get', () => {
+      mockHistory.mockImplementation((enabled: boolean) => ({
+        exits: enabled ? [exit({ id: '5', status: ExitStatus.Executed })] : [],
+        loading: false,
+        unknown: enabled,
+      }));
+      const { container } = render(<PerimeterPage />);
+
+      fireEvent.click(screen.getByText('Show history'));
+
+      expect(screen.getByText('Settled')).toBeInTheDocument();
+      expect(
+        container.querySelector(
+          '[data-layout-id="perimeter-history-unreadable"]',
+        ),
+      ).toBeInTheDocument();
+    });
+
     it('offers no history switch without a wallet', () => {
       mockAccount = undefined;
       render(<PerimeterPage />);

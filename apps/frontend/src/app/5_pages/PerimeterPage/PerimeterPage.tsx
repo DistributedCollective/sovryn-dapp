@@ -331,6 +331,15 @@ const PerimeterPage: FC = () => {
               {t(translations.perimeterPage.unreadable)}
             </Paragraph>
           )}
+          {showHistory && (history.unknown || clockUnreadable) && account && (
+            <Paragraph
+              size={ParagraphSize.small}
+              className="text-center mb-4"
+              dataAttribute="perimeter-history-unreadable"
+            >
+              {t(translations.perimeterPage.history.unreadable)}
+            </Paragraph>
+          )}
           <div className="w-full max-w-5xl">
             {account && (
               <div className="flex justify-end mb-3">

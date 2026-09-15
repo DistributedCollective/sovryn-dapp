@@ -30,6 +30,7 @@ import { usePerimeterRelease } from '../../../hooks/exitDelay/usePerimeterReleas
 import { usePerimeterVault } from '../../../hooks/exitDelay/usePerimeterVault';
 import { useAccount } from '../../../hooks/useAccount';
 import { useChainStore } from '../../../hooks/useChainStore';
+import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations } from '../../../locales/i18n';
 import {
   canExecuteExit,
@@ -57,9 +58,15 @@ const PerimeterPage: FC = () => {
 
   // Every withdrawal here lives in the RSK vault. The release checks its own
   // network at the press regardless; this only decides whether the button
-  // offers itself as pressable.
+  // offers itself as pressable. Wrong network is judged the same way the
+  // header's own check judges it: the app's selected network, or a connected
+  // wallet whose own network disagrees with it.
   const { currentChainId } = useChainStore();
-  const wrongNetwork = currentChainId !== RSK_CHAIN_ID;
+  const { wallets } = useWalletConnect();
+  const walletConnected = !!wallets[0]?.accounts[0]?.address;
+  const wrongNetwork =
+    currentChainId !== RSK_CHAIN_ID ||
+    (walletConnected && wallets[0]?.chains[0]?.id !== RSK_CHAIN_ID);
 
   // Chain time, not the browser's: the queue compares block.timestamp, and a
   // machine whose clock runs fast would otherwise offer a release that reverts
@@ -238,6 +245,12 @@ const PerimeterPage: FC = () => {
               disabled={!wrongNetwork}
               content={t(translations.perimeterPage.wrongNetworkTooltip)}
               dataAttribute={`perimeter-release-tooltip-${exitKey(row)}`}
+              // The network banner sets pointer-events-none on everything
+              // beneath it; this puts it back on the wrapper the tooltip
+              // hovers, and takes it off the button itself so the hover
+              // lands on the wrapper rather than being swallowed by a
+              // disabled button.
+              className="pointer-events-auto"
               children={
                 <div>
                   <Button
@@ -251,6 +264,7 @@ const PerimeterPage: FC = () => {
                     size={ButtonSize.small}
                     style={ButtonStyle.secondary}
                     disabled={wrongNetwork || !!checking}
+                    className={wrongNetwork ? 'pointer-events-none' : undefined}
                     onClick={() => handleRelease(row)}
                     dataAttribute={`perimeter-release-${exitKey(row)}`}
                   />
@@ -339,6 +353,7 @@ const PerimeterPage: FC = () => {
                   disabled={!wrongNetwork}
                   content={t(translations.perimeterPage.wrongNetworkTooltip)}
                   dataAttribute="perimeter-release-all-tooltip"
+                  className="pointer-events-auto"
                   children={
                     <div>
                       <Button
@@ -352,6 +367,9 @@ const PerimeterPage: FC = () => {
                         size={ButtonSize.small}
                         style={ButtonStyle.primary}
                         disabled={wrongNetwork || !!checking}
+                        className={
+                          wrongNetwork ? 'pointer-events-none' : undefined
+                        }
                         onClick={handleReleaseAll}
                         dataAttribute="perimeter-release-all"
                       />

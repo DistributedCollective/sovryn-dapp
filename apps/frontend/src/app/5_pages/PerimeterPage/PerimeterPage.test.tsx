@@ -36,6 +36,10 @@ let mockVault: {
 let mockChainTime: { now: number; blockTime: number; unreadable: boolean };
 const mockHistory = jest.fn();
 let mockCurrentChainId: string;
+let mockWallets: {
+  chains: { id: string }[];
+  accounts: { address: string }[];
+}[];
 
 jest.mock('nanoid', () => ({ nanoid: () => '1234' }));
 
@@ -75,6 +79,10 @@ jest.mock('../../../hooks/useChainStore', () => ({
     currentChainId: mockCurrentChainId,
     setCurrentChainId: jest.fn(),
   }),
+}));
+
+jest.mock('../../../hooks/useWalletConnect', () => ({
+  useWalletConnect: () => ({ wallets: mockWallets }),
 }));
 
 const NOW = 1_800_000_000;
@@ -118,6 +126,7 @@ describe('PerimeterPage', () => {
     mockAccount = ACCOUNT;
     mockChainTime = { now: NOW, blockTime: NOW, unreadable: false };
     mockCurrentChainId = RSK_CHAIN_ID;
+    mockWallets = [];
     mockVault = {
       exits: [],
       pausedByQueue: {},
@@ -364,6 +373,49 @@ describe('PerimeterPage', () => {
     );
     userEvent.hover(allTooltip!);
     expect(screen.getAllByText('wrong network').length).toBeGreaterThan(1);
+  });
+
+  it('disables Release and Release all when the wallet itself is on another network, even though the app is on Rootstock', () => {
+    mockWallets = [
+      { chains: [{ id: '0x1' }], accounts: [{ address: ACCOUNT }] },
+    ];
+    mockVault.exits = [exit({ id: '7' }), exit({ id: '8' })];
+    const { container } = render(<PerimeterPage />);
+
+    expect(releaseButton(container, QUEUE, '7')).toBeDisabled();
+    expect(
+      container.querySelector('[data-layout-id="perimeter-release-all"]'),
+    ).toBeDisabled();
+  });
+
+  it('leaves Release enabled when the wallet is disconnected but the app is on Rootstock', () => {
+    mockWallets = [];
+    mockVault.exits = [exit({ id: '7' })];
+    const { container } = render(<PerimeterPage />);
+
+    expect(releaseButton(container, QUEUE, '7')).toBeEnabled();
+  });
+
+  it('lets a wrong-network tooltip be hovered under the network banner', () => {
+    // pointer-events-none from the banner would otherwise starve the wrapper
+    // of hover, so it is put back explicitly; jsdom applies none of the
+    // Tailwind classes, so this pins the class rather than real hover.
+    mockCurrentChainId = '0x1';
+    mockVault.exits = [exit({ id: '7' }), exit({ id: '8' })];
+    const { container } = render(<PerimeterPage />);
+
+    const buttonTooltip = container.querySelector(
+      `[data-layout-id="perimeter-release-tooltip-${exitKey({
+        queueAddress: QUEUE,
+        id: '7',
+      })}"]`,
+    );
+    expect(buttonTooltip).toHaveClass('pointer-events-auto');
+
+    const allTooltip = container.querySelector(
+      '[data-layout-id="perimeter-release-all-tooltip"]',
+    );
+    expect(allTooltip).toHaveClass('pointer-events-auto');
   });
 
   it('offers Release on an unlocked row and hands the row to the release check', () => {

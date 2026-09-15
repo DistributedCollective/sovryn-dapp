@@ -2117,6 +2117,7 @@
     },
     "release": "Release",
     "checking": "Checking…",
+    "wrongNetworkTooltip": "wrong network",
     "readyNow": "Now",
     "contractOwnerNotice": "Owned by a contract: the product you used holds this withdrawal.",
     "tx": {

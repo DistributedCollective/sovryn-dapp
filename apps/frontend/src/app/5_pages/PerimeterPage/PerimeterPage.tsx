@@ -12,6 +12,7 @@ import {
   Paragraph,
   ParagraphSize,
   Table,
+  Tooltip,
   TooltipTrigger,
 } from '@sovryn/ui';
 
@@ -28,6 +29,7 @@ import { usePerimeterHistory } from '../../../hooks/exitDelay/usePerimeterHistor
 import { usePerimeterRelease } from '../../../hooks/exitDelay/usePerimeterRelease';
 import { usePerimeterVault } from '../../../hooks/exitDelay/usePerimeterVault';
 import { useAccount } from '../../../hooks/useAccount';
+import { useChainStore } from '../../../hooks/useChainStore';
 import { translations } from '../../../locales/i18n';
 import {
   canExecuteExit,
@@ -52,6 +54,12 @@ const PerimeterPage: FC = () => {
   const { account } = useAccount();
   const { exits, pausedByQueue, paused, loading, unknown } =
     usePerimeterVault();
+
+  // Every withdrawal here lives in the RSK vault. The release checks its own
+  // network at the press regardless; this only decides whether the button
+  // offers itself as pressable.
+  const { currentChainId } = useChainStore();
+  const wrongNetwork = currentChainId !== RSK_CHAIN_ID;
 
   // Chain time, not the browser's: the queue compares block.timestamp, and a
   // machine whose clock runs fast would otherwise offer a release that reverts
@@ -226,24 +234,33 @@ const PerimeterPage: FC = () => {
           // Offered for exactly the states the contract's time, pause and
           // executor checks accept; the block check runs on the press itself.
           canExecuteExit(row.state) ? (
-            <Button
-              text={
-                checking &&
-                !checking.all &&
-                checking.keys.includes(exitKey(row))
-                  ? t(translations.perimeterPage.checking)
-                  : t(translations.perimeterPage.release)
+            <Tooltip
+              disabled={!wrongNetwork}
+              content={t(translations.perimeterPage.wrongNetworkTooltip)}
+              dataAttribute={`perimeter-release-tooltip-${exitKey(row)}`}
+              children={
+                <div>
+                  <Button
+                    text={
+                      checking &&
+                      !checking.all &&
+                      checking.keys.includes(exitKey(row))
+                        ? t(translations.perimeterPage.checking)
+                        : t(translations.perimeterPage.release)
+                    }
+                    size={ButtonSize.small}
+                    style={ButtonStyle.secondary}
+                    disabled={wrongNetwork || !!checking}
+                    onClick={() => handleRelease(row)}
+                    dataAttribute={`perimeter-release-${exitKey(row)}`}
+                  />
+                </div>
               }
-              size={ButtonSize.small}
-              style={ButtonStyle.secondary}
-              disabled={!!checking}
-              onClick={() => handleRelease(row)}
-              dataAttribute={`perimeter-release-${exitKey(row)}`}
             />
           ) : null,
       },
     ],
-    [checking, handleRelease, now],
+    [checking, handleRelease, now, wrongNetwork],
   );
 
   // "No delayed withdrawals" is a definitive statement, and only a
@@ -318,19 +335,28 @@ const PerimeterPage: FC = () => {
             )}
             {!showHistory && releasableRows.length > 1 && (
               <div className="flex justify-end mb-3">
-                <Button
-                  text={
-                    checking?.all
-                      ? t(translations.perimeterPage.checking)
-                      : t(translations.perimeterPage.releaseAll, {
-                          count: releasableRows.length,
-                        })
+                <Tooltip
+                  disabled={!wrongNetwork}
+                  content={t(translations.perimeterPage.wrongNetworkTooltip)}
+                  dataAttribute="perimeter-release-all-tooltip"
+                  children={
+                    <div>
+                      <Button
+                        text={
+                          checking?.all
+                            ? t(translations.perimeterPage.checking)
+                            : t(translations.perimeterPage.releaseAll, {
+                                count: releasableRows.length,
+                              })
+                        }
+                        size={ButtonSize.small}
+                        style={ButtonStyle.primary}
+                        disabled={wrongNetwork || !!checking}
+                        onClick={handleReleaseAll}
+                        dataAttribute="perimeter-release-all"
+                      />
+                    </div>
                   }
-                  size={ButtonSize.small}
-                  style={ButtonStyle.primary}
-                  disabled={!!checking}
-                  onClick={handleReleaseAll}
-                  dataAttribute="perimeter-release-all"
                 />
               </div>
             )}

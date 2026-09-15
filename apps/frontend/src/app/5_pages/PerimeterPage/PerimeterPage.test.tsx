@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import React from 'react';
 
@@ -334,13 +335,35 @@ describe('PerimeterPage', () => {
     expect(screen.getAllByText('1d 1h').length).toBeGreaterThan(0);
   });
 
-  it('withholds the release controls on the wrong network', () => {
+  it('disables Release and Release all with a wrong-network tooltip when the wallet is on another network', () => {
     mockCurrentChainId = '0x1';
-    mockVault.exits = [exit()];
+    mockVault.exits = [exit({ id: '7' }), exit({ id: '8' })];
     const { container } = render(<PerimeterPage />);
 
-    expect(container.querySelector('.pointer-events-none')).toBeInTheDocument();
-    expect(screen.getAllByText(/switch/i).length).toBeGreaterThan(0);
+    const button = releaseButton(container, QUEUE, '7');
+    expect(button).toBeInTheDocument();
+    expect(button).toBeDisabled();
+
+    const buttonTooltip = container.querySelector(
+      `[data-layout-id="perimeter-release-tooltip-${exitKey({
+        queueAddress: QUEUE,
+        id: '7',
+      })}"]`,
+    );
+    userEvent.hover(buttonTooltip!);
+    expect(screen.getAllByText('wrong network').length).toBeGreaterThan(0);
+
+    const allButton = container.querySelector(
+      '[data-layout-id="perimeter-release-all"]',
+    );
+    expect(allButton).toBeInTheDocument();
+    expect(allButton).toBeDisabled();
+
+    const allTooltip = container.querySelector(
+      '[data-layout-id="perimeter-release-all-tooltip"]',
+    );
+    userEvent.hover(allTooltip!);
+    expect(screen.getAllByText('wrong network').length).toBeGreaterThan(1);
   });
 
   it('offers Release on an unlocked row and hands the row to the release check', () => {

@@ -151,7 +151,7 @@ describe('exitDelay utils', () => {
       ).toEqual(PendingExitState.NotExecutor);
     });
 
-    it('shows a frozen party as under investigation once the time has passed, and says nothing of a blacklisted one', () => {
+    it("shows a frozen party as under investigation once the time has passed; a blacklisted party's row reads Ready", () => {
       const frozen = { ...queued(NOW - 60), blockedState: BlockState.Frozen };
       expect(
         getPendingExitState(frozen, false, OWNER, { now: NOW, blockTime: NOW }),
@@ -165,7 +165,6 @@ describe('exitDelay utils', () => {
           { now: NOW, blockTime: NOW },
         ),
       ).toBe(PendingExitState.Locked);
-      // A blacklisted party reads as ready; the release simply fails.
       expect(
         getPendingExitState(
           { ...queued(NOW - 60), blockedState: BlockState.Blacklisted },

@@ -309,7 +309,7 @@ describe('usePerimeterRelease', () => {
       expect(text).toContain(
         'Withdrawal #7 was not released because the queue would refuse it.',
       );
-      // Neither the party nor the state is told to whoever pressed the button.
+      // The refusal reads the same whichever party or state triggered it.
       expect(text).not.toContain(party);
       expect(text).not.toContain(state);
     },

@@ -81,7 +81,7 @@ export const useExitFeeRate = (
 
         // Known and accepted: the pointer is cached for a TTL under a key with
         // no block dimension, and a refetch only runs on the next observed
-        // block, so at the moment governance pins the controller an open
+        // block, so at the moment the Owner pins the controller an open
         // client can report "no fee" for up to one TTL plus one block (about
         // 60 s on RSK) while the chain has started charging. Bounded,
         // one-time, and covered by the release order: the dapp ships before

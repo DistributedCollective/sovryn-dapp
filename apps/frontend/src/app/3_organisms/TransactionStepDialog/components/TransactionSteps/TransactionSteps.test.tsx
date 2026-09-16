@@ -132,7 +132,7 @@ describe('TransactionSteps', () => {
 
   it('never asks the wallet when the send check refuses, and says nothing was sent and why, with Retry offered', async () => {
     const reason =
-      'Withdrawal #8 was not released because the receiver is frozen.';
+      'Withdrawal #8 was not released because the queue would refuse it.';
     const beforeSend = jest.fn().mockRejectedValue(sendRefusal([reason]));
     const onTxStatusChange = jest.fn();
     render(

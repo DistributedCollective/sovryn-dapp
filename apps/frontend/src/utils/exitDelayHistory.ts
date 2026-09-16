@@ -1,9 +1,9 @@
 /**
  * Which of an account's delayed withdrawals this browser has seen, by queue
  * and id. The queue lists only withdrawals still waiting, so once one is
- * released it drops out of every read; these ids are what let the page read a
- * released withdrawal back from the chain as history. Kept in the browser,
- * for this chain and account, and never trusted for anything but the id.
+ * released it drops out of every read; these ids and queue addresses are what
+ * let the page read a released withdrawal back from the chain as history.
+ * Kept in the browser, for this chain and account.
  */
 
 export type RememberedExit = { queueAddress: string; id: string };

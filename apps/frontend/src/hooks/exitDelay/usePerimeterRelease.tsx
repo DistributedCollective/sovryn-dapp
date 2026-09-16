@@ -56,19 +56,7 @@ const QUEUE_ERRORS = new utils.Interface([
 /** Long enough to read a list of withdrawals that were not released. */
 const REFUSAL_TIMEOUT_MS = 30_000;
 
-type Party = 'account' | 'originator' | 'owner' | 'receiver';
-
-type BlockName = 'frozen' | 'blacklisted';
-
-type BlockCheck =
-  | { kind: 'clear' }
-  | { kind: 'blocked'; party: Party; state: BlockName }
-  | { kind: 'unreadable' };
-
-const BLOCK_NAMES: Partial<Record<number, BlockName>> = {
-  [BlockState.Frozen]: 'frozen',
-  [BlockState.Blacklisted]: 'blacklisted',
-};
+type BlockCheck = 'clear' | 'blocked' | 'unreadable';
 
 type WalletState =
   | 'ready'
@@ -142,24 +130,13 @@ const readStatus = async (row: ReleaseRow): Promise<number | undefined> => {
 };
 
 /**
- * Read, fresh from the queue, whether a party the delivery rule checks is
- * blocked.
- *
- * The parties are checked in the contract's order — the address that started
- * the withdrawal, the position owner, the receiver — and the first blocked one
- * is named; a party that is the connected account is named as the holder's own
- * address whatever its role. A read that fails, or a state outside the known
- * values, is unreadable: nothing may be sent on it.
+ * Read, fresh from the queue, whether any party the delivery rule checks —
+ * the address that started the withdrawal, the position owner, the receiver
+ * — is blocked. A read that fails, or a state outside the known values, is
+ * unreadable: nothing may be sent on it.
  */
-const checkBlocks = async (
-  row: ReleaseRow,
-  account: string,
-): Promise<BlockCheck> => {
-  const parties: [Party, string][] = [
-    ['originator', row.originator],
-    ['owner', row.owner],
-    ['receiver', row.receiver],
-  ];
+const checkBlocks = async (row: ReleaseRow): Promise<BlockCheck> => {
+  const addresses = [row.originator, row.owner, row.receiver];
 
   let states: number[];
   try {
@@ -178,35 +155,25 @@ const checkBlocks = async (
       reads.set(key, read);
       return read;
     };
-    states = await Promise.all(
-      parties.map(([, address]) => readState(address)),
-    );
+    states = await Promise.all(addresses.map(readState));
   } catch (error) {
-    return { kind: 'unreadable' };
+    return 'unreadable';
   }
 
-  for (let index = 0; index < parties.length; index++) {
-    if (states[index] === BlockState.None) {
+  for (const state of states) {
+    if (state === BlockState.None) {
       continue;
     }
-    const state = BLOCK_NAMES[states[index]];
-    if (!state) {
-      return { kind: 'unreadable' };
+    if (state !== BlockState.Frozen && state !== BlockState.Blacklisted) {
+      return 'unreadable';
     }
-    const [role, address] = parties[index];
-    return {
-      kind: 'blocked',
-      party: address.toLowerCase() === account.toLowerCase() ? 'account' : role,
-      state,
-    };
+    return 'blocked';
   }
-  return { kind: 'clear' };
+  return 'clear';
 };
 
-// A refusal for a blocked party says only that the release was refused: which
-// party and which state are not told to whoever pressed the button.
 const blockRefusal = (row: ReleaseRow, check: BlockCheck): string =>
-  check.kind === 'blocked'
+  check === 'blocked'
     ? rowsRefusal(
         [row],
         t(translations.perimeterPage.releaseRefused.reason.refused),
@@ -241,11 +208,7 @@ type Refusal =
  * Why the queue would refuse a delivery, in plain words, from its revert data,
  * and which of the withdrawals asked about it names, when it names any.
  */
-const refusalOf = (
-  data: string | undefined,
-  rows: ReleaseRow[],
-  account: string,
-): Refusal => {
+const refusalOf = (data: string | undefined, rows: ReleaseRow[]): Refusal => {
   const reasons = translations.perimeterPage.releaseRefused.reason;
   let error: ReturnType<typeof QUEUE_ERRORS.parseError> | undefined;
   try {
@@ -280,7 +243,6 @@ const refusalOf = (
     case 'NotExecutor':
       return { kind: 'refused', reason: t(reasons.notExecutor) };
     case 'ActorBlocked': {
-      // Which party, and whether frozen or blacklisted, is not said here.
       const actor = String(error.args.actor).toLowerCase();
       return {
         kind: 'refused',
@@ -354,7 +316,7 @@ const dryRun = async (
       return { kind: 'accepted' };
     }
     if (outcome.kind === 'reverted') {
-      return refusalOf(outcome.data, rows, account);
+      return refusalOf(outcome.data, rows);
     }
   } catch (error) {
     // Treated below as a dry run that could not be completed.
@@ -509,11 +471,9 @@ const checkRelease = async (
     }
   });
 
-  const checks = await Promise.all(
-    queued.map(row => checkBlocks(row, account)),
-  );
+  const checks = await Promise.all(queued.map(row => checkBlocks(row)));
   const clear = queued.filter((row, index) => {
-    if (checks[index].kind === 'clear') {
+    if (checks[index] === 'clear') {
       return true;
     }
     refusals.push(blockRefusal(row, checks[index]));
@@ -659,9 +619,9 @@ const autoReleaseGasLimit = async (
  *    leaves the page through `onReleased`; a row resolved away by recovery
  *    leaves it too, and is named with what happened to it. A status that says
  *    nothing about the request, or no answer, keeps the row and sends nothing;
- * 3. gives the rows still queued the block check. A withdrawal whose party is
- *    frozen or blacklisted looks like any other row, and this is where the
- *    block is revealed: that row is not sent;
+ * 3. gives the rows still queued the block check: a withdrawal whose party is
+ *    frozen or blacklisted is not sent, and the refusal names neither the
+ *    party nor the state;
  * 4. asks the queue, in a dry run from the holder's address, whether it would
  *    accept each queue's release, dropping each withdrawal it refuses by name.
  *

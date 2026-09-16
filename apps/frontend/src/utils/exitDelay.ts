@@ -144,7 +144,7 @@ export const NO_EXIT_DELAY: ExitDelayQuote = {
  * that, so on its own it cannot tell a hold of zero from a hold nobody could
  * read — and silence is truthful only for the first. `getExitDelayDisplay` is
  * the exported entry point; keeping this private makes the mistake a compile
- * error rather than a review finding.
+ * error instead of a bug a caller could introduce unnoticed.
  */
 const isExitDelayShown = (delaySeconds: number): boolean => delaySeconds > 0;
 
@@ -274,9 +274,9 @@ export type ChainTimes = {
  * time is judged twice: the ticking clock says when the delay has ended, and
  * the latest block's own timestamp says when a release can pass, because the
  * queue compares `block.timestamp`. Between the two the exit is unlocking.
- * A frozen party shows as under investigation once the time has passed; a
- * blacklisted party shows nothing — the row reads as ready and the release
- * simply fails.
+ * A frozen party shows as under investigation once the time has passed. A
+ * blacklisted party is not given a state of its own here: its row reads
+ * Ready, same as any other unlocked one.
  */
 export const getPendingExitState = (
   exit: Pick<

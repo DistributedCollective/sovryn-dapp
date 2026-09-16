@@ -453,8 +453,7 @@ describe('PerimeterPage', () => {
     expect(screen.getAllByText('Delayed').length).toBeGreaterThan(0);
   });
 
-  it('shows a blacklisted party as ready and says nothing about the block', () => {
-    // The block is checked on the press, and the refusal names no party.
+  it("shows a blacklisted party's row as ready", () => {
     mockVault.exits = [exit({ blockedState: 2 })];
     const { container } = render(<PerimeterPage />);
 

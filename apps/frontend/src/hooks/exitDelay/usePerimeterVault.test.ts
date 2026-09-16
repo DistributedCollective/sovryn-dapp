@@ -349,6 +349,30 @@ describe('usePerimeterVault', () => {
     expect(result.current.unknown).toBe(true);
   });
 
+  it('reports the vault as unknown when a request comes back with the zero status, and still lists the row', async () => {
+    // The zero status means the queue holds no such request at all — a node
+    // that did not state the record, not a withdrawal settled with a real
+    // answer of zero-everything.
+    holding(7);
+    mockGetRequest.mockResolvedValue(request({ status: 0 }));
+
+    const result = await settled();
+
+    expect(result.current.exits).toHaveLength(1);
+    expect(result.current.exits[0].status).toBe(0);
+    expect(result.current.unknown).toBe(true);
+  });
+
+  it('reports the vault as unknown when a request status is outside the values the queue defines', async () => {
+    holding(7);
+    mockGetRequest.mockResolvedValue(request({ status: 9 }));
+
+    const result = await settled();
+
+    expect(result.current.exits).toHaveLength(1);
+    expect(result.current.unknown).toBe(true);
+  });
+
   it("lists holds from Zero's queue as well as the protocol's", async () => {
     // The two pointers are independently settable. If they diverge, a Zero
     // close form promises the holder they can release on this page, and the

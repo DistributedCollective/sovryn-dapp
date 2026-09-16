@@ -2106,7 +2106,8 @@
       "paused": "Paused",
       "settled": "Settled",
       "resolvedByOwner": "Resolved by owner",
-      "resolvedToProtocol": "Returned to the product"
+      "resolvedToProtocol": "Returned to the product",
+      "unreadable": "Could not be read"
     },
     "statusTooltip": {
       "locked": "Still inside its withdrawal delay. It becomes releasable at the time shown.",
@@ -2117,7 +2118,8 @@
       "paused": "Releases are paused across the whole perimeter. Nothing is lost; try again once they resume.",
       "settled": "Already paid out. Nothing left to do.",
       "resolvedByOwner": "The Owner moved this withdrawal to a recovery destination.",
-      "resolvedToProtocol": "Sent to a recovery destination approved in advance for the product it came from."
+      "resolvedToProtocol": "Sent to a recovery destination approved in advance for the product it came from.",
+      "unreadable": "We could not read this withdrawal just now. It has not been shown as released. Try again in a moment."
     },
     "release": "Release",
     "checking": "Checking…",

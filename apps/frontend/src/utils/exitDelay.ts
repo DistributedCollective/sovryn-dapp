@@ -60,6 +60,13 @@ export enum PendingExitState {
   Paused = 'paused',
   /** Paid out to its receiver. */
   Settled = 'settled',
+  /**
+   * The queue's answer for this request was the zero value, meaning it holds
+   * no such request at all, or a value outside the five it defines. Neither
+   * is a stated outcome: the row is kept and read this way rather than as
+   * Settled, which would tell the holder their money already arrived.
+   */
+  Unreadable = 'unreadable',
   /** Sent by the Owner to a recovery destination it chose. */
   ResolvedByOwner = 'resolvedByOwner',
   /** Sent to a recovery destination approved in advance for its product. */
@@ -267,6 +274,18 @@ export type ChainTimes = {
 };
 
 /**
+ * Whether the queue actually stated this outcome, rather than answering with
+ * the zero value — no such request at all — or a number outside the five it
+ * defines. Both of those are a read that did not complete, never a fact about
+ * the withdrawal, and must not be read as Settled.
+ */
+export const isStatedExitStatus = (status: number): status is ExitStatus =>
+  status === ExitStatus.Queued ||
+  status === ExitStatus.Executed ||
+  status === ExitStatus.ResolvedToProtocol ||
+  status === ExitStatus.ResolvedByOwner;
+
+/**
  * Resolve what an exit shows right now.
  *
  * A terminal status is reported before the pause, the unlock time or the
@@ -276,14 +295,17 @@ export type ChainTimes = {
  * first, then whether the request is unknown, then a non-waiting status, then
  * the unlock time, then the executor, and only then the parties' block states
  * — because it is deciding which revert to raise, not what to tell the person
- * waiting on the money; both orders are right for their own job. The unlock
- * time here is judged twice: the ticking clock says when the delay has ended,
- * and the latest block's own timestamp says when a release can pass, because
- * the queue compares `block.timestamp`. Between the two the exit is
- * unlocking. A frozen party shows as under investigation once the time has
- * passed, checked here ahead of the executor though the contract checks it
- * after. A blacklisted party is not given a state of its own here: its row
- * reads Ready, same as any other unlocked one.
+ * waiting on the money; both orders are right for their own job. A status the
+ * queue did not actually state — its zero value, or one outside the five it
+ * defines — reads as unreadable rather than falling into Settled, which would
+ * tell the holder their money already arrived. The unlock time here is judged
+ * twice: the ticking clock says when the delay has ended, and the latest
+ * block's own timestamp says when a release can pass, because the queue
+ * compares `block.timestamp`. Between the two the exit is unlocking. A frozen
+ * party shows as under investigation once the time has passed, checked here
+ * ahead of the executor though the contract checks it after. A blacklisted
+ * party is not given a state of its own here: its row reads Ready, same as
+ * any other unlocked one.
  */
 export const getPendingExitState = (
   exit: Pick<
@@ -299,6 +321,9 @@ export const getPendingExitState = (
   }
   if (exit.status === ExitStatus.ResolvedToProtocol) {
     return PendingExitState.ResolvedToProtocol;
+  }
+  if (!isStatedExitStatus(exit.status)) {
+    return PendingExitState.Unreadable;
   }
   if (exit.status !== ExitStatus.Queued) {
     return PendingExitState.Settled;

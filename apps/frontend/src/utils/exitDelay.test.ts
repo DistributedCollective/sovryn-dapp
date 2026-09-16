@@ -214,6 +214,41 @@ describe('exitDelay utils', () => {
         PendingExitState.Paused,
       );
     });
+
+    it('reads the zero status as unreadable, never as settled', () => {
+      // The zero value means the queue holds no such request at all — a node
+      // that did not state the record, not a withdrawal that was paid out.
+      expect(
+        getPendingExitState(
+          { ...queued(NOW - 60), status: ExitStatus.None },
+          false,
+          OWNER,
+          at(NOW),
+        ),
+      ).toEqual(PendingExitState.Unreadable);
+    });
+
+    it('reads a status outside the five the queue defines as unreadable, never as settled', () => {
+      expect(
+        getPendingExitState(
+          { ...queued(NOW - 60), status: 99 as ExitStatus },
+          false,
+          OWNER,
+          at(NOW),
+        ),
+      ).toEqual(PendingExitState.Unreadable);
+    });
+
+    it('reads an executed withdrawal as settled, unlike one the node never stated', () => {
+      expect(
+        getPendingExitState(
+          { ...queued(NOW - 60), status: ExitStatus.Executed },
+          false,
+          OWNER,
+          at(NOW),
+        ),
+      ).toEqual(PendingExitState.Settled);
+    });
   });
 
   it('enables execution for exactly one state', () => {
@@ -226,6 +261,7 @@ describe('exitDelay utils', () => {
       PendingExitState.Settled,
       PendingExitState.ResolvedByOwner,
       PendingExitState.ResolvedToProtocol,
+      PendingExitState.Unreadable,
     ]) {
       expect(canExecuteExit(state)).toBe(false);
     }

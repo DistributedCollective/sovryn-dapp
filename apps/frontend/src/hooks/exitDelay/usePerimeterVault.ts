@@ -16,6 +16,7 @@ import {
   EXIT_DELAY_TTL,
   ExitStatus,
   PendingExit,
+  isStatedExitStatus,
 } from '../../utils/exitDelay';
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
@@ -287,6 +288,7 @@ export const usePerimeterVault = (): PerimeterVault => {
         const exits: PendingExit[] = [];
         const pausedByQueue: Record<string, boolean> = {};
         let blockStateUnknown = false;
+        let requestStatusUnknown = false;
 
         for (const queueAddress of queueAddresses) {
           const queue = new Contract(
@@ -335,6 +337,16 @@ export const usePerimeterVault = (): PerimeterVault => {
             );
           blockStateUnknown = blockStateUnknown || theseBlockStatesUnknown;
 
+          // The zero value means the queue holds no such request at all, and
+          // a value outside the five it defines is no more stated than that
+          // — either way the row is kept and the vault marked unknown, the
+          // same as any other read that did not complete, rather than shown
+          // as whatever the fallback status would make of it.
+          const theseStatusesUnknown = requests.some(
+            request => !isStatedExitStatus(Number(request.status)),
+          );
+          requestStatusUnknown = requestStatusUnknown || theseStatusesUnknown;
+
           uniqueIds.forEach((id, index) => {
             const request = requests[index];
             exits.push({
@@ -372,7 +384,7 @@ export const usePerimeterVault = (): PerimeterVault => {
           exits,
           pausedByQueue,
           paused: Object.values(pausedByQueue).some(Boolean),
-          unknown: pointerUnknown || blockStateUnknown,
+          unknown: pointerUnknown || blockStateUnknown || requestStatusUnknown,
           forKey: key,
         };
       } catch (error) {

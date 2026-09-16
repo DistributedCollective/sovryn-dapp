@@ -433,6 +433,20 @@ describe('PerimeterPage', () => {
     );
   });
 
+  it('never reads a request the node did not state as Settled', () => {
+    // A zero-filled record — the answering node does not hold it — must never
+    // read as a withdrawal that was paid out.
+    mockVault.exits = [exit({ status: ExitStatus.None })];
+    mockVault.unknown = true;
+    const { container } = render(<PerimeterPage />);
+
+    expect(screen.queryByText('Settled')).not.toBeInTheDocument();
+    expect(screen.getAllByText('Could not be read').length).toBeGreaterThan(0);
+    expect(
+      container.querySelector('[data-layout-id="perimeter-unreadable"]'),
+    ).toBeInTheDocument();
+  });
+
   it('shows an unlocked row with a frozen party as under investigation, with no Release', () => {
     mockVault.exits = [exit({ blockedState: 1 })];
     const { container } = render(<PerimeterPage />);

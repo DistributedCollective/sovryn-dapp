@@ -113,7 +113,13 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
       isRecoveryMode ||
       exitDelayLoading ||
       exitFee.loading,
-    [isInMaintenance, hasError, isRecoveryMode, exitDelayLoading, exitFee.loading],
+    [
+      isInMaintenance,
+      hasError,
+      isRecoveryMode,
+      exitDelayLoading,
+      exitFee.loading,
+    ],
   );
 
   const tokenOptions = useMemo(

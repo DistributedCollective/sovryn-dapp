@@ -353,7 +353,7 @@ const PerimeterPage: FC = () => {
               )}
             </Paragraph>
           )}
-          {readFailed && account && (
+          {readFailed && account && !showHistory && (
             <Paragraph
               size={ParagraphSize.small}
               className="text-center mb-4"

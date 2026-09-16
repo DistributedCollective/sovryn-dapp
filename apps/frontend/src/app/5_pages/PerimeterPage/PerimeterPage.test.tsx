@@ -602,6 +602,26 @@ describe('PerimeterPage', () => {
       ).toBeInTheDocument();
     });
 
+    it('does not print the vault’s own "could not read" line while history is shown, even when the vault is unknown', () => {
+      // That paragraph is about the live list, which is not on screen once
+      // history is showing; the history table has its own line for its own
+      // reads, asserted separately above.
+      mockVault.unknown = true;
+      mockHistory.mockImplementation((enabled: boolean) => ({
+        exits: enabled ? [exit({ id: '5', status: ExitStatus.Executed })] : [],
+        loading: false,
+        unknown: false,
+      }));
+      const { container } = render(<PerimeterPage />);
+
+      fireEvent.click(screen.getByText('Show history'));
+
+      expect(screen.getByText('Settled')).toBeInTheDocument();
+      expect(
+        container.querySelector('[data-layout-id="perimeter-unreadable"]'),
+      ).not.toBeInTheDocument();
+    });
+
     it('lists a remembered settled withdrawal even when the chain clock could not be read', () => {
       // Every history row is terminal, and its state is resolved before the
       // clock is ever consulted, so a failed clock read must not empty the

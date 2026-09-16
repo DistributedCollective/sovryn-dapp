@@ -17,10 +17,11 @@ import { ReleaseRow, usePerimeterRelease } from './usePerimeterRelease';
 
 /**
  * A queued withdrawal whose party is frozen or blacklisted looks like any
- * other row. The block is checked when the holder presses Release: nothing is
+ * other row. The block is read when the holder presses Release: nothing is
  * sent for a row whose parties do not all read unblocked, and the holder is
- * told, in plain words, which address is blocked and how. These tests serve the
- * block states from a local node through the app's real provider.
+ * told the withdrawal was not released, in wording that reads the same
+ * whichever party or state caused it. These tests serve the block states
+ * from a local node through the app's real provider.
  */
 
 const ACCOUNT = '0x1111111111111111111111111111111111111111';

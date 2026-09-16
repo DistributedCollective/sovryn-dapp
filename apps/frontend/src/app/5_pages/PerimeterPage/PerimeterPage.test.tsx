@@ -345,8 +345,8 @@ describe('PerimeterPage', () => {
   });
 
   it('shows no release time for a row that will never be released', () => {
-    // unlockAt sits in the past on every row here, so before this fix each
-    // one reads "Now" in the Releases column although nothing is pending.
+    // unlockAt sits in the past on every row here, so the Releases column
+    // would otherwise read "Now" for rows nothing is released from.
     mockVault.exits = [
       exit({ id: '4', status: ExitStatus.ResolvedByOwner }),
       exit({ id: '5', status: ExitStatus.None }),

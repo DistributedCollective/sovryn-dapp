@@ -3,8 +3,8 @@ import en from './translations.json';
 /**
  * The house terms for what the Sovryn Perimeter does to a withdrawal are
  * "withdrawal delay" and "Perimeter fee". "Held" stays only where it states
- * what happens to one particular withdrawal, and in the contract-owner notice,
- * whose wording is the owner's.
+ * what happens to one particular withdrawal — the delay's own tooltips, and
+ * the contract-owner notice, which says the product holds that withdrawal.
  */
 
 const stringsOf = (node: unknown, path: string): [string, string][] =>
@@ -47,7 +47,7 @@ describe('Perimeter copy', () => {
     ).toEqual([]);
   });
 
-  it('would catch a keeper script or a promise of automatic delivery if either were reintroduced', () => {
+  it('would catch a keeper script or a promise of automatic delivery', () => {
     // A guard is only worth having if it actually bites: run the same check
     // against a corpus that carries the retired wording, and require it to
     // come back non-empty rather than trusting the regex by inspection.
@@ -103,7 +103,7 @@ describe('Perimeter copy', () => {
     ).toEqual([]);
   });
 
-  it('would catch "governance" if it were used to name a role again', () => {
+  it('would catch "governance" used to name a role', () => {
     const synthetic: [string, string][] = [
       ['synthetic.governance', 'Resolved by governance.'],
     ];

@@ -40,9 +40,27 @@ describe('Perimeter copy', () => {
   it('uses none of the retired names', () => {
     expect(
       perimeterCopy.filter(([, text]) =>
-        /exit fee|sovryn secure|colfee/i.test(text),
+        /exit fee|sovryn secure|colfee|keeper|delivered automatically/i.test(
+          text,
+        ),
       ),
     ).toEqual([]);
+  });
+
+  it('would catch a keeper script or a promise of automatic delivery if either were reintroduced', () => {
+    // A guard is only worth having if it actually bites: run the same check
+    // against a corpus that carries the retired wording, and require it to
+    // come back non-empty rather than trusting the regex by inspection.
+    const retiredNames =
+      /exit fee|sovryn secure|colfee|keeper|delivered automatically/i;
+    const synthetic: [string, string][] = [
+      ['synthetic.keeper', 'A keeper delivers this automatically.'],
+      ['synthetic.automatic', 'Nothing is delivered automatically here.'],
+    ];
+
+    expect(synthetic.filter(([, text]) => retiredNames.test(text))).toEqual(
+      synthetic,
+    );
   });
 
   it('labels the fee as the Perimeter fee and the delay as the withdrawal delay', () => {
@@ -79,18 +97,44 @@ describe('Perimeter copy', () => {
     ).toEqual(synthetic);
   });
 
-  it('never names a block state in a release refusal, except admitting one could not be checked', () => {
-    const releaseRefusedCopy = stringsOf(
-      en.perimeterPage.releaseRefused,
-      'perimeterPage.releaseRefused',
+  it('never names governance as a role', () => {
+    expect(
+      perimeterCopy.filter(([, text]) => /governance/i.test(text)),
+    ).toEqual([]);
+  });
+
+  it('would catch "governance" if it were used to name a role again', () => {
+    const synthetic: [string, string][] = [
+      ['synthetic.governance', 'Resolved by governance.'],
+    ];
+
+    expect(synthetic.filter(([, text]) => /governance/i.test(text))).toEqual(
+      synthetic,
     );
+  });
+
+  it('never names a block state anywhere in the Perimeter page copy, except admitting one could not be checked', () => {
+    const exempt = 'perimeterPage.releaseRefused.unreadable';
 
     expect(
-      releaseRefusedCopy.filter(
+      stringsOf(en.perimeterPage, 'perimeterPage').filter(
         ([path, text]) =>
-          path !== 'perimeterPage.releaseRefused.unreadable' &&
-          /\b(frozen|blacklisted)\b/i.test(text),
+          path !== exempt && /\b(frozen|blacklisted)\b/i.test(text),
       ),
     ).toEqual([]);
+  });
+
+  it('would catch a block state named outside the one string that admits it could not check', () => {
+    const exempt = 'perimeterPage.releaseRefused.unreadable';
+    const synthetic: [string, string][] = [
+      ['synthetic.statusTooltip', 'This party is frozen.'],
+    ];
+
+    expect(
+      synthetic.filter(
+        ([path, text]) =>
+          path !== exempt && /\b(frozen|blacklisted)\b/i.test(text),
+      ),
+    ).toEqual(synthetic);
   });
 });

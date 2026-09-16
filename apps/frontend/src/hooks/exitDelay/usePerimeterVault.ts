@@ -21,8 +21,8 @@ import {
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 import { useGetProtocolContract } from '../useGetContract';
-import { EXIT_DELAY_QUOTE_TIMEOUT_MS, useDeadlinePassed } from './useExitDelay';
 import { readPerimeterPointer } from './readPerimeterPointer';
+import { EXIT_DELAY_QUOTE_TIMEOUT_MS, useDeadlinePassed } from './useExitDelay';
 
 /**
  * What the vault page lists. Every party's block state is read alongside the
@@ -105,15 +105,26 @@ const resolveBlockStates = async (
   return { states: new Map(entries), unknown };
 };
 
-/** A frozen party wins over a blacklisted one; nothing set reads as undefined. */
+/**
+ * A frozen party wins over a blacklisted one. When neither is stated and at
+ * least one party's own read did not complete, the row is unreadable rather
+ * than silently counted as clear.
+ */
 const blockedStateOf = (
   parties: string[],
   states: Map<string, BlockState | undefined>,
-): BlockState | undefined => {
+): { state: BlockState | undefined; unreadable: boolean } => {
   const read = parties.map(party => states.get(party.toLowerCase()));
-  if (read.includes(BlockState.Frozen)) return BlockState.Frozen;
-  if (read.includes(BlockState.Blacklisted)) return BlockState.Blacklisted;
-  return undefined;
+  if (read.includes(BlockState.Frozen)) {
+    return { state: BlockState.Frozen, unreadable: false };
+  }
+  if (read.includes(BlockState.Blacklisted)) {
+    return { state: BlockState.Blacklisted, unreadable: false };
+  }
+  return {
+    state: undefined,
+    unreadable: read.some(state => state === undefined),
+  };
 };
 
 /** The contract clamps a page to MAX_GET_ACTIVE_PAGE; asking for more wastes a round trip. */
@@ -357,6 +368,10 @@ export const usePerimeterVault = (): PerimeterVault => {
 
           uniqueIds.forEach((id, index) => {
             const request = requests[index];
+            const blocked = blockedStateOf(
+              [request.originator, request.owner, request.receiver],
+              blockStates,
+            );
             exits.push({
               id,
               queueAddress,
@@ -376,10 +391,8 @@ export const usePerimeterVault = (): PerimeterVault => {
               status: Number(request.status) as ExitStatus,
               unwrapOnDelivery: request.unwrapOnDelivery,
               ownerHasCode: ownerCode.get(request.owner.toLowerCase()),
-              blockedState: blockedStateOf(
-                [request.originator, request.owner, request.receiver],
-                blockStates,
-              ),
+              blockedState: blocked.state,
+              blockedStateUnreadable: blocked.unreadable,
             });
           });
         }

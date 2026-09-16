@@ -104,11 +104,19 @@ export type PendingExit = {
    */
   ownerHasCode?: boolean;
   /**
-   * The block state on one of the request's parties, when one is set and the
-   * read completed; a frozen party wins over a blacklisted one. Undefined when
-   * nothing is set or the read did not complete.
+   * The block state on one of the request's parties, when one is set; a
+   * frozen party wins over a blacklisted one. Undefined when no party is
+   * stated as frozen or blacklisted, whether every read completed clear or
+   * one of them did not complete at all — `blockedStateUnreadable` carries
+   * that difference.
    */
   blockedState?: BlockState;
+  /**
+   * True when at least one party's own block-state read did not complete,
+   * and no party is stated as frozen or blacklisted. Undefined block state
+   * alone cannot tell a party confirmed clear apart from one never read.
+   */
+  blockedStateUnreadable?: boolean;
 };
 
 /**
@@ -305,12 +313,20 @@ export const isStatedExitStatus = (status: number): status is ExitStatus =>
  * party shows as under investigation once the time has passed, checked here
  * ahead of the executor though the contract checks it after. A blacklisted
  * party is not given a state of its own here: its row reads Ready, same as
- * any other unlocked one.
+ * any other unlocked one. A party whose own block-state read did not
+ * complete, with no party stated as frozen or blacklisted, reads as
+ * unreadable rather than falling into Ready, which would tell the holder a
+ * check that never ran came back clear.
  */
 export const getPendingExitState = (
   exit: Pick<
     PendingExit,
-    'status' | 'unlockAt' | 'originator' | 'owner' | 'blockedState'
+    | 'status'
+    | 'unlockAt'
+    | 'originator'
+    | 'owner'
+    | 'blockedState'
+    | 'blockedStateUnreadable'
   >,
   paused: boolean,
   account: string | undefined,
@@ -339,6 +355,9 @@ export const getPendingExitState = (
   }
   if (exit.blockedState === BlockState.Frozen) {
     return PendingExitState.Frozen;
+  }
+  if (exit.blockedStateUnreadable) {
+    return PendingExitState.Unreadable;
   }
   return isExecutor(exit, account)
     ? PendingExitState.Unlocked

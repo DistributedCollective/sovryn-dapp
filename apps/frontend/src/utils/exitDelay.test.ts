@@ -176,6 +176,27 @@ describe('exitDelay utils', () => {
       expect(canExecuteExit(PendingExitState.Frozen)).toBe(false);
     });
 
+    it('shows a row whose block state could not be read as unreadable, never as ready', () => {
+      expect(
+        getPendingExitState(
+          { ...queued(NOW - 60), blockedStateUnreadable: true },
+          false,
+          OWNER,
+          { now: NOW, blockTime: NOW },
+        ),
+      ).toBe(PendingExitState.Unreadable);
+      // Before the time has passed the hold itself is what shows.
+      expect(
+        getPendingExitState(
+          { ...queued(NOW + 60), blockedStateUnreadable: true },
+          false,
+          OWNER,
+          { now: NOW, blockTime: NOW },
+        ),
+      ).toBe(PendingExitState.Locked);
+      expect(canExecuteExit(PendingExitState.Unreadable)).toBe(false);
+    });
+
     it('reads a delivered withdrawal as settled, above every other condition', () => {
       expect(
         getPendingExitState(

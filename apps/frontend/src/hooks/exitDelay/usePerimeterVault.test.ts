@@ -305,6 +305,7 @@ describe('usePerimeterVault', () => {
 
     expect(result.current.exits).toHaveLength(1);
     expect(result.current.exits[0].blockedState).toBeUndefined();
+    expect(result.current.exits[0].blockedStateUnreadable).toBe(false);
     const parties = mockBlockStateOf.mock.calls.map(([, party]) =>
       (party as string).toLowerCase(),
     );
@@ -356,6 +357,9 @@ describe('usePerimeterVault', () => {
 
     expect(result.current.exits).toHaveLength(1);
     expect(result.current.exits[0].blockedState).toBeUndefined();
+    // The row itself must say it could not be checked, not read as Ready:
+    // the press-time check is a second line of defence, not the only one.
+    expect(result.current.exits[0].blockedStateUnreadable).toBe(true);
     expect(result.current.unknown).toBe(true);
   });
 
@@ -367,7 +371,27 @@ describe('usePerimeterVault', () => {
 
     expect(result.current.exits).toHaveLength(1);
     expect(result.current.exits[0].blockedState).toBeUndefined();
+    expect(result.current.exits[0].blockedStateUnreadable).toBe(true);
     expect(result.current.unknown).toBe(true);
+  });
+
+  it('marks a row unreadable only for the party whose read failed, not for the whole hold when another party is confirmed frozen', async () => {
+    // A confirmed fact about one party is worth keeping even when another
+    // party's own read failed alongside it.
+    holding(7);
+    mockBlockStateOf.mockImplementation(
+      async (_queue: string, party: string) => {
+        if (party.toLowerCase() === RECEIVER.toLowerCase()) {
+          return 1;
+        }
+        throw new Error('rpc down');
+      },
+    );
+
+    const result = await settled();
+
+    expect(result.current.exits[0].blockedState).toBe(1);
+    expect(result.current.exits[0].blockedStateUnreadable).toBe(false);
   });
 
   it('reports the vault as unknown when a request comes back with the zero status, and still lists the row', async () => {

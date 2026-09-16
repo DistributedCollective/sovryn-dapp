@@ -55,6 +55,12 @@ jest.mock('../useGetContract', () => ({
   useGetProtocolContract: () => ({ address: PROTOCOL }),
 }));
 
+// Short enough that the deadline test below does not wait ten real seconds.
+jest.mock('../exitDelay/useExitDelay', () => ({
+  ...jest.requireActual('../exitDelay/useExitDelay'),
+  EXIT_DELAY_QUOTE_TIMEOUT_MS: 50,
+}));
+
 jest.mock('../useCacheCall', () => {
   const React = jest.requireActual('react');
   return {
@@ -144,5 +150,18 @@ describe('useExitFeeRate', () => {
     expect(getExitFeeDisplay(result.current, { gt: () => true } as never)).toBe(
       'none',
     );
+  });
+
+  it('reports unknown, not still loading, once its deadline passes without an answer', async () => {
+    // A stalled node must not hold Confirm forever: past the deadline the rate
+    // is reported unreadable, the same as the two Zero fee hooks already do.
+    mockReadPointer.mockResolvedValue({ kind: 'address', address: CONTROLLER });
+    mockQuoteExitFee.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = render();
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.unknown).toBe(true);
+    expect(result.current.active).toBe(false);
   });
 });

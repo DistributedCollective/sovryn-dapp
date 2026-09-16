@@ -269,14 +269,21 @@ export type ChainTimes = {
 /**
  * Resolve what an exit shows right now.
  *
- * Order follows `_executeOne`: a terminal status wins over everything, then
- * the global pause, then the unlock time, then the executor check. The unlock
- * time is judged twice: the ticking clock says when the delay has ended, and
- * the latest block's own timestamp says when a release can pass, because the
- * queue compares `block.timestamp`. Between the two the exit is unlocking.
- * A frozen party shows as under investigation once the time has passed. A
- * blacklisted party is not given a state of its own here: its row reads
- * Ready, same as any other unlocked one.
+ * A terminal status is reported before the pause, the unlock time or the
+ * executor check: a withdrawal that has already left the queue is worth
+ * naming as such even while the whole perimeter happens to be paused. The
+ * contract's own function checks these in a different order — the pause
+ * first, then whether the request is unknown, then a non-waiting status, then
+ * the unlock time, then the executor, and only then the parties' block states
+ * — because it is deciding which revert to raise, not what to tell the person
+ * waiting on the money; both orders are right for their own job. The unlock
+ * time here is judged twice: the ticking clock says when the delay has ended,
+ * and the latest block's own timestamp says when a release can pass, because
+ * the queue compares `block.timestamp`. Between the two the exit is
+ * unlocking. A frozen party shows as under investigation once the time has
+ * passed, checked here ahead of the executor though the contract checks it
+ * after. A blacklisted party is not given a state of its own here: its row
+ * reads Ready, same as any other unlocked one.
  */
 export const getPendingExitState = (
   exit: Pick<

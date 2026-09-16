@@ -99,35 +99,32 @@ const PerimeterPage: FC = () => {
 
   const release = usePerimeterRelease();
 
+  // What the page itself still treats as live: the vault's list with this
+  // session's released rows already taken out. A release drops its row from
+  // here at once, ahead of the vault's next read, so a withdrawal released a
+  // moment ago is not handed to history as though it were still waiting.
+  const liveExits = useMemo(
+    () => exits.filter(exit => !releasedKeys.has(exitKey(exit))),
+    [exits, releasedKeys],
+  );
+
   // The live list holds only what is still waiting. What has been released
   // is read back from the chain on request, under the history switch.
   const [showHistory, setShowHistory] = useState(false);
-  const history = usePerimeterHistory(showHistory, exits);
+  const history = usePerimeterHistory(showHistory, liveExits);
 
   const rows: PerimeterExitRow[] = useMemo(
     () =>
-      (showHistory ? history.exits : exits)
-        .filter(exit => showHistory || !releasedKeys.has(exitKey(exit)))
-        .map(exit => ({
-          ...exit,
-          state: getPendingExitState(
-            exit,
-            pausedByQueue[exit.queueAddress] ?? paused,
-            account,
-            { now, blockTime },
-          ),
-        })),
-    [
-      account,
-      blockTime,
-      exits,
-      history.exits,
-      now,
-      paused,
-      pausedByQueue,
-      releasedKeys,
-      showHistory,
-    ],
+      (showHistory ? history.exits : liveExits).map(exit => ({
+        ...exit,
+        state: getPendingExitState(
+          exit,
+          pausedByQueue[exit.queueAddress] ?? paused,
+          account,
+          { now, blockTime },
+        ),
+      })),
+    [account, blockTime, history.exits, liveExits, now, paused, pausedByQueue, showHistory],
   );
 
   // The release checks take several round trips before the dialog opens. A

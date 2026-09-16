@@ -594,6 +594,36 @@ describe('PerimeterPage', () => {
 
       expect(screen.queryByText('Show history')).not.toBeInTheDocument();
     });
+
+    it('lists a withdrawal released in this session under history, rather than saying nothing is remembered', () => {
+      // The vault has not read again yet, so its own list still carries the
+      // released row. History must be handed the page's own filtered list,
+      // not the vault's raw one, or the row is neither live nor history.
+      mockRelease.mockImplementation(
+        (rows: { queueAddress: string; id: string }[], onReleased) =>
+          onReleased(rows.map(exitKey)),
+      );
+      mockVault.exits = [exit({ id: '7' })];
+      mockHistory.mockImplementation(
+        (enabled: boolean, live: { id: string }[]) => ({
+          exits:
+            enabled && !live.some(row => row.id === '7')
+              ? [exit({ id: '7', status: ExitStatus.Executed })]
+              : [],
+          loading: false,
+          unknown: false,
+        }),
+      );
+      const { container } = render(<PerimeterPage />);
+
+      fireEvent.click(releaseButton(container, QUEUE, '7')!);
+      fireEvent.click(screen.getByText('Show history'));
+
+      expect(screen.getByText('Settled')).toBeInTheDocument();
+      expect(
+        screen.queryByText(/No released withdrawals are remembered/),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('withholds Release while an exit is still on hold', () => {

@@ -3,7 +3,7 @@ import { providers, utils } from 'ethers';
 import { ChainId, getProvider } from '@sovryn/ethers-provider';
 
 import { asyncCall } from '../../store/rxjs/provider-cache';
-import { EXIT_DELAY_TTL } from '../../utils/exitDelay';
+import { EXIT_DELAY_TTL, RELEASE_READ_TIMEOUT_MS } from '../../utils/exitDelay';
 import { callRaw } from './rawCall';
 
 export type PointerGetter = 'exitDelayQueue' | 'exitFeeController';
@@ -47,17 +47,20 @@ const decodeAddress = (result: string): string | undefined => {
  *
  * - a 32-byte result is the pointer, the zero address included;
  * - a call the node reports as reverted is `absent`;
- * - anything else, from every backend, is `unreadable`.
+ * - anything else, from every backend, is `unreadable` — including a backend
+ *   that does not answer at all within `timeoutMs`.
  */
 export const readAddressGetter = async (
   provider: providers.Provider,
   contractAddress: string,
   getter: PointerGetter,
+  timeoutMs: number,
 ): Promise<PointerRead> => {
   const outcome = await callRaw(
     provider,
     { to: contractAddress, data: GETTERS.encodeFunctionData(getter) },
     result => decodeAddress(result) !== undefined,
+    timeoutMs,
   );
   if (outcome.kind === 'result') {
     const address = decodeAddress(outcome.data);
@@ -80,7 +83,12 @@ export const readPerimeterPointer = async (
     return await asyncCall(
       `perimeter/pointer/${chainId}/${consumerAddress.toLowerCase()}/${getter}`,
       async () =>
-        readAddressGetter(getProvider(chainId), consumerAddress, getter),
+        readAddressGetter(
+          getProvider(chainId),
+          consumerAddress,
+          getter,
+          RELEASE_READ_TIMEOUT_MS,
+        ),
       { ttl: EXIT_DELAY_TTL },
     );
   } catch (error) {

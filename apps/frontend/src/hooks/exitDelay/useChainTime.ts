@@ -2,8 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { ChainId, getProvider } from '@sovryn/ethers-provider';
 
-import { EXIT_DELAY_TTL } from '../../utils/exitDelay';
+import { EXIT_DELAY_TTL, RELEASE_READ_TIMEOUT_MS } from '../../utils/exitDelay';
 import { useCacheCall } from '../useCacheCall';
+import { boundedBy } from './rawCall';
 import { EXIT_DELAY_QUOTE_TIMEOUT_MS, useDeadlinePassed } from './useExitDelay';
 
 type Anchor = {
@@ -56,7 +57,10 @@ export const useChainTime = (chainId: ChainId): ChainClock => {
     key,
     chainId,
     async () => {
-      const block = await getProvider(chainId).getBlock('latest');
+      const block = await boundedBy(
+        getProvider(chainId).getBlock('latest'),
+        RELEASE_READ_TIMEOUT_MS,
+      );
       return { timestamp: block.timestamp, readAt: Date.now() };
     },
     [chainId],

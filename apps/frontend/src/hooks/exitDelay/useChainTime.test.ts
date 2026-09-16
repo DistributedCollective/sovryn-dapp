@@ -26,10 +26,19 @@ jest.mock('@sovryn/ethers-provider', () => ({
   getProvider: () => ({ getBlock: (tag: string) => mockGetBlock(tag) }),
 }));
 
-// Short enough that the deadline test below does not wait ten real seconds.
+// Long enough to sit well above RELEASE_READ_TIMEOUT_MS below, so a test can
+// tell the block read settling on its own bound apart from this one firing
+// instead; short enough that the deadline test below does not wait ten real
+// seconds.
 jest.mock('./useExitDelay', () => ({
   ...jest.requireActual('./useExitDelay'),
-  EXIT_DELAY_QUOTE_TIMEOUT_MS: 50,
+  EXIT_DELAY_QUOTE_TIMEOUT_MS: 500,
+}));
+
+// Short enough that the hang test below settles well inside the deadline above.
+jest.mock('../../utils/exitDelay', () => ({
+  ...jest.requireActual('../../utils/exitDelay'),
+  RELEASE_READ_TIMEOUT_MS: 50,
 }));
 
 jest.mock('../useCacheCall', () => {
@@ -157,6 +166,22 @@ describe('useChainTime', () => {
     expect(result.current.unreadable).toBe(false);
 
     await waitFor(() => expect(result.current.unreadable).toBe(true));
+    expect(result.current.now).toBe(0);
+  });
+
+  it('settles on its own bound, not the outer deadline, when the block read hangs rather than failing outright', async () => {
+    // No answer ever arrives here, not even a rejection. A read with its own
+    // bound turns that into a rejection quickly, well inside
+    // EXIT_DELAY_QUOTE_TIMEOUT_MS above; one without a bound of its own is
+    // only ever caught by that outer deadline, which is why the wait below is
+    // capped well short of it.
+    mockGetBlock.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = renderHook(() => useChainTime('0x1e' as never));
+
+    await waitFor(() => expect(result.current.unreadable).toBe(true), {
+      timeout: 300,
+    });
     expect(result.current.now).toBe(0);
   });
 });

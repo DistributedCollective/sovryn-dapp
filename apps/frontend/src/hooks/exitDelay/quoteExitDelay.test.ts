@@ -47,6 +47,12 @@ jest.mock('../../store/rxjs/provider-cache', () => ({
   },
 }));
 
+// Short enough that the hung-read test below does not wait ten real seconds.
+jest.mock('../../utils/exitDelay', () => ({
+  ...jest.requireActual('../../utils/exitDelay'),
+  RELEASE_READ_TIMEOUT_MS: 200,
+}));
+
 const ACCOUNT = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 const PROTOCOL = '0x5A0D867e0D70Fcc6Ade25C3F1B89d618b5B4Eaa7';
 const BORROWER_OPERATIONS = '0x5B9dB4B8bdeF3e57323187a9AC2639C5DEe5FD39';
@@ -243,6 +249,16 @@ describe('quoteExitDelay', () => {
 
       expect(await quote()).toEqual(UNREADABLE);
     });
+
+    it('reports unreadable within its own bound when the node accepts the quote request and never answers it', async () => {
+      // No transport-level timeout is configured on the app's real provider,
+      // so a node that never answers would otherwise hold this call open for
+      // as long as ethers' own default, minutes rather than seconds.
+      wire();
+      stub.onCall(CONTROLLER, QUOTE, { hang: true });
+
+      expect(await quote()).toEqual(UNREADABLE);
+    }, 2_000);
 
     it('reports no hold when no controller is pinned, without quoting', async () => {
       stub.onCall(PROTOCOL, QUEUE_GETTER, addressResult(QUEUE));

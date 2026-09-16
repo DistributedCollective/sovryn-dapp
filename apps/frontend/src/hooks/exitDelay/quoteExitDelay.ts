@@ -3,7 +3,12 @@ import { Contract, constants } from 'ethers';
 import { ChainId, getProvider } from '@sovryn/ethers-provider';
 
 import { asyncCall } from '../../store/rxjs/provider-cache';
-import { EXIT_DELAY_TTL, ExitDelayQuote } from '../../utils/exitDelay';
+import {
+  EXIT_DELAY_TTL,
+  ExitDelayQuote,
+  RELEASE_READ_TIMEOUT_MS,
+} from '../../utils/exitDelay';
+import { boundedBy } from './rawCall';
 import { readPerimeterPointer } from './readPerimeterPointer';
 
 /** A quote before the caller's own loading state is attached to it. */
@@ -104,11 +109,14 @@ export const quoteExitDelay = async ({
         account.toLowerCase(),
       ].join('/'),
       () =>
-        new Contract(
-          controller.address,
-          CONTROLLER_ABI,
-          getProvider(chainId),
-        ).quoteExitDelayFor(account, account, account, surfaceId, subProduct),
+        boundedBy(
+          new Contract(
+            controller.address,
+            CONTROLLER_ABI,
+            getProvider(chainId),
+          ).quoteExitDelayFor(account, account, account, surfaceId, subProduct),
+          RELEASE_READ_TIMEOUT_MS,
+        ),
       { ttl: EXIT_DELAY_TTL },
     );
     delaySeconds = Number(quote.d);

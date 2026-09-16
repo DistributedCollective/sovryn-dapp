@@ -16,11 +16,13 @@ import {
   EXIT_DELAY_TTL,
   ExitStatus,
   PendingExit,
+  RELEASE_READ_TIMEOUT_MS,
   isStatedExitStatus,
 } from '../../utils/exitDelay';
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 import { useGetProtocolContract } from '../useGetContract';
+import { boundedBy } from './rawCall';
 import { readPerimeterPointer } from './readPerimeterPointer';
 import { EXIT_DELAY_QUOTE_TIMEOUT_MS, useDeadlinePassed } from './useExitDelay';
 
@@ -90,7 +92,9 @@ const resolveBlockStates = async (
   const entries = await Promise.all(
     unique.map(async (address): Promise<[string, BlockState | undefined]> => {
       try {
-        const raw = Number(await queue.blockStateOf(address));
+        const raw = Number(
+          await boundedBy(queue.blockStateOf(address), RELEASE_READ_TIMEOUT_MS),
+        );
         if (!isKnownBlockState(raw)) {
           unknown = true;
           return [address, undefined];
@@ -195,7 +199,7 @@ const resolveOwnerCode = async (
       try {
         const code = await asyncCall(
           `exitDelay/ownerCode/${RSK_CHAIN_ID}/${owner}`,
-          () => provider.getCode(owner),
+          () => boundedBy(provider.getCode(owner), RELEASE_READ_TIMEOUT_MS),
           { ttl: EXIT_DELAY_TTL },
         );
         return [owner, code !== '0x'];
@@ -319,7 +323,10 @@ export const usePerimeterVault = (): PerimeterVault => {
           const ids: string[] = [];
           let cursor = BigNumber.from(0);
           for (let page = 0; page < MAX_PAGES; page++) {
-            const result = await queue.getActive(account, cursor, PAGE);
+            const result = await boundedBy(
+              queue.getActive(account, cursor, PAGE),
+              RELEASE_READ_TIMEOUT_MS,
+            );
             ids.push(...result.ids.map((id: BigNumber) => id.toString()));
             cursor = result.nextCursor;
             if (cursor.isZero()) {
@@ -334,12 +341,17 @@ export const usePerimeterVault = (): PerimeterVault => {
           // release in the batch with it.
           const uniqueIds = [...new Set(ids)];
 
-          pausedByQueue[queueAddress] = await queue.securityPerimeterPaused();
+          pausedByQueue[queueAddress] = await boundedBy(
+            queue.securityPerimeterPaused(),
+            RELEASE_READ_TIMEOUT_MS,
+          );
 
           // One wave of requests rather than one round trip per id: the read
           // runs every block.
           const requests = await Promise.all(
-            uniqueIds.map(id => queue.getRequest(id)),
+            uniqueIds.map(id =>
+              boundedBy(queue.getRequest(id), RELEASE_READ_TIMEOUT_MS),
+            ),
           );
 
           const { codes: ownerCode, unknown: theseOwnerCodesUnknown } =

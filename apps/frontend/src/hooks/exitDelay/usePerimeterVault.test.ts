@@ -80,10 +80,19 @@ jest.mock('../../config/chains', () => ({
   RSK_CHAIN_ID: '0x1e',
 }));
 
-// Short enough that the deadline test below does not wait ten real seconds.
+// Long enough to sit well above RELEASE_READ_TIMEOUT_MS below, so a test can
+// tell a raw read settling on its own bound apart from this one firing
+// instead; short enough that the deadline test below does not wait ten real
+// seconds.
 jest.mock('./useExitDelay', () => ({
   ...jest.requireActual('./useExitDelay'),
-  EXIT_DELAY_QUOTE_TIMEOUT_MS: 50,
+  EXIT_DELAY_QUOTE_TIMEOUT_MS: 500,
+}));
+
+// Short enough that a hang test below settles well inside the deadline above.
+jest.mock('../../utils/exitDelay', () => ({
+  ...jest.requireActual('../../utils/exitDelay'),
+  RELEASE_READ_TIMEOUT_MS: 50,
 }));
 
 jest.mock('../../store/rxjs/provider-cache', () => ({
@@ -285,6 +294,69 @@ describe('usePerimeterVault', () => {
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.unknown).toBe(true);
     expect(result.current.exits).toHaveLength(0);
+  });
+
+  // Each read below hangs rather than failing outright — no answer ever
+  // arrives, not even a rejection. A read with its own bound turns that into
+  // a rejection quickly, well inside EXIT_DELAY_QUOTE_TIMEOUT_MS above; one
+  // without a bound of its own is only ever caught by that outer deadline,
+  // which is why the wait below is capped well short of it.
+  it('settles on its own bound, not the outer deadline, when getActive hangs', async () => {
+    mockGetActive.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = renderHook(() => usePerimeterVault());
+
+    await waitFor(() => expect(result.current.unknown).toBe(true), {
+      timeout: 300,
+    });
+    expect(result.current.loading).toBe(false);
+  });
+
+  it('settles on its own bound, not the outer deadline, when securityPerimeterPaused hangs', async () => {
+    mockPaused.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = renderHook(() => usePerimeterVault());
+
+    await waitFor(() => expect(result.current.unknown).toBe(true), {
+      timeout: 300,
+    });
+    expect(result.current.loading).toBe(false);
+  });
+
+  it('settles on its own bound, not the outer deadline, when getRequest hangs', async () => {
+    holding(7);
+    mockGetRequest.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = renderHook(() => usePerimeterVault());
+
+    await waitFor(() => expect(result.current.unknown).toBe(true), {
+      timeout: 300,
+    });
+    expect(result.current.loading).toBe(false);
+  });
+
+  it('settles on its own bound, not the outer deadline, when blockStateOf hangs', async () => {
+    holding(7);
+    mockBlockStateOf.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = renderHook(() => usePerimeterVault());
+
+    await waitFor(() => expect(result.current.unknown).toBe(true), {
+      timeout: 300,
+    });
+    expect(result.current.loading).toBe(false);
+  });
+
+  it('settles on its own bound, not the outer deadline, when an owner code read hangs', async () => {
+    holding(7);
+    mockGetCode.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = renderHook(() => usePerimeterVault());
+
+    await waitFor(() => expect(result.current.unknown).toBe(true), {
+      timeout: 300,
+    });
+    expect(result.current.loading).toBe(false);
   });
 
   it('de-duplicates ids repeated by a best-effort getActive page', async () => {

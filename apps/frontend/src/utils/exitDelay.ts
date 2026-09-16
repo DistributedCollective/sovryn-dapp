@@ -4,9 +4,10 @@ import { Decimal } from '@sovryn/utils';
 export const EXIT_DELAY_TTL = 30_000;
 
 /**
- * How long each chain read a release check makes may take before the check
- * gives up on it and refuses, saying what it could not check. Without a bound
- * a node that never answers holds the release for ethers' two-minute timeout.
+ * How long any single chain read behind these hooks may take before the
+ * caller gives up on it and treats it as failed. Without a bound, a node that
+ * never answers a raw `eth_call` never settles at all, and one made through
+ * ethers holds the caller for its own two-minute default.
  */
 export const RELEASE_READ_TIMEOUT_MS = 10_000;
 

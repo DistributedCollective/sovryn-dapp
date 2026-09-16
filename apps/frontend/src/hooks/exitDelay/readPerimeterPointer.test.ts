@@ -67,8 +67,13 @@ describe('readAddressGetter', () => {
 
   afterAll(() => stub.close());
 
-  const read = (provider: providers.Provider = appProvider) =>
-    readAddressGetter(provider, CONSUMER, 'exitDelayQueue');
+  /** Well above anything these tests need to finish in on their own. */
+  const DEFAULT_TIMEOUT_MS = 5_000;
+
+  const read = (
+    provider: providers.Provider = appProvider,
+    timeoutMs = DEFAULT_TIMEOUT_MS,
+  ) => readAddressGetter(provider, CONSUMER, 'exitDelayQueue', timeoutMs);
 
   describe('the node answered', () => {
     it('returns the address the getter holds', async () => {
@@ -132,6 +137,16 @@ describe('readAddressGetter', () => {
 
       expect(await read(provider)).toEqual({ kind: 'unreadable' });
     });
+
+    it('reports unreadable within its own bound for a node that never answers at all, on a provider with no transport timeout of its own', async () => {
+      // The app's real provider is not given its own request timeout, so
+      // without a bound of its own here this call would hang for as long as
+      // the node never answers — this test's own timeout would be the only
+      // thing that ever ends it.
+      stub.onCall(CONSUMER, QUEUE_GETTER, { hang: true });
+
+      expect(await read(appProvider, 200)).toEqual({ kind: 'unreadable' });
+    }, 2_000);
 
     it('reports unreadable for a provider it cannot send raw requests through', async () => {
       expect(await read({} as providers.Provider)).toEqual({

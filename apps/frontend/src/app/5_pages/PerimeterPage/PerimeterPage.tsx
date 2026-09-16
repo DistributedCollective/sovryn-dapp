@@ -428,10 +428,14 @@ const PerimeterPage: FC = () => {
               // not wait on a read it does not need.
               rows={showHistory || now ? rows : []}
               rowKey={row => exitKey(row)}
+              // History rows depend on neither the vault's own read nor the
+              // chain clock, so once history has answered there is nothing
+              // left for its loader to wait on; the vault and the clock only
+              // gate the live list.
               isLoading={
-                loading ||
-                (showHistory && history.loading) ||
-                (!!account && !now && !clockUnreadable)
+                showHistory
+                  ? history.loading
+                  : loading || (!!account && !now && !clockUnreadable)
               }
               noData={emptyMessage}
               dataAttribute="perimeter-vault-table"

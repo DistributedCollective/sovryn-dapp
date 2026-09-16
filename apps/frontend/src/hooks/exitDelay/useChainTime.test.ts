@@ -26,6 +26,12 @@ jest.mock('@sovryn/ethers-provider', () => ({
   getProvider: () => ({ getBlock: (tag: string) => mockGetBlock(tag) }),
 }));
 
+// Short enough that the deadline test below does not wait ten real seconds.
+jest.mock('./useExitDelay', () => ({
+  ...jest.requireActual('./useExitDelay'),
+  EXIT_DELAY_QUOTE_TIMEOUT_MS: 50,
+}));
+
 jest.mock('../useCacheCall', () => {
   const React = jest.requireActual('react');
   return {
@@ -136,6 +142,19 @@ describe('useChainTime', () => {
     mockGetBlock.mockRejectedValue(transportFailure);
 
     const { result } = renderHook(() => useChainTime('0x1e' as never));
+
+    await waitFor(() => expect(result.current.unreadable).toBe(true));
+    expect(result.current.now).toBe(0);
+  });
+
+  it('reports the clock as unreadable, not stuck forever, once its deadline passes without a block', async () => {
+    // The block number itself failing to arrive — an RPC endpoint refusing
+    // every request — leaves the same shape as a rejected read: no block ever
+    // lands, and nothing here may wait on one that will not arrive.
+    mockGetBlock.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = renderHook(() => useChainTime('0x1e' as never));
+    expect(result.current.unreadable).toBe(false);
 
     await waitFor(() => expect(result.current.unreadable).toBe(true));
     expect(result.current.now).toBe(0);

@@ -21,6 +21,7 @@ import {
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 import { useGetProtocolContract } from '../useGetContract';
+import { EXIT_DELAY_QUOTE_TIMEOUT_MS, useDeadlinePassed } from './useExitDelay';
 import { readPerimeterPointer } from './readPerimeterPointer';
 
 /**
@@ -399,16 +400,25 @@ export const usePerimeterVault = (): PerimeterVault => {
     { ttl: EXIT_DELAY_TTL },
   );
 
+  // A value stamped for another key belongs to the previous account, or to no
+  // fetch at all — the seeded default the cache hands back before the first
+  // attempt resolves, including one that never starts because the shared
+  // cache is still waiting on a block number. Past this deadline a value
+  // still not fresh is reported unknown rather than left loading for ever.
+  const fresh = value.forKey === key;
+  const deadlinePassed = useDeadlinePassed(
+    key,
+    fresh,
+    EXIT_DELAY_QUOTE_TIMEOUT_MS,
+  );
+
   return useMemo(() => {
-    // A value stamped for another key belongs to the previous account, or to
-    // no fetch at all — the seeded default the cache hands back before the
-    // first attempt resolves. Either way nothing has been read yet, and the
-    // page shows its loader instead of "no delayed withdrawals".
-    const fresh = value.forKey === key;
     if (!fresh) {
-      return { ...EMPTY, loading: true };
+      return deadlinePassed
+        ? { ...UNREADABLE, loading: false }
+        : { ...EMPTY, loading: true };
     }
     const { forKey, ...vault } = value;
     return { ...vault, loading };
-  }, [value, loading, key]);
+  }, [value, loading, fresh, deadlinePassed]);
 };

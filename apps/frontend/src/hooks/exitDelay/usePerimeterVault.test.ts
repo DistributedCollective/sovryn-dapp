@@ -80,6 +80,12 @@ jest.mock('../../config/chains', () => ({
   RSK_CHAIN_ID: '0x1e',
 }));
 
+// Short enough that the deadline test below does not wait ten real seconds.
+jest.mock('./useExitDelay', () => ({
+  ...jest.requireActual('./useExitDelay'),
+  EXIT_DELAY_QUOTE_TIMEOUT_MS: 50,
+}));
+
 jest.mock('../../store/rxjs/provider-cache', () => ({
   asyncCall: (_key: string, fn: () => unknown) => fn(),
 }));
@@ -264,6 +270,21 @@ describe('usePerimeterVault', () => {
     const { result } = renderHook(() => usePerimeterVault());
 
     expect(result.current.loading).toBe(true);
+  });
+
+  it('reports unknown, not loading forever, once its deadline passes without a value', async () => {
+    // A block number that never arrives — the RPC endpoint refusing every
+    // request, say — leaves this same shape: no fetch ever lands. The vault
+    // must stop reporting a loader that will never end and say it could not
+    // be read, the way every other failed read here does.
+    mockGetActive.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = renderHook(() => usePerimeterVault());
+    expect(result.current.loading).toBe(true);
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.unknown).toBe(true);
+    expect(result.current.exits).toHaveLength(0);
   });
 
   it('de-duplicates ids repeated by a best-effort getActive page', async () => {

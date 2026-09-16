@@ -4,6 +4,7 @@ import { ChainId, getProvider } from '@sovryn/ethers-provider';
 
 import { EXIT_DELAY_TTL } from '../../utils/exitDelay';
 import { useCacheCall } from '../useCacheCall';
+import { EXIT_DELAY_QUOTE_TIMEOUT_MS, useDeadlinePassed } from './useExitDelay';
 
 type Anchor = {
   /** Latest block timestamp, in seconds. 0 until one has been read. */
@@ -49,8 +50,10 @@ export type ChainClock = {
  * drift, and no machine drifts a second per second.
  */
 export const useChainTime = (chainId: ChainId): ChainClock => {
+  const key = `exitDelay/chainTime/${chainId}`;
+
   const { value: anchor, error } = useCacheCall<Anchor>(
-    `exitDelay/chainTime/${chainId}`,
+    key,
     chainId,
     async () => {
       const block = await getProvider(chainId).getBlock('latest');
@@ -77,7 +80,18 @@ export const useChainTime = (chainId: ChainId): ChainClock => {
     return () => clearInterval(timer);
   }, [anchor.timestamp, anchor.readAt]);
 
-  const unreadable = !anchor.timestamp && !!error;
+  // The shared cache starts no read at all until a block number is known, so
+  // a block number that never arrives leaves no anchor AND no error, forever.
+  // Past this deadline an anchor still not read counts the same as one that
+  // failed outright, rather than a caller waiting on a block that will not
+  // come.
+  const deadlinePassed = useDeadlinePassed(
+    key,
+    !!anchor.timestamp,
+    EXIT_DELAY_QUOTE_TIMEOUT_MS,
+  );
+
+  const unreadable = !anchor.timestamp && (!!error || deadlinePassed);
 
   return useMemo(
     () => ({ now, blockTime: anchor.timestamp, unreadable }),

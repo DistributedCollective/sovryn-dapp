@@ -36,7 +36,8 @@ export const getExitFeeNet = (gross: Decimal, rateBps: number): Decimal =>
  * so on its own it cannot tell a rate of zero from a rate nobody could read —
  * and four separate consumers reached that wrong conclusion by calling it
  * directly. `getExitFeeDisplay` is the exported entry point; keeping this
- * private makes the mistake a compile error rather than a review finding.
+ * private makes the mistake a compile error instead of a bug a caller could
+ * introduce unnoticed.
  */
 const isExitFeeShown = (
   active: boolean,

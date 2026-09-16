@@ -32,10 +32,16 @@ export type PerimeterHistory = {
 
 const EMPTY: PerimeterHistory = { exits: [], loading: false, unknown: false };
 
-/** Stamped with whether the state below is this hook's answer for `enabled`. */
-type HistoryState = PerimeterHistory & { forEnabled: boolean };
+/** What a history read is an answer for: the switch and the account. */
+type HistoryKey = { enabled: boolean; account: string | undefined };
 
-const EMPTY_STATE: HistoryState = { ...EMPTY, forEnabled: false };
+/** Stamped with the key the state below is this hook's answer for. */
+type HistoryState = PerimeterHistory & { stampedFor: HistoryKey };
+
+const EMPTY_STATE: HistoryState = {
+  ...EMPTY,
+  stampedFor: { enabled: false, account: undefined },
+};
 
 /**
  * Released, or otherwise settled, withdrawals: the ids this browser has seen
@@ -61,11 +67,11 @@ export const usePerimeterHistory = (
 
   useEffect(() => {
     if (!enabled || !account) {
-      setHistory({ ...EMPTY, forEnabled: enabled });
+      setHistory({ ...EMPTY, stampedFor: { enabled, account } });
       return;
     }
     let cancelled = false;
-    setHistory({ ...EMPTY, loading: true, forEnabled: true });
+    setHistory({ ...EMPTY, loading: true, stampedFor: { enabled, account } });
     const remembered = rememberedExits(RSK_CHAIN_ID, account).filter(
       entry => !live.some(exit => exitKey(exit) === exitKey(entry)),
     );
@@ -118,7 +124,12 @@ export const usePerimeterHistory = (
       );
       if (!cancelled) {
         exits.sort((a, b) => b.unlockAt - a.unlockAt);
-        setHistory({ exits, loading: false, unknown, forEnabled: true });
+        setHistory({
+          exits,
+          loading: false,
+          unknown,
+          stampedFor: { enabled, account },
+        });
       }
     })();
     return () => {
@@ -127,15 +138,20 @@ export const usePerimeterHistory = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, account, liveKeys]);
 
-  // A history not yet read for the current value of `enabled` still belongs
-  // to the previous one — off, or a different account's read — so the render
-  // that flips the switch on reports loading immediately rather than
-  // painting "nothing remembered" for a frame before the read has started.
+  // A history not yet read for the current switch and account still belongs
+  // to a previous request — the switch off, or a different account's read —
+  // so the render that flips the switch on, or that follows an account
+  // change, reports loading immediately rather than painting a previous
+  // request's rows, or "nothing remembered", for a frame before the read for
+  // this one has started.
   return useMemo(() => {
-    if (enabled && !history.forEnabled) {
+    const stale =
+      history.stampedFor.enabled !== enabled ||
+      history.stampedFor.account !== account;
+    if (enabled && stale) {
       return { exits: [], loading: true, unknown: false };
     }
-    const { forEnabled, ...rest } = history;
+    const { stampedFor, ...rest } = history;
     return rest;
-  }, [enabled, history]);
+  }, [enabled, account, history]);
 };

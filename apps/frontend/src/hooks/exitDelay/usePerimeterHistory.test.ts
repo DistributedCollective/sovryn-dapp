@@ -1,4 +1,6 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { render, renderHook, waitFor } from '@testing-library/react';
+
+import React from 'react';
 
 import { BigNumber } from 'ethers';
 
@@ -14,6 +16,7 @@ import { usePerimeterHistory } from './usePerimeterHistory';
  */
 
 const ACCOUNT = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
+const ACCOUNT_TWO = '0x90F79bf6EB2c4f870365E785982E1f101E93b906';
 const RECEIVER = '0x3333333333333333333333333333333333333333';
 const QUEUE = '0x1111111111111111111111111111111111111111';
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -223,5 +226,50 @@ describe('usePerimeterHistory', () => {
       unknown: false,
     });
     expect(window.localStorage.length).toBe(0);
+  });
+
+  it('clears the previous account’s rows on the very first render after the account changes, ahead of the read for the new one', async () => {
+    // Every value usePerimeterHistory ever returns, in render order, so the
+    // render produced immediately after the account changes — before the
+    // read effect for the new account has run — can be inspected on its own,
+    // rather than only the value left once everything has settled.
+    const renders: ReturnType<typeof usePerimeterHistory>[] = [];
+    const Probe = ({ on, rows }: { on: boolean; rows: PendingExit[] }) => {
+      renders.push(usePerimeterHistory(on, rows));
+      return null;
+    };
+
+    const { rerender } = render(
+      React.createElement(Probe, { on: false, rows: live('7', '8', '9') }),
+    );
+    await waitFor(() =>
+      expect(renders[renders.length - 1].loading).toBe(false),
+    );
+
+    mockGetRequest.mockImplementation(async (_queue: string, id: string) =>
+      request({
+        unlockAt: BigNumber.from(1_800_000_000 + Number(id)),
+        status: id === '7' ? ExitStatus.Executed : ExitStatus.ResolvedByOwner,
+      }),
+    );
+    rerender(React.createElement(Probe, { on: true, rows: live('9') }));
+    await waitFor(() =>
+      expect(renders[renders.length - 1].loading).toBe(false),
+    );
+    expect(renders[renders.length - 1].exits.map(exit => exit.id)).toEqual([
+      '8',
+      '7',
+    ]);
+
+    renders.length = 0;
+    mockAccount = ACCOUNT_TWO;
+    rerender(React.createElement(Probe, { on: true, rows: live('9') }));
+
+    expect(renders[0].exits).toEqual([]);
+
+    await waitFor(() =>
+      expect(renders[renders.length - 1].loading).toBe(false),
+    );
+    expect(renders[renders.length - 1].exits).toEqual([]);
   });
 });

@@ -82,7 +82,8 @@ const WALLET_REFUSALS: Record<Exclude<WalletState, 'ready'>, string> = {
  * the signer's provider keeps the network it first detected, and the signer
  * resolves its address only when it signs, so a switch made in the wallet
  * shows in the wallet's own answers and nowhere else. No signer, a rejected
- * request, or an answer that is not a chain id or an account is unreadable.
+ * request, an answer that is not a chain id or an account, or a request the
+ * wallet never answers within `RELEASE_READ_TIMEOUT_MS`, is unreadable.
  */
 const readWallet = async (
   signer: providers.JsonRpcSigner | undefined,
@@ -92,7 +93,10 @@ const readWallet = async (
     return 'networkUnreadable';
   }
   try {
-    const chainId = await signer.provider.send('eth_chainId', []);
+    const chainId = await boundedBy(
+      signer.provider.send('eth_chainId', []),
+      RELEASE_READ_TIMEOUT_MS,
+    );
     if (!BigNumber.from(chainId).eq(BigNumber.from(RSK_CHAIN_ID))) {
       return 'otherNetwork';
     }
@@ -100,7 +104,10 @@ const readWallet = async (
     return 'networkUnreadable';
   }
   try {
-    const accounts: unknown = await signer.provider.send('eth_accounts', []);
+    const accounts: unknown = await boundedBy(
+      signer.provider.send('eth_accounts', []),
+      RELEASE_READ_TIMEOUT_MS,
+    );
     const active = Array.isArray(accounts) ? accounts[0] : undefined;
     if (typeof active !== 'string') {
       return 'accountUnreadable';
@@ -625,8 +632,9 @@ const autoReleaseGasLimit = async (
  * 4. asks the queue, in a dry run from the holder's address, whether it would
  *    accept each queue's release, dropping each withdrawal it refuses by name.
  *
- * Each chain read a run makes gives up after `RELEASE_READ_TIMEOUT_MS`, and a
- * read that gives up refuses like one that failed.
+ * Every read a run makes — of the wallet and of the chain — gives up after
+ * `RELEASE_READ_TIMEOUT_MS`, and a read that gives up refuses like one that
+ * failed.
  *
  * At the press, one notice tells the holder which withdrawals are not
  * released and why, and the rest opens in the dialog: one row as

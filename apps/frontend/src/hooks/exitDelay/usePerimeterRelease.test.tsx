@@ -1090,6 +1090,20 @@ describe('usePerimeterRelease', () => {
       );
     });
 
+    it('gives up, and sends nothing, when the wallet never answers which network it is on', async () => {
+      // A locked or sleeping wallet can accept the request and never settle
+      // it. This read is bounded like every other the check makes, so the
+      // release is refused instead of leaving the page checking forever.
+      mockWalletSend.mockImplementation(() => new Promise(() => undefined));
+
+      await release([row()]);
+
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(
+        'We could not check which network your wallet is on, so nothing was released.',
+      );
+    });
+
     it('sends nothing without a connected signer to ask', async () => {
       mockSigner = undefined;
 
@@ -1171,6 +1185,22 @@ describe('usePerimeterRelease', () => {
           { code: 4100 },
         );
       });
+
+      await release([row()]);
+
+      expect(mockExecuteExit).not.toHaveBeenCalled();
+      expect(refusalText()).toContain(
+        'We could not check which account your wallet is using, so nothing was released.',
+      );
+    });
+
+    it('gives up, and sends nothing, when the wallet never answers which account it signs as', async () => {
+      // Bounded the same way as every other read the check makes: a wallet
+      // that accepts the request and never answers it refuses the release
+      // rather than leaving every control checking for the life of the page.
+      mockWalletSend.mockImplementation(async (method: string) =>
+        method === 'eth_chainId' ? '0x1e' : new Promise(() => undefined),
+      );
 
       await release([row()]);
 

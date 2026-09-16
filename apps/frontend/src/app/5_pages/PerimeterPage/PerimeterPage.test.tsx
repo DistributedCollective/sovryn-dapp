@@ -796,7 +796,7 @@ describe('PerimeterPage', () => {
     const { container } = render(<PerimeterPage />);
 
     expect(
-      screen.getAllByText('Releasable by the owner').length,
+      screen.getAllByText('Releasable by the position owner').length,
     ).toBeGreaterThan(0);
     expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
   });

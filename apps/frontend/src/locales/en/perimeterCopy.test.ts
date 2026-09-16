@@ -50,6 +50,35 @@ describe('Perimeter copy', () => {
     expect(en.exitDelay.label).toBe('Withdrawal delay');
   });
 
+  it('names the Owner role only in the status the recovery lever sets, naming the position owner everywhere else', () => {
+    const statusCopy = stringsOf(
+      en.perimeterPage.status,
+      'perimeterPage.status',
+    );
+    const namesOwnerRole = /(?<!position )\bowner\b/i;
+    const ownerRoleStatus = 'perimeterPage.status.resolvedByOwner';
+
+    expect(
+      statusCopy.filter(
+        ([path, text]) => path !== ownerRoleStatus && namesOwnerRole.test(text),
+      ),
+    ).toEqual([]);
+  });
+
+  it('would catch the Owner role being named on a status other than the recovery lever’s', () => {
+    const namesOwnerRole = /(?<!position )\bowner\b/i;
+    const ownerRoleStatus = 'perimeterPage.status.resolvedByOwner';
+    const synthetic: [string, string][] = [
+      ['perimeterPage.status.notExecutor', 'Releasable by the owner.'],
+    ];
+
+    expect(
+      synthetic.filter(
+        ([path, text]) => path !== ownerRoleStatus && namesOwnerRole.test(text),
+      ),
+    ).toEqual(synthetic);
+  });
+
   it('never names a block state in a release refusal, except admitting one could not be checked', () => {
     const releaseRefusedCopy = stringsOf(
       en.perimeterPage.releaseRefused,

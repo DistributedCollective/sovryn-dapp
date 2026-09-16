@@ -2101,7 +2101,7 @@
       "locked": "Delayed",
       "unlocking": "Unlocking",
       "unlocked": "Ready",
-      "notExecutor": "Releasable by the owner",
+      "notExecutor": "Releasable by the position owner",
       "frozen": "Under investigation",
       "paused": "Paused",
       "settled": "Settled",

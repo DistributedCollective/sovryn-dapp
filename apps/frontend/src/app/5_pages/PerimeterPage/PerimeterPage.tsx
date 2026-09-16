@@ -136,6 +136,22 @@ const PerimeterPage: FC = () => {
     ],
   );
 
+  // Whether releases are paused for what is actually listed below, rather
+  // than for every queue the page happens to follow: a queue holding none of
+  // this account's rows must never make the banner speak for the list. The
+  // same per-row fallback the Status column uses keeps a row's own queue
+  // counted even if it is missing from the map.
+  const pausedStatesListed = useMemo(
+    () =>
+      [...new Set(rows.map(row => row.queueAddress))].map(
+        queueAddress => pausedByQueue[queueAddress] ?? paused,
+      ),
+    [rows, pausedByQueue, paused],
+  );
+  const somePausedListed = pausedStatesListed.some(Boolean);
+  const allPausedListed =
+    pausedStatesListed.length > 0 && pausedStatesListed.every(Boolean);
+
   // The release checks take several round trips before the dialog opens. A
   // second release started meanwhile would replace the first one's
   // transaction list in the dialog, so every release control waits while one
@@ -319,7 +335,7 @@ const PerimeterPage: FC = () => {
           >
             {t(translations.perimeterPage.subtitle)}
           </Paragraph>
-          {paused && (
+          {somePausedListed && (
             <Paragraph
               size={ParagraphSize.small}
               className="text-center mb-4"
@@ -327,10 +343,11 @@ const PerimeterPage: FC = () => {
             >
               {t(
                 // Two independently pausable queues can hold this account's
-                // withdrawals. Only when every one of them is paused is it
-                // true that releases are paused across the whole perimeter;
-                // otherwise the row-level status already says which ones are.
-                Object.values(pausedByQueue).every(Boolean)
+                // withdrawals. Only when every queue behind a row listed
+                // below is paused is it true that releases are paused across
+                // the whole perimeter; otherwise the row-level status already
+                // says which ones are.
+                allPausedListed
                   ? translations.perimeterPage.statusTooltip.paused
                   : translations.perimeterPage.pausedPartial,
               )}

@@ -705,6 +705,44 @@ describe('PerimeterPage', () => {
     expect(releaseButton(container, OTHER_QUEUE, '9')).toBeInTheDocument();
   });
 
+  it('prints no paused paragraph when the only paused queue holds none of this account’s rows', () => {
+    // The account never used the paused queue, so nothing it is shown is
+    // affected: the banner must be judged against what is listed, not
+    // against every queue the page happens to follow.
+    mockVault.exits = [exit({ id: '7', queueAddress: QUEUE })];
+    mockVault.paused = true;
+    mockVault.pausedByQueue = { [QUEUE]: false, [OTHER_QUEUE]: true };
+    const { container } = render(<PerimeterPage />);
+
+    expect(
+      container.querySelector('[data-layout-id="perimeter-paused"]'),
+    ).not.toBeInTheDocument();
+    expect(releaseButton(container, QUEUE, '7')).toBeInTheDocument();
+  });
+
+  it('tells the row itself is paused, not the whole perimeter, when its status tooltip is opened', () => {
+    mockVault.exits = [
+      exit({ id: '7', queueAddress: QUEUE }),
+      exit({ id: '9', queueAddress: OTHER_QUEUE }),
+    ];
+    mockVault.paused = true;
+    mockVault.pausedByQueue = { [QUEUE]: true, [OTHER_QUEUE]: false };
+    const { container } = render(<PerimeterPage />);
+
+    const helper = container.querySelector(
+      `[data-layout-id="perimeter-status-${exitKey({
+        queueAddress: QUEUE,
+        id: '7',
+      })}"]`,
+    );
+    fireEvent.click(helper!);
+
+    expect(
+      screen.queryByText(/paused across the whole perimeter/i),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText(/paused for this withdrawal/i)).toBeInTheDocument();
+  });
+
   it('withholds Release from an account that is only the receiver', () => {
     mockVault.exits = [
       exit({

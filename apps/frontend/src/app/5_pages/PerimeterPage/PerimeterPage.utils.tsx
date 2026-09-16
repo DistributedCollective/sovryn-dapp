@@ -19,8 +19,15 @@ export type PerimeterExitRow = PendingExit & {
 export const getStatusLabel = (state: PendingExitState): string =>
   t(translations.perimeterPage.status[state]);
 
+// A paused row's own tooltip speaks about that row, not about every queue the
+// page follows; the whole-perimeter sentence stays with the banner, which is
+// the one place it is true of everything listed.
 export const getStatusTooltip = (state: PendingExitState): string =>
-  t(translations.perimeterPage.statusTooltip[state]);
+  t(
+    state === PendingExitState.Paused
+      ? translations.perimeterPage.pausedRowTooltip
+      : translations.perimeterPage.statusTooltip[state],
+  );
 
 /** States a row settles into for good: nothing is ever released from them. */
 const NEVER_RELEASED_STATES = new Set<PendingExitState>([

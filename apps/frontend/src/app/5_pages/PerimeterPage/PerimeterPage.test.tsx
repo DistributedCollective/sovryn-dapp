@@ -588,6 +588,26 @@ describe('PerimeterPage', () => {
       ).toBeInTheDocument();
     });
 
+    it('lists a remembered settled withdrawal even when the chain clock could not be read', () => {
+      // Every history row is terminal, and its state is resolved before the
+      // clock is ever consulted, so a failed clock read must not empty the
+      // history table the way it rightly empties the live one.
+      mockChainTime = { now: 0, blockTime: 0, unreadable: true };
+      mockHistory.mockImplementation((enabled: boolean) => ({
+        exits: enabled ? [exit({ id: '5', status: ExitStatus.Executed })] : [],
+        loading: false,
+        unknown: false,
+      }));
+      render(<PerimeterPage />);
+
+      fireEvent.click(screen.getByText('Show history'));
+
+      expect(screen.getByText('Settled')).toBeInTheDocument();
+      expect(
+        screen.queryByText(/No released withdrawals are remembered/),
+      ).not.toBeInTheDocument();
+    });
+
     it('offers no history switch without a wallet', () => {
       mockAccount = undefined;
       render(<PerimeterPage />);

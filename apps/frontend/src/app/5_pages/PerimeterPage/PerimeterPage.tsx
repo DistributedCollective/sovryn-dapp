@@ -281,14 +281,14 @@ const PerimeterPage: FC = () => {
       return t(translations.perimeterPage.connectWallet);
     }
     if (showHistory) {
-      return history.unknown
+      return history.unknown || clockUnreadable
         ? t(translations.perimeterPage.history.unreadable)
         : t(translations.perimeterPage.history.empty);
     }
     return readFailed
       ? t(translations.perimeterPage.unreadable)
       : t(translations.perimeterPage.inactive);
-  }, [account, readFailed, showHistory, history.unknown]);
+  }, [account, readFailed, showHistory, history.unknown, clockUnreadable]);
 
   return (
     <>
@@ -386,13 +386,13 @@ const PerimeterPage: FC = () => {
             )}
             <Table
               columns={columns}
-              // Every status and countdown is derived from the chain clock,
-              // and the table draws whatever rows it is given even while it
-              // shows its loader: a row resolved against a missing time would
-              // read as on hold for decades. So no rows until the clock is
-              // known, the loader while it is still coming, and the empty
-              // message once its read has failed.
-              rows={now ? rows : []}
+              // Every status and countdown on the live list is derived from
+              // the chain clock, and a row resolved against a missing time
+              // would read as on hold for decades — so the live list waits
+              // for it. Every history row is terminal, and its state is
+              // settled before the clock is ever consulted, so history does
+              // not wait on a read it does not need.
+              rows={showHistory || now ? rows : []}
               rowKey={row => exitKey(row)}
               isLoading={
                 loading ||

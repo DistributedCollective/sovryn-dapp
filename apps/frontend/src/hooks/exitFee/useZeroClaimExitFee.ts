@@ -90,15 +90,18 @@ const quoteClaimFee = async (
       account,
       grossWei,
     );
-    // The claim re-derives net from gross and fee and charges nothing when
-    // they disagree, so a quote that does not add up is not one to display.
+    // The claim re-derives net from gross and fee on chain and charges
+    // nothing when they disagree, so a quote that fails that check is not a
+    // stated answer: a mangled or truncated response from a degraded
+    // endpoint, or a rate above the maximum, produced it. Reported as
+    // unread, the same as a quote the node could not answer at all.
     const gross = BigNumber.from(grossWei);
     if (
       quote.feeAmount.gt(gross) ||
       !quote.netAmount.eq(gross.sub(quote.feeAmount)) ||
       Number(quote.rateBps) > EXIT_FEE_MAX_BPS
     ) {
-      return INACTIVE;
+      return UNKNOWN;
     }
     return {
       active: quote.active,

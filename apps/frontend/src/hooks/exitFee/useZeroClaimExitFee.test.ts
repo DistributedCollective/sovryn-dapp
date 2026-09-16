@@ -215,9 +215,11 @@ describe('useZeroClaimExitFee', () => {
     expect(mockReadPointer).not.toHaveBeenCalled();
   });
 
-  it('hides a quote whose net is not the surplus less the fee', async () => {
+  it('reports unknown, not a stated no fee, when the net is not the surplus less the fee', async () => {
     // The chain re-derives net from gross and fee and charges nothing when
-    // they disagree; a net it will not pay is not one to print.
+    // they disagree, so a quote that fails that check is not a stated
+    // answer — it is reported the same as a quote the chain could not
+    // answer at all.
     mockQuoteExitFee.mockResolvedValue(
       quote({ netAmount: BigNumber.from('390000000000000000') }),
     );
@@ -225,6 +227,7 @@ describe('useZeroClaimExitFee', () => {
     const result = await settled();
 
     expect(result.current.active).toBe(false);
+    expect(result.current.unknown).toBe(true);
   });
 
   it('quotes nothing for a zero surplus', async () => {

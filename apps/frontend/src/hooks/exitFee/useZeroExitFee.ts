@@ -120,18 +120,19 @@ export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
           // nothing and pays the gross. So `active=false` here IS the answer —
           // no fee is taken — and the rows stay hidden. The reason is not
           // consulted: whichever it is, the user receives the whole amount.
-          // A quote the chain itself would refuse is not one to display. The
-          // on-chain hook re-derives net from gross and fee and charges nothing
-          // when they disagree, so mirror that test here: an inconsistent
-          // preview — only a tampered RPC can produce one — hides the rows
-          // rather than printing a net the chain will not pay.
           const gross = ethers.BigNumber.from(grossWei);
+          // The controller derives net from gross and fee on chain and
+          // charges nothing when they disagree, so a preview that fails that
+          // check is not a stated answer: a mangled or truncated response
+          // from a degraded endpoint, or a rate above the maximum, produced
+          // it. Reported as unread, the same as a preview the node could not
+          // answer at all.
           if (
             result.feeAmount.gt(gross) ||
             !result.netAmount.eq(gross.sub(result.feeAmount)) ||
             Number(result.rateBps) > EXIT_FEE_MAX_BPS
           ) {
-            return INACTIVE;
+            return { ...INACTIVE, unknown: true };
           }
           return {
             active: result.active,

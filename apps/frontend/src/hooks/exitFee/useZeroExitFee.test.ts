@@ -196,6 +196,25 @@ describe('useZeroExitFee', () => {
     expect(result.current.unknown).toBe(false);
   });
 
+  it('reports unknown, not a stated no fee, when the preview does not add up', async () => {
+    // The controller derives net from gross and fee on chain; a net that
+    // does not match that arithmetic is not an answer it would ever give.
+    mockPreview.mockResolvedValue(
+      previewResult(REASON.NONE, {
+        active: true,
+        rateBps: 10,
+        feeAmount: '1000000000000000',
+        netAmount: '1000000000000000000',
+      }),
+    );
+
+    const { result } = renderHook(() => useZeroExitFee(Decimal.from(1)));
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.active).toBe(false);
+    expect(result.current.unknown).toBe(true);
+  });
+
   it.each([
     ['charging is switched off globally', REASON.INACTIVE],
     ['the surface carries no policy', REASON.DISABLED],

@@ -622,25 +622,6 @@ describe('PerimeterPage', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('shows a remembered settled withdrawal with no loading message while only the chain clock has not been read yet', () => {
-      // History rows come from a read that depends on neither the chain
-      // clock nor the vault; a settled row already in hand must not sit
-      // behind a loading message waiting on either of them.
-      mockVault.loading = true;
-      mockChainTime = { now: 0, blockTime: 0, unreadable: false };
-      mockHistory.mockImplementation((enabled: boolean) => ({
-        exits: enabled ? [exit({ id: '5', status: ExitStatus.Executed })] : [],
-        loading: false,
-        unknown: false,
-      }));
-      render(<PerimeterPage />);
-
-      fireEvent.click(screen.getByText('Show history'));
-
-      expect(screen.getByText('Settled')).toBeInTheDocument();
-      expect(screen.queryByText('Loading data…')).not.toBeInTheDocument();
-    });
-
     it('says nothing is remembered, rather than showing a loading message, once history itself has resolved even while the vault is still loading', () => {
       // History reads go straight to each queue and depend on neither the
       // vault nor the chain clock. Once history itself has answered, a

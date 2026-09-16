@@ -4,7 +4,7 @@ import React from 'react';
 
 import { BigNumber } from 'ethers';
 
-import { ExitStatus, PendingExit } from '../../utils/exitDelay';
+import { ExitStatus, PendingExit, exitKey } from '../../utils/exitDelay';
 import { rememberedExits } from '../../utils/exitDelayHistory';
 import { usePerimeterHistory } from './usePerimeterHistory';
 
@@ -50,10 +50,12 @@ jest.mock('../useAccount', () => ({
   useAccount: () => ({ account: mockAccount }),
 }));
 
-// Short enough that the hung-read test below does not wait ten real seconds.
+// Short enough that the hung-read test below does not wait ten real seconds,
+// and that a retry test below does not wait three real ones.
 jest.mock('../../utils/exitDelay', () => ({
   ...jest.requireActual('../../utils/exitDelay'),
   RELEASE_READ_TIMEOUT_MS: 50,
+  HISTORY_SETTLING_RETRY_MS: 20,
 }));
 
 const request = (overrides: Record<string, unknown> = {}) => ({
@@ -87,10 +89,14 @@ const live = (...ids: string[]): PendingExit[] =>
     unwrapOnDelivery: false,
   }));
 
-const settled = async (enabled: boolean, shown: PendingExit[]) => {
+const settled = async (
+  enabled: boolean,
+  shown: PendingExit[],
+  settling: Set<string> = new Set(),
+) => {
   const hook = renderHook(
     ({ on, rows }: { on: boolean; rows: PendingExit[] }) =>
-      usePerimeterHistory(on, rows),
+      usePerimeterHistory(on, rows, settling),
     { initialProps: { on: enabled, rows: shown } },
   );
   await waitFor(() => expect(hook.result.current.loading).toBe(false));
@@ -156,6 +162,44 @@ describe('usePerimeterHistory', () => {
     expect(result.current.exits[0].status).toBe(ExitStatus.Executed);
     expect(result.current.exits[0].amount?.toString()).toBe('1.5');
     expect(result.current.unknown).toBe(false);
+    // Nothing here was released this session, so a queued answer is taken at
+    // face value rather than read a second time.
+    expect(mockGetRequest).toHaveBeenCalledTimes(2);
+  });
+
+  it('reads a withdrawal released this session a second time when the first read still finds it queued', async () => {
+    // The release just landed; the backend answering history has not caught
+    // up to the block that settled it yet.
+    const settling = new Set([exitKey({ queueAddress: QUEUE, id: '7' })]);
+    let calls = 0;
+    mockGetRequest.mockImplementation(async () => {
+      calls += 1;
+      return request({
+        status: calls === 1 ? ExitStatus.Queued : ExitStatus.Executed,
+      });
+    });
+
+    const { rerender, result } = await settled(false, live('7'), settling);
+    rerender({ on: true, rows: [] });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await waitFor(() => expect(result.current.exits).toHaveLength(1));
+
+    expect(result.current.exits[0].id).toBe('7');
+    expect(result.current.exits[0].status).toBe(ExitStatus.Executed);
+    expect(mockGetRequest).toHaveBeenCalledTimes(2);
+  });
+
+  it('leaves a withdrawal released this session out of history when it still reads queued on the second read', async () => {
+    const settling = new Set([exitKey({ queueAddress: QUEUE, id: '7' })]);
+    mockGetRequest.mockResolvedValue(request({ status: ExitStatus.Queued }));
+
+    const { rerender, result } = await settled(false, live('7'), settling);
+    rerender({ on: true, rows: [] });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    expect(result.current.exits).toEqual([]);
+    expect(result.current.unknown).toBe(false);
+    expect(mockGetRequest).toHaveBeenCalledTimes(2);
   });
 
   it('reports a withdrawal it could not read as unknown, never as absent', async () => {

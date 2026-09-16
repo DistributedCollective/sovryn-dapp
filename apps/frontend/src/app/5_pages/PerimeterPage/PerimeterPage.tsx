@@ -109,9 +109,12 @@ const PerimeterPage: FC = () => {
   );
 
   // The live list holds only what is still waiting. What has been released
-  // is read back from the chain on request, under the history switch.
+  // is read back from the chain on request, under the history switch. Rows
+  // released this session are named here too, so a history read that still
+  // finds one queued — a backend trailing the block that settled it — gets a
+  // second try instead of leaving the row out of both lists.
   const [showHistory, setShowHistory] = useState(false);
-  const history = usePerimeterHistory(showHistory, liveExits);
+  const history = usePerimeterHistory(showHistory, liveExits, releasedKeys);
 
   const rows: PerimeterExitRow[] = useMemo(
     () =>

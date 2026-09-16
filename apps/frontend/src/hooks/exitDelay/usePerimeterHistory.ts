@@ -8,6 +8,7 @@ import { RSK_CHAIN_ID } from '../../config/chains';
 
 import {
   ExitStatus,
+  HISTORY_SETTLING_RETRY_MS,
   PendingExit,
   RELEASE_READ_TIMEOUT_MS,
   exitKey,
@@ -48,10 +49,18 @@ const EMPTY_STATE: HistoryState = {
  * for the account that are not in the live list, each read back from its
  * queue now. Remembers every live withdrawal it is shown so it can be found
  * again after it settles.
+ *
+ * `settling` names withdrawals released earlier this session. One of those
+ * whose read still comes back queued is read a second time, after a short
+ * wait, rather than taken at face value: the backend answering this read can
+ * still be a block behind the one that recorded the release. A withdrawal
+ * outside `settling` that reads back queued is left out of history on the
+ * first read, as history is for settled withdrawals only.
  */
 export const usePerimeterHistory = (
   enabled: boolean,
   live: PendingExit[],
+  settling: ReadonlySet<string> = new Set(),
 ): PerimeterHistory => {
   const { account } = useAccount();
   const [history, setHistory] = useState<HistoryState>(EMPTY_STATE);
@@ -83,11 +92,21 @@ export const usePerimeterHistory = (
         remembered.map(async entry => {
           try {
             const queue = new Contract(entry.queueAddress, QUEUE_ABI, provider);
-            const request = await boundedBy(
+            let request = await boundedBy(
               queue.getRequest(entry.id),
               RELEASE_READ_TIMEOUT_MS,
             );
-            const status = Number(request.status) as ExitStatus;
+            let status = Number(request.status) as ExitStatus;
+            if (status === ExitStatus.Queued && settling.has(exitKey(entry))) {
+              await new Promise(resolve =>
+                setTimeout(resolve, HISTORY_SETTLING_RETRY_MS),
+              );
+              request = await boundedBy(
+                queue.getRequest(entry.id),
+                RELEASE_READ_TIMEOUT_MS,
+              );
+              status = Number(request.status) as ExitStatus;
+            }
             if (status === ExitStatus.Queued) {
               return;
             }

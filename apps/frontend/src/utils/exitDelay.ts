@@ -17,6 +17,12 @@ export const RELEASE_READ_TIMEOUT_MS = 10_000;
  */
 export const RELEASE_GAS_MARGIN_PERCENT = 20;
 
+/**
+ * How long history waits before reading a withdrawal released earlier this
+ * session a second time, when the first read still finds it queued.
+ */
+export const HISTORY_SETTLING_RETRY_MS = 3_000;
+
 /** Mirrors ExitDelayQueue.ExitStatus. */
 export enum ExitStatus {
   None = 0,

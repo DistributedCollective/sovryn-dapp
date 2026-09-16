@@ -3,9 +3,11 @@ import React, { FC, ReactNode } from 'react';
 export type LOCStatProps = {
   label: ReactNode;
   value: ReactNode;
+  /** Rendered below the value box, outside it — for a qualifier on the figure. */
+  note?: ReactNode;
 };
 
-export const LOCStat: FC<LOCStatProps> = ({ value, label }) => {
+export const LOCStat: FC<LOCStatProps> = ({ value, label, note }) => {
   return (
     <div className="flex flex-col md:min-w-60">
       <div className="text-gray-30 mb-2 font-medium leading-4 text-xs">
@@ -16,6 +18,7 @@ export const LOCStat: FC<LOCStatProps> = ({ value, label }) => {
           {value}
         </span>
       </div>
+      {note}
     </div>
   );
 };

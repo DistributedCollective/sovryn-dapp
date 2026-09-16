@@ -16,6 +16,7 @@ const mockQuote = {
   feeAmount: Decimal.from('0.002'),
   netAmount: Decimal.from('0.398'),
   loading: false,
+  unknown: false,
 };
 
 jest.mock('nanoid', () => {
@@ -68,6 +69,7 @@ describe('CloseCreditLine perimeter fee', () => {
       feeAmount: Decimal.from('0.002'),
       netAmount: Decimal.from('0.398'),
       loading: false,
+      unknown: false,
     });
   });
 
@@ -103,13 +105,31 @@ describe('CloseCreditLine perimeter fee', () => {
   });
 
   it('shows the gross with no helper icon when the fee is inactive', () => {
-    Object.assign(mockQuote, { active: false, rateBps: 0 });
+    Object.assign(mockQuote, { active: false, rateBps: 0, unknown: false });
     const { container } = renderForm();
     expect(screen.queryByText(/Perimeter fee/)).not.toBeInTheDocument();
     expect(screen.getByText(/0\.4/)).toBeInTheDocument();
     expect(
       container.querySelector('[data-layout-id="exit-fee-helper"]'),
     ).not.toBeInTheDocument();
+    expect(
+      container.querySelector('[data-test-id="exit-fee-unknown-notice"]'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows the gross with a note when the fee could not be checked, not as a settled amount', () => {
+    Object.assign(mockQuote, { active: false, rateBps: 0, unknown: true });
+    const { container } = renderForm();
+    expect(screen.queryByText(/^Perimeter fee/)).not.toBeInTheDocument();
+    expect(screen.getByText(/0\.4/)).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-layout-id="exit-fee-helper"]'),
+    ).not.toBeInTheDocument();
+    const notice = container.querySelector(
+      '[data-test-id="exit-fee-unknown-notice"]',
+    );
+    expect(notice).toBeInTheDocument();
+    expect(notice?.textContent).toMatch(/Perimeter fee/);
   });
 
   it('tells the borrower the collateral will be held, and for how long', () => {

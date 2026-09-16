@@ -71,9 +71,11 @@ export type ExitFeeQuote = {
  * cannot quote, it charges nothing and pays the gross, so a form that says
  * nothing in those cases is telling the truth.
  *
- * There is deliberately no third state. "A fee applies but we cannot say how
- * much" is not a message this product sends: if no fee is taken, the user
- * receives the whole amount and has nothing to be told.
+ * There is deliberately no third state in this type: a hidden fee row states
+ * nothing, so it needs none. The Zero surplus card and the loan close form
+ * restate the gross as the amount the user will receive, so on those two
+ * screens an unread quote is qualified separately, straight off the quote's
+ * own `unknown` flag rather than through this type.
  */
 export type ExitFeeDisplay = 'charged' | 'none';
 

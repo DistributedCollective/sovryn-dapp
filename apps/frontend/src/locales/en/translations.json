@@ -1676,7 +1676,8 @@
   "exitFee": {
     "label": "Perimeter fee ({{rate}}%)",
     "youWillReceive": "You will receive",
-    "tooltip": "The Perimeter fee is deducted from the withdrawn amount when your transaction executes. Shown values are approximate — the final fee is determined at execution time."
+    "tooltip": "The Perimeter fee is deducted from the withdrawn amount when your transaction executes. Shown values are approximate — the final fee is determined at execution time.",
+    "unknownNotice": "We could not check the Perimeter fee for this withdrawal. The amount shown is the full amount before any Perimeter fee; the final amount is set when the withdrawal executes."
   },
   "lending": {
     "title": "Deposit",

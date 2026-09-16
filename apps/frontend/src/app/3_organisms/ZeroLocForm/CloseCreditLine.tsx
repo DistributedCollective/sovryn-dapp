@@ -68,6 +68,11 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
     [exitFee],
   );
   const showExitFee = exitFeeDisplay === 'charged';
+  // The row itself stays hidden for an unread quote — the chain fails open,
+  // so it is not a stated fee — but the collateral figure below states the
+  // whole collateral as what the borrower will get, which needs its own
+  // qualifier when the quote never arrived.
+  const exitFeeUnknown = !showExitFee && exitFee.unknown;
 
   const collateralToReceive = useMemo(
     () => (showExitFee ? exitFee.netAmount : collateralValue),
@@ -207,6 +212,14 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
             )
           }
         />
+        {exitFeeUnknown && (
+          <div
+            className="mt-2 text-xs text-gray-30"
+            data-test-id="exit-fee-unknown-notice"
+          >
+            {t(translations.exitFee.unknownNotice)}
+          </div>
+        )}
         <ExitDelayRow
           delaySeconds={delaySeconds}
           unknown={exitDelayUnknown}

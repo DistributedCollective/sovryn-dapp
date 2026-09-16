@@ -109,6 +109,25 @@ describe('LOCStatus surplus claim', () => {
       expect(
         container.querySelector('[data-layout-id="exit-fee-helper"]'),
       ).not.toBeInTheDocument();
+      expect(
+        container.querySelector('[data-test-id="exit-fee-unknown-notice"]'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows the gross surplus with a note when the fee could not be checked, not as a settled amount', () => {
+      mockFee = { ...mockFee, active: false, rateBps: 0, unknown: true };
+
+      const { container } = renderStatus();
+
+      expect(screen.getByText('0.4 BTC')).toBeInTheDocument();
+      expect(
+        container.querySelector('[data-layout-id="exit-fee-helper"]'),
+      ).not.toBeInTheDocument();
+      const notice = container.querySelector(
+        '[data-test-id="exit-fee-unknown-notice"]',
+      );
+      expect(notice).toBeInTheDocument();
+      expect(notice?.textContent).toMatch(/Perimeter fee/);
     });
 
     it('does not render the surplus stat at all when there is no surplus', () => {

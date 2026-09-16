@@ -22,6 +22,7 @@ import {
 } from '../../../constants/currencies';
 import { useZeroExitDelayQuote } from '../../../hooks/exitDelay/useZeroExitDelayQuote';
 import { useZeroClaimExitFee } from '../../../hooks/exitFee/useZeroClaimExitFee';
+import { translations } from '../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../utils/asset';
 import { getExitDelayDisplay } from '../../../utils/exitDelay';
 import {
@@ -68,6 +69,11 @@ export const LOCStatus: FC<LOCStatusProps> = ({
   const claimFee = useZeroClaimExitFee(withdrawalSurplus);
   const showSurplusExitFee =
     getExitFeeDisplay(claimFee, claimFee.feeAmount) === 'charged';
+  // The claim's fee row stays hidden for this too — the chain fails open, so
+  // an unread quote is not a stated fee — but the figure below states the
+  // whole surplus as what the borrower will get, which needs its own
+  // qualifier when the quote never arrived.
+  const surplusFeeUnknown = !showSurplusExitFee && claimFee.unknown;
 
   const claimDelay = useZeroExitDelayQuote(SURFACE_ZERO_CLAIM_SURPLUS);
   const showClaimDelay = getExitDelayDisplay(claimDelay) !== 'none';
@@ -117,6 +123,16 @@ export const LOCStatus: FC<LOCStatusProps> = ({
               ) : (
                 `${withdrawalSurplus} ${BITCOIN}`
               )
+            }
+            note={
+              surplusFeeUnknown ? (
+                <div
+                  className="mt-2 text-xs text-gray-30"
+                  data-test-id="exit-fee-unknown-notice"
+                >
+                  {t(translations.exitFee.unknownNotice)}
+                </div>
+              ) : undefined
             }
           />
         )}

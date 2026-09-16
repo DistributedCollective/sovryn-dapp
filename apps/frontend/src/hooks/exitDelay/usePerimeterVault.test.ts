@@ -488,16 +488,15 @@ describe('usePerimeterVault', () => {
     expect(result.current.exits[0].ownerHasCode).toBe(false);
   });
 
-  it('leaves the owner flag unset when the code read fails, and reports the vault as read', async () => {
-    // The flag only drives a notice, so the vault itself was read; but "could
-    // not tell" is not "a plain wallet".
+  it('reports the vault as unknown when an owner-code read fails, and still lists the row', async () => {
     holding(7);
     mockGetCode.mockRejectedValue(transportFailure);
 
     const result = await settled();
 
+    expect(result.current.exits).toHaveLength(1);
     expect(result.current.exits[0].ownerHasCode).toBeUndefined();
-    expect(result.current.unknown).toBe(false);
+    expect(result.current.unknown).toBe(true);
   });
 
   it('reads an owner shared by several requests only once', async () => {

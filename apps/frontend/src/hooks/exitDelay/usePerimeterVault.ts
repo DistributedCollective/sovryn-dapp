@@ -167,13 +167,18 @@ const resolveQueues = async (
 /**
  * Whether each of the given owner addresses carries code, deduplicated so an
  * owner shared by several requests is only read once. An owner whose code
- * read did not complete maps to undefined, never to "a plain wallet".
+ * read did not complete maps to undefined, never to "a plain wallet", and
+ * marks the result unknown, the same as the vault's other reads.
  */
 const resolveOwnerCode = async (
   owners: string[],
-): Promise<Map<string, boolean | undefined>> => {
+): Promise<{
+  codes: Map<string, boolean | undefined>;
+  unknown: boolean;
+}> => {
   const provider = getProvider(RSK_CHAIN_ID);
   const uniqueOwners = [...new Set(owners.map(owner => owner.toLowerCase()))];
+  let unknown = false;
   const entries = await Promise.all(
     uniqueOwners.map(async (owner): Promise<[string, boolean | undefined]> => {
       try {
@@ -184,11 +189,12 @@ const resolveOwnerCode = async (
         );
         return [owner, code !== '0x'];
       } catch (error) {
+        unknown = true;
         return [owner, undefined];
       }
     }),
   );
-  return new Map(entries);
+  return { codes: new Map(entries), unknown };
 };
 
 /**
@@ -290,6 +296,7 @@ export const usePerimeterVault = (): PerimeterVault => {
         const pausedByQueue: Record<string, boolean> = {};
         let blockStateUnknown = false;
         let requestStatusUnknown = false;
+        let ownerCodeUnknown = false;
 
         for (const queueAddress of queueAddresses) {
           const queue = new Contract(
@@ -324,9 +331,9 @@ export const usePerimeterVault = (): PerimeterVault => {
             uniqueIds.map(id => queue.getRequest(id)),
           );
 
-          const ownerCode = await resolveOwnerCode(
-            requests.map(request => request.owner),
-          );
+          const { codes: ownerCode, unknown: theseOwnerCodesUnknown } =
+            await resolveOwnerCode(requests.map(request => request.owner));
+          ownerCodeUnknown = ownerCodeUnknown || theseOwnerCodesUnknown;
           const { states: blockStates, unknown: theseBlockStatesUnknown } =
             await resolveBlockStates(
               queue,
@@ -385,7 +392,11 @@ export const usePerimeterVault = (): PerimeterVault => {
           exits,
           pausedByQueue,
           paused: Object.values(pausedByQueue).some(Boolean),
-          unknown: pointerUnknown || blockStateUnknown || requestStatusUnknown,
+          unknown:
+            pointerUnknown ||
+            blockStateUnknown ||
+            requestStatusUnknown ||
+            ownerCodeUnknown,
           forKey: key,
         };
       } catch (error) {

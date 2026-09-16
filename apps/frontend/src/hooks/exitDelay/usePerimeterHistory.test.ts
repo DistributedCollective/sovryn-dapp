@@ -187,6 +187,20 @@ describe('usePerimeterHistory', () => {
     expect(result.current.unknown).toBe(true);
   });
 
+  it('reports a remembered withdrawal with a status outside the five the queue defines as unknown', async () => {
+    const { rerender, result } = await settled(false, live('7', '8'));
+    mockGetRequest.mockImplementation(async (_queue: string, id: string) =>
+      request({ status: id === '7' ? 9 : ExitStatus.Executed }),
+    );
+
+    rerender({ on: true, rows: [] });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await waitFor(() => expect(result.current.exits).toHaveLength(1));
+
+    expect(result.current.exits[0].id).toBe('8');
+    expect(result.current.unknown).toBe(true);
+  });
+
   it('gives up on a read that never answers, and reports the history as unknown', async () => {
     const { rerender, result } = await settled(false, live('7'));
     mockGetRequest.mockReturnValue(new Promise(() => undefined));

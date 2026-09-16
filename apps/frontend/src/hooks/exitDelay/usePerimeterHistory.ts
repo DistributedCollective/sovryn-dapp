@@ -11,6 +11,7 @@ import {
   PendingExit,
   RELEASE_READ_TIMEOUT_MS,
   exitKey,
+  isStatedExitStatus,
 } from '../../utils/exitDelay';
 import { rememberExits, rememberedExits } from '../../utils/exitDelayHistory';
 import { useAccount } from '../useAccount';
@@ -84,10 +85,10 @@ export const usePerimeterHistory = (
             if (status === ExitStatus.Queued) {
               return;
             }
-            if (status === ExitStatus.None) {
-              // A remembered id was seen queued in this same queue, so a node
-              // answering that it holds no such request has not read it, not
-              // told us it never existed.
+            if (!isStatedExitStatus(status)) {
+              // A remembered id answering with the zero status, or a value
+              // outside the five the queue defines, is a read that did not
+              // state the request, not a fact about it.
               unknown = true;
               return;
             }

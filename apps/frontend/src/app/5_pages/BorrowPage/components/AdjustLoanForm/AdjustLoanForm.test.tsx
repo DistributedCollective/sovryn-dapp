@@ -14,10 +14,10 @@ import { i18n } from '../../../../../locales/i18n';
 let AdjustLoanForm: typeof import('./AdjustLoanForm').AdjustLoanForm;
 
 /**
- * This form had no test at all, and it is the one place where the hold row is
- * gated on a computed gross rather than on a tab: the row must appear for a
- * collateral withdrawal and stay away from a borrow or an add-collateral
- * adjust, which take nothing out of the protocol.
+ * On this form the hold row is gated on a computed gross rather than on a
+ * tab: it must appear for a collateral withdrawal and stay away from a
+ * borrow or an add-collateral adjust, which take nothing out of the
+ * protocol.
  */
 
 let mockDelay: { delaySeconds: number; loading: boolean; unknown: boolean };

@@ -32,11 +32,10 @@ export const getExitFeeNet = (gross: Decimal, rateBps: number): Decimal =>
 /**
  * Mirror of the on-chain charge test (PERIMETER_FEE_CALL_GRAPH.md §"Quoting for UIs").
  *
- * Deliberately NOT exported. It answers "would a fee be charged" and only that,
- * so on its own it cannot tell a rate of zero from a rate nobody could read —
- * and four separate consumers reached that wrong conclusion by calling it
- * directly. `getExitFeeDisplay` is the exported entry point; keeping this
- * private makes the mistake a compile error instead of a bug a caller could
+ * Deliberately NOT exported. It answers "would a fee be charged" and only
+ * that, so on its own it cannot tell a rate of zero from a rate nobody could
+ * read. `getExitFeeDisplay` is the exported entry point; keeping this
+ * private makes that mistake a compile error instead of a bug a caller could
  * introduce unnoticed.
  */
 const isExitFeeShown = (

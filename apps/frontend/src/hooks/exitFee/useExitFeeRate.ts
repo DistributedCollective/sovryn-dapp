@@ -79,13 +79,12 @@ export const useExitFeeRate = (
           return UNCHARGED;
         }
 
-        // Known and accepted: the pointer is cached for a TTL under a key with
-        // no block dimension, and a refetch only runs on the next observed
-        // block, so at the moment the Owner pins the controller an open
-        // client can report "no fee" for up to one TTL plus one block (about
-        // 60 s on RSK) while the chain has started charging. Bounded,
-        // one-time, and covered by the release order: the dapp ships before
-        // charging is enabled, never after.
+        // The pointer is cached for a TTL under a key with no block
+        // dimension, and a refetch only runs on the next observed block, so
+        // at the moment the Owner pins the controller an open client can
+        // report "no fee" for up to one TTL plus one block (about 60 s on
+        // RSK) while the chain has already started charging. The window is
+        // bounded and one-time, tied to a single Owner action.
         const pointer = await readPerimeterPointer(
           RSK_CHAIN_ID,
           protocol.address,

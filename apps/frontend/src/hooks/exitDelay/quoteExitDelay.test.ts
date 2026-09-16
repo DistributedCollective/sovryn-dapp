@@ -107,13 +107,13 @@ describe('quoteExitDelay', () => {
 
   afterAll(() => stub.close());
 
-  /** A consumer wired to a queue and a controller, as once the delay ships. */
+  /** A consumer wired to a queue and a controller. */
   const wire = (consumer = PROTOCOL) => {
     stub.onCall(consumer, QUEUE_GETTER, addressResult(QUEUE));
     stub.onCall(consumer, CONTROLLER_GETTER, addressResult(CONTROLLER));
   };
 
-  describe('on the answers RSK mainnet gives today', () => {
+  describe('when the queue getter reverts', () => {
     it('reports no hold for the lending protocol, whose queue getter reverts with a reason', async () => {
       stub.onCall(PROTOCOL, QUEUE_GETTER, RSK_PROTOCOL_TARGET_NOT_ACTIVE);
       stub.onCall(PROTOCOL, CONTROLLER_GETTER, addressResult(CONTROLLER));

@@ -110,8 +110,7 @@ describe('LendingForm perimeter fee', () => {
   });
 
   it('tells the lender the withdrawal will be held, and for how long', () => {
-    // No test in this repo used to render a form with a real hold, so the row
-    // could have stopped appearing without anything failing.
+    // Pins that the hold row appears for a withdrawal with a real hold.
     mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
 
     withdraw();

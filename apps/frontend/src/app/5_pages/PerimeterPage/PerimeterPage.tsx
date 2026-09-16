@@ -124,7 +124,16 @@ const PerimeterPage: FC = () => {
           { now, blockTime },
         ),
       })),
-    [account, blockTime, history.exits, liveExits, now, paused, pausedByQueue, showHistory],
+    [
+      account,
+      blockTime,
+      history.exits,
+      liveExits,
+      now,
+      paused,
+      pausedByQueue,
+      showHistory,
+    ],
   );
 
   // The release checks take several round trips before the dialog opens. A

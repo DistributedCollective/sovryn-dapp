@@ -116,6 +116,22 @@ describe('LOCStatus surplus claim', () => {
 
       expect(screen.queryByText('withdrawal surplus')).not.toBeInTheDocument();
     });
+
+    it('waits for the fee quote even once the delay has settled', () => {
+      mockFee.loading = true;
+
+      const { container } = renderStatus();
+
+      expect(withdrawButton(container)).toBeDisabled();
+    });
+
+    it('offers Withdraw once the fee quote has settled', () => {
+      mockFee.loading = false;
+
+      const { container } = renderStatus();
+
+      expect(withdrawButton(container)).toBeEnabled();
+    });
   });
 
   describe('withdrawal delay', () => {

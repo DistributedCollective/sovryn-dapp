@@ -24,8 +24,15 @@ jest.mock('../../../../../contexts/NotificationContext', () => {
   };
 });
 
+let mockFee: {
+  active: boolean;
+  rateBps: number;
+  loading: boolean;
+  unknown: boolean;
+};
+
 jest.mock('../../../../../hooks/exitFee/useExitFeeRate', () => ({
-  useExitFeeRate: () => ({ active: true, rateBps: 50, loading: false }),
+  useExitFeeRate: () => mockFee,
 }));
 
 let mockDelay: { delaySeconds: number; loading: boolean; unknown: boolean };
@@ -66,6 +73,7 @@ describe('LendingForm perimeter fee', () => {
   beforeEach(() => {
     (asyncCall as jest.Mock).mockResolvedValue(BigNumber.from(0));
     mockDelay = { delaySeconds: 0, loading: false, unknown: false };
+    mockFee = { active: true, rateBps: 50, loading: false, unknown: false };
   });
 
   // The hold row links to the Perimeter page, so the form needs a router the
@@ -157,6 +165,26 @@ describe('LendingForm perimeter fee', () => {
       const input = screen.getByPlaceholderText('0');
       fireEvent.change(input, { target: { value: '100' } });
       fireEvent.blur(input);
+
+      expect(confirm()).toBeEnabled();
+    });
+  });
+
+  describe('Confirm and the fee quote', () => {
+    const confirm = () => screen.getByRole('button', { name: 'Confirm' });
+
+    it('waits for the fee quote even once the delay has settled', () => {
+      mockFee.loading = true;
+
+      withdraw();
+
+      expect(confirm()).toBeDisabled();
+    });
+
+    it('offers Confirm once the fee quote has settled', () => {
+      mockFee.loading = false;
+
+      withdraw();
 
       expect(confirm()).toBeEnabled();
     });

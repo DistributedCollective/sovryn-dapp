@@ -38,13 +38,15 @@ jest.mock('../../../../../hooks/exitDelay/useExitDelayQuote', () => ({
   useExitDelayQuote: () => mockDelay,
 }));
 
+let mockFee: {
+  active: boolean;
+  rateBps: number;
+  unknown: boolean;
+  loading: boolean;
+};
+
 jest.mock('../../../../../hooks/exitFee/useExitFeeRate', () => ({
-  useExitFeeRate: () => ({
-    active: true,
-    rateBps: 10,
-    unknown: false,
-    loading: false,
-  }),
+  useExitFeeRate: () => mockFee,
 }));
 
 jest.mock('../../../../../hooks/useLoadContract', () => ({
@@ -189,6 +191,7 @@ describe('AdjustLoanForm perimeter hold', () => {
 
   beforeEach(() => {
     mockDelay = { delaySeconds: 0, loading: false, unknown: false };
+    mockFee = { active: true, rateBps: 10, unknown: false, loading: false };
   });
 
   it('shows no hold for an adjust that takes nothing out', () => {
@@ -268,6 +271,37 @@ describe('AdjustLoanForm perimeter hold', () => {
 
     it('offers Confirm when the quote could not be read', () => {
       mockDelay = { delaySeconds: 0, loading: false, unknown: true };
+
+      withdrawCollateral();
+
+      expect(confirm()).toBeEnabled();
+    });
+  });
+
+  describe('Confirm and the fee quote', () => {
+    const confirm = () =>
+      document.querySelector(
+        '[data-layout-id="adjust-loan-confirm-button"]',
+      ) as HTMLButtonElement;
+
+    const withdrawCollateral = () => {
+      renderForm();
+      fireEvent.click(screen.getByText('Withdraw collateral'));
+      enterCollateral('0.1');
+    };
+
+    it('waits for the fee quote even once the delay has settled', () => {
+      mockDelay = HOLD;
+      mockFee.loading = true;
+
+      withdrawCollateral();
+
+      expect(confirm()).toBeDisabled();
+    });
+
+    it('offers Confirm once the fee quote has settled', () => {
+      mockDelay = HOLD;
+      mockFee.loading = false;
 
       withdrawCollateral();
 

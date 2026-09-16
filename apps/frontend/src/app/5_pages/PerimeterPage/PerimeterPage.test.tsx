@@ -605,7 +605,10 @@ describe('PerimeterPage', () => {
     expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
   });
 
-  it('withholds Release for the whole queue while releases are paused', () => {
+  it('withholds Release for the whole queue while releases are paused, but keeps the held withdrawal listed', () => {
+    // Pausing disables withdrawing, not seeing: the row and its own Paused
+    // status must stay on the page, not just the banner saying releases are
+    // paused.
     mockVault.exits = [exit()];
     mockVault.paused = true;
     mockVault.pausedByQueue = { [QUEUE]: true };
@@ -615,6 +618,8 @@ describe('PerimeterPage', () => {
       container.querySelector('[data-layout-id="perimeter-paused"]'),
     ).toBeInTheDocument();
     expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
+    expect(screen.getAllByText('#7').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Paused').length).toBeGreaterThan(0);
   });
 
   it('withholds Release from an account that is only the receiver', () => {

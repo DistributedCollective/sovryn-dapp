@@ -316,7 +316,15 @@ const PerimeterPage: FC = () => {
               className="text-center mb-4"
               dataAttribute="perimeter-paused"
             >
-              {t(translations.perimeterPage.statusTooltip.paused)}
+              {t(
+                // Two independently pausable queues can hold this account's
+                // withdrawals. Only when every one of them is paused is it
+                // true that releases are paused across the whole perimeter;
+                // otherwise the row-level status already says which ones are.
+                Object.values(pausedByQueue).every(Boolean)
+                  ? translations.perimeterPage.statusTooltip.paused
+                  : translations.perimeterPage.pausedPartial,
+              )}
             </Paragraph>
           )}
           {readFailed && account && (

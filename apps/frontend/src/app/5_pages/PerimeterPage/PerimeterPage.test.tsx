@@ -686,6 +686,25 @@ describe('PerimeterPage', () => {
     expect(screen.getAllByText('Paused').length).toBeGreaterThan(0);
   });
 
+  it('says releases are paused for some withdrawals, not the whole perimeter, when only one of two queues is paused', () => {
+    mockVault.exits = [
+      exit({ id: '7', queueAddress: QUEUE }),
+      exit({ id: '9', queueAddress: OTHER_QUEUE }),
+    ];
+    mockVault.paused = true;
+    mockVault.pausedByQueue = { [QUEUE]: true, [OTHER_QUEUE]: false };
+    const { container } = render(<PerimeterPage />);
+
+    expect(
+      screen.queryByText(/paused across the whole perimeter/i),
+    ).not.toBeInTheDocument();
+    expect(
+      container.querySelector('[data-layout-id="perimeter-paused"]'),
+    ).toBeInTheDocument();
+    expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
+    expect(releaseButton(container, OTHER_QUEUE, '9')).toBeInTheDocument();
+  });
+
   it('withholds Release from an account that is only the receiver', () => {
     mockVault.exits = [
       exit({

@@ -2124,6 +2124,7 @@
     "release": "Release",
     "checking": "Checking…",
     "wrongNetworkTooltip": "wrong network",
+    "pausedPartial": "Releases are paused for some of the withdrawals listed below. Nothing is lost; try again once they resume.",
     "readyNow": "Now",
     "contractOwnerNotice": "Owned by a contract: the product you used holds this withdrawal.",
     "tx": {

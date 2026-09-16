@@ -344,6 +344,20 @@ describe('PerimeterPage', () => {
     expect(screen.getAllByText('1d 1h').length).toBeGreaterThan(0);
   });
 
+  it('shows no release time for a row that will never be released', () => {
+    // unlockAt sits in the past on every row here, so before this fix each
+    // one reads "Now" in the Releases column although nothing is pending.
+    mockVault.exits = [
+      exit({ id: '4', status: ExitStatus.ResolvedByOwner }),
+      exit({ id: '5', status: ExitStatus.None }),
+    ];
+    render(<PerimeterPage />);
+
+    expect(screen.getAllByText('Resolved by owner').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Could not be read').length).toBeGreaterThan(0);
+    expect(screen.queryByText('Now')).not.toBeInTheDocument();
+  });
+
   it('disables Release and Release all with a wrong-network tooltip when the wallet is on another network', () => {
     mockCurrentChainId = '0x1';
     mockVault.exits = [exit({ id: '7' }), exit({ id: '8' })];

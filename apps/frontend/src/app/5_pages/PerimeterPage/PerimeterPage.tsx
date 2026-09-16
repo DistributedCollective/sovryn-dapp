@@ -205,7 +205,7 @@ const PerimeterPage: FC = () => {
         id: 'unlocks',
         title: t(translations.perimeterPage.table.unlocks),
         cellRenderer: (row: PerimeterExitRow) =>
-          getTimeToRelease(row.unlockAt, now),
+          getTimeToRelease(row.unlockAt, now, row.state),
       },
       {
         id: 'status',

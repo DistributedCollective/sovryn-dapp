@@ -22,14 +22,33 @@ export const getStatusLabel = (state: PendingExitState): string =>
 export const getStatusTooltip = (state: PendingExitState): string =>
   t(translations.perimeterPage.statusTooltip[state]);
 
+/** States a row settles into for good: nothing is ever released from them. */
+const NEVER_RELEASED_STATES = new Set<PendingExitState>([
+  PendingExitState.Settled,
+  PendingExitState.ResolvedByOwner,
+  PendingExitState.ResolvedToProtocol,
+  PendingExitState.Unreadable,
+]);
+
 /**
  * Time left on a hold, to two units ("1d 1h"). An exit past its unlock time
  * reads as ready rather than as "0 seconds", which would look like a stuck row.
  *
  * The form states a policy duration and rounds it to one whole unit; this is
  * the screen where someone watches the clock, so it says what is actually left.
+ *
+ * A row in one of the states nothing is ever released from carries no release
+ * time at all: an unlock time in the past reads as due now regardless of what
+ * became of the row, which is a readiness claim the row's own status denies.
  */
-export const getTimeToRelease = (unlockAt: number, now: number): string => {
+export const getTimeToRelease = (
+  unlockAt: number,
+  now: number,
+  state: PendingExitState,
+): string => {
+  if (NEVER_RELEASED_STATES.has(state)) {
+    return '-';
+  }
   const remaining = secondsUntilUnlock(unlockAt, now);
   if (remaining === 0) {
     return t(translations.perimeterPage.readyNow);

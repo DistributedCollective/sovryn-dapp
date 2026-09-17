@@ -275,7 +275,10 @@ describe('usePerimeterRelease', () => {
 
     expect(mockExecuteExit).toHaveBeenCalledWith(QUEUE, '7', SEND_OPTIONS);
     expect(onReleased).toHaveBeenCalledWith([
-      exitKey({ queueAddress: QUEUE, id: '7' }),
+      {
+        key: exitKey({ queueAddress: QUEUE, id: '7' }),
+        status: ExitStatus.Executed,
+      },
     ]);
     expect(mockAddNotification).not.toHaveBeenCalled();
   });
@@ -378,10 +381,16 @@ describe('usePerimeterRelease', () => {
       SEND_OPTIONS,
     );
     expect(onReleased).toHaveBeenCalledWith([
-      exitKey({ queueAddress: QUEUE, id: '7' }),
+      {
+        key: exitKey({ queueAddress: QUEUE, id: '7' }),
+        status: ExitStatus.Executed,
+      },
     ]);
     expect(onReleased).toHaveBeenCalledWith([
-      exitKey({ queueAddress: OTHER_QUEUE, id: '7' }),
+      {
+        key: exitKey({ queueAddress: OTHER_QUEUE, id: '7' }),
+        status: ExitStatus.Executed,
+      },
     ]);
   });
 
@@ -398,7 +407,10 @@ describe('usePerimeterRelease', () => {
       ]);
 
       expect(onReleased).toHaveBeenCalledWith([
-        exitKey({ queueAddress: QUEUE, id: '8' }),
+        {
+          key: exitKey({ queueAddress: QUEUE, id: '8' }),
+          status: ExitStatus.Executed,
+        },
       ]);
       expect(mockExecuteExits).toHaveBeenCalledWith(
         [{ queueAddress: QUEUE, requestIds: ['7', '9'] }],
@@ -657,14 +669,18 @@ describe('usePerimeterRelease', () => {
       ['returned to the protocol', ExitStatus.ResolvedToProtocol, TO_PROTOCOL],
       ['resolved by the Owner', ExitStatus.ResolvedByOwner, BY_OWNER],
     ])(
-      'takes a withdrawal %s off the page, says it cannot be released, and sends the rest',
+      // A row the queue resolved away by recovery was never delivered: the
+      // key it leaves the page with must carry that real status, not the
+      // executed status a genuinely delivered row gets, or the page would
+      // record it as paid out when it was not.
+      'takes a withdrawal %s off the page with its real status, not executed, says it cannot be released, and sends the rest',
       async (_case, status, line) => {
         statusOf(QUEUE, 8, requestResult(status));
 
         const onReleased = await release([row({ id: '7' }), row({ id: '8' })]);
 
         expect(onReleased).toHaveBeenCalledWith([
-          exitKey({ queueAddress: QUEUE, id: '8' }),
+          { key: exitKey({ queueAddress: QUEUE, id: '8' }), status },
         ]);
         expect(mockExecuteExit).toHaveBeenCalledWith(QUEUE, '7', SEND_OPTIONS);
         expect(refusalText()).toContain(`Withdrawal #8 ${line}`);
@@ -680,17 +696,27 @@ describe('usePerimeterRelease', () => {
       expect(refusalText()).toContain(UNREAD);
     });
 
-    it('takes a withdrawal the Owner resolved off the page when the holder confirms, and says so', async () => {
-      const onReleased = await release([row()]);
-      statusOf(QUEUE, 7, requestResult(ExitStatus.ResolvedByOwner));
+    it.each([
+      ['returned to the protocol', ExitStatus.ResolvedToProtocol, TO_PROTOCOL],
+      ['resolved by the Owner', ExitStatus.ResolvedByOwner, BY_OWNER],
+    ])(
+      // The same check runs again inside the send step. A withdrawal the
+      // Owner or the protocol resolved away between the press and the
+      // confirm must leave with its real recovery status here too, not
+      // executed — the same rule the press-time check follows above.
+      'takes a withdrawal %s off the page with its real status, not executed, when the holder confirms, and says so',
+      async (_case, status, line) => {
+        const onReleased = await release([row()]);
+        statusOf(QUEUE, 7, requestResult(status));
 
-      await expect(confirmInDialog()).rejects.toThrow();
-      expect(onReleased).toHaveBeenCalledWith([
-        exitKey({ queueAddress: QUEUE, id: '7' }),
-      ]);
-      expect(refusalText()).toContain(`Withdrawal #7 ${BY_OWNER}`);
-      expect(refusalText()).not.toContain('already delivered');
-    });
+        await expect(confirmInDialog()).rejects.toThrow();
+        expect(onReleased).toHaveBeenCalledWith([
+          { key: exitKey({ queueAddress: QUEUE, id: '7' }), status },
+        ]);
+        expect(refusalText()).toContain(`Withdrawal #7 ${line}`);
+        expect(refusalText()).not.toContain('already delivered');
+      },
+    );
   });
 
   describe('a withdrawal still unlocking', () => {
@@ -1003,7 +1029,10 @@ describe('usePerimeterRelease', () => {
 
       await expect(confirmInDialog()).rejects.toThrow();
       expect(onReleased).toHaveBeenCalledWith([
-        exitKey({ queueAddress: QUEUE, id: '7' }),
+        {
+          key: exitKey({ queueAddress: QUEUE, id: '7' }),
+          status: ExitStatus.Executed,
+        },
       ]);
       expect(refusalText()).toContain(
         'Withdrawal #7 was not released because #7 was already delivered.',

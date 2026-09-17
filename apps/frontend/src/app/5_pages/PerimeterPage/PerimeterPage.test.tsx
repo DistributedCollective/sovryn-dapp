@@ -106,6 +106,10 @@ const exit = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
+/** What a genuinely completed release hands `onReleased` for each row. */
+const asExecuted = (rows: { queueAddress: string; id: string }[]) =>
+  rows.map(row => ({ key: exitKey(row), status: ExitStatus.Executed }));
+
 const releaseButton = (container: HTMLElement, queue: string, id: string) =>
   container.querySelector(
     `[data-layout-id="perimeter-release-${exitKey({
@@ -678,7 +682,7 @@ describe('PerimeterPage', () => {
       // not the vault's raw one, or the row is neither live nor history.
       mockRelease.mockImplementation(
         (rows: { queueAddress: string; id: string }[], onReleased) =>
-          onReleased(rows.map(exitKey)),
+          onReleased(asExecuted(rows)),
       );
       mockVault.exits = [exit({ id: '7' })];
       mockHistory.mockImplementation(
@@ -707,7 +711,7 @@ describe('PerimeterPage', () => {
       // on its own read of the chain, which can still trail the release.
       mockRelease.mockImplementation(
         (rows: { queueAddress: string; id: string }[], onReleased) =>
-          onReleased(rows.map(exitKey)),
+          onReleased(asExecuted(rows)),
       );
       const row = exit({ id: '7' });
       mockVault.exits = [row];
@@ -724,6 +728,66 @@ describe('PerimeterPage', () => {
       ).toEqual({ ...row, status: ExitStatus.Executed });
     });
 
+    it.each([
+      [
+        'resolved by the Owner',
+        ExitStatus.ResolvedByOwner,
+        'Resolved by owner',
+      ],
+      [
+        'returned to the protocol',
+        ExitStatus.ResolvedToProtocol,
+        'Returned to the product',
+      ],
+    ])(
+      // The Owner (or the protocol) can resolve a request away by recovery
+      // before the holder presses Release. The fresh check still reports it
+      // through onReleased, so it leaves the live table — but it was never
+      // paid to its receiver, and the receipt must carry the status the
+      // check actually reported, not the executed status a delivered row
+      // gets, or history would falsely say it was already paid out.
+      'gives a withdrawal %s a receipt with that real status, not executed, so history shows it as such rather than Settled',
+      (_case, status, label) => {
+        mockRelease.mockImplementation(
+          (
+            rows: { queueAddress: string; id: string }[],
+            onReleased: (
+              entries: { key: string; status: ExitStatus }[],
+            ) => void,
+          ) => onReleased(rows.map(row => ({ key: exitKey(row), status }))),
+        );
+        mockHistory.mockImplementation(
+          (
+            enabled: boolean,
+            _live: unknown[],
+            receipts: Map<string, unknown>,
+          ) => ({
+            exits: enabled ? [...receipts.values()] : [],
+            loading: false,
+            unknown: false,
+          }),
+        );
+        const row = exit({ id: '7' });
+        mockVault.exits = [row];
+        const { container } = render(<PerimeterPage />);
+
+        fireEvent.click(releaseButton(container, QUEUE, '7')!);
+
+        const [, , receipts] =
+          mockHistory.mock.calls[mockHistory.mock.calls.length - 1];
+        expect(
+          (receipts as Map<string, unknown>).get(
+            exitKey({ queueAddress: QUEUE, id: '7' }),
+          ),
+        ).toEqual({ ...row, status });
+
+        fireEvent.click(screen.getByText('Show history'));
+
+        expect(screen.getByText(label)).toBeInTheDocument();
+        expect(screen.queryByText('Settled')).not.toBeInTheDocument();
+      },
+    );
+
     it('drops a released withdrawal’s receipt when the connected account changes, and does not bring it back by switching back', () => {
       // The receipt is this browser tab's own session state, not read from
       // chain, so nothing scopes it to an account unless this hook does: a
@@ -731,7 +795,7 @@ describe('PerimeterPage', () => {
       const OTHER_ACCOUNT = '0x2222222222222222222222222222222222222222';
       mockRelease.mockImplementation(
         (rows: { queueAddress: string; id: string }[], onReleased) =>
-          onReleased(rows.map(exitKey)),
+          onReleased(asExecuted(rows)),
       );
       const row = exit({ id: '7' });
       mockVault.exits = [row];
@@ -893,7 +957,7 @@ describe('PerimeterPage', () => {
     // takes every other ready release down with it.
     mockRelease.mockImplementation(
       (rows: { queueAddress: string; id: string }[], onReleased) =>
-        onReleased(rows.map(exitKey)),
+        onReleased(asExecuted(rows)),
     );
     mockVault.exits = [exit({ id: '7' }), exit({ id: '8' }), exit({ id: '9' })];
     const { container } = render(<PerimeterPage />);
@@ -909,7 +973,7 @@ describe('PerimeterPage', () => {
   it('drops every row a batch release completed', () => {
     mockRelease.mockImplementation(
       (rows: { queueAddress: string; id: string }[], onReleased) =>
-        onReleased(rows.map(exitKey)),
+        onReleased(asExecuted(rows)),
     );
     mockVault.exits = [exit({ id: '7' }), exit({ id: '8' })];
     render(<PerimeterPage />);
@@ -925,7 +989,7 @@ describe('PerimeterPage', () => {
     // take request 7 of the other off the page.
     mockRelease.mockImplementation(
       (rows: { queueAddress: string; id: string }[], onReleased) =>
-        onReleased(rows.map(exitKey)),
+        onReleased(asExecuted(rows)),
     );
     mockVault.exits = [
       exit({ id: '7', queueAddress: QUEUE }),

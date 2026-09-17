@@ -33,14 +33,16 @@ import {
 } from '../../../constants/currencies';
 import { useChainTime } from '../../../hooks/exitDelay/useChainTime';
 import { usePerimeterHistory } from '../../../hooks/exitDelay/usePerimeterHistory';
-import { usePerimeterRelease } from '../../../hooks/exitDelay/usePerimeterRelease';
+import {
+  ReleaseEntry,
+  usePerimeterRelease,
+} from '../../../hooks/exitDelay/usePerimeterRelease';
 import { usePerimeterVault } from '../../../hooks/exitDelay/usePerimeterVault';
 import { useAccount } from '../../../hooks/useAccount';
 import { useChainStore } from '../../../hooks/useChainStore';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations } from '../../../locales/i18n';
 import {
-  ExitStatus,
   PendingExit,
   canExecuteExit,
   exitKey,
@@ -107,9 +109,12 @@ const PerimeterPage: FC = () => {
   exitsRef.current = exits;
 
   // Built from each released row's own last-known data — amount, asset,
-  // receiver, timestamps — with its status set to executed. History shows
-  // this at once rather than waiting on its own chain read, which can still
-  // lag the block the release actually landed in.
+  // receiver, timestamps — with its status set to whatever the release hook
+  // actually reported: executed for a row delivered or settled by a
+  // completed transaction, or the queue's own recovery status for a row the
+  // Owner or the protocol resolved away instead. History shows this at once
+  // rather than waiting on its own chain read, which can still lag the block
+  // the release actually landed in.
   const [releaseReceipts, setReleaseReceipts] = useState<
     Map<string, PendingExit>
   >(new Map());
@@ -128,18 +133,18 @@ const PerimeterPage: FC = () => {
     setReleaseReceipts(new Map());
   }, [account]);
 
-  const markReleased = useCallback((keys: string[]) => {
+  const markReleased = useCallback((entries: ReleaseEntry[]) => {
     setReleasedKeys(prev => {
       const next = new Set(prev);
-      keys.forEach(key => next.add(key));
+      entries.forEach(({ key }) => next.add(key));
       return next;
     });
     setReleaseReceipts(prev => {
       const next = new Map(prev);
-      keys.forEach(key => {
+      entries.forEach(({ key, status }) => {
         const row = exitsRef.current.find(exit => exitKey(exit) === key);
         if (row) {
-          next.set(key, { ...row, status: ExitStatus.Executed });
+          next.set(key, { ...row, status });
         }
       });
       return next;

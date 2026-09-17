@@ -33,6 +33,9 @@ export type ReleaseRow = Pick<
   'id' | 'queueAddress' | 'originator' | 'owner' | 'receiver'
 >;
 
+/** A row's key and the terminal status it left the page under. */
+export type ReleaseEntry = { key: string; status: ExitStatus };
+
 const QUEUE_READS = [
   'function blockStateOf(address a) view returns (uint8)',
   'function getRequest(uint256 id) view returns (tuple(uint128 amount, uint64 createdAt, uint64 unlockAt, address originator, address owner, address receiver, address token, bytes32 surfaceId, address subProduct, uint8 status, bool unwrapOnDelivery))',
@@ -411,11 +414,17 @@ const byQueue = (rows: ReleaseRow[]): ReleaseRow[][] => {
   return [...groups.values()];
 };
 
+/** A row the queue resolved away by recovery, with which of the two it was. */
+type ResolvedRow = {
+  row: ReleaseRow;
+  status: ExitStatus.ResolvedToProtocol | ExitStatus.ResolvedByOwner;
+};
+
 type ReleaseCheck = {
   /** Rows paid to their receiver: someone has delivered them. */
   delivered: ReleaseRow[];
   /** Rows the queue resolved away by recovery; each is named in `refusals`. */
-  resolved: ReleaseRow[];
+  resolved: ResolvedRow[];
   /** One line per withdrawal, or group of withdrawals, not released, and why. */
   refusals: string[];
   /** Whether the dry run asked about `executeExit` rather than `executeExits`. */
@@ -423,6 +432,16 @@ type ReleaseCheck = {
   /** Per queue, the rows its dry run accepted. */
   accepted: ReleaseRow[][];
 };
+
+/** Each row's key paired with the real status it settled at: `delivered` rows
+ * as executed, `resolved` rows as whichever recovery outcome they read. */
+const settledEntries = (
+  delivered: ReleaseRow[],
+  resolved: ResolvedRow[],
+): ReleaseEntry[] => [
+  ...delivered.map(row => ({ key: exitKey(row), status: ExitStatus.Executed })),
+  ...resolved.map(({ row, status }) => ({ key: exitKey(row), status })),
+];
 
 /**
  * The release check: each row's status and each party's block state read
@@ -441,7 +460,7 @@ const checkRelease = async (
 
   const statuses = await Promise.all(rows.map(readStatus));
   const delivered: ReleaseRow[] = [];
-  const resolved: ReleaseRow[] = [];
+  const resolved: ResolvedRow[] = [];
   const queued = rows.filter((row, index) => {
     switch (statuses[index]) {
       case ExitStatus.Queued:
@@ -450,7 +469,7 @@ const checkRelease = async (
         delivered.push(row);
         return false;
       case ExitStatus.ResolvedToProtocol:
-        resolved.push(row);
+        resolved.push({ row, status: ExitStatus.ResolvedToProtocol });
         refusals.push(
           t(translations.perimeterPage.releaseRefused.resolvedToProtocol, {
             id: row.id,
@@ -458,7 +477,7 @@ const checkRelease = async (
         );
         return false;
       case ExitStatus.ResolvedByOwner:
-        resolved.push(row);
+        resolved.push({ row, status: ExitStatus.ResolvedByOwner });
         refusals.push(
           t(translations.perimeterPage.releaseRefused.resolvedByOwner, {
             id: row.id,
@@ -647,9 +666,11 @@ const autoReleaseGasLimit = async (
  * not be checked, a gas limit the holder typed is below the estimate, or the
  * wallet signs as
  * another account, the wallet is not asked at all; otherwise it is handed the
- * release from the account the check ran for. `onReleased` receives the keys
- * (queue and id) of rows found delivered
- * and of rows a completed transaction settled.
+ * release from the account the check ran for. `onReleased` receives each
+ * settled row's key (queue and id) paired with the status it actually left
+ * the page under: `Executed` for a row found delivered or one a completed
+ * transaction settled, and the queue's own `ResolvedToProtocol` /
+ * `ResolvedByOwner` for a row the queue resolved away by recovery instead.
  */
 export const usePerimeterRelease = () => {
   const { account, signer } = useAccount();
@@ -658,7 +679,10 @@ export const usePerimeterRelease = () => {
   const { addNotification } = useNotificationContext();
 
   return useCallback(
-    async (rows: ReleaseRow[], onReleased: (keys: string[]) => void) => {
+    async (
+      rows: ReleaseRow[],
+      onReleased: (entries: ReleaseEntry[]) => void,
+    ) => {
       if (!account || rows.length === 0) {
         return;
       }
@@ -712,9 +736,9 @@ export const usePerimeterRelease = () => {
       }
 
       const check = await checkRelease(rows, account);
-      const settled = [...check.delivered, ...check.resolved];
+      const settled = settledEntries(check.delivered, check.resolved);
       if (settled.length > 0) {
-        onReleased(settled.map(exitKey));
+        onReleased(settled);
       }
       if (check.refusals.length > 0) {
         notify(check.refusals);
@@ -740,9 +764,9 @@ export const usePerimeterRelease = () => {
 
           const again = await checkRelease(batchRows, account, single);
           const refusals: string[] = [];
-          const settledAgain = [...again.delivered, ...again.resolved];
+          const settledAgain = settledEntries(again.delivered, again.resolved);
           if (settledAgain.length > 0) {
-            onReleased(settledAgain.map(exitKey));
+            onReleased(settledAgain);
           }
           again.delivered.forEach(row =>
             refusals.push(
@@ -824,7 +848,8 @@ export const usePerimeterRelease = () => {
         const [[row]] = check.accepted;
         await executeExit(row.queueAddress, row.id, {
           preflight: preflight(true),
-          onComplete: () => onReleased([exitKey(row)]),
+          onComplete: () =>
+            onReleased([{ key: exitKey(row), status: ExitStatus.Executed }]),
         });
         return;
       }
@@ -837,9 +862,10 @@ export const usePerimeterRelease = () => {
           preflight: preflight(false),
           onComplete: batch =>
             onReleased(
-              batch.requestIds.map(id =>
-                exitKey({ queueAddress: batch.queueAddress, id }),
-              ),
+              batch.requestIds.map(id => ({
+                key: exitKey({ queueAddress: batch.queueAddress, id }),
+                status: ExitStatus.Executed,
+              })),
             ),
         },
       );

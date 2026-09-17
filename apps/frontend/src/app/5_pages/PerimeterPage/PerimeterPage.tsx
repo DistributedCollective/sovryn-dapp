@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
@@ -106,6 +113,20 @@ const PerimeterPage: FC = () => {
   const [releaseReceipts, setReleaseReceipts] = useState<
     Map<string, PendingExit>
   >(new Map());
+
+  // Both pieces of state above are this tab's own session memory, not read
+  // from chain, so nothing scopes them to an account unless this does:
+  // nothing else remounts the page on an account change. Cleared the moment
+  // the connected account changes, so a row released under one account is
+  // never carried into another's live filtering or handed to history as
+  // though it were theirs. Every read this page drives is pinned to
+  // RSK_CHAIN_ID regardless of the wallet's or the app's selected chain (see
+  // usePerimeterVault and usePerimeterHistory), so there is no equivalent
+  // chain-scoped state here to reset on a chain change.
+  useEffect(() => {
+    setReleasedKeys(new Set());
+    setReleaseReceipts(new Map());
+  }, [account]);
 
   const markReleased = useCallback((keys: string[]) => {
     setReleasedKeys(prev => {

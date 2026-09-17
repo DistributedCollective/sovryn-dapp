@@ -723,6 +723,55 @@ describe('PerimeterPage', () => {
         ),
       ).toEqual({ ...row, status: ExitStatus.Executed });
     });
+
+    it('drops a released withdrawal’s receipt when the connected account changes, and does not bring it back by switching back', () => {
+      // The receipt is this browser tab's own session state, not read from
+      // chain, so nothing scopes it to an account unless this hook does: a
+      // receipt built for account A must never be handed to history for B.
+      const OTHER_ACCOUNT = '0x2222222222222222222222222222222222222222';
+      mockRelease.mockImplementation(
+        (rows: { queueAddress: string; id: string }[], onReleased) =>
+          onReleased(rows.map(exitKey)),
+      );
+      const row = exit({ id: '7' });
+      mockVault.exits = [row];
+      const { container, rerender } = render(<PerimeterPage />);
+
+      fireEvent.click(releaseButton(container, QUEUE, '7')!);
+
+      const receiptsAfterRelease = mockHistory.mock.calls[
+        mockHistory.mock.calls.length - 1
+      ][2] as Map<string, unknown>;
+      expect(
+        receiptsAfterRelease.get(exitKey({ queueAddress: QUEUE, id: '7' })),
+      ).toBeDefined();
+
+      // A's release also drops the row from the live list via releasedKeys;
+      // switching to B must not carry that filtering over either, or a row
+      // that is genuinely live for B would be hidden by a key A released.
+      // (The row itself is still A's in this mock, so it now reads as
+      // releasable only by its owner rather than Ready — what matters here
+      // is that it is not filtered out of the list entirely.)
+      mockAccount = OTHER_ACCOUNT;
+      rerender(<PerimeterPage />);
+
+      const receiptsAfterSwitch = mockHistory.mock.calls[
+        mockHistory.mock.calls.length - 1
+      ][2] as Map<string, unknown>;
+      expect(receiptsAfterSwitch.size).toBe(0);
+      expect(screen.getAllByText('#7').length).toBeGreaterThan(0);
+
+      // Switching back to A must not resurrect the cleared receipt on its
+      // own — only a chain read that actually confirms the row could, and
+      // this page never re-derives a receipt from nothing.
+      mockAccount = ACCOUNT;
+      rerender(<PerimeterPage />);
+
+      const receiptsBackOnA = mockHistory.mock.calls[
+        mockHistory.mock.calls.length - 1
+      ][2] as Map<string, unknown>;
+      expect(receiptsBackOnA.size).toBe(0);
+    });
   });
 
   it('withholds Release while an exit is still on hold', () => {

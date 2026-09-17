@@ -33,6 +33,8 @@ import { useChainStore } from '../../../hooks/useChainStore';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations } from '../../../locales/i18n';
 import {
+  ExitStatus,
+  PendingExit,
   canExecuteExit,
   exitKey,
   getPendingExitState,
@@ -89,10 +91,36 @@ const PerimeterPage: FC = () => {
   // all" the next would revert the whole atomic batch, since its status is no
   // longer Queued. Ids restart in each queue, so the queue is part of the key.
   const [releasedKeys, setReleasedKeys] = useState<Set<string>>(new Set());
+
+  // markReleased is created once and called long after, from inside the
+  // release hook's own checks and its transaction's onComplete, so it reads
+  // the vault's rows through a ref rather than closing over a render's own
+  // — by then the vault has very likely read again and moved on.
+  const exitsRef = useRef(exits);
+  exitsRef.current = exits;
+
+  // Built from each released row's own last-known data — amount, asset,
+  // receiver, timestamps — with its status set to executed. History shows
+  // this at once rather than waiting on its own chain read, which can still
+  // lag the block the release actually landed in.
+  const [releaseReceipts, setReleaseReceipts] = useState<
+    Map<string, PendingExit>
+  >(new Map());
+
   const markReleased = useCallback((keys: string[]) => {
     setReleasedKeys(prev => {
       const next = new Set(prev);
       keys.forEach(key => next.add(key));
+      return next;
+    });
+    setReleaseReceipts(prev => {
+      const next = new Map(prev);
+      keys.forEach(key => {
+        const row = exitsRef.current.find(exit => exitKey(exit) === key);
+        if (row) {
+          next.set(key, { ...row, status: ExitStatus.Executed });
+        }
+      });
       return next;
     });
   }, []);
@@ -109,12 +137,13 @@ const PerimeterPage: FC = () => {
   );
 
   // The live list holds only what is still waiting. What has been released
-  // is read back from the chain on request, under the history switch. Rows
-  // released this session are named here too, so a history read that still
-  // finds one queued — a backend trailing the block that settled it — gets a
-  // second try instead of leaving the row out of both lists.
+  // is read back from the chain on request, under the history switch. A row
+  // released this session is also handed over already built, so it shows in
+  // history at once instead of waiting on a read that can still trail the
+  // block that settled it; that read still runs and takes over once it
+  // answers with more than a still-queued state.
   const [showHistory, setShowHistory] = useState(false);
-  const history = usePerimeterHistory(showHistory, liveExits, releasedKeys);
+  const history = usePerimeterHistory(showHistory, liveExits, releaseReceipts);
 
   const rows: PerimeterExitRow[] = useMemo(
     () =>

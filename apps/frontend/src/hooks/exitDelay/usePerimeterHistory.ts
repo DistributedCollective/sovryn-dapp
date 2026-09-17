@@ -8,7 +8,6 @@ import { RSK_CHAIN_ID } from '../../config/chains';
 
 import {
   ExitStatus,
-  HISTORY_SETTLING_RETRY_MS,
   PendingExit,
   RELEASE_READ_TIMEOUT_MS,
   exitKey,
@@ -44,23 +43,30 @@ const EMPTY_STATE: HistoryState = {
   stampedFor: { enabled: false, account: undefined },
 };
 
+const EMPTY_RECEIPTS: ReadonlyMap<string, PendingExit> = new Map();
+
 /**
  * Released, or otherwise settled, withdrawals: the ids this browser has seen
  * for the account that are not in the live list, each read back from its
  * queue now. Remembers every live withdrawal it is shown so it can be found
  * again after it settles.
  *
- * `settling` names withdrawals released earlier this session. One of those
- * whose read still comes back queued is read a second time, after a short
- * wait, rather than taken at face value: the backend answering this read can
- * still be a block behind the one that recorded the release. A withdrawal
- * outside `settling` that reads back queued is left out of history on the
- * first read, as history is for settled withdrawals only.
+ * `receipts` carries a withdrawal released earlier this session as its own
+ * live row last showed it — amount, asset, receiver, timestamps — with its
+ * status set to executed. That row is shown at once, without waiting on the
+ * read below: the backend answering it can still be a block behind the one
+ * that recorded the release. The read still runs, and once it answers with a
+ * stated status other than queued, that answer replaces the receipt-built
+ * row (they should agree). A queued answer never removes the row: the
+ * receipt is what a completed transaction actually recorded, so it wins over
+ * a read that has not caught up yet. A withdrawal outside `receipts` that
+ * reads back queued is left out of history on this read, as history is for
+ * settled withdrawals only.
  */
 export const usePerimeterHistory = (
   enabled: boolean,
   live: PendingExit[],
-  settling: ReadonlySet<string> = new Set(),
+  receipts: ReadonlyMap<string, PendingExit> = EMPTY_RECEIPTS,
 ): PerimeterHistory => {
   const { account } = useAccount();
   const [history, setHistory] = useState<HistoryState>(EMPTY_STATE);
@@ -80,7 +86,14 @@ export const usePerimeterHistory = (
       return;
     }
     let cancelled = false;
-    setHistory({ ...EMPTY, loading: true, stampedFor: { enabled, account } });
+    // A withdrawal released this session is shown right away, built from its
+    // own live row, rather than waiting on the read below.
+    setHistory({
+      exits: [...receipts.values()],
+      loading: true,
+      unknown: false,
+      stampedFor: { enabled, account },
+    });
     const remembered = rememberedExits(RSK_CHAIN_ID, account).filter(
       entry => !live.some(exit => exitKey(exit) === exitKey(entry)),
     );
@@ -92,21 +105,11 @@ export const usePerimeterHistory = (
         remembered.map(async entry => {
           try {
             const queue = new Contract(entry.queueAddress, QUEUE_ABI, provider);
-            let request = await boundedBy(
+            const request = await boundedBy(
               queue.getRequest(entry.id),
               RELEASE_READ_TIMEOUT_MS,
             );
-            let status = Number(request.status) as ExitStatus;
-            if (status === ExitStatus.Queued && settling.has(exitKey(entry))) {
-              await new Promise(resolve =>
-                setTimeout(resolve, HISTORY_SETTLING_RETRY_MS),
-              );
-              request = await boundedBy(
-                queue.getRequest(entry.id),
-                RELEASE_READ_TIMEOUT_MS,
-              );
-              status = Number(request.status) as ExitStatus;
-            }
+            const status = Number(request.status) as ExitStatus;
             if (status === ExitStatus.Queued) {
               return;
             }
@@ -142,6 +145,16 @@ export const usePerimeterHistory = (
         }),
       );
       if (!cancelled) {
+        // A receipt whose own read did not land a superseding row — still
+        // queued, unstated, or failed outright — keeps its row: the receipt
+        // is what a completed transaction actually recorded, and a lagging
+        // read must not make it disappear.
+        const readKeys = new Set(exits.map(exitKey));
+        receipts.forEach((receipt, key) => {
+          if (!readKeys.has(key)) {
+            exits.push(receipt);
+          }
+        });
         exits.sort((a, b) => b.unlockAt - a.unlockAt);
         setHistory({
           exits,
@@ -155,7 +168,7 @@ export const usePerimeterHistory = (
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled, account, liveKeys]);
+  }, [enabled, account, liveKeys, receipts]);
 
   // A history not yet read for the current switch and account still belongs
   // to a previous request — the switch off, or a different account's read —

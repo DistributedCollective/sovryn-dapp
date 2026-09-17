@@ -66,8 +66,8 @@ jest.mock('../../../hooks/exitDelay/usePerimeterRelease', () => ({
 }));
 
 jest.mock('../../../hooks/exitDelay/usePerimeterHistory', () => ({
-  usePerimeterHistory: (enabled: boolean, live: unknown[]) =>
-    mockHistory(enabled, live),
+  usePerimeterHistory: (enabled: boolean, live: unknown[], receipts: unknown) =>
+    mockHistory(enabled, live, receipts),
 }));
 
 jest.mock('../../../hooks/exitDelay/useChainTime', () => ({
@@ -700,6 +700,28 @@ describe('PerimeterPage', () => {
       expect(
         screen.queryByText(/No released withdrawals are remembered/),
       ).not.toBeInTheDocument();
+    });
+
+    it('hands history a receipt built from the live row’s own data, with its status set to executed, as soon as a release completes', () => {
+      // History shows a released row at once from this, rather than waiting
+      // on its own read of the chain, which can still trail the release.
+      mockRelease.mockImplementation(
+        (rows: { queueAddress: string; id: string }[], onReleased) =>
+          onReleased(rows.map(exitKey)),
+      );
+      const row = exit({ id: '7' });
+      mockVault.exits = [row];
+      const { container } = render(<PerimeterPage />);
+
+      fireEvent.click(releaseButton(container, QUEUE, '7')!);
+
+      const [, , receipts] =
+        mockHistory.mock.calls[mockHistory.mock.calls.length - 1];
+      expect(
+        (receipts as Map<string, unknown>).get(
+          exitKey({ queueAddress: QUEUE, id: '7' }),
+        ),
+      ).toEqual({ ...row, status: ExitStatus.Executed });
     });
   });
 

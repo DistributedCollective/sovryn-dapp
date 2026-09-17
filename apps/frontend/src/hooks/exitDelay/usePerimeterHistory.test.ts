@@ -4,7 +4,12 @@ import React from 'react';
 
 import { BigNumber } from 'ethers';
 
-import { ExitStatus, PendingExit, exitKey } from '../../utils/exitDelay';
+import {
+  ExitStatus,
+  PendingExit,
+  RELEASE_READ_TIMEOUT_MS,
+  exitKey,
+} from '../../utils/exitDelay';
 import { rememberedExits } from '../../utils/exitDelayHistory';
 import { usePerimeterHistory } from './usePerimeterHistory';
 
@@ -50,12 +55,10 @@ jest.mock('../useAccount', () => ({
   useAccount: () => ({ account: mockAccount }),
 }));
 
-// Short enough that the hung-read test below does not wait ten real seconds,
-// and that a retry test below does not wait three real ones.
+// Short enough that the hung-read test below does not wait ten real seconds.
 jest.mock('../../utils/exitDelay', () => ({
   ...jest.requireActual('../../utils/exitDelay'),
   RELEASE_READ_TIMEOUT_MS: 50,
-  HISTORY_SETTLING_RETRY_MS: 20,
 }));
 
 const request = (overrides: Record<string, unknown> = {}) => ({
@@ -92,16 +95,23 @@ const live = (...ids: string[]): PendingExit[] =>
 const settled = async (
   enabled: boolean,
   shown: PendingExit[],
-  settling: Set<string> = new Set(),
+  receipts: Map<string, PendingExit> = new Map(),
 ) => {
   const hook = renderHook(
-    ({ on, rows }: { on: boolean; rows: PendingExit[] }) =>
-      usePerimeterHistory(on, rows, settling),
-    { initialProps: { on: enabled, rows: shown } },
+    (props: {
+      on: boolean;
+      rows: PendingExit[];
+      receipts?: Map<string, PendingExit>;
+    }) => usePerimeterHistory(props.on, props.rows, props.receipts),
+    { initialProps: { on: enabled, rows: shown, receipts } },
   );
   await waitFor(() => expect(hook.result.current.loading).toBe(false));
   return hook;
 };
+
+/** A receipt built the way the page builds it: the live row, status executed. */
+const receiptFor = (row: PendingExit): Map<string, PendingExit> =>
+  new Map([[exitKey(row), { ...row, status: ExitStatus.Executed }]]);
 
 describe('usePerimeterHistory', () => {
   beforeEach(() => {
@@ -167,39 +177,103 @@ describe('usePerimeterHistory', () => {
     expect(mockGetRequest).toHaveBeenCalledTimes(2);
   });
 
-  it('reads a withdrawal released this session a second time when the first read still finds it queued', async () => {
+  describe('a withdrawal released this session', () => {
     // The release just landed; the backend answering history has not caught
-    // up to the block that settled it yet.
-    const settling = new Set([exitKey({ queueAddress: QUEUE, id: '7' })]);
-    let calls = 0;
-    mockGetRequest.mockImplementation(async () => {
-      calls += 1;
-      return request({
-        status: calls === 1 ? ExitStatus.Queued : ExitStatus.Executed,
-      });
+    // up to the block that settled it yet. Its receipt is built the way the
+    // page builds one: the live row it last showed, with status executed.
+    it('shows it at once, built from its own live row, without waiting on the read behind it', async () => {
+      const row = live('7')[0];
+      const receipts = receiptFor(row);
+      let resolveRead: (value: unknown) => void = () => undefined;
+      mockGetRequest.mockImplementation(
+        () =>
+          new Promise(resolve => {
+            resolveRead = resolve;
+          }),
+      );
+
+      const { rerender, result } = await settled(false, live('7'));
+      rerender({ on: true, rows: [], receipts });
+
+      // The read behind it has not answered yet — nothing was awaited for
+      // this row to appear.
+      expect(result.current.exits).toEqual([
+        { ...row, status: ExitStatus.Executed },
+      ]);
+
+      resolveRead(request({ status: ExitStatus.Queued }));
+      await waitFor(() => expect(result.current.loading).toBe(false));
     });
 
-    const { rerender, result } = await settled(false, live('7'), settling);
-    rerender({ on: true, rows: [] });
-    await waitFor(() => expect(result.current.loading).toBe(false));
-    await waitFor(() => expect(result.current.exits).toHaveLength(1));
+    it('replaces the receipt-built row once the read behind it answers with a stated, settled status', async () => {
+      const row = live('7')[0];
+      const receipts = receiptFor(row);
+      mockGetRequest.mockResolvedValue(
+        request({
+          status: ExitStatus.ResolvedByOwner,
+          unlockAt: BigNumber.from(1_800_000_099),
+        }),
+      );
 
-    expect(result.current.exits[0].id).toBe('7');
-    expect(result.current.exits[0].status).toBe(ExitStatus.Executed);
-    expect(mockGetRequest).toHaveBeenCalledTimes(2);
-  });
+      const { rerender, result } = await settled(false, live('7'));
+      rerender({ on: true, rows: [], receipts });
+      await waitFor(() => expect(result.current.loading).toBe(false));
 
-  it('leaves a withdrawal released this session out of history when it still reads queued on the second read', async () => {
-    const settling = new Set([exitKey({ queueAddress: QUEUE, id: '7' })]);
-    mockGetRequest.mockResolvedValue(request({ status: ExitStatus.Queued }));
+      // What the chain actually read wins over what the receipt guessed.
+      expect(result.current.exits).toHaveLength(1);
+      expect(result.current.exits[0].status).toBe(ExitStatus.ResolvedByOwner);
+      expect(result.current.exits[0].unlockAt).toBe(1_800_000_099);
+    });
 
-    const { rerender, result } = await settled(false, live('7'), settling);
-    rerender({ on: true, rows: [] });
-    await waitFor(() => expect(result.current.loading).toBe(false));
+    it('keeps the receipt-built row, rather than dropping it, when the read behind it still answers queued', async () => {
+      const row = live('7')[0];
+      const receipts = receiptFor(row);
+      mockGetRequest.mockResolvedValue(request({ status: ExitStatus.Queued }));
 
-    expect(result.current.exits).toEqual([]);
-    expect(result.current.unknown).toBe(false);
-    expect(mockGetRequest).toHaveBeenCalledTimes(2);
+      const { rerender, result } = await settled(false, live('7'));
+      rerender({ on: true, rows: [], receipts });
+      await waitFor(() => expect(result.current.loading).toBe(false));
+
+      // The receipt is what a completed transaction actually recorded; a
+      // read that has not caught up to it must not remove the row.
+      expect(result.current.exits).toEqual([
+        { ...row, status: ExitStatus.Executed },
+      ]);
+      expect(result.current.unknown).toBe(false);
+    });
+
+    it('touches no timer beyond the read’s own bound — there is no wait to retry it', async () => {
+      // Fake timers: if a retry timer of any length were still scheduled,
+      // nothing here ever advances it on its own, so the read behind it
+      // would never be asked a second time.
+      jest.useFakeTimers();
+      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+      try {
+        const row = live('7')[0];
+        const receipts = receiptFor(row);
+        mockGetRequest.mockResolvedValue(
+          request({ status: ExitStatus.Queued }),
+        );
+
+        const { rerender, result } = await settled(false, live('7'));
+        rerender({ on: true, rows: [], receipts });
+        await waitFor(() => expect(result.current.loading).toBe(false));
+
+        expect(result.current.exits).toEqual([
+          { ...row, status: ExitStatus.Executed },
+        ]);
+        // One read, one bound on it — never a second read behind a wait.
+        expect(mockGetRequest).toHaveBeenCalledTimes(1);
+        expect(
+          setTimeoutSpy.mock.calls.filter(
+            ([, delay]) => delay === RELEASE_READ_TIMEOUT_MS,
+          ),
+        ).toHaveLength(1);
+      } finally {
+        setTimeoutSpy.mockRestore();
+        jest.useRealTimers();
+      }
+    });
   });
 
   it('reports a withdrawal it could not read as unknown, never as absent', async () => {

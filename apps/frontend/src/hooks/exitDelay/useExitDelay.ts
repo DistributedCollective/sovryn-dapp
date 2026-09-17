@@ -79,6 +79,15 @@ export const useDeadlinePassed = (
  * consumer or product still loading — is reported as loading, never as a
  * delay of zero. A quote that has not arrived within `timeoutMs` is reported
  * as unreadable, which shows the warning and lets the user sign.
+ *
+ * That "changed key" guard does not cover the moment the withdrawal delay is
+ * first armed for a surface: the key above does not include the delay value,
+ * so a quote fetched just before arming and still within `EXIT_DELAY_TTL` is
+ * served as-is, unaware anything changed. A form left open across that moment
+ * can under-report the hold for up to one cache lifetime plus a block. The
+ * withdrawal itself is held on chain from the moment of arming either way;
+ * this hook's number is what can be briefly behind, not the money. This is
+ * expected — do not add a key on live policy state to close it.
  */
 export const useExitDelay = ({
   chainId,

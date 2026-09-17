@@ -1,6 +1,21 @@
 import { Decimal } from '@sovryn/utils';
 
-/** 30 s — the perimeter's operational admin can change policy instantly (no timelock), so cache briefly. */
+/**
+ * 30 s — the perimeter's operational admin can change policy instantly (no
+ * timelock), so cache briefly.
+ *
+ * That briefness still leaves one window uncovered: the moment the Owner
+ * first arms the withdrawal delay for a surface. A form that was already
+ * open when that happens can go on showing "not held" for up to one cache
+ * lifetime plus one more block, because both the pointer read and the delay
+ * length read behind the quote are cached under this same TTL and neither is
+ * keyed on the delay value itself. The withdrawal is held on chain from the
+ * moment the delay is armed regardless of what any open form shows — the
+ * delay fails closed — so nothing is ever at risk; only the number on screen
+ * can lag, for that one window, tied to that one Owner action. Do not treat
+ * that lag as a bug to close by shortening this TTL or re-deriving it from
+ * policy state on every render.
+ */
 export const EXIT_DELAY_TTL = 30_000;
 
 /**

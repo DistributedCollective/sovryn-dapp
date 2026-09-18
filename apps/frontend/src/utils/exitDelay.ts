@@ -273,20 +273,24 @@ export const secondsUntilUnlock = (unlockAt: number, now: number): number =>
   Math.max(0, unlockAt - now);
 
 /**
- * Whether the given account is one of THIS account's own executors,
- * `{originator, owner}` — the receiver is NEVER an executor. When the owner
- * has code, the queue also lets anyone else deliver the request; that does
- * not change what this check reports for the connected account.
+ * Whether the given account is one of THIS request's own parties —
+ * `{originator, owner, receiver}` — who may deliver it directly. When the
+ * owner has code, the queue also lets anyone else deliver the request; that
+ * does not change what this check reports for the connected account.
  */
 export const isExecutor = (
-  exit: Pick<PendingExit, 'originator' | 'owner'>,
+  exit: Pick<PendingExit, 'originator' | 'owner' | 'receiver'>,
   account: string | undefined,
 ): boolean => {
   if (!account) {
     return false;
   }
   const a = account.toLowerCase();
-  return exit.originator.toLowerCase() === a || exit.owner.toLowerCase() === a;
+  return (
+    exit.originator.toLowerCase() === a ||
+    exit.owner.toLowerCase() === a ||
+    exit.receiver.toLowerCase() === a
+  );
 };
 
 /** The chain's time as the page reads it, in seconds. */
@@ -341,6 +345,7 @@ export const getPendingExitState = (
     | 'unlockAt'
     | 'originator'
     | 'owner'
+    | 'receiver'
     | 'blockedState'
     | 'blockedStateUnreadable'
   >,

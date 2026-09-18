@@ -255,9 +255,9 @@ export const resolveAmount = (
  * never be missing from the page that releases it.
  *
  * `getActive` is indexed by PARTY and an account is a party to an exit as
- * originator or owner, so this returns exits this account can execute. An exit
- * where the account is only the receiver does not appear — matching the
- * contract, where the receiver is paid but is never an executor.
+ * originator, owner, or receiver, so this returns every exit the account can
+ * see — including one where the account is only the receiver, which the
+ * queue also lets that account deliver itself.
  */
 export const usePerimeterVault = (): PerimeterVault => {
   const { account } = useAccount();

@@ -921,12 +921,33 @@ describe('PerimeterPage', () => {
     expect(screen.getByText(/paused for this withdrawal/i)).toBeInTheDocument();
   });
 
-  it('withholds Release from an account that is only the receiver', () => {
+  it('offers Release to an account that is only the receiver, and presses through to it', () => {
+    const row = exit({
+      originator: RECEIVER,
+      owner: RECEIVER,
+      receiver: ACCOUNT,
+    });
+    mockVault.exits = [row];
+    const { container } = render(<PerimeterPage />);
+
+    expect(screen.getAllByText('Ready').length).toBeGreaterThan(0);
+    const button = releaseButton(container, QUEUE, '7');
+    expect(button).toBeInTheDocument();
+
+    fireEvent.click(button!);
+
+    expect(mockRelease).toHaveBeenCalledTimes(1);
+    const [rows] = mockRelease.mock.calls[0];
+    expect(rows).toEqual([expect.objectContaining({ id: '7' })]);
+  });
+
+  it('withholds Release from an account that is neither party nor receiver', () => {
+    const STRANGER = '0x4444444444444444444444444444444444444444';
     mockVault.exits = [
       exit({
         originator: RECEIVER,
         owner: RECEIVER,
-        receiver: ACCOUNT,
+        receiver: STRANGER,
       }),
     ];
     const { container } = render(<PerimeterPage />);

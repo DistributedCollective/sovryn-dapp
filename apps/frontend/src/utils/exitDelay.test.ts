@@ -24,6 +24,7 @@ const queued = (unlockAt: number) => ({
   unlockAt,
   originator: ORIGINATOR,
   owner: OWNER,
+  receiver: RECEIVER,
 });
 
 describe('exitDelay utils', () => {
@@ -97,12 +98,13 @@ describe('exitDelay utils', () => {
     expect(secondsUntilUnlock(NOW - 60, NOW)).toEqual(0);
   });
 
-  it('treats originator and owner as executors, and the receiver as not one', () => {
+  it('treats originator, owner, and receiver as executors, and a stranger as not one', () => {
     const exit = queued(NOW);
     expect(isExecutor(exit, ORIGINATOR)).toBe(true);
     expect(isExecutor(exit, OWNER)).toBe(true);
+    expect(isExecutor(exit, RECEIVER)).toBe(true);
     expect(isExecutor(exit, ORIGINATOR.toUpperCase())).toBe(true);
-    expect(isExecutor(exit, RECEIVER)).toBe(false);
+    expect(isExecutor(exit, STRANGER)).toBe(false);
     expect(isExecutor(exit, undefined)).toBe(false);
   });
 
@@ -130,6 +132,12 @@ describe('exitDelay utils', () => {
       );
     });
 
+    it('is unlocked for an account that is only the receiver', () => {
+      expect(
+        getPendingExitState(queued(NOW), false, RECEIVER, at(NOW)),
+      ).toEqual(PendingExitState.Unlocked);
+    });
+
     it('is unlocking, not ready, while the countdown has ended but the latest block is still before the unlock time', () => {
       // The latest block trails wall time, by up to about a minute on RSK
       // mainnet, and the queue refuses a release until a block reaches the
@@ -142,10 +150,7 @@ describe('exitDelay utils', () => {
       ).toEqual(PendingExitState.Unlocked);
     });
 
-    it('tells a non-executor it cannot execute, rather than offering a reverting button', () => {
-      expect(
-        getPendingExitState(queued(NOW), false, RECEIVER, at(NOW)),
-      ).toEqual(PendingExitState.NotExecutor);
+    it('tells a non-party it cannot execute, rather than offering a reverting button', () => {
       expect(
         getPendingExitState(queued(NOW), false, STRANGER, at(NOW)),
       ).toEqual(PendingExitState.NotExecutor);

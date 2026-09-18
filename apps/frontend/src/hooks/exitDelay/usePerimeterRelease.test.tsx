@@ -283,6 +283,29 @@ describe('usePerimeterRelease', () => {
     expect(mockAddNotification).not.toHaveBeenCalled();
   });
 
+  it('sends a release for an account that is only the receiver', async () => {
+    mockExecuteExit.mockImplementation(
+      async (
+        _queue: string,
+        _id: string,
+        { onComplete }: { onComplete: () => void },
+      ) => onComplete(),
+    );
+
+    const onReleased = await release([
+      row({ originator: OTHER, owner: OTHER, receiver: ACCOUNT }),
+    ]);
+
+    expect(mockExecuteExit).toHaveBeenCalledWith(QUEUE, '7', SEND_OPTIONS);
+    expect(onReleased).toHaveBeenCalledWith([
+      {
+        key: exitKey({ queueAddress: QUEUE, id: '7' }),
+        status: ExitStatus.Executed,
+      },
+    ]);
+    expect(mockAddNotification).not.toHaveBeenCalled();
+  });
+
   it.each([
     ['the receiver', 'frozen', row(), RECEIVER, BlockState.Frozen],
     ['your address', 'blacklisted', row(), ACCOUNT, BlockState.Blacklisted],
@@ -299,6 +322,13 @@ describe('usePerimeterRelease', () => {
       row({ owner: OTHER }),
       OTHER,
       BlockState.Blacklisted,
+    ],
+    [
+      'the position owner, while your account is only the receiver',
+      'frozen',
+      row({ originator: OTHER, owner: OTHER, receiver: ACCOUNT }),
+      OTHER,
+      BlockState.Frozen,
     ],
   ])(
     'does not send when %s is %s, and says only that the queue would refuse it',

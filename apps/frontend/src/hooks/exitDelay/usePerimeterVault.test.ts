@@ -210,6 +210,23 @@ describe('usePerimeterVault', () => {
     expect(result.current.unknown).toBe(false);
   });
 
+  it('lists a hold for the connected account even when it is only the receiver', async () => {
+    // getActive is indexed by party, and the receiver is one of the three
+    // the queue records — the same page read used for an originator or
+    // owner surfaces a row where the connected account is only the receiver.
+    holding(7);
+    mockGetRequest.mockResolvedValue(
+      request({ originator: RECEIVER, owner: RECEIVER, receiver: ACCOUNT }),
+    );
+
+    const result = await settled();
+
+    expect(result.current.exits.map(exit => exit.id)).toEqual(['7']);
+    expect(result.current.exits[0].receiver.toLowerCase()).toBe(
+      ACCOUNT.toLowerCase(),
+    );
+  });
+
   it("reads each consumer's queue pointer", async () => {
     await settled();
 

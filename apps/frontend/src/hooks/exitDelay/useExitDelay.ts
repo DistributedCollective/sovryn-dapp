@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { ChainId } from '@sovryn/ethers-provider';
 
+import { startCall } from '../../store/rxjs/provider-cache';
 import { EXIT_DELAY_TTL, ExitDelayQuote } from '../../utils/exitDelay';
 import { useCacheCall } from '../useCacheCall';
 import { ResolvedExitDelay, quoteExitDelay } from './quoteExitDelay';
@@ -126,37 +127,48 @@ export const useExitDelay = ({
     account?.toLowerCase(),
   ].join('/');
 
-  // See REQUOTE_INTERVAL_MS: forces a fresh read on a bound timer so a form
-  // left open is never indefinitely stale, only briefly so, the same way a
-  // block change already would.
-  const [requoteTick, setRequoteTick] = useState(0);
+  const fetchQuote = async (): Promise<StampedDelay> => {
+    if (!consumerAddress || !subProduct || !account) {
+      return { delaySeconds: 0, unknown: false, forKey: PENDING_KEY };
+    }
+    const quote = await quoteExitDelay({
+      chainId,
+      consumerAddress,
+      account,
+      surfaceId,
+      subProduct,
+    });
+    return { ...quote, forKey: key };
+  };
+
+  // See REQUOTE_INTERVAL_MS: on each tick, forces the shared cache entry for
+  // this exact id directly, rather than threading `force` through
+  // useCacheCall's own effect below. That effect also re-runs on every
+  // ordinary block-driven change (any mounted instance's block ticking
+  // forward), and a `force` living in its options would ride along on
+  // those runs too — exactly as many times as there are mounted
+  // instances of this hook for the same key — defeating the de-dup two
+  // forms sharing a key rely on to share one on-chain read per block. A
+  // ref keeps the interval itself stable across renders (so it is not
+  // torn down and restarted on every block) while still calling with each
+  // render's latest values.
+  const latest = useRef({ id: `call:${chainId}:${key}`, fetchQuote });
+  latest.current = { id: `call:${chainId}:${key}`, fetchQuote };
   useEffect(() => {
-    const timer = setInterval(
-      () => setRequoteTick(tick => tick + 1),
-      REQUOTE_INTERVAL_MS,
-    );
+    const timer = setInterval(() => {
+      const { id, fetchQuote } = latest.current;
+      startCall(id, fetchQuote, { ttl: EXIT_DELAY_TTL, force: true });
+    }, REQUOTE_INTERVAL_MS);
     return () => clearInterval(timer);
   }, []);
 
   const { value } = useCacheCall<StampedDelay>(
     key,
     chainId,
-    async () => {
-      if (!consumerAddress || !subProduct || !account) {
-        return { delaySeconds: 0, unknown: false, forKey: PENDING_KEY };
-      }
-      const quote = await quoteExitDelay({
-        chainId,
-        consumerAddress,
-        account,
-        surfaceId,
-        subProduct,
-      });
-      return { ...quote, forKey: key };
-    },
-    [key, requoteTick],
+    fetchQuote,
+    [key],
     { delaySeconds: 0, unknown: false, forKey: PENDING_KEY },
-    { ttl: EXIT_DELAY_TTL, force: true },
+    { ttl: EXIT_DELAY_TTL },
   );
 
   const fresh = value.forKey === key;

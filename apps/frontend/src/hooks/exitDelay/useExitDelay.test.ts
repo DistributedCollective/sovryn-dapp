@@ -2,6 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { ChainId } from '@sovryn/ethers-provider';
 
+import { startCall } from '../../store/rxjs/provider-cache';
 import { EXIT_DELAY_TTL, getExitDelayDisplay } from '../../utils/exitDelay';
 import { ExitDelayRequest, useExitDelay } from './useExitDelay';
 
@@ -240,6 +241,71 @@ describe('useExitDelay', () => {
       });
 
       expect(mockQuoteExitDelay).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('two forms sharing a quote key', () => {
+    /**
+     * A summary widget and an open withdraw form both asking useExitDelay
+     * for the same chain/consumer/surface/product/account are meant to
+     * share one on-chain read per block, via useCacheCall's own cache-hit
+     * guard. That guard is skipped whenever `force` is true, so it must
+     * only be true on the requote timer's own tick — never on an ordinary
+     * block-driven re-run of the same effect, which happens for every
+     * mounted instance whenever the block number this suite tracks moves.
+     */
+    beforeEach(() => {
+      jest.useFakeTimers('modern');
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('issues one read per block change, and the timer tick still requotes within one cache lifetime', async () => {
+      const account = freshAccount();
+      const NOT_HELD = { delaySeconds: 0, unknown: false };
+      mockQuoteExitDelay.mockResolvedValue(NOT_HELD);
+
+      const formA = renderRequest(request({ account }));
+      const formB = renderRequest(request({ account }));
+
+      await act(async () => {
+        await Promise.resolve();
+        await Promise.resolve();
+      });
+      expect(formA.result.current.loading).toBe(false);
+      expect(formB.result.current.loading).toBe(false);
+      // Both forms mount on the same known block: one shared read answers both.
+      expect(mockQuoteExitDelay).toHaveBeenCalledTimes(1);
+
+      // An ordinary new block arrives — pushed the way a real block-driven
+      // updater would, straight onto the shared cache both forms' own
+      // useBlockNumber subscribes to — with neither form's own key changing.
+      mockQuoteExitDelay.mockClear();
+      await act(async () => {
+        startCall(`${RSK}_blockNumber`, () => Promise.resolve(101), {
+          force: true,
+        });
+        await Promise.resolve();
+        await Promise.resolve();
+      });
+      expect(mockQuoteExitDelay).toHaveBeenCalledTimes(1);
+
+      // With no further block change, the requote timer still forces a
+      // fresh read within one cache lifetime.
+      mockQuoteExitDelay.mockClear();
+      mockQuoteExitDelay.mockResolvedValue({
+        delaySeconds: 172800,
+        unknown: false,
+      });
+      await act(async () => {
+        jest.advanceTimersByTime(EXIT_DELAY_TTL);
+        await Promise.resolve();
+        await Promise.resolve();
+      });
+      expect(mockQuoteExitDelay).toHaveBeenCalled();
+      expect(formA.result.current.delaySeconds).toBe(172800);
     });
   });
 });

@@ -1,8 +1,8 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { ChainId } from '@sovryn/ethers-provider';
 
-import { getExitDelayDisplay } from '../../utils/exitDelay';
+import { EXIT_DELAY_TTL, getExitDelayDisplay } from '../../utils/exitDelay';
 import { ExitDelayRequest, useExitDelay } from './useExitDelay';
 
 /**
@@ -174,5 +174,72 @@ describe('useExitDelay', () => {
 
     expect(result.current.loading).toBe(false);
     expect(result.current.unknown).toBe(true);
+  });
+
+  describe('requoting while mounted', () => {
+    /**
+     * The block number this suite mocks (see the top-level `beforeEach`)
+     * never changes once a test starts, and none of these requests change
+     * their own key either — reproducing exactly the state an
+     * already-open withdraw form is left in: nothing that would otherwise
+     * make useCacheCall re-fetch. Without the requote timer this hook adds
+     * on top of that cache, a quote read once would be shown forever,
+     * however long the delay had since been armed elsewhere.
+     */
+    beforeEach(() => {
+      jest.useFakeTimers('modern');
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('picks up a delay armed elsewhere within one cache lifetime, with no remount and no new block', async () => {
+      const NOT_HELD = { delaySeconds: 0, unknown: false };
+      const account = freshAccount();
+      mockQuoteExitDelay.mockResolvedValue(NOT_HELD);
+
+      const { result } = renderRequest(request({ account }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.loading).toBe(false);
+      expect(result.current.delaySeconds).toBe(0);
+      expect(mockQuoteExitDelay).toHaveBeenCalledTimes(1);
+
+      // The Owner arms the delay on a surface this open form already
+      // quoted. Nothing about the form's own props changes, and (per this
+      // suite's block mock) no new block arrives either.
+      mockQuoteExitDelay.mockResolvedValue(HELD);
+
+      await act(async () => {
+        jest.advanceTimersByTime(EXIT_DELAY_TTL);
+        await Promise.resolve();
+      });
+
+      expect(mockQuoteExitDelay).toHaveBeenCalledTimes(2);
+      expect(result.current.delaySeconds).toBe(172800);
+      expect(result.current.loading).toBe(false);
+    });
+
+    it('does not requote before one cache lifetime has passed', async () => {
+      const account = freshAccount();
+      mockQuoteExitDelay.mockResolvedValue({ delaySeconds: 0, unknown: false });
+
+      renderRequest(request({ account }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(mockQuoteExitDelay).toHaveBeenCalledTimes(1);
+
+      await act(async () => {
+        jest.advanceTimersByTime(EXIT_DELAY_TTL - 1_000);
+        await Promise.resolve();
+      });
+
+      expect(mockQuoteExitDelay).toHaveBeenCalledTimes(1);
+    });
   });
 });

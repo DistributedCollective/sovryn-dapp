@@ -13,6 +13,22 @@ import { ResolvedExitDelay, quoteExitDelay } from './quoteExitDelay';
  */
 export const EXIT_DELAY_QUOTE_TIMEOUT_MS = 10_000;
 
+/**
+ * How often an open form re-checks its own delay quote, regardless of
+ * whether a new block has arrived.
+ *
+ * The shared cache behind `useCacheCall` only re-invokes its fetch when the
+ * block number it tracks moves, or when this hook's own key changes — never
+ * on a bare timer. On a chain where blocks come only with transactions, a
+ * form left open across an unrelated policy change (the Owner arming or
+ * disarming the delay) can see no new block at all for as long as it stays
+ * mounted, so without this its quote would never refresh on its own: not
+ * "briefly behind" as `EXIT_DELAY_TTL` describes, but indefinitely. This
+ * forces a fresh read on a bound tied to that same TTL, so an open form is
+ * never more than one cache lifetime behind a change made while it is open.
+ */
+const REQUOTE_INTERVAL_MS = EXIT_DELAY_TTL;
+
 export type ExitDelayRequest = {
   chainId: ChainId;
   /** The consumer holding the perimeter pointers; undefined while it loads. */
@@ -83,11 +99,14 @@ export const useDeadlinePassed = (
  * That "changed key" guard does not cover the moment the withdrawal delay is
  * first armed for a surface: the key above does not include the delay value,
  * so a quote fetched just before arming and still within `EXIT_DELAY_TTL` is
- * served as-is, unaware anything changed. A form left open across that moment
- * can under-report the hold for up to one cache lifetime plus a block. The
- * withdrawal itself is held on chain from the moment of arming either way;
- * this hook's number is what can be briefly behind, not the money. This is
- * expected — do not add a key on live policy state to close it.
+ * served as-is, unaware anything changed. A form left open across that
+ * moment can under-report the hold, but the requote timer below (see
+ * REQUOTE_INTERVAL_MS) bounds that lag to at most one cache lifetime, the
+ * same window a fresh block would already have closed — never indefinitely,
+ * however long the form stays open. The withdrawal itself is held on chain
+ * from the moment of arming either way; this hook's number is what can be
+ * briefly behind, not the money. Do not add a key on live policy state to
+ * close that window further — the bound above is the accepted one.
  */
 export const useExitDelay = ({
   chainId,
@@ -107,6 +126,18 @@ export const useExitDelay = ({
     account?.toLowerCase(),
   ].join('/');
 
+  // See REQUOTE_INTERVAL_MS: forces a fresh read on a bound timer so a form
+  // left open is never indefinitely stale, only briefly so, the same way a
+  // block change already would.
+  const [requoteTick, setRequoteTick] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(
+      () => setRequoteTick(tick => tick + 1),
+      REQUOTE_INTERVAL_MS,
+    );
+    return () => clearInterval(timer);
+  }, []);
+
   const { value } = useCacheCall<StampedDelay>(
     key,
     chainId,
@@ -123,9 +154,9 @@ export const useExitDelay = ({
       });
       return { ...quote, forKey: key };
     },
-    [key],
+    [key, requoteTick],
     { delaySeconds: 0, unknown: false, forKey: PENDING_KEY },
-    { ttl: EXIT_DELAY_TTL },
+    { ttl: EXIT_DELAY_TTL, force: true },
   );
 
   const fresh = value.forKey === key;

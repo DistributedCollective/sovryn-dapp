@@ -2,6 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 
 import 'jest-canvas-mock';
 
+import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { i18n } from '../../../../locales/i18n';
 import { useHandleTrove } from './useHandleTrove';
 
@@ -42,15 +43,25 @@ jest.mock('../utils/trove-manager', () => ({
   openTrove: jest.fn(),
 }));
 
+const mockGetTrove = jest.fn();
+
 jest.mock('../../../../utils/liquity', () => ({
-  loadLiquity: jest.fn(),
+  loadLiquity: async () => ({ liquity: { getTrove: mockGetTrove } }),
 }));
 
 jest.mock('../../../../utils/transactions', () => ({
-  getPermitTransferFrom: jest.fn(),
+  getPermitTransferFrom: async () => ({
+    permitted: {},
+    spender: '',
+    nonce: 0,
+    deadline: 0,
+  }),
   permitHandler: () => (request: unknown) => request,
-  prepareApproveTransaction: jest.fn(),
-  preparePermit2Transaction: jest.fn(),
+  prepareApproveTransaction: async () => undefined,
+  preparePermit2Transaction: async () => ({
+    title: 'permit2',
+    request: { type: 'signTypedData' },
+  }),
   preparePermitTransaction: jest.fn(),
   UNSIGNED_PERMIT: '0x',
 }));
@@ -107,6 +118,7 @@ describe('useHandleTrove', () => {
       args: ['0', '0', '0', false, ACCOUNT, ACCOUNT],
       value: '0',
     });
+    mockGetTrove.mockResolvedValue({ netDebt: { toString: () => '100' } });
   });
 
   it('names the vault once a collateral withdrawal through Adjust completes', async () => {
@@ -160,5 +172,27 @@ describe('useHandleTrove', () => {
 
     expect(onTroveClosed).toHaveBeenCalled();
     expect(mockAddNotification).toHaveBeenCalledTimes(1);
+  });
+
+  it('configures a gas-limit floor for closing a ZUSD credit line', async () => {
+    const { result } = renderHook(() => useHandleTrove(true));
+
+    await act(async () => {
+      await result.current.handleTroveClose('zusd');
+    });
+
+    expect(lastStep().request.fnName).toBe('closeTrove');
+    expect(lastStep().request.gasLimit).toBe(GAS_LIMIT.CLOSE_TROVE);
+  });
+
+  it('configures a gas-limit floor for closing a DLLR credit line', async () => {
+    const { result } = renderHook(() => useHandleTrove(true));
+
+    await act(async () => {
+      await result.current.handleTroveClose('dllr');
+    });
+
+    expect(lastStep().request.fnName).toBe('closeNueTroveWithPermit2');
+    expect(lastStep().request.gasLimit).toBe(GAS_LIMIT.CLOSE_DLLR_TROVE);
   });
 });

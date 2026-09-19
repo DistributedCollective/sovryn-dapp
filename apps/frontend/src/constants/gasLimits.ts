@@ -2,8 +2,19 @@ export const GAS_LIMIT = {
   MAX: 6_800_000,
   OPEN_TROVE: 1_200_000,
   ADJUST_TROVE: 4_000_000,
-  CLOSE_TROVE: 350_000,
-  CLOSE_DLLR_TROVE: 600_000,
+  // The fallback used only when a fresh gas estimate cannot be obtained —
+  // see resolveGasLimit. Zero's close-credit-line shares the same
+  // withdrawal-recording hook as Zero withdraw collateral (ADJUST_TROVE),
+  // so it is delay-armed the same way. Set to the measured delay-armed
+  // closeTrove() cost plus the same 30% margin the estimator applies to a
+  // live read (measured 588,995 gasUsed, fork rskForkedMainnetQa, delay
+  // 120s, charge on, 2026-09-19).
+  CLOSE_TROVE: 800_000,
+  // Same rationale as CLOSE_TROVE, measured against closeNueTroveWithPermit2()
+  // — the DLLR close path, which additionally verifies a Permit2 signature
+  // and pulls the repayment through it (measured 745,682 gasUsed, same fork
+  // and conditions).
+  CLOSE_DLLR_TROVE: 1_000_000,
   CONVERT: 750_000,
   STABILITY_POOL: 400_000,
   STABILITY_POOL_INC_WITHDRAW: 490_000,

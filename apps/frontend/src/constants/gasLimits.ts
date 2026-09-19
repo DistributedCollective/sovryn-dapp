@@ -39,7 +39,13 @@ export const GAS_LIMIT = {
   SOV_WITHDRAW_VESTING_TEAM: 6_700_000,
   BORROW: 1_500_000,
   REPAY_LOAN: 950_000,
-  WITHDRAW_LOAN_COLLATERAL: 150_000,
+  // The fallback used only when a fresh gas estimate cannot be obtained —
+  // see resolveGasLimit. Set to the withdrawal delay's own cost through
+  // ExitDelayQueue plus the same 30% margin the estimator applies to a
+  // live read (measured 448,331 gasUsed, fork rskForkedMainnetQa, delay
+  // 120s, charge on, 2026-09-19), so a failed estimate still covers the
+  // delay-armed case, not only the plain one the old 150,000 was sized for.
+  WITHDRAW_LOAN_COLLATERAL: 600_000,
   GOVERNOR_PROPOSE: 1_500_000,
   PROPOSAL_VOTE: 300_000,
   PROPOSAL_QUEUE: 250_000,

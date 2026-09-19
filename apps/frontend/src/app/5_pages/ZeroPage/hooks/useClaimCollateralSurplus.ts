@@ -6,6 +6,7 @@ import { t } from 'i18next';
 import { getContract } from '@sovryn/contracts';
 
 import { TransactionType } from '../../../3_organisms/TransactionStepDialog/TransactionStepDialog.types';
+import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { useTransactionContext } from '../../../../contexts/TransactionContext';
 import { usePerimeterHoldToast } from '../../../../hooks/exitDelay/usePerimeterHoldToast';
 import { useZeroExitDelayQuote } from '../../../../hooks/exitDelay/useZeroExitDelayQuote';
@@ -44,6 +45,11 @@ export const useClaimCollateralSurplus = (onComplete: () => void) => {
             contract: borrowerOperations,
             fnName: 'claimCollateral',
             args: [],
+            // Without a floor here, resolveGasLimit skips the 30% margin
+            // entirely and a failed live estimate falls back to the flat,
+            // unmeasured 6,000,000 default rather than a number sized to
+            // this call — see GAS_LIMIT.CLAIM_SURPLUS.
+            gasLimit: GAS_LIMIT.CLAIM_SURPLUS,
           },
           onComplete: () => {
             onComplete();

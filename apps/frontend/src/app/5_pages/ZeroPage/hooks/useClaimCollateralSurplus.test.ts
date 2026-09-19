@@ -2,6 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 
 import 'jest-canvas-mock';
 
+import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { i18n } from '../../../../locales/i18n';
 import { SURFACE_ZERO_CLAIM_SURPLUS } from '../../../../utils/exitFee';
 import { useClaimCollateralSurplus } from './useClaimCollateralSurplus';
@@ -82,6 +83,19 @@ describe('useClaimCollateralSurplus', () => {
     await claim();
 
     expect(mockDelaySurface).toBe(SURFACE_ZERO_CLAIM_SURPLUS);
+  });
+
+  it('configures a gas-limit floor so resolveGasLimit applies its margin', async () => {
+    mockDelay = { delaySeconds: 0, loading: false, unknown: false };
+
+    const { step } = await claim();
+
+    // With no floor, resolveGasLimit returns the bare estimate (no 30%
+    // margin) and falls back to the flat, unmeasured 6,000,000 default on a
+    // failed estimate — see TransactionStepDialog/utils.ts. This surface is
+    // hooked into the same withdrawal delay as the other three, so it needs
+    // the same protection.
+    expect(step.request.gasLimit).toBe(GAS_LIMIT.CLAIM_SURPLUS);
   });
 
   it('refreshes the page and names the vault once a held claim completes', async () => {

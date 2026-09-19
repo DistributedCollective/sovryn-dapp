@@ -21,6 +21,14 @@ export const GAS_LIMIT = {
   // applies to a live read, so a failed estimate still covers the
   // delay-armed case, not only the plain one.
   LENDING_BURN: 800_000,
+  // The fallback used only when a fresh gas estimate cannot be obtained — see
+  // resolveGasLimit. Zero's collateral-surplus claim previously configured no
+  // gasLimit at all, so it never received the 30% margin the estimator
+  // applies to a live read; this floor closes that gap. Set to the
+  // delay-armed claimCollateral() call's measured cost (386,192 gasUsed,
+  // fork rskForkedMainnetQa, delay 120s, charge on, 2026-09-19) plus the
+  // same 30% margin, rounded up.
+  CLAIM_SURPLUS: 600_000,
   APPROVE: 60_000,
   STAKING_STAKE: 1_400_000,
   STAKING_INCREASE_STAKE: 450_000,

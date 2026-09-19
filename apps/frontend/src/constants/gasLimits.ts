@@ -14,7 +14,13 @@ export const GAS_LIMIT = {
   REWARDS_OS_FEE: 600_000,
   TRANSFER_LOC: 900_000,
   LENDING_MINT: 350_000,
-  LENDING_BURN: 450_000,
+  // The fallback used only when a fresh gas estimate cannot be obtained —
+  // see resolveGasLimit in TransactionStepDialog/utils.ts, which is what
+  // sizes a real send. Set to the withdrawal delay's own cost through
+  // ExitDelayQueue.recordERC20Exit plus the same 30% margin the estimator
+  // applies to a live read, so a failed estimate still covers the
+  // delay-armed case, not only the plain one.
+  LENDING_BURN: 800_000,
   APPROVE: 60_000,
   STAKING_STAKE: 1_400_000,
   STAKING_INCREASE_STAKE: 450_000,

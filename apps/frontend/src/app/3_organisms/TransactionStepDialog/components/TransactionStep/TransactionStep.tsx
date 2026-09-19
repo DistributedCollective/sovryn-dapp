@@ -47,6 +47,7 @@ import {
   isSignTransactionDataRequest,
   isTransactionRequest,
 } from '../../helpers';
+import { resolveGasLimit } from '../../utils';
 
 export type TransactionStepProps = {
   transaction: Transaction;
@@ -126,13 +127,17 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           gasPrice: requestGasPrice,
           value,
         } = request;
-        const gasLimit =
-          requestGasLimit ??
-          (await contract.estimateGas[fnName](
-            ...[...args, { value: value ?? 0 }],
-          )
-            .then(gas => gas.toString())
-            .catch(() => BigNumber.from(6_000_000).toString()));
+        // A request's own `gasLimit` is a constant sized for the plain call;
+        // the Perimeter's withdrawal delay adds queue-recording cost on top
+        // of it when armed. Re-price that constant against a fresh estimate
+        // rather than trusting it outright — see resolveGasLimit.
+        const gasLimit = await resolveGasLimit(
+          contract,
+          fnName,
+          args,
+          value,
+          requestGasLimit,
+        );
 
         updateConfig({
           unlimitedAmount: false,

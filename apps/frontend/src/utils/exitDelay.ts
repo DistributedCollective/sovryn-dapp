@@ -57,7 +57,7 @@ export enum BlockState {
  * from the same conditions `executeExit` checks on-chain, in the order it
  * checks them, so the UI never offers a button that would revert.
  *
- * A withdrawal the queue no longer counts as queued — paid out, or resolved
+ * A withdrawal the queue does not count as queued — paid out, or resolved
  * away by recovery — carries no state from this type at all: the pending
  * list drops that row once its own status read says so, rather than holding
  * a state for it here. Nothing left in this type stands for "done".

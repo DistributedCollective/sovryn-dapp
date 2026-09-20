@@ -49,7 +49,7 @@ import {
 } from '../../../utils/exitDelay';
 import {
   PerimeterExitRow,
-  clearLegacyHistoryKeys,
+  clearPerimeterHistoryKeys,
   getStatusLabel,
   getStatusTooltip,
   getTimeToRelease,
@@ -97,8 +97,8 @@ const PerimeterPage: FC = () => {
 
   // Withdrawals released in this session, by queue and id, held until the next
   // vault read drops them. A row released one moment and carried by a "release
-  // all" the next would revert the whole atomic batch, since its status is no
-  // longer Queued. Ids restart in each queue, so the queue is part of the key.
+  // all" the next would revert the whole atomic batch, since its status is not
+  // Queued. Ids restart in each queue, so the queue is part of the key.
   // This is this tab's own session memory, not read from chain, so nothing
   // scopes it to an account unless this does: nothing else remounts the page
   // on an account change. Cleared the moment the connected account changes,
@@ -113,11 +113,10 @@ const PerimeterPage: FC = () => {
     setReleasedKeys(new Set());
   }, [account]);
 
-  // Once, on the first mount of this page: the withdrawal history this
-  // browser used to keep per device is retired, and any keys it left behind
-  // in local storage are stale from here on.
+  // Once, on the first mount of this page: removes local-storage keys under
+  // `perimeter/history/`, the prefix nothing else in this app writes under.
   useEffect(() => {
-    clearLegacyHistoryKeys();
+    clearPerimeterHistoryKeys();
   }, []);
 
   const markReleased = useCallback((entries: ReleaseEntry[]) => {

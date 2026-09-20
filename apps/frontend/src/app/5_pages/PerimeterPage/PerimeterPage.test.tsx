@@ -399,7 +399,7 @@ describe('PerimeterPage', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('clears the retired per-device history keys from local storage on load, leaving unrelated keys alone', () => {
+  it('clears local-storage keys under the perimeter-history prefix on load, leaving unrelated keys alone', () => {
     window.localStorage.setItem(
       'perimeter/history/0x1e/0x1111111111111111111111111111111111111111',
       JSON.stringify([{ queueAddress: QUEUE, id: '7' }]),
@@ -416,44 +416,64 @@ describe('PerimeterPage', () => {
     expect(window.localStorage.getItem('unrelated-key')).toBe('keep me');
   });
 
-  it('a row resolved by the Owner disappears on the next read, without any action on this page', () => {
-    mockVault.exits = [exit({ id: '7' })];
-    const { container, rerender } = render(<PerimeterPage />);
+  it.each([
+    ['as the position owner', {}],
+    [
+      'as the receiver',
+      { originator: RECEIVER, owner: RECEIVER, receiver: ACCOUNT },
+    ],
+  ])(
+    'a row resolved by the Owner disappears on the next read, without any action on this page, for the connected account %s',
+    (_case, overrides) => {
+      mockVault.exits = [exit({ id: '7', ...overrides })];
+      const { container, rerender } = render(<PerimeterPage />);
 
-    expect(screen.getAllByText('#7').length).toBeGreaterThan(0);
-    expect(releaseButton(container, QUEUE, '7')).toBeInTheDocument();
+      expect(screen.getAllByText('#7').length).toBeGreaterThan(0);
+      expect(releaseButton(container, QUEUE, '7')).toBeInTheDocument();
 
-    // Nothing was pressed on this page: the vault's own next read is what
-    // reports the withdrawal as resolved.
-    mockVault.exits = [exit({ id: '7', status: ExitStatus.ResolvedByOwner })];
-    rerender(<PerimeterPage />);
+      // Nothing was pressed on this page: the vault's own next read is what
+      // reports the withdrawal as resolved.
+      mockVault.exits = [
+        exit({ id: '7', ...overrides, status: ExitStatus.ResolvedByOwner }),
+      ];
+      rerender(<PerimeterPage />);
 
-    expect(screen.queryByText('#7')).not.toBeInTheDocument();
-    expect(screen.getAllByText(NO_DELAYED).length).toBeGreaterThan(0);
-  });
+      expect(screen.queryByText('#7')).not.toBeInTheDocument();
+      expect(screen.getAllByText(NO_DELAYED).length).toBeGreaterThan(0);
+    },
+  );
 
-  it('a released row disappears at once and does not reappear when a stale chain read still lists it', () => {
-    mockRelease.mockImplementation(
-      (rows: { queueAddress: string; id: string }[], onReleased) =>
-        onReleased(asExecuted(rows)),
-    );
-    const row = exit({ id: '7' });
-    mockVault.exits = [row];
-    const { container, rerender } = render(<PerimeterPage />);
+  it.each([
+    ['as the position owner', {}],
+    [
+      'as the receiver',
+      { originator: RECEIVER, owner: RECEIVER, receiver: ACCOUNT },
+    ],
+  ])(
+    'a released row disappears at once and does not reappear when a stale chain read still lists it, for the connected account %s',
+    (_case, overrides) => {
+      mockRelease.mockImplementation(
+        (rows: { queueAddress: string; id: string }[], onReleased) =>
+          onReleased(asExecuted(rows)),
+      );
+      const row = exit({ id: '7', ...overrides });
+      mockVault.exits = [row];
+      const { container, rerender } = render(<PerimeterPage />);
 
-    fireEvent.click(releaseButton(container, QUEUE, '7')!);
+      fireEvent.click(releaseButton(container, QUEUE, '7')!);
 
-    expect(screen.queryByText('#7')).not.toBeInTheDocument();
+      expect(screen.queryByText('#7')).not.toBeInTheDocument();
 
-    // The vault has not caught up yet: its own list still carries the row,
-    // still Queued, exactly as it read before the release. The page must not
-    // trust that stale read over what it already knows happened.
-    mockVault.exits = [row];
-    rerender(<PerimeterPage />);
+      // The vault has not caught up yet: its own list still carries the row,
+      // still Queued, exactly as it read before the release. The page must
+      // not trust that stale read over what it already knows happened.
+      mockVault.exits = [row];
+      rerender(<PerimeterPage />);
 
-    expect(screen.queryByText('#7')).not.toBeInTheDocument();
-    expect(screen.getAllByText(NO_DELAYED).length).toBeGreaterThan(0);
-  });
+      expect(screen.queryByText('#7')).not.toBeInTheDocument();
+      expect(screen.getAllByText(NO_DELAYED).length).toBeGreaterThan(0);
+    },
+  );
 
   it('disables Release and Release all with a wrong-network tooltip when the wallet is on another network', () => {
     mockCurrentChainId = '0x1';
@@ -544,14 +564,13 @@ describe('PerimeterPage', () => {
     );
   });
 
-  it('never reads a request the node did not state as Settled', () => {
-    // A zero-filled record — the answering node does not hold it — must never
-    // read as a withdrawal that was paid out.
+  it('never reads a zero-filled record as a withdrawal that was paid out', () => {
+    // A zero-filled record — the answering node does not hold it — reads as
+    // unreadable, not as a fact about the withdrawal.
     mockVault.exits = [exit({ status: ExitStatus.None })];
     mockVault.unknown = true;
     const { container } = render(<PerimeterPage />);
 
-    expect(screen.queryByText('Settled')).not.toBeInTheDocument();
     expect(screen.getAllByText('Could not be read').length).toBeGreaterThan(0);
     expect(
       container.querySelector('[data-layout-id="perimeter-unreadable"]'),

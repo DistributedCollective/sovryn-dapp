@@ -65,26 +65,26 @@ export const getTimeToRelease = (
 export const shortenAddress = (address: string): string =>
   `${address.slice(0, 6)}…${address.slice(-4)}`;
 
-/** Every key the retired per-device history wrote local storage under. */
-const LEGACY_HISTORY_KEY_PREFIX = 'perimeter/history/';
+/** The local-storage key prefix `clearPerimeterHistoryKeys` removes. */
+const PERIMETER_HISTORY_KEY_PREFIX = 'perimeter/history/';
 
 /**
- * Withdrawal history is no longer kept in this browser: clear whatever the
- * retired per-device history left behind, for every chain and account it was
- * ever written under, so nothing stale lingers once this page has loaded.
- * Never throws: a store that cannot be read or written leaves nothing to
- * clear, and this is a convenience, never a statement about funds.
+ * Removes every local-storage key starting with `perimeter/history/`, for
+ * every chain and account any such key names, so none linger once this page
+ * has loaded. Never throws: a store that cannot be read or written leaves
+ * nothing to clear, and this is a convenience, never a statement about
+ * funds.
  */
-export const clearLegacyHistoryKeys = (): void => {
+export const clearPerimeterHistoryKeys = (): void => {
   try {
-    const stale: string[] = [];
+    const keysToRemove: string[] = [];
     for (let i = 0; i < window.localStorage.length; i++) {
       const key = window.localStorage.key(i);
-      if (key?.startsWith(LEGACY_HISTORY_KEY_PREFIX)) {
-        stale.push(key);
+      if (key?.startsWith(PERIMETER_HISTORY_KEY_PREFIX)) {
+        keysToRemove.push(key);
       }
     }
-    stale.forEach(key => window.localStorage.removeItem(key));
+    keysToRemove.forEach(key => window.localStorage.removeItem(key));
   } catch (error) {
     // Nothing to do: see the doc comment above.
   }

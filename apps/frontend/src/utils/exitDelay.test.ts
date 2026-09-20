@@ -9,6 +9,7 @@ import {
   getExitDelayDisplay,
   getPendingExitState,
   isExecutor,
+  isPendingExitStatus,
   secondsUntilUnlock,
 } from './exitDelay';
 
@@ -115,6 +116,20 @@ describe('exitDelay utils', () => {
     );
   });
 
+  describe('isPendingExitStatus', () => {
+    it('keeps a queued withdrawal, and a status the queue never stated', () => {
+      expect(isPendingExitStatus(ExitStatus.Queued)).toBe(true);
+      expect(isPendingExitStatus(ExitStatus.None)).toBe(true);
+      expect(isPendingExitStatus(99)).toBe(true);
+    });
+
+    it('drops a withdrawal the queue stated as done, however it was done', () => {
+      expect(isPendingExitStatus(ExitStatus.Executed)).toBe(false);
+      expect(isPendingExitStatus(ExitStatus.ResolvedByOwner)).toBe(false);
+      expect(isPendingExitStatus(ExitStatus.ResolvedToProtocol)).toBe(false);
+    });
+  });
+
   describe('pending exit state', () => {
     // The countdown ticks on the page's clock; readiness waits for the latest
     // block, because the queue compares that block's timestamp.
@@ -202,38 +217,27 @@ describe('exitDelay utils', () => {
       expect(canExecuteExit(PendingExitState.Unreadable)).toBe(false);
     });
 
-    it('reads a delivered withdrawal as settled, above every other condition', () => {
-      expect(
-        getPendingExitState(
-          { ...queued(NOW + 60), status: ExitStatus.Executed },
-          true,
-          OWNER,
-          at(NOW),
-        ),
-      ).toEqual(PendingExitState.Settled);
-    });
-
-    it('names the Owner on a withdrawal it resolved, above every other condition', () => {
-      expect(
-        getPendingExitState(
-          { ...queued(NOW + 60), status: ExitStatus.ResolvedByOwner },
-          true,
-          OWNER,
-          at(NOW),
-        ),
-      ).toEqual(PendingExitState.ResolvedByOwner);
-    });
-
-    it('reads a withdrawal returned to the product as such, above every other condition', () => {
-      expect(
-        getPendingExitState(
-          { ...queued(NOW + 60), status: ExitStatus.ResolvedToProtocol },
-          true,
-          OWNER,
-          at(NOW),
-        ),
-      ).toEqual(PendingExitState.ResolvedToProtocol);
-    });
+    it.each([
+      ['delivered to its receiver', ExitStatus.Executed],
+      ['resolved by the Owner', ExitStatus.ResolvedByOwner],
+      ['returned to the product', ExitStatus.ResolvedToProtocol],
+    ])(
+      // The pending list drops a withdrawal %s before this is ever asked
+      // about it; a stated status other than Queued reaching this function
+      // regardless must not be read as ready, which would offer a Release
+      // that could only revert.
+      'reads a withdrawal %s as unreadable rather than ready, since the pending list should have dropped it already',
+      (_case, status) => {
+        expect(
+          getPendingExitState(
+            { ...queued(NOW - 60), status },
+            false,
+            OWNER,
+            at(NOW),
+          ),
+        ).toEqual(PendingExitState.Unreadable);
+      },
+    );
 
     it('ranks the global pause above the unlock time', () => {
       expect(getPendingExitState(queued(NOW), true, OWNER, at(NOW))).toEqual(
@@ -264,17 +268,6 @@ describe('exitDelay utils', () => {
         ),
       ).toEqual(PendingExitState.Unreadable);
     });
-
-    it('reads an executed withdrawal as settled, unlike one the node never stated', () => {
-      expect(
-        getPendingExitState(
-          { ...queued(NOW - 60), status: ExitStatus.Executed },
-          false,
-          OWNER,
-          at(NOW),
-        ),
-      ).toEqual(PendingExitState.Settled);
-    });
   });
 
   it('enables execution for exactly one state', () => {
@@ -284,9 +277,6 @@ describe('exitDelay utils', () => {
       PendingExitState.Unlocking,
       PendingExitState.NotExecutor,
       PendingExitState.Paused,
-      PendingExitState.Settled,
-      PendingExitState.ResolvedByOwner,
-      PendingExitState.ResolvedToProtocol,
       PendingExitState.Unreadable,
     ]) {
       expect(canExecuteExit(state)).toBe(false);

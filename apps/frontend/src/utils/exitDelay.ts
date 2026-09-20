@@ -53,9 +53,14 @@ export enum BlockState {
 }
 
 /**
- * What the holder can actually do with a queued exit right now. Derived from
- * the same conditions `executeExit` checks on-chain, in the order it checks
- * them, so the UI never offers a button that would revert.
+ * What the holder can actually do with a still-queued exit right now. Derived
+ * from the same conditions `executeExit` checks on-chain, in the order it
+ * checks them, so the UI never offers a button that would revert.
+ *
+ * A withdrawal the queue no longer counts as queued — paid out, or resolved
+ * away by recovery — carries no state from this type at all: the pending
+ * list drops that row once its own status read says so, rather than holding
+ * a state for it here. Nothing left in this type stands for "done".
  */
 export enum PendingExitState {
   /** Still inside its delay window. */
@@ -77,19 +82,16 @@ export enum PendingExitState {
   Frozen = 'frozen',
   /** The whole queue is paused. */
   Paused = 'paused',
-  /** Paid out to its receiver. */
-  Settled = 'settled',
   /**
    * The queue's answer for this request was the zero value, meaning it holds
-   * no such request at all, or a value outside the five it defines. Neither
-   * is a stated outcome: the row is kept and read this way rather than as
-   * Settled, which would tell the holder their money already arrived.
+   * no such request at all, or a value outside the five it defines — or the
+   * request's own status was read but is not `Queued`, which the pending
+   * list is not supposed to hand this function at all. Neither the garbled
+   * read nor that unexpected case is a stated fact this function can act on,
+   * so both are read this way rather than as ready, which would offer a
+   * Release that could only revert.
    */
   Unreadable = 'unreadable',
-  /** Sent by the Owner to a recovery destination it chose. */
-  ResolvedByOwner = 'resolvedByOwner',
-  /** Sent to a recovery destination approved in advance for its product. */
-  ResolvedToProtocol = 'resolvedToProtocol',
 }
 
 export type PendingExit = {
@@ -308,7 +310,7 @@ export type ChainTimes = {
  * Whether the queue actually stated this outcome, rather than answering with
  * the zero value — no such request at all — or a number outside the five it
  * defines. Both of those are a read that did not complete, never a fact about
- * the withdrawal, and must not be read as Settled.
+ * the withdrawal, and must not be read as paid out.
  */
 export const isStatedExitStatus = (status: number): status is ExitStatus =>
   status === ExitStatus.Queued ||
@@ -317,27 +319,33 @@ export const isStatedExitStatus = (status: number): status is ExitStatus =>
   status === ExitStatus.ResolvedByOwner;
 
 /**
- * Resolve what an exit shows right now.
+ * Whether the pending list still carries this exit: either it is genuinely
+ * still queued, or its status could not be stated at all, which must stay
+ * listed as unreadable rather than silently dropped. A status the queue
+ * stated as anything else — paid out, or resolved away by recovery — means
+ * the withdrawal is done, and the pending list is for what is still waiting.
+ */
+export const isPendingExitStatus = (status: number): boolean =>
+  !isStatedExitStatus(status) || status === ExitStatus.Queued;
+
+/**
+ * Resolve what a still-pending exit shows right now.
  *
- * A terminal status is reported before the pause, the unlock time or the
- * executor check: a withdrawal that has already left the queue is worth
- * naming as such even while the whole perimeter happens to be paused. The
- * contract's own function checks these in a different order — the pause
- * first, then whether the request is unknown, then a non-waiting status, then
- * the unlock time, then the executor, and only then the parties' block states
- * — because it is deciding which revert to raise, not what to tell the person
- * waiting on the money; both orders are right for their own job. A status the
- * queue did not actually state — its zero value, or one outside the five it
- * defines — reads as unreadable rather than falling into Settled, which would
- * tell the holder their money already arrived. The unlock time here is judged
- * twice: the ticking clock says when the delay has ended, and the latest
- * block's own timestamp says when a release can pass, because the queue
- * compares `block.timestamp`. Between the two the exit is unlocking. A frozen
- * party shows as under investigation once the time has passed, checked here
- * ahead of the executor though the contract checks it after. A blacklisted
- * party is not given a state of its own here: its row reads Ready, same as
- * any other unlocked one. A party whose own block-state read did not
- * complete, with no party stated as frozen or blacklisted, reads as
+ * Callers hand this only an exit `isPendingExitStatus` still counts as
+ * pending: a withdrawal paid out, or resolved away by recovery, is dropped
+ * from the list before it ever reaches this function, rather than shown here
+ * with a state naming what became of it. A status the queue did not actually
+ * state — its zero value, or one outside the five it defines — reads as
+ * unreadable, and so does the one case that should not reach this function at
+ * all: a stated status other than `Queued`, read this way rather than as
+ * ready, which would offer a Release that could only revert. The unlock time
+ * is judged twice: the ticking clock says when the delay has ended, and the
+ * latest block's own timestamp says when a release can pass, because the
+ * queue compares `block.timestamp`. Between the two the exit is unlocking. A
+ * frozen party shows as under investigation once the time has passed. A
+ * blacklisted party is not given a state of its own here: its row reads
+ * Ready, same as any other unlocked one. A party whose own block-state read
+ * did not complete, with no party stated as frozen or blacklisted, reads as
  * unreadable rather than falling into Ready, which would tell the holder a
  * check that never ran came back clear.
  */
@@ -356,17 +364,16 @@ export const getPendingExitState = (
   account: string | undefined,
   { now, blockTime }: ChainTimes,
 ): PendingExitState => {
-  if (exit.status === ExitStatus.ResolvedByOwner) {
-    return PendingExitState.ResolvedByOwner;
-  }
-  if (exit.status === ExitStatus.ResolvedToProtocol) {
-    return PendingExitState.ResolvedToProtocol;
-  }
-  if (!isStatedExitStatus(exit.status)) {
+  if (!isPendingExitStatus(exit.status)) {
+    // A stated status other than `Queued`: the caller should have dropped
+    // this exit from the pending list already, and never asked what it
+    // reads as.
     return PendingExitState.Unreadable;
   }
-  if (exit.status !== ExitStatus.Queued) {
-    return PendingExitState.Settled;
+  if (!isStatedExitStatus(exit.status)) {
+    // The zero value, or one outside the five the queue defines: a read
+    // that did not complete, not a fact about the withdrawal.
+    return PendingExitState.Unreadable;
   }
   if (paused) {
     return PendingExitState.Paused;

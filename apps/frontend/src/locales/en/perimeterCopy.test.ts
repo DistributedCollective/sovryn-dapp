@@ -68,33 +68,30 @@ describe('Perimeter copy', () => {
     expect(en.exitDelay.label).toBe('Withdrawal delay');
   });
 
-  it('names the Owner role only in the status the recovery lever sets, naming the position owner everywhere else', () => {
+  it('names only the position owner in status copy, never the bare Owner role', () => {
+    // The pending list carries no status of its own for a withdrawal the
+    // Owner resolved away — that row is dropped rather than labeled — so
+    // nothing in status copy has occasion to name the Owner role at all.
     const statusCopy = stringsOf(
       en.perimeterPage.status,
       'perimeterPage.status',
     );
     const namesOwnerRole = /(?<!position )\bowner\b/i;
-    const ownerRoleStatus = 'perimeterPage.status.resolvedByOwner';
 
-    expect(
-      statusCopy.filter(
-        ([path, text]) => path !== ownerRoleStatus && namesOwnerRole.test(text),
-      ),
-    ).toEqual([]);
+    expect(statusCopy.filter(([, text]) => namesOwnerRole.test(text))).toEqual(
+      [],
+    );
   });
 
-  it('would catch the Owner role being named on a status other than the recovery lever’s', () => {
+  it('would catch the Owner role named without "position" in status copy', () => {
     const namesOwnerRole = /(?<!position )\bowner\b/i;
-    const ownerRoleStatus = 'perimeterPage.status.resolvedByOwner';
     const synthetic: [string, string][] = [
       ['perimeterPage.status.notExecutor', 'Releasable by the owner.'],
     ];
 
-    expect(
-      synthetic.filter(
-        ([path, text]) => path !== ownerRoleStatus && namesOwnerRole.test(text),
-      ),
-    ).toEqual(synthetic);
+    expect(synthetic.filter(([, text]) => namesOwnerRole.test(text))).toEqual(
+      synthetic,
+    );
   });
 
   it('never names governance as a role', () => {

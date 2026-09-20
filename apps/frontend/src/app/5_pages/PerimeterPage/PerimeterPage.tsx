@@ -32,7 +32,6 @@ import {
   TOKEN_RENDER_PRECISION,
 } from '../../../constants/currencies';
 import { useChainTime } from '../../../hooks/exitDelay/useChainTime';
-import { usePerimeterHistory } from '../../../hooks/exitDelay/usePerimeterHistory';
 import {
   ReleaseEntry,
   usePerimeterRelease,
@@ -43,13 +42,14 @@ import { useChainStore } from '../../../hooks/useChainStore';
 import { useWalletConnect } from '../../../hooks/useWalletConnect';
 import { translations } from '../../../locales/i18n';
 import {
-  PendingExit,
   canExecuteExit,
   exitKey,
   getPendingExitState,
+  isPendingExitStatus,
 } from '../../../utils/exitDelay';
 import {
   PerimeterExitRow,
+  clearLegacyHistoryKeys,
   getStatusLabel,
   getStatusTooltip,
   getTimeToRelease,
@@ -99,39 +99,26 @@ const PerimeterPage: FC = () => {
   // vault read drops them. A row released one moment and carried by a "release
   // all" the next would revert the whole atomic batch, since its status is no
   // longer Queued. Ids restart in each queue, so the queue is part of the key.
+  // This is this tab's own session memory, not read from chain, so nothing
+  // scopes it to an account unless this does: nothing else remounts the page
+  // on an account change. Cleared the moment the connected account changes,
+  // so a row released under one account is never carried into another's live
+  // filtering as though it were theirs. Every read this page drives is
+  // pinned to RSK_CHAIN_ID regardless of the wallet's or the app's selected
+  // chain (see usePerimeterVault), so there is no equivalent chain-scoped
+  // state here to reset on a chain change.
   const [releasedKeys, setReleasedKeys] = useState<Set<string>>(new Set());
 
-  // markReleased is created once and called long after, from inside the
-  // release hook's own checks and its transaction's onComplete, so it reads
-  // the vault's rows through a ref rather than closing over a render's own
-  // — by then the vault has very likely read again and moved on.
-  const exitsRef = useRef(exits);
-  exitsRef.current = exits;
-
-  // Built from each released row's own last-known data — amount, asset,
-  // receiver, timestamps — with its status set to whatever the release hook
-  // actually reported: executed for a row delivered or settled by a
-  // completed transaction, or the queue's own recovery status for a row the
-  // Owner or the protocol resolved away instead. History shows this at once
-  // rather than waiting on its own chain read, which can still lag the block
-  // the release actually landed in.
-  const [releaseReceipts, setReleaseReceipts] = useState<
-    Map<string, PendingExit>
-  >(new Map());
-
-  // Both pieces of state above are this tab's own session memory, not read
-  // from chain, so nothing scopes them to an account unless this does:
-  // nothing else remounts the page on an account change. Cleared the moment
-  // the connected account changes, so a row released under one account is
-  // never carried into another's live filtering or handed to history as
-  // though it were theirs. Every read this page drives is pinned to
-  // RSK_CHAIN_ID regardless of the wallet's or the app's selected chain (see
-  // usePerimeterVault and usePerimeterHistory), so there is no equivalent
-  // chain-scoped state here to reset on a chain change.
   useEffect(() => {
     setReleasedKeys(new Set());
-    setReleaseReceipts(new Map());
   }, [account]);
+
+  // Once, on the first mount of this page: the withdrawal history this
+  // browser used to keep per device is retired, and any keys it left behind
+  // in local storage are stale from here on.
+  useEffect(() => {
+    clearLegacyHistoryKeys();
+  }, []);
 
   const markReleased = useCallback((entries: ReleaseEntry[]) => {
     setReleasedKeys(prev => {
@@ -139,41 +126,32 @@ const PerimeterPage: FC = () => {
       entries.forEach(({ key }) => next.add(key));
       return next;
     });
-    setReleaseReceipts(prev => {
-      const next = new Map(prev);
-      entries.forEach(({ key, status }) => {
-        const row = exitsRef.current.find(exit => exitKey(exit) === key);
-        if (row) {
-          next.set(key, { ...row, status });
-        }
-      });
-      return next;
-    });
   }, []);
 
   const release = usePerimeterRelease();
 
-  // What the page itself still treats as live: the vault's list with this
-  // session's released rows already taken out. A release drops its row from
-  // here at once, ahead of the vault's next read, so a withdrawal released a
-  // moment ago is not handed to history as though it were still waiting.
+  // What the page lists: the vault's own rows, minus this session's released
+  // ones and minus any row the vault itself reports as done. A release drops
+  // its row from here at once, ahead of the vault's next read, and a row the
+  // vault reports with a stated status other than Queued — released by
+  // another party, or resolved away by the Owner — is trusted and dropped
+  // the same way the moment that read lands, rather than shown with a label
+  // for what became of it. Neither kind of row ever comes back: the filter
+  // is re-applied on every vault read, not just the read that first dropped
+  // it. A status the vault could not state at all stays listed instead, so a
+  // read failure is never mistaken for a withdrawal that already left.
   const liveExits = useMemo(
-    () => exits.filter(exit => !releasedKeys.has(exitKey(exit))),
+    () =>
+      exits.filter(
+        exit =>
+          !releasedKeys.has(exitKey(exit)) && isPendingExitStatus(exit.status),
+      ),
     [exits, releasedKeys],
   );
 
-  // The live list holds only what is still waiting. What has been released
-  // is read back from the chain on request, under the history switch. A row
-  // released this session is also handed over already built, so it shows in
-  // history at once instead of waiting on a read that can still trail the
-  // block that settled it; that read still runs and takes over once it
-  // answers with more than a still-queued state.
-  const [showHistory, setShowHistory] = useState(false);
-  const history = usePerimeterHistory(showHistory, liveExits, releaseReceipts);
-
   const rows: PerimeterExitRow[] = useMemo(
     () =>
-      (showHistory ? history.exits : liveExits).map(exit => ({
+      liveExits.map(exit => ({
         ...exit,
         state: getPendingExitState(
           exit,
@@ -182,16 +160,7 @@ const PerimeterPage: FC = () => {
           { now, blockTime },
         ),
       })),
-    [
-      account,
-      blockTime,
-      history.exits,
-      liveExits,
-      now,
-      paused,
-      pausedByQueue,
-      showHistory,
-    ],
+    [account, blockTime, liveExits, now, paused, pausedByQueue],
   );
 
   // Whether releases are paused for what is actually listed below, rather
@@ -363,15 +332,10 @@ const PerimeterPage: FC = () => {
     if (!account) {
       return t(translations.perimeterPage.connectWallet);
     }
-    if (showHistory) {
-      return history.unknown || clockUnreadable
-        ? t(translations.perimeterPage.history.unreadable)
-        : t(translations.perimeterPage.history.empty);
-    }
     return readFailed
       ? t(translations.perimeterPage.unreadable)
       : t(translations.perimeterPage.inactive);
-  }, [account, readFailed, showHistory, history.unknown, clockUnreadable]);
+  }, [account, readFailed]);
 
   return (
     <>
@@ -411,7 +375,7 @@ const PerimeterPage: FC = () => {
               )}
             </Paragraph>
           )}
-          {readFailed && account && !showHistory && (
+          {readFailed && account && (
             <Paragraph
               size={ParagraphSize.small}
               className="text-center mb-4"
@@ -420,32 +384,8 @@ const PerimeterPage: FC = () => {
               {t(translations.perimeterPage.unreadable)}
             </Paragraph>
           )}
-          {showHistory && (history.unknown || clockUnreadable) && account && (
-            <Paragraph
-              size={ParagraphSize.small}
-              className="text-center mb-4"
-              dataAttribute="perimeter-history-unreadable"
-            >
-              {t(translations.perimeterPage.history.unreadable)}
-            </Paragraph>
-          )}
           <div className="w-full max-w-5xl">
-            {account && (
-              <div className="flex justify-end mb-3">
-                <Button
-                  text={
-                    showHistory
-                      ? t(translations.perimeterPage.history.hide)
-                      : t(translations.perimeterPage.history.show)
-                  }
-                  size={ButtonSize.small}
-                  style={ButtonStyle.secondary}
-                  onClick={() => setShowHistory(current => !current)}
-                  dataAttribute="perimeter-history-toggle"
-                />
-              </div>
-            )}
-            {!showHistory && releasableRows.length > 1 && (
+            {releasableRows.length > 1 && (
               <div className="flex justify-end mb-3">
                 <Tooltip
                   disabled={!wrongNetwork}
@@ -478,23 +418,12 @@ const PerimeterPage: FC = () => {
             )}
             <Table
               columns={columns}
-              // Every status and countdown on the live list is derived from
-              // the chain clock, and a row resolved against a missing time
-              // would read as on hold for decades — so the live list waits
-              // for it. Every history row is terminal, and its state is
-              // settled before the clock is ever consulted, so history does
-              // not wait on a read it does not need.
-              rows={showHistory || now ? rows : []}
+              // Every status and countdown is derived from the chain clock,
+              // and a row resolved against a missing time would read as on
+              // hold for decades — so the list waits for it.
+              rows={now ? rows : []}
               rowKey={row => exitKey(row)}
-              // History rows depend on neither the vault's own read nor the
-              // chain clock, so once history has answered there is nothing
-              // left for its loader to wait on; the vault and the clock only
-              // gate the live list.
-              isLoading={
-                showHistory
-                  ? history.loading
-                  : loading || (!!account && !now && !clockUnreadable)
-              }
+              isLoading={loading || (!!account && !now && !clockUnreadable)}
               noData={emptyMessage}
               dataAttribute="perimeter-vault-table"
             />

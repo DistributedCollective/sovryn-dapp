@@ -34,7 +34,6 @@ let mockVault: {
   unknown: boolean;
 };
 let mockChainTime: { now: number; blockTime: number; unreadable: boolean };
-const mockHistory = jest.fn();
 let mockCurrentChainId: string;
 let mockWallets: {
   chains: { id: string }[];
@@ -63,11 +62,6 @@ jest.mock('../../../hooks/exitDelay/usePerimeterVault', () => ({
 
 jest.mock('../../../hooks/exitDelay/usePerimeterRelease', () => ({
   usePerimeterRelease: () => mockRelease,
-}));
-
-jest.mock('../../../hooks/exitDelay/usePerimeterHistory', () => ({
-  usePerimeterHistory: (enabled: boolean, live: unknown[], receipts: unknown) =>
-    mockHistory(enabled, live, receipts),
 }));
 
 jest.mock('../../../hooks/exitDelay/useChainTime', () => ({
@@ -138,7 +132,7 @@ describe('PerimeterPage', () => {
       loading: false,
       unknown: false,
     };
-    mockHistory.mockReturnValue({ exits: [], loading: false, unknown: false });
+    window.localStorage.clear();
   });
 
   afterAll(() => {
@@ -348,18 +342,117 @@ describe('PerimeterPage', () => {
     expect(screen.getAllByText('1d 1h').length).toBeGreaterThan(0);
   });
 
-  it('shows no release time for a row that will never be released', () => {
-    // unlockAt sits in the past on every row here, so the Releases column
-    // would otherwise read "Now" for rows nothing is released from.
+  it('shows no release time for a row it could not read a status for', () => {
+    // unlockAt sits in the past, so the Releases column would otherwise read
+    // "Now" for a row nothing is released from.
+    mockVault.exits = [exit({ id: '5', status: ExitStatus.None })];
+    render(<PerimeterPage />);
+
+    expect(screen.getAllByText('Could not be read').length).toBeGreaterThan(0);
+    expect(screen.queryByText('Now')).not.toBeInTheDocument();
+  });
+
+  it.each([
+    ['delivered', ExitStatus.Executed],
+    ['resolved by the Owner', ExitStatus.ResolvedByOwner],
+    ['returned to the product', ExitStatus.ResolvedToProtocol],
+  ])(
+    // A withdrawal the vault itself reports %s is done: the pending list is
+    // for what is still waiting, so the row is dropped rather than shown
+    // with a label for what became of it.
+    'drops a row the vault reports as %s, rather than showing it with a resolved label',
+    (_case, status) => {
+      mockVault.exits = [exit({ id: '4', status })];
+      render(<PerimeterPage />);
+
+      expect(screen.queryByText('#4')).not.toBeInTheDocument();
+      expect(screen.getAllByText(NO_DELAYED).length).toBeGreaterThan(0);
+    },
+  );
+
+  it('lists a frozen or blacklisted row untouched — still Queued, so still pending — while dropping a genuinely resolved one alongside it', () => {
     mockVault.exits = [
+      exit({ id: '6', blockedState: 1 }),
       exit({ id: '4', status: ExitStatus.ResolvedByOwner }),
-      exit({ id: '5', status: ExitStatus.None }),
     ];
     render(<PerimeterPage />);
 
-    expect(screen.getAllByText('Resolved by owner').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Could not be read').length).toBeGreaterThan(0);
-    expect(screen.queryByText('Now')).not.toBeInTheDocument();
+    expect(screen.getAllByText('#6').length).toBeGreaterThan(0);
+    expect(screen.queryByText('#4')).not.toBeInTheDocument();
+  });
+
+  it('renders no History UI: no toggle, and no history-only status line', () => {
+    mockVault.exits = [exit()];
+    const { container } = render(<PerimeterPage />);
+
+    expect(screen.queryByText('Show history')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Show waiting withdrawals'),
+    ).not.toBeInTheDocument();
+    expect(
+      container.querySelector('[data-layout-id="perimeter-history-toggle"]'),
+    ).not.toBeInTheDocument();
+    expect(
+      container.querySelector(
+        '[data-layout-id="perimeter-history-unreadable"]',
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  it('clears the retired per-device history keys from local storage on load, leaving unrelated keys alone', () => {
+    window.localStorage.setItem(
+      'perimeter/history/0x1e/0x1111111111111111111111111111111111111111',
+      JSON.stringify([{ queueAddress: QUEUE, id: '7' }]),
+    );
+    window.localStorage.setItem('unrelated-key', 'keep me');
+
+    render(<PerimeterPage />);
+
+    expect(
+      window.localStorage.getItem(
+        'perimeter/history/0x1e/0x1111111111111111111111111111111111111111',
+      ),
+    ).toBeNull();
+    expect(window.localStorage.getItem('unrelated-key')).toBe('keep me');
+  });
+
+  it('a row resolved by the Owner disappears on the next read, without any action on this page', () => {
+    mockVault.exits = [exit({ id: '7' })];
+    const { container, rerender } = render(<PerimeterPage />);
+
+    expect(screen.getAllByText('#7').length).toBeGreaterThan(0);
+    expect(releaseButton(container, QUEUE, '7')).toBeInTheDocument();
+
+    // Nothing was pressed on this page: the vault's own next read is what
+    // reports the withdrawal as resolved.
+    mockVault.exits = [exit({ id: '7', status: ExitStatus.ResolvedByOwner })];
+    rerender(<PerimeterPage />);
+
+    expect(screen.queryByText('#7')).not.toBeInTheDocument();
+    expect(screen.getAllByText(NO_DELAYED).length).toBeGreaterThan(0);
+  });
+
+  it('a released row disappears at once and does not reappear when a stale chain read still lists it', () => {
+    mockRelease.mockImplementation(
+      (rows: { queueAddress: string; id: string }[], onReleased) =>
+        onReleased(asExecuted(rows)),
+    );
+    const row = exit({ id: '7' });
+    mockVault.exits = [row];
+    const { container, rerender } = render(<PerimeterPage />);
+
+    fireEvent.click(releaseButton(container, QUEUE, '7')!);
+
+    expect(screen.queryByText('#7')).not.toBeInTheDocument();
+
+    // The vault has not caught up yet: its own list still carries the row,
+    // still Queued, exactly as it read before the release. The page must not
+    // trust that stale read over what it already knows happened.
+    mockVault.exits = [row];
+    rerender(<PerimeterPage />);
+
+    expect(screen.queryByText('#7')).not.toBeInTheDocument();
+    expect(screen.getAllByText(NO_DELAYED).length).toBeGreaterThan(0);
   });
 
   it('disables Release and Release all with a wrong-network tooltip when the wallet is on another network', () => {
@@ -508,334 +601,28 @@ describe('PerimeterPage', () => {
     expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
   });
 
-  describe('history', () => {
-    it('lists only waiting withdrawals until history is asked for, and hands the live list to be remembered', () => {
-      mockVault.exits = [exit({ id: '7' })];
-      mockHistory.mockReturnValue({
-        exits: [exit({ id: '5', status: ExitStatus.Executed })],
-        loading: false,
-        unknown: false,
-      });
-      render(<PerimeterPage />);
-
-      expect(screen.getByText('Show history')).toBeInTheDocument();
-      expect(screen.queryByText('Settled')).not.toBeInTheDocument();
-      expect(screen.getAllByText('Ready').length).toBeGreaterThan(0);
-      const [enabled, live] = mockHistory.mock.calls[0];
-      expect(enabled).toBe(false);
-      expect(live.map((row: { id: string }) => row.id)).toEqual(['7']);
-    });
-
-    it('swaps the list for the remembered, settled withdrawals when history is shown', () => {
-      mockVault.exits = [exit({ id: '7' }), exit({ id: '8' })];
-      mockHistory.mockImplementation((enabled: boolean) => ({
-        exits: enabled
-          ? [
-              exit({ id: '5', status: ExitStatus.Executed }),
-              exit({ id: '4', status: ExitStatus.ResolvedByOwner }),
-            ]
-          : [],
-        loading: false,
-        unknown: false,
-      }));
-      const { container } = render(<PerimeterPage />);
-
-      expect(screen.getByText('Release all ready (2)')).toBeInTheDocument();
-
-      fireEvent.click(screen.getByText('Show history'));
-
-      expect(screen.getByText('Show waiting withdrawals')).toBeInTheDocument();
-      expect(screen.getByText('Settled')).toBeInTheDocument();
-      expect(screen.getByText('Resolved by owner')).toBeInTheDocument();
-      expect(screen.queryByText('Ready')).not.toBeInTheDocument();
-      expect(screen.queryByText(/Release all ready/)).not.toBeInTheDocument();
-      expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
-      expect(releaseButton(container, QUEUE, '5')).not.toBeInTheDocument();
-
-      fireEvent.click(screen.getByText('Show waiting withdrawals'));
-
-      expect(screen.getByText('Release all ready (2)')).toBeInTheDocument();
-      expect(screen.queryByText('Settled')).not.toBeInTheDocument();
-    });
-
-    it('says nothing is remembered on this device when history is empty', () => {
-      render(<PerimeterPage />);
-
-      fireEvent.click(screen.getByText('Show history'));
-
-      expect(
-        screen.getAllByText(
-          /No released withdrawals are remembered on this device/,
-        ).length,
-      ).toBeGreaterThan(0);
-    });
-
-    it('says the remembered withdrawals could not be read rather than that there are none', () => {
-      mockHistory.mockImplementation((enabled: boolean) => ({
-        exits: [],
-        loading: false,
-        unknown: enabled,
-      }));
-      render(<PerimeterPage />);
-
-      fireEvent.click(screen.getByText('Show history'));
-
-      expect(
-        screen.getAllByText(/could not read the remembered withdrawals/).length,
-      ).toBeGreaterThan(0);
-      expect(
-        screen.queryByText(/No released withdrawals are remembered/),
-      ).not.toBeInTheDocument();
-    });
-
-    it('says a partial history could not be fully read even while it lists what it did get', () => {
-      mockHistory.mockImplementation((enabled: boolean) => ({
-        exits: enabled ? [exit({ id: '5', status: ExitStatus.Executed })] : [],
-        loading: false,
-        unknown: enabled,
-      }));
-      const { container } = render(<PerimeterPage />);
-
-      fireEvent.click(screen.getByText('Show history'));
-
-      expect(screen.getByText('Settled')).toBeInTheDocument();
-      expect(
-        container.querySelector(
-          '[data-layout-id="perimeter-history-unreadable"]',
-        ),
-      ).toBeInTheDocument();
-    });
-
-    it('does not print the vault’s own "could not read" line while history is shown, even when the vault is unknown', () => {
-      // That paragraph is about the live list, which is not on screen once
-      // history is showing; the history table has its own line for its own
-      // reads, asserted separately above.
-      mockVault.unknown = true;
-      mockHistory.mockImplementation((enabled: boolean) => ({
-        exits: enabled ? [exit({ id: '5', status: ExitStatus.Executed })] : [],
-        loading: false,
-        unknown: false,
-      }));
-      const { container } = render(<PerimeterPage />);
-
-      fireEvent.click(screen.getByText('Show history'));
-
-      expect(screen.getByText('Settled')).toBeInTheDocument();
-      expect(
-        container.querySelector('[data-layout-id="perimeter-unreadable"]'),
-      ).not.toBeInTheDocument();
-    });
-
-    it('lists a remembered settled withdrawal even when the chain clock could not be read', () => {
-      // Every history row is terminal, and its state is resolved before the
-      // clock is ever consulted, so a failed clock read must not empty the
-      // history table the way it rightly empties the live one.
-      mockChainTime = { now: 0, blockTime: 0, unreadable: true };
-      mockHistory.mockImplementation((enabled: boolean) => ({
-        exits: enabled ? [exit({ id: '5', status: ExitStatus.Executed })] : [],
-        loading: false,
-        unknown: false,
-      }));
-      render(<PerimeterPage />);
-
-      fireEvent.click(screen.getByText('Show history'));
-
-      expect(screen.getByText('Settled')).toBeInTheDocument();
-      expect(
-        screen.queryByText(/No released withdrawals are remembered/),
-      ).not.toBeInTheDocument();
-    });
-
-    it('says nothing is remembered, rather than showing a loading message, once history itself has resolved even while the vault is still loading', () => {
-      // History reads go straight to each queue and depend on neither the
-      // vault nor the chain clock. Once history itself has answered, a
-      // read those rows do not need must not hold up the empty message.
-      mockVault.loading = true;
-      mockChainTime = { now: 0, blockTime: 0, unreadable: false };
-      mockHistory.mockReturnValue({
-        exits: [],
-        loading: false,
-        unknown: false,
-      });
-      render(<PerimeterPage />);
-
-      fireEvent.click(screen.getByText('Show history'));
-
-      expect(
-        screen.getAllByText(
-          /No released withdrawals are remembered on this device/,
-        ).length,
-      ).toBeGreaterThan(0);
-      expect(screen.queryByText('Loading data…')).not.toBeInTheDocument();
-    });
-
-    it('offers no history switch without a wallet', () => {
-      mockAccount = undefined;
-      render(<PerimeterPage />);
-
-      expect(screen.queryByText('Show history')).not.toBeInTheDocument();
-    });
-
-    it('lists a withdrawal released in this session under history, rather than saying nothing is remembered', () => {
-      // The vault has not read again yet, so its own list still carries the
-      // released row. History must be handed the page's own filtered list,
-      // not the vault's raw one, or the row is neither live nor history.
-      mockRelease.mockImplementation(
-        (rows: { queueAddress: string; id: string }[], onReleased) =>
-          onReleased(asExecuted(rows)),
-      );
-      mockVault.exits = [exit({ id: '7' })];
-      mockHistory.mockImplementation(
-        (enabled: boolean, live: { id: string }[]) => ({
-          exits:
-            enabled && !live.some(row => row.id === '7')
-              ? [exit({ id: '7', status: ExitStatus.Executed })]
-              : [],
-          loading: false,
-          unknown: false,
-        }),
-      );
-      const { container } = render(<PerimeterPage />);
-
-      fireEvent.click(releaseButton(container, QUEUE, '7')!);
-      fireEvent.click(screen.getByText('Show history'));
-
-      expect(screen.getByText('Settled')).toBeInTheDocument();
-      expect(
-        screen.queryByText(/No released withdrawals are remembered/),
-      ).not.toBeInTheDocument();
-    });
-
-    it('hands history a receipt built from the live row’s own data, with its status set to executed, as soon as a release completes', () => {
-      // History shows a released row at once from this, rather than waiting
-      // on its own read of the chain, which can still trail the release.
-      mockRelease.mockImplementation(
-        (rows: { queueAddress: string; id: string }[], onReleased) =>
-          onReleased(asExecuted(rows)),
-      );
-      const row = exit({ id: '7' });
-      mockVault.exits = [row];
-      const { container } = render(<PerimeterPage />);
-
-      fireEvent.click(releaseButton(container, QUEUE, '7')!);
-
-      const [, , receipts] =
-        mockHistory.mock.calls[mockHistory.mock.calls.length - 1];
-      expect(
-        (receipts as Map<string, unknown>).get(
-          exitKey({ queueAddress: QUEUE, id: '7' }),
-        ),
-      ).toEqual({ ...row, status: ExitStatus.Executed });
-    });
-
-    it.each([
-      [
-        'resolved by the Owner',
-        ExitStatus.ResolvedByOwner,
-        'Resolved by owner',
-      ],
-      [
-        'returned to the protocol',
-        ExitStatus.ResolvedToProtocol,
-        'Returned to the product',
-      ],
-    ])(
-      // The Owner (or the protocol) can resolve a request away by recovery
-      // before the holder presses Release. The fresh check still reports it
-      // through onReleased, so it leaves the live table — but it was never
-      // paid to its receiver, and the receipt must carry the status the
-      // check actually reported, not the executed status a delivered row
-      // gets, or history would falsely say it was already paid out.
-      'gives a withdrawal %s a receipt with that real status, not executed, so history shows it as such rather than Settled',
-      (_case, status, label) => {
-        mockRelease.mockImplementation(
-          (
-            rows: { queueAddress: string; id: string }[],
-            onReleased: (
-              entries: { key: string; status: ExitStatus }[],
-            ) => void,
-          ) => onReleased(rows.map(row => ({ key: exitKey(row), status }))),
-        );
-        mockHistory.mockImplementation(
-          (
-            enabled: boolean,
-            _live: unknown[],
-            receipts: Map<string, unknown>,
-          ) => ({
-            exits: enabled ? [...receipts.values()] : [],
-            loading: false,
-            unknown: false,
-          }),
-        );
-        const row = exit({ id: '7' });
-        mockVault.exits = [row];
-        const { container } = render(<PerimeterPage />);
-
-        fireEvent.click(releaseButton(container, QUEUE, '7')!);
-
-        const [, , receipts] =
-          mockHistory.mock.calls[mockHistory.mock.calls.length - 1];
-        expect(
-          (receipts as Map<string, unknown>).get(
-            exitKey({ queueAddress: QUEUE, id: '7' }),
-          ),
-        ).toEqual({ ...row, status });
-
-        fireEvent.click(screen.getByText('Show history'));
-
-        expect(screen.getByText(label)).toBeInTheDocument();
-        expect(screen.queryByText('Settled')).not.toBeInTheDocument();
-      },
+  it('drops the session’s released-row filtering when the connected account changes, so a row still live for the new account is not hidden by a key the old one released', () => {
+    // releasedKeys is this browser tab's own session state, not read from
+    // chain, so nothing scopes it to an account unless this effect does:
+    // nothing else remounts the page on an account change.
+    const OTHER_ACCOUNT = '0x2222222222222222222222222222222222222222';
+    mockRelease.mockImplementation(
+      (rows: { queueAddress: string; id: string }[], onReleased) =>
+        onReleased(asExecuted(rows)),
     );
+    mockVault.exits = [exit({ id: '7' })];
+    const { container, rerender } = render(<PerimeterPage />);
 
-    it('drops a released withdrawal’s receipt when the connected account changes, and does not bring it back by switching back', () => {
-      // The receipt is this browser tab's own session state, not read from
-      // chain, so nothing scopes it to an account unless this hook does: a
-      // receipt built for account A must never be handed to history for B.
-      const OTHER_ACCOUNT = '0x2222222222222222222222222222222222222222';
-      mockRelease.mockImplementation(
-        (rows: { queueAddress: string; id: string }[], onReleased) =>
-          onReleased(asExecuted(rows)),
-      );
-      const row = exit({ id: '7' });
-      mockVault.exits = [row];
-      const { container, rerender } = render(<PerimeterPage />);
+    fireEvent.click(releaseButton(container, QUEUE, '7')!);
+    expect(screen.queryByText('#7')).not.toBeInTheDocument();
 
-      fireEvent.click(releaseButton(container, QUEUE, '7')!);
+    // The row itself is still account A's in this mock, and switching to B
+    // must not carry A's released-key filtering over: a row that is
+    // genuinely live for B would otherwise be hidden by a key A released.
+    mockAccount = OTHER_ACCOUNT;
+    rerender(<PerimeterPage />);
 
-      const receiptsAfterRelease = mockHistory.mock.calls[
-        mockHistory.mock.calls.length - 1
-      ][2] as Map<string, unknown>;
-      expect(
-        receiptsAfterRelease.get(exitKey({ queueAddress: QUEUE, id: '7' })),
-      ).toBeDefined();
-
-      // A's release also drops the row from the live list via releasedKeys;
-      // switching to B must not carry that filtering over either, or a row
-      // that is genuinely live for B would be hidden by a key A released.
-      // (The row itself is still A's in this mock, so it now reads as
-      // releasable only by its owner rather than Ready — what matters here
-      // is that it is not filtered out of the list entirely.)
-      mockAccount = OTHER_ACCOUNT;
-      rerender(<PerimeterPage />);
-
-      const receiptsAfterSwitch = mockHistory.mock.calls[
-        mockHistory.mock.calls.length - 1
-      ][2] as Map<string, unknown>;
-      expect(receiptsAfterSwitch.size).toBe(0);
-      expect(screen.getAllByText('#7').length).toBeGreaterThan(0);
-
-      // Switching back to A must not resurrect the cleared receipt on its
-      // own — only a chain read that actually confirms the row could, and
-      // this page never re-derives a receipt from nothing.
-      mockAccount = ACCOUNT;
-      rerender(<PerimeterPage />);
-
-      const receiptsBackOnA = mockHistory.mock.calls[
-        mockHistory.mock.calls.length - 1
-      ][2] as Map<string, unknown>;
-      expect(receiptsBackOnA.size).toBe(0);
-    });
+    expect(screen.getAllByText('#7').length).toBeGreaterThan(0);
   });
 
   it('withholds Release while an exit is still on hold', () => {

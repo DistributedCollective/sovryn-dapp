@@ -29,14 +29,6 @@ export const getStatusTooltip = (state: PendingExitState): string =>
       : translations.perimeterPage.statusTooltip[state],
   );
 
-/** States a row settles into for good: nothing is ever released from them. */
-const NEVER_RELEASED_STATES = new Set<PendingExitState>([
-  PendingExitState.Settled,
-  PendingExitState.ResolvedByOwner,
-  PendingExitState.ResolvedToProtocol,
-  PendingExitState.Unreadable,
-]);
-
 /**
  * Time left on a hold, to two units ("1d 1h"). An exit past its unlock time
  * reads as ready rather than as "0 seconds", which would look like a stuck row.
@@ -44,16 +36,18 @@ const NEVER_RELEASED_STATES = new Set<PendingExitState>([
  * The form states a policy duration and rounds it to one whole unit; this is
  * the screen where someone watches the clock, so it says what is actually left.
  *
- * A row in one of the states nothing is ever released from carries no release
- * time at all: an unlock time in the past reads as due now regardless of what
- * became of the row, which is a readiness claim the row's own status denies.
+ * A row nothing is ever released from — its block state could not be read,
+ * or it reached here with a status the pending list should already have
+ * dropped it for — carries no release time at all: an unlock time in the
+ * past reads as due now regardless of what became of the row, which is a
+ * readiness claim the row's own status denies.
  */
 export const getTimeToRelease = (
   unlockAt: number,
   now: number,
   state: PendingExitState,
 ): string => {
-  if (NEVER_RELEASED_STATES.has(state)) {
+  if (state === PendingExitState.Unreadable) {
     return '-';
   }
   const remaining = secondsUntilUnlock(unlockAt, now);
@@ -70,3 +64,28 @@ export const getTimeToRelease = (
 /** Shorten an address for a table cell without hiding which address it is. */
 export const shortenAddress = (address: string): string =>
   `${address.slice(0, 6)}…${address.slice(-4)}`;
+
+/** Every key the retired per-device history wrote local storage under. */
+const LEGACY_HISTORY_KEY_PREFIX = 'perimeter/history/';
+
+/**
+ * Withdrawal history is no longer kept in this browser: clear whatever the
+ * retired per-device history left behind, for every chain and account it was
+ * ever written under, so nothing stale lingers once this page has loaded.
+ * Never throws: a store that cannot be read or written leaves nothing to
+ * clear, and this is a convenience, never a statement about funds.
+ */
+export const clearLegacyHistoryKeys = (): void => {
+  try {
+    const stale: string[] = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i);
+      if (key?.startsWith(LEGACY_HISTORY_KEY_PREFIX)) {
+        stale.push(key);
+      }
+    }
+    stale.forEach(key => window.localStorage.removeItem(key));
+  } catch (error) {
+    // Nothing to do: see the doc comment above.
+  }
+};

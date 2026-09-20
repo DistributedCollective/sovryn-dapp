@@ -2105,9 +2105,6 @@
       "notExecutor": "Releasable by the position owner",
       "frozen": "Under investigation",
       "paused": "Paused",
-      "settled": "Settled",
-      "resolvedByOwner": "Resolved by owner",
-      "resolvedToProtocol": "Returned to the product",
       "unreadable": "Could not be read"
     },
     "statusTooltip": {
@@ -2117,9 +2114,6 @@
       "notExecutor": "This withdrawal is released by the account that made it or by the position owner.",
       "frozen": "The delay has ended, but this withdrawal stays in the vault while it is being looked into. Nothing is lost; release becomes available once the review ends.",
       "paused": "Releases are paused across the whole perimeter. Nothing is lost; try again once they resume.",
-      "settled": "Already paid out. Nothing left to do.",
-      "resolvedByOwner": "The Owner moved this withdrawal to a recovery destination.",
-      "resolvedToProtocol": "Sent to a recovery destination approved in advance for the product it came from.",
       "unreadable": "We could not read this withdrawal just now. It has not been shown as released. Try again in a moment."
     },
     "release": "Release",
@@ -2135,12 +2129,6 @@
       "executeExits": "Release {{count}} withdrawals from the Perimeter vault"
     },
     "releaseAll": "Release all ready ({{count}})",
-    "history": {
-      "show": "Show history",
-      "hide": "Show waiting withdrawals",
-      "empty": "No released withdrawals are remembered on this device. Withdrawals released elsewhere can be found on the block explorer.",
-      "unreadable": "We could not read the remembered withdrawals just now. Try again in a moment."
-    },
     "releaseRefused": {
       "title": "Not released",
       "unreadable": "Withdrawal #{{id}} was not released because we could not check whether its addresses are frozen or blacklisted. Try again in a moment.",

@@ -1,3 +1,9 @@
+import {
+  PERMIT2_ADDRESS,
+  PermitTransferFrom,
+  SignatureTransfer,
+} from '@uniswap/permit2-sdk';
+
 import { BigNumber, Contract, constants, providers } from 'ethers';
 
 import { getAssetContract, getProtocolContract } from '@sovryn/contracts';
@@ -8,13 +14,9 @@ import {
   areAddressesEqual,
   hasEnoughAllowance,
   makeApproveRequest,
+  normalizeSignature,
 } from '../../../internal/utils';
 import { SwapPairs, SwapRouteFunction } from '../types';
-import {
-  PERMIT2_ADDRESS,
-  PermitTransferFrom,
-  SignatureTransfer,
-} from '@uniswap/permit2-sdk';
 
 // Supports converting DLLR to RBTC via getDocFromDllrAndRedeemRBTC function on the MoCIntegration contract.
 export const mocIntegrationSwapRoute: SwapRouteFunction = (
@@ -188,11 +190,23 @@ export const mocIntegrationSwapRoute: SwapRouteFunction = (
 
         const mocIntegration = await getMocIntegrationContract();
 
+        let signature: string;
+        try {
+          signature = normalizeSignature(options.typedDataSignature);
+        } catch (error) {
+          throw makeError(
+            `Invalid Permit2 signature: ${
+              error instanceof Error ? error.message : String(error)
+            }`,
+            SovrynErrorCode.UNKNOWN_ERROR,
+          );
+        }
+
         return {
           to: mocIntegration.address,
           data: mocIntegration.interface.encodeFunctionData(
             'getDocFromDllrAndRedeemRbtcWithPermit2',
-            [options?.typedDataValue, options?.typedDataSignature],
+            [options?.typedDataValue, signature],
           ),
           value: '0',
           gasLimit: 800_000,

@@ -161,6 +161,19 @@ describe('Moc Integration Route', () => {
       expect(decoded[1]).toEqual(FAKE_SIGNATURE);
     });
 
+    it('rejects a malformed signature with a typed SDK error at build time', async () => {
+      // v=29 is not a valid recovery byte; it must fail loudly here rather
+      // than be folded silently or revert on-chain
+      const malformed = `${FAKE_SIGNATURE.slice(0, -2)}1d`;
+
+      await expect(
+        route.swap(dllr, rbtc, parseUnits('20'), constants.AddressZero, {
+          typedDataValue: FAKE_PERMIT_TRANSFER_FROM,
+          typedDataSignature: malformed,
+        }),
+      ).rejects.toThrowError(/Invalid Permit2 signature/);
+    });
+
     it('fails build swap tx data for RBTC -> DLLR', async () => {
       const amount = parseUnits('0.01');
 

@@ -23,6 +23,7 @@ import { translations } from '../../../../../locales/i18n';
 import { findNativeAsset } from '../../../../../utils/asset';
 import { sleep } from '../../../../../utils/helpers';
 import { fromWei, toWei } from '../../../../../utils/math';
+import { normalizeSignature } from '../../../../../utils/signature';
 import {
   Transaction,
   TransactionReceiptStatus,
@@ -265,10 +266,16 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
           await handleUpdates();
         } else if (isTypedDataRequest(request)) {
-          const signature = await request.signer._signTypedData(
-            request.domain,
-            request.types,
-            request.values,
+          // Wallets like Frame or ledger modules return v as 0/1; on-chain
+          // verifiers (Permit2's ecrecover) accept only 27/28, while the
+          // ethers verification below tolerates both — so canonicalize before
+          // the signature is stored and forwarded on-chain.
+          const signature = normalizeSignature(
+            await request.signer._signTypedData(
+              request.domain,
+              request.types,
+              request.values,
+            ),
           );
 
           const verifiedAddress = ethers.utils.verifyTypedData(

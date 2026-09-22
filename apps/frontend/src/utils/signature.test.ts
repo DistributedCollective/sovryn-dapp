@@ -46,6 +46,38 @@ describe('utils/signature.ts', () => {
       expect(() => normalizeSignature(base + '05')).toThrow();
     });
 
+    it('preserves a high-s signature exactly (r and s are never altered)', () => {
+      // all known wallets emit low-s, but ecrecover accepts high-s, so a
+      // high-s signature that would have worked raw must not be rejected
+      // or rewritten by normalization (adversarial review, 2026-09-22)
+      const highS =
+        'b475d99336ce2bf26a5bc6e946769ecc1763cdbce8abf24add0800084e76fbe2';
+      expect(normalizeSignature(r + highS + '1b')).toBe(r + highS + '1b');
+      expect(normalizeSignature(r + highS + '1c')).toBe(r + highS + '1c');
+    });
+
+    it.each([2, 26, 29, 30, 34, 35, 37, 38, 255])(
+      'rejects out-of-range v byte %i instead of folding it silently',
+      v => {
+        // ethers' splitSignature parity-folds any v >= 27 (29 -> 27), which
+        // would change the recovery interpretation of garbage input; only
+        // {0, 1, 27, 28} are meaningful for typed-data signatures
+        const sig = base + v.toString(16).padStart(2, '0');
+        expect(() => normalizeSignature(sig)).toThrowError(
+          /invalid signature v byte/,
+        );
+      },
+    );
+
+    it('rejects signatures that are not 64 or 65 bytes', () => {
+      expect(() => normalizeSignature(base.slice(0, -2))).toThrowError(
+        /invalid signature length/,
+      );
+      expect(() => normalizeSignature(base + '1b1b')).toThrowError(
+        /invalid signature length/,
+      );
+    });
+
     it('is a no-op for signatures produced by standard (MetaMask-style) signers', async () => {
       const wallet = new ethers.Wallet(
         '0x1111111111111111111111111111111111111111111111111111111111111111',

@@ -104,10 +104,14 @@ export const useDeadlinePassed = (
  * moment can under-report the hold, but the requote timer below (see
  * REQUOTE_INTERVAL_MS) bounds that lag to at most one cache lifetime, the
  * same window a fresh block would already have closed — never indefinitely,
- * however long the form stays open. The withdrawal itself is held on chain
- * from the moment of arming either way; this hook's number is what can be
- * briefly behind, not the money. Do not add a key on live policy state to
- * close that window further — the bound above is the accepted one.
+ * however long the form stays open. The timer's own force is passed all the
+ * way into the quote itself (see `quoteExitDelay`'s `force`), not stopped at
+ * this hook's outer cache entry, so the bound is one lifetime and not two:
+ * the quote a forced tick reads is never older than the tick itself. The
+ * withdrawal itself is held on chain from the moment of arming either way;
+ * this hook's number is what can be briefly behind, not the money. Do not
+ * add a key on live policy state to close that window further — the bound
+ * above is the accepted one.
  */
 export const useExitDelay = ({
   chainId,
@@ -127,7 +131,13 @@ export const useExitDelay = ({
     account?.toLowerCase(),
   ].join('/');
 
-  const fetchQuote = async (): Promise<StampedDelay> => {
+  // `force` reaches quoteExitDelay's own cached read (see its doc comment)
+  // so a forced tick re-reads the chain instead of serving whatever that
+  // inner cache still holds from before this tick. An ordinary call passes
+  // no `force` at all — not `force: false` — so it is indistinguishable
+  // from any other unforced caller and still shares that inner cache's
+  // answer with them.
+  const fetchQuote = async (force?: boolean): Promise<StampedDelay> => {
     if (!consumerAddress || !subProduct || !account) {
       return { delaySeconds: 0, unknown: false, forKey: PENDING_KEY };
     }
@@ -137,6 +147,7 @@ export const useExitDelay = ({
       account,
       surfaceId,
       subProduct,
+      force,
     });
     return { ...quote, forKey: key };
   };
@@ -148,16 +159,23 @@ export const useExitDelay = ({
   // forward), and a `force` living in its options would ride along on
   // those runs too — exactly as many times as there are mounted
   // instances of this hook for the same key — defeating the de-dup two
-  // forms sharing a key rely on to share one on-chain read per block. A
-  // ref keeps the interval itself stable across renders (so it is not
-  // torn down and restarted on every block) while still calling with each
-  // render's latest values.
+  // forms sharing a key rely on to share one on-chain read per block. The
+  // tick also calls `fetchQuote` with its own `force: true`, so the force
+  // reaches the quote itself (quoteExitDelay's own `force`) rather than
+  // stopping at this outer cache entry: without that, this entry's forced
+  // re-fetch could still be served the quote's own, not-yet-expired,
+  // cached answer from before the tick. A ref keeps the interval itself
+  // stable across renders (so it is not torn down and restarted on every
+  // block) while still calling with each render's latest values.
   const latest = useRef({ id: `call:${chainId}:${key}`, fetchQuote });
   latest.current = { id: `call:${chainId}:${key}`, fetchQuote };
   useEffect(() => {
     const timer = setInterval(() => {
       const { id, fetchQuote } = latest.current;
-      startCall(id, fetchQuote, { ttl: EXIT_DELAY_TTL, force: true });
+      startCall(id, () => fetchQuote(true), {
+        ttl: EXIT_DELAY_TTL,
+        force: true,
+      });
     }, REQUOTE_INTERVAL_MS);
     return () => clearInterval(timer);
   }, []);

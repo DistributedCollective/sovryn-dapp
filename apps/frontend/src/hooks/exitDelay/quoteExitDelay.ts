@@ -58,6 +58,7 @@ export const quoteExitDelay = async ({
   account,
   surfaceId,
   subProduct,
+  force,
 }: {
   chainId: ChainId;
   /** The consumer contract holding the perimeter pointers for this surface. */
@@ -65,6 +66,14 @@ export const quoteExitDelay = async ({
   account: string;
   surfaceId: string;
   subProduct: string;
+  /**
+   * Bypass this call's own cached answer and re-read the chain. Set only by
+   * a caller that already knows its own cached answer may be stale — see
+   * useExitDelay's requote timer — never on an ordinary read, so an
+   * unforced call still shares one on-chain read with every other consumer
+   * asking the same question within the cache's lifetime.
+   */
+  force?: boolean;
 }): Promise<ResolvedExitDelay> => {
   const queue = await readPerimeterPointer(
     chainId,
@@ -117,7 +126,7 @@ export const quoteExitDelay = async ({
           ).quoteExitDelayFor(account, account, account, surfaceId, subProduct),
           RELEASE_READ_TIMEOUT_MS,
         ),
-      { ttl: EXIT_DELAY_TTL },
+      { ttl: EXIT_DELAY_TTL, force },
     );
     delaySeconds = Number(quote.d);
   } catch (error) {

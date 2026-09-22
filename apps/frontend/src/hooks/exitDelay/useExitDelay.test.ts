@@ -224,6 +224,43 @@ describe('useExitDelay', () => {
       expect(result.current.loading).toBe(false);
     });
 
+    it("re-reads the quote itself on a forced tick, rather than showing that quote's own stale answer from before the tick", async () => {
+      // quoteExitDelay caches its own on-chain read separately from this
+      // hook's outer cache entry (see quoteExitDelay.ts), on a lifetime that
+      // starts slightly after this entry's own. Modelling that here: an
+      // unforced call keeps returning whatever was last read, the same way
+      // that inner cache would serve its own not-yet-expired answer; only a
+      // forced call re-reads the current on-chain state.
+      const account = freshAccount();
+      let onChain = { delaySeconds: 0, unknown: false };
+      let lastRead = onChain;
+      mockQuoteExitDelay.mockImplementation(({ force }) => {
+        if (force) {
+          lastRead = onChain;
+        }
+        return Promise.resolve(lastRead);
+      });
+
+      const { result } = renderRequest(request({ account }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(result.current.delaySeconds).toBe(0);
+
+      // The Owner arms the delay on a surface this open form already
+      // quoted, between this hook's initial read and the requote timer's
+      // first forced tick.
+      onChain = { delaySeconds: 172800, unknown: false };
+
+      await act(async () => {
+        jest.advanceTimersByTime(EXIT_DELAY_TTL);
+        await Promise.resolve();
+      });
+
+      expect(result.current.delaySeconds).toBe(172800);
+    });
+
     it('does not requote before one cache lifetime has passed', async () => {
       const account = freshAccount();
       mockQuoteExitDelay.mockResolvedValue({ delaySeconds: 0, unknown: false });

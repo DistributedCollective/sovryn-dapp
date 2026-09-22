@@ -27,4 +27,16 @@ describe('GAS_LIMIT delay-armed floors', () => {
       Math.ceil(745_682 * 1.3),
     );
   });
+
+  it('covers Zero claimCollateral() (the surplus claim), measured 386,192 gas (rskForkedMainnetQa, delay 120s, tx 0xee909088e754c220b6be96c143b29828cf20950bc445ea4871e19a629408c20b)', () => {
+    expect(GAS_LIMIT.CLAIM_SURPLUS).toBeGreaterThanOrEqual(
+      Math.ceil(386_192 * 1.3),
+    );
+  });
+
+  it('covers the lending burnToBTC() withdrawal, measured 601,556 gas with the withdrawal delay armed', () => {
+    expect(GAS_LIMIT.LENDING_BURN).toBeGreaterThanOrEqual(
+      Math.ceil(601_556 * 1.3),
+    );
+  });
 });

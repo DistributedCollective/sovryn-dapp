@@ -6,6 +6,7 @@ import { ChainIds } from '@sovryn/ethers-provider';
 import { getMinReturn } from '../../../internal/utils';
 import { DEFAULT_SWAP_ROUTES, smartRoutes } from '../../../swaps/smart-router';
 import { SwapRoute } from '../../../swaps/smart-router/types';
+import { FAKE_SIGNATURE } from '../../_fixtures/permit';
 
 /**
  * Cross-route slippage invariant (regression guard for GHSA-jx33-xg6c-px39).
@@ -353,7 +354,9 @@ describe('cross-route slippage invariant', () => {
         nonce: 1,
         deadline: 2_000_000_000,
       };
-      const typedDataSignature = `0x${'ab'.repeat(65)}`;
+      // a well-formed canonical signature — the moc route canonicalizes
+      // signatures and rejects malformed ones at build time
+      const typedDataSignature = FAKE_SIGNATURE;
 
       const txs = await buildAcrossSlippages(
         () =>

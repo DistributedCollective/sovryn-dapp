@@ -1,5 +1,14 @@
 # @sovryn/sdk
 
+## 2.0.11
+
+### Patch Changes
+
+- 6917f90c: Fix Ambient route slippage encoding: `options.slippage` is expressed in basis points (10_000 = 100%) but was divided by 1000 instead of 10000 before being passed to sdex, so the enforced slippage bound was 10x looser than the value the user selected (e.g. 0.5% became 5%). The `?? 50` fallback keeps its intended meaning of 0.5%, matching the UI's preset tolerance.
+- e1256a40: Canonicalize the Permit2 typed-data signature in the MocIntegration route before encoding it on-chain: wallets that return the ECDSA v byte as a raw recovery id (0/1 — Frame, onboard-ledger, some MPC wallets) or an EIP-2098 compact signature previously produced calldata that Permit2's ecrecover rejects. Signatures are normalized to the 65-byte r||s||v form with v in {27, 28}; canonical signatures pass through unchanged, malformed ones now throw at build time instead of reverting on-chain. SDK-side counterpart of the frontend fix in PR #1147.
+- 84ced870: Support non-18-decimal tokens (USDT0) in the RSK AMM swap route: add USDT0 to the tradeable token list and normalize amounts between the router's 18-decimal convention and each token's native units in quote/swap/approve
+- f60cca69: fix: route search
+
 ## 2.0.10
 
 ### Patch Changes

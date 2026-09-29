@@ -1,11 +1,19 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook as renderHookBare } from '@testing-library/react';
 
 import 'jest-canvas-mock';
+import { MemoryRouter } from 'react-router-dom';
 
 import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { i18n } from '../../../../locales/i18n';
 import { SURFACE_ZERO_CLAIM_SURPLUS } from '../../../../utils/exitFee';
 import { useClaimCollateralSurplus } from './useClaimCollateralSurplus';
+
+/**
+ * The hooks under test link to the Perimeter page from their hold notice, so
+ * they are rendered under a Router, as the pages that call them are.
+ */
+const renderHook = <Result, Props>(callback: (props: Props) => Result) =>
+  renderHookBare(callback, { wrapper: MemoryRouter });
 
 /**
  * A held claim does not arrive in the wallet, so a flow that reports only

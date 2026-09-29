@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { render, renderHook } from '@testing-library/react';
 
 import React from 'react';
 
@@ -54,6 +54,20 @@ describe('usePerimeterHoldToast', () => {
     expect(notification.title).toBe(
       'Withdrawal delayed by the Sovryn Perimeter',
     );
+  });
+
+  it('carries a content link that renders with no Router around it', () => {
+    const notification = notify({
+      delaySeconds: 172800,
+      loading: false,
+      unknown: false,
+    });
+
+    const { container } = render(<>{notification.content}</>);
+
+    expect(
+      container.querySelector('[data-test-id="perimeter-hold-toast-link"]'),
+    ).toHaveAttribute('href', '/perimeter');
   });
 
   it('says it could not check, rather than staying silent', () => {

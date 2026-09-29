@@ -1,10 +1,18 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook as renderHookBare } from '@testing-library/react';
 
 import 'jest-canvas-mock';
+import { MemoryRouter } from 'react-router-dom';
 
 import { GAS_LIMIT } from '../../../../constants/gasLimits';
 import { i18n } from '../../../../locales/i18n';
 import { useHandleTrove } from './useHandleTrove';
+
+/**
+ * The hooks under test link to the Perimeter page from their hold notice, so
+ * they are rendered under a Router, as the pages that call them are.
+ */
+const renderHook = <Result, Props>(callback: (props: Props) => Result) =>
+  renderHookBare(callback, { wrapper: MemoryRouter });
 
 /**
  * The Zero page submits adjustments and closes through the functions this hook

@@ -63,13 +63,13 @@ describe('ExitDelayRow', () => {
     ).toHaveTextContent('2 hours');
   });
 
-  it('names the vault and links to the Perimeter page, visibly', () => {
+  it('names the withdraw queue and links to the Perimeter page, visibly', () => {
     const { container } = renderRow(3600);
     const notice = container.querySelector(
       '[data-test-id="exit-delay-vault-notice"]',
     );
     expect(notice).toBeInTheDocument();
-    expect(notice).toHaveTextContent(/Perimeter vault/i);
+    expect(notice).toHaveTextContent(/Perimeter withdraw queue/i);
     const link = container.querySelector(
       '[data-test-id="exit-delay-vault-link"]',
     );
@@ -90,7 +90,7 @@ describe('ExitDelayRow', () => {
       '[data-test-id="exit-delay-unknown-notice"]',
     );
     expect(notice).toHaveTextContent(/could not check/i);
-    expect(notice).toHaveTextContent(/Perimeter vault/i);
+    expect(notice).toHaveTextContent(/Perimeter withdraw queue/i);
     expect(
       container.querySelector('[data-layout-id="exit-delay-duration"]'),
     ).not.toBeInTheDocument();
@@ -117,7 +117,7 @@ describe('ExitDelayRow', () => {
     expect(helper).toBeInTheDocument();
     fireEvent.click(helper!);
     expect(
-      screen.getByText(/held in the Sovryn Perimeter vault/i),
+      screen.getByText(/held in the Sovryn Perimeter withdraw queue/i),
     ).toBeInTheDocument();
   });
 });

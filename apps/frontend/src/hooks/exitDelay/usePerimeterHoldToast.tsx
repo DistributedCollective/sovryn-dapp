@@ -14,7 +14,7 @@ import { ExitDelayQuote, getExitDelayDisplay } from '../../utils/exitDelay';
 const HOLD_TOAST_TIMEOUT_MS = 30_000;
 
 /**
- * Post-signature notice that a withdrawal went to the Perimeter vault.
+ * Post-signature notice that a withdrawal went to the Perimeter withdraw queue.
  *
  * A held withdrawal does not arrive in the wallet, so a flow that only reports
  * success reads as money missing. The returned callback is attached to the
@@ -26,7 +26,7 @@ const HOLD_TOAST_TIMEOUT_MS = 30_000;
  * unheld flows keep their exact current behaviour. A quote we could not obtain,
  * or one that had not arrived when the callback was made, gets the "may be
  * held" notice: the transaction that just succeeded is then one whose funds
- * may be sitting in the vault.
+ * may be sitting in the withdraw queue.
  */
 export const usePerimeterHoldToast = (quote: ExitDelayQuote) => {
   const { addNotification } = useNotificationContext();

@@ -98,7 +98,7 @@ describe('useClaimCollateralSurplus', () => {
     expect(step.request.gasLimit).toBe(GAS_LIMIT.CLAIM_SURPLUS);
   });
 
-  it('refreshes the page and names the vault once a held claim completes', async () => {
+  it('refreshes the page and names the withdraw queue once a held claim completes', async () => {
     mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
 
     const { step, refresh } = await claim();

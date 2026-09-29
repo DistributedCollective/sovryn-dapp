@@ -20,7 +20,7 @@ export const useClaimCollateralSurplus = (onComplete: () => void) => {
   const { setTransactions, setIsOpen, setTitle } = useTransactionContext();
 
   // The claim is held by the withdrawal delay like the other Zero exits, so
-  // its completion names the vault the same way.
+  // its completion names the withdraw queue the same way.
   const claimDelay = useZeroExitDelayQuote(SURFACE_ZERO_CLAIM_SURPLUS);
   const notifyHold = usePerimeterHoldToast(claimDelay);
 

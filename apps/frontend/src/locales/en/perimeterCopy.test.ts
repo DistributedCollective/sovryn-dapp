@@ -63,6 +63,55 @@ describe('Perimeter copy', () => {
     );
   });
 
+  it('names the account-menu entry "Perimeter" and the page "Perimeter withdraw queue"', () => {
+    expect(en.connectWalletButton.perimeter).toBe('Perimeter');
+    expect(en.perimeterPage.title).toBe('Perimeter withdraw queue');
+    expect(en.perimeterPage.meta.title).toBe('Perimeter withdraw queue');
+  });
+
+  it('calls the place held withdrawals sit the withdraw queue, never a vault', () => {
+    const perimeterSurfaces = [
+      ...perimeterCopy,
+      ['connectWalletButton.perimeter', en.connectWalletButton.perimeter],
+      ['rpcOverrideBanner.content', en.rpcOverrideBanner.content],
+    ] as [string, string][];
+
+    expect(perimeterSurfaces.filter(([, text]) => /vault/i.test(text))).toEqual(
+      [],
+    );
+  });
+
+  it('would catch a held withdrawal called a vault', () => {
+    const synthetic: [string, string][] = [
+      ['synthetic.vault', 'The funds went to the Perimeter vault.'],
+    ];
+
+    expect(synthetic.filter(([, text]) => /vault/i.test(text))).toEqual(
+      synthetic,
+    );
+  });
+
+  it('writes the place as "the Sovryn Perimeter withdraw queue" in full sentences', () => {
+    expect(en.exitDelay.tooltip).toContain(
+      'the Sovryn Perimeter withdraw queue',
+    );
+    expect(en.exitDelay.vaultNotice).toContain(
+      'the Sovryn Perimeter withdraw queue',
+    );
+    expect(en.exitDelay.unknown.notice).toContain(
+      'the Sovryn Perimeter withdraw queue',
+    );
+    expect(en.exitDelay.holdToast.content).toContain(
+      'the Sovryn Perimeter withdraw queue',
+    );
+    expect(en.exitDelay.holdToast.unknownContent).toContain(
+      'the Sovryn Perimeter withdraw queue',
+    );
+    expect(en.perimeterPage.unreadable).toContain(
+      'the Sovryn Perimeter withdraw queue',
+    );
+  });
+
   it('labels the fee as the Perimeter fee and the delay as the withdrawal delay', () => {
     expect(en.exitFee.label).toMatch(/^Perimeter fee\b/);
     expect(en.exitDelay.label).toBe('Withdrawal delay');

@@ -22,7 +22,7 @@ const NO_DELAYED =
   'The Sovryn Perimeter has no delayed withdrawals for this account.';
 
 const UNREADABLE =
-  /Any withdrawal delayed for this account is still in the vault/;
+  /Any withdrawal delayed for this account is still in the withdraw queue/;
 
 const mockRelease = jest.fn();
 

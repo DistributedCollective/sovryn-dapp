@@ -44,7 +44,7 @@ describe('usePerimeterHoldToast', () => {
     await i18n;
   });
 
-  it('names the vault when the withdrawal was held', () => {
+  it('says the withdrawal was delayed when it was held', () => {
     const notification = notify({
       delaySeconds: 172800,
       loading: false,

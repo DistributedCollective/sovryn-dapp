@@ -6,7 +6,7 @@ import { isCollateralWithdrawal } from './utils';
  * `withdrawCollateral` reaches the submit handler as the raw input string. The
  * post-signature hold notice is gated on it, and a string test disagreed with
  * the form's own row: a repay that moved no collateral announced that the
- * holder's funds had gone to the Perimeter vault.
+ * holder's funds had gone to the Perimeter withdraw queue.
  */
 describe('isCollateralWithdrawal', () => {
   it('is true only for an amount that actually leaves', () => {

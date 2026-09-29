@@ -63,15 +63,15 @@ describe('ConnectWalletButton account menu', () => {
     HTMLCanvasElement.prototype.toDataURL = () => '';
   });
 
-  it('opens the Perimeter vault page from the account menu', () => {
+  it('opens the Perimeter page from the account menu', () => {
     openMenu();
 
     const entry = menuEntry('perimeter');
-    expect(entry).toHaveTextContent('Perimeter vault');
+    expect(entry).toHaveTextContent(/^Perimeter$/);
     expect(entry.closest('a')).toHaveAttribute('href', '/perimeter');
   });
 
-  it('lists the Perimeter vault after History and before Notifications', () => {
+  it('lists the Perimeter entry after History and before Notifications', () => {
     openMenu();
 
     const order = Array.from(
@@ -99,7 +99,7 @@ describe('ConnectWalletButton account menu', () => {
     ]);
   });
 
-  it('shows the Perimeter vault entry on every chain, unlike Notifications', () => {
+  it('shows the Perimeter entry on every chain, unlike Notifications', () => {
     openMenu(ChainIds.BOB_MAINNET);
 
     expect(menuEntry('perimeter')).not.toHaveClass('hidden');

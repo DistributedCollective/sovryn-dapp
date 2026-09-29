@@ -9,7 +9,7 @@ import { useHandleTrove } from './useHandleTrove';
 /**
  * The Zero page submits adjustments and closes through the functions this hook
  * returns. A collateral withdrawal is held by the withdrawal delay when it
- * applies, so its completion must name the vault; an adjust that moves no
+ * applies, so its completion must name the withdraw queue; an adjust that moves no
  * collateral must not. These tests call the returned functions and run the
  * completion of the transaction each one builds.
  */
@@ -121,7 +121,7 @@ describe('useHandleTrove', () => {
     mockGetTrove.mockResolvedValue({ netDebt: { toString: () => '100' } });
   });
 
-  it('names the vault once a collateral withdrawal through Adjust completes', async () => {
+  it('names the withdraw queue once a collateral withdrawal through Adjust completes', async () => {
     const onTroveAdjusted = jest.fn();
     const { result } = renderHook(() =>
       useHandleTrove(true, { onTroveAdjusted }),
@@ -159,7 +159,7 @@ describe('useHandleTrove', () => {
     expect(mockAddNotification).not.toHaveBeenCalled();
   });
 
-  it('names the vault once a close completes', async () => {
+  it('names the withdraw queue once a close completes', async () => {
     const onTroveClosed = jest.fn();
     const { result } = renderHook(() =>
       useHandleTrove(true, { onTroveClosed }),

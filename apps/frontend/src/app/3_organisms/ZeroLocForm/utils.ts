@@ -20,7 +20,7 @@ import { AmountType } from './types';
  * truthy, and not equal to '0'. The form's own hold row is gated on the amount
  * being greater than zero, so a string comparison made the row and the
  * post-signature notice disagree: a repay that moved no collateral told the
- * holder their funds had gone to the Perimeter vault.
+ * holder their funds had gone to the Perimeter withdraw queue.
  */
 export const isCollateralWithdrawal = (
   withdrawCollateral: string | undefined,

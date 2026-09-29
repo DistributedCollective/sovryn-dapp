@@ -117,7 +117,7 @@ describe('LendingForm perimeter fee', () => {
 
     expect(screen.getByText('Withdrawal delay')).toBeInTheDocument();
     expect(screen.getByText('2 days')).toBeInTheDocument();
-    expect(screen.getByText(/Perimeter vault/)).toBeInTheDocument();
+    expect(screen.getByText(/Perimeter withdraw queue/)).toBeInTheDocument();
   });
 
   it('admits it could not check whether the withdrawal will be held', () => {

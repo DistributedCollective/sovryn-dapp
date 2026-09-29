@@ -11,7 +11,7 @@ import { translations } from '../../../locales/i18n';
  * Says on screen that the numbers are not mainnet's.
  *
  * A build with the RSK RPC override in force reads every balance, rate and
- * vault row from a fork while the wallet signs against the real network, and
+ * withdraw queue row from a fork while the wallet signs against the real network, and
  * nothing else on the page distinguishes the two. Deliberately not
  * dismissible: the confusion it prevents lasts as long as the session does.
  */

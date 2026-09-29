@@ -64,7 +64,7 @@ const mockEstimate = jest.fn();
 const releaseTransaction = (
   beforeSend?: Transaction['beforeSend'],
 ): Transaction => ({
-  title: 'Release 3 withdrawals from the Perimeter vault',
+  title: 'Release 3 withdrawals from the Perimeter withdraw queue',
   request: {
     type: TransactionType.signTransaction,
     contract: {

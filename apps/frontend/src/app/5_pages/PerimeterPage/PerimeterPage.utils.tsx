@@ -30,8 +30,10 @@ export const getStatusTooltip = (state: PendingExitState): string =>
   );
 
 /**
- * Time left on a hold, to two units ("1d 1h"). An exit past its unlock time
- * reads as ready rather than as "0 seconds", which would look like a stuck row.
+ * Time left on a hold in whole minutes, rounded up, then hours and days when
+ * longer ("3 min", "1 h 5 min", "2 d 3 h"); "< 1 min" under one minute. Never
+ * seconds. An exit past its unlock time reads as ready rather than as "0
+ * minutes", which would look like a stuck row.
  *
  * The form states a policy duration and rounds it to one whole unit; this is
  * the screen where someone watches the clock, so it says what is actually left.
@@ -53,6 +55,9 @@ export const getTimeToRelease = (
   const remaining = secondsUntilUnlock(unlockAt, now);
   if (remaining === 0) {
     return t(translations.perimeterPage.readyNow);
+  }
+  if (remaining < 60) {
+    return t(translations.perimeterPage.lessThanMinute);
   }
   return formatDelayCountdown(remaining)
     .map(({ value, unit }) =>

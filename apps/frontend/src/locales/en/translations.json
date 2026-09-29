@@ -2056,10 +2056,9 @@
       "seconds_other": "{{count}} seconds"
     },
     "durationShort": {
-      "days": "{{count}}d",
-      "hours": "{{count}}h",
-      "minutes": "{{count}}m",
-      "seconds": "{{count}}s"
+      "days": "{{count}} d",
+      "hours": "{{count}} h",
+      "minutes": "{{count}} min"
     },
     "vaultNotice": "This amount goes to the Sovryn Perimeter withdraw queue when you sign, and reaches you after the delay.",
     "vaultLink": "Track and release it on the Perimeter page",
@@ -2122,6 +2121,7 @@
     "pausedPartial": "Releases are paused for some of the withdrawals listed below. Nothing is lost; try again once they resume.",
     "pausedRowTooltip": "Releases are paused for this withdrawal. Nothing is lost; try again once they resume.",
     "readyNow": "Now",
+    "lessThanMinute": "< 1 min",
     "contractOwnerNotice": "Owned by a contract: the product you used holds this withdrawal.",
     "tx": {
       "executeExit": "Release delayed withdrawal",

@@ -339,7 +339,7 @@ describe('PerimeterPage', () => {
     mockVault.exits = [exit({ unlockAt: NOW + 90_000 })];
     render(<PerimeterPage />);
 
-    expect(screen.getAllByText('1d 1h').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('1 d 1 h').length).toBeGreaterThan(0);
   });
 
   it('shows no release time for a row it could not read a status for', () => {
@@ -649,7 +649,7 @@ describe('PerimeterPage', () => {
     const { container } = render(<PerimeterPage />);
 
     expect(screen.getAllByText('Delayed').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('1h').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('1 h').length).toBeGreaterThan(0);
     expect(releaseButton(container, QUEUE, '7')).not.toBeInTheDocument();
   });
 

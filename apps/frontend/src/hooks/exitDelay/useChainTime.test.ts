@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 
 import {
   JsonRpcStub,
@@ -119,20 +119,55 @@ describe('useChainTime', () => {
     expect(result.current.unreadable).toBe(false);
   });
 
-  it('advances by elapsed local time, so a wrong offset cancels out', async () => {
-    const { result } = renderHook(() => useChainTime('0x1e' as never));
-    await waitFor(() => expect(result.current.now).toBeGreaterThan(0));
-
-    // Ninety seconds pass on a clock that is still an hour off. The hook only
-    // re-reads the clock on its one-second tick, so the wait must outlast at
-    // least one full tick; waitFor's default of one second races it.
-    (Date.now as jest.Mock).mockReturnValue(LOCAL_NOW + 90_000);
-    await waitFor(() => expect(result.current.now).toBe(BLOCK_TIMESTAMP + 90), {
-      timeout: 2_500,
+  describe('between block reads', () => {
+    beforeEach(() => {
+      jest.useFakeTimers('modern');
+      // The machine's clock is an hour fast; only elapsed time may survive it.
+      jest.setSystemTime(LOCAL_NOW);
     });
-    // The latest block's own timestamp does not tick: the queue compares it,
-    // so readiness is judged against it and not against the ticking clock.
-    expect(result.current.blockTime).toBe(BLOCK_TIMESTAMP);
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    const readFirstBlock = async () => {
+      const rendered = renderHook(() => useChainTime('0x1e' as never));
+      // The block read settles over several promise hops; timers stay put.
+      await act(async () => {
+        for (let hop = 0; hop < 20; hop++) {
+          await Promise.resolve();
+        }
+      });
+      expect(rendered.result.current.now).toBeGreaterThan(0);
+      return rendered.result;
+    };
+
+    it('advances by elapsed local time, so a wrong offset cancels out', async () => {
+      const result = await readFirstBlock();
+
+      act(() => {
+        jest.advanceTimersByTime(90_000);
+      });
+
+      expect(result.current.now).toBe(BLOCK_TIMESTAMP + 90);
+      // The latest block's own timestamp does not tick: the queue compares it,
+      // so readiness is judged against it and not against the ticking clock.
+      expect(result.current.blockTime).toBe(BLOCK_TIMESTAMP);
+    });
+
+    it('ticks every 15 seconds, not every second', async () => {
+      const result = await readFirstBlock();
+
+      act(() => {
+        jest.advanceTimersByTime(5_000);
+      });
+      expect(result.current.now).toBe(BLOCK_TIMESTAMP);
+
+      act(() => {
+        jest.advanceTimersByTime(10_000);
+      });
+      expect(result.current.now).toBe(BLOCK_TIMESTAMP + 15);
+    });
   });
 
   it('reports 0, and not unreadable, until a block has been read', () => {

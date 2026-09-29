@@ -68,7 +68,7 @@ describe('exitDelay utils', () => {
     expect(formatDelayDuration(172_801)).toEqual({ value: 3, unit: 'days' });
   });
 
-  it('counts down in two units without ever understating the wait', () => {
+  it('counts down in whole minutes, then two units, without ever understating the wait', () => {
     // The form rounds a policy duration up to one unit, which never promises
     // money sooner than it arrives. On the screen where someone is watching a
     // clock, 25 hours left reading as "2 days" is uselessly coarse.
@@ -80,18 +80,37 @@ describe('exitDelay utils', () => {
       { value: 2, unit: 'days' },
       { value: 1, unit: 'hours' },
     ]);
-    expect(formatDelayCountdown(3_599)).toEqual([
-      { value: 59, unit: 'minutes' },
-      { value: 59, unit: 'seconds' },
+    expect(formatDelayCountdown(183_600)).toEqual([
+      { value: 2, unit: 'days' },
+      { value: 3, unit: 'hours' },
     ]);
+    expect(formatDelayCountdown(3_900)).toEqual([
+      { value: 1, unit: 'hours' },
+      { value: 5, unit: 'minutes' },
+    ]);
+    expect(formatDelayCountdown(180)).toEqual([{ value: 3, unit: 'minutes' }]);
     expect(formatDelayCountdown(86_400)).toEqual([{ value: 1, unit: 'days' }]);
-    expect(formatDelayCountdown(45)).toEqual([{ value: 45, unit: 'seconds' }]);
+    expect(formatDelayCountdown(3_600)).toEqual([{ value: 1, unit: 'hours' }]);
     expect(formatDelayCountdown(0)).toEqual([]);
+  });
+
+  it('rounds a partial minute up and never returns seconds', () => {
+    expect(formatDelayCountdown(1)).toEqual([{ value: 1, unit: 'minutes' }]);
+    expect(formatDelayCountdown(60)).toEqual([{ value: 1, unit: 'minutes' }]);
+    expect(formatDelayCountdown(61)).toEqual([{ value: 2, unit: 'minutes' }]);
+    expect(formatDelayCountdown(3_599)).toEqual([{ value: 1, unit: 'hours' }]);
+    for (let seconds = 1; seconds <= 200_000; seconds += 37) {
+      formatDelayCountdown(seconds).forEach(({ unit }) =>
+        expect(['days', 'hours', 'minutes']).toContain(unit),
+      );
+    }
   });
 
   it('rolls a carrying remainder into the unit above it', () => {
     // 1h 59m 59s must not print as "1h 60m".
     expect(formatDelayCountdown(7_199)).toEqual([{ value: 2, unit: 'hours' }]);
+    // 1d 23h 59m must not print as "1d 24h".
+    expect(formatDelayCountdown(172_799)).toEqual([{ value: 2, unit: 'days' }]);
   });
 
   it('never reports a negative time to unlock', () => {

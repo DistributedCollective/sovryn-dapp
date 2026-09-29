@@ -230,47 +230,56 @@ export const formatDelayDuration = (
   return { value: seconds, unit: 'seconds' };
 };
 
-type DelayUnit = 'days' | 'hours' | 'minutes' | 'seconds';
+type CountdownUnit = 'days' | 'hours' | 'minutes';
 
-const UNIT_SECONDS: [DelayUnit, number][] = [
-  ['days', 86_400],
-  ['hours', 3_600],
-  ['minutes', 60],
-  ['seconds', 1],
-];
+const MINUTES_PER_HOUR = 60;
+const MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR;
 
 /**
- * A countdown in at most two units: "1d 1h", "59m 59s", "2h".
+ * A countdown in whole minutes, then at most two units: "3 min", "1 h 5 min",
+ * "2 d 3 h". Never seconds.
  *
  * `formatDelayDuration` rounds a whole policy duration up to one unit, which is
  * right for a form — it never promises money sooner than it arrives — but on
  * the one screen where someone is watching a clock, 25 hours left reading as
- * "2 days" is uselessly coarse. The remainder is still rounded UP, and a
- * remainder that carries (59m 60s) rolls into the unit above rather than
- * printing an impossible count.
+ * "2 days" is uselessly coarse. Time left is rounded UP to whole minutes, the
+ * remainder below a day is rounded UP to whole hours, and a remainder that
+ * carries (1 h 60 min, 1 d 24 h) rolls into the unit above rather than
+ * printing an impossible count. Anything under a minute reads as one minute;
+ * a caller that wants to say "less than a minute" tests for it first.
  */
 export const formatDelayCountdown = (
   seconds: number,
-): { value: number; unit: DelayUnit }[] => {
+): { value: number; unit: CountdownUnit }[] => {
   if (seconds <= 0) {
     return [];
   }
-  const index = UNIT_SECONDS.findIndex(([, size]) => seconds >= size);
-  const [unit, size] = UNIT_SECONDS[index];
-  let major = Math.floor(seconds / size);
-  const rest = seconds - major * size;
-  if (rest === 0 || unit === 'seconds') {
-    return [{ value: major, unit }];
+  const minutes = Math.ceil(seconds / 60);
+  if (minutes < MINUTES_PER_HOUR) {
+    return [{ value: minutes, unit: 'minutes' }];
   }
-  const [minorUnit, minorSize] = UNIT_SECONDS[index + 1];
-  const minor = Math.ceil(rest / minorSize);
-  if (minor * minorSize >= size) {
-    return [{ value: major + 1, unit }];
+  if (minutes < MINUTES_PER_DAY) {
+    const hours = Math.floor(minutes / MINUTES_PER_HOUR);
+    const restMinutes = minutes - hours * MINUTES_PER_HOUR;
+    return restMinutes === 0
+      ? [{ value: hours, unit: 'hours' }]
+      : [
+          { value: hours, unit: 'hours' },
+          { value: restMinutes, unit: 'minutes' },
+        ];
   }
-  return [
-    { value: major, unit },
-    { value: minor, unit: minorUnit },
-  ];
+  const days = Math.floor(minutes / MINUTES_PER_DAY);
+  const restMinutes = minutes - days * MINUTES_PER_DAY;
+  if (restMinutes === 0) {
+    return [{ value: days, unit: 'days' }];
+  }
+  const restHours = Math.ceil(restMinutes / MINUTES_PER_HOUR);
+  return restHours === 24
+    ? [{ value: days + 1, unit: 'days' }]
+    : [
+        { value: days, unit: 'days' },
+        { value: restHours, unit: 'hours' },
+      ];
 };
 
 /** Seconds remaining until an exit unlocks; never negative. */

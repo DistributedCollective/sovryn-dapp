@@ -16,6 +16,14 @@ type Anchor = {
 
 const NO_ANCHOR: Anchor = { timestamp: 0, readAt: 0 };
 
+/**
+ * How often the clock advances between block reads. Every time shown from it
+ * is in whole minutes, so a tick is at most this late in showing the next
+ * minute, and the clock never runs ahead of the chain: a hold is never shown
+ * as unlocked before it is.
+ */
+const CHAIN_CLOCK_TICK_MS = 15_000;
+
 export type ChainClock = {
   /**
    * The chain's time in seconds, or 0 until the first block has been read.
@@ -37,7 +45,7 @@ export type ChainClock = {
 };
 
 /**
- * The chain's clock, ticking each second.
+ * The chain's clock, advancing every CHAIN_CLOCK_TICK_MS.
  *
  * The queue compares `block.timestamp`, so anything decided from `Date.now()`
  * is decided from the user's own machine: a clock a couple of minutes fast
@@ -80,7 +88,7 @@ export const useChainTime = (chainId: ChainId): ChainClock => {
           Math.max(0, Math.floor((Date.now() - anchor.readAt) / 1000)),
       );
     advance();
-    const timer = setInterval(advance, 1_000);
+    const timer = setInterval(advance, CHAIN_CLOCK_TICK_MS);
     return () => clearInterval(timer);
   }, [anchor.timestamp, anchor.readAt]);
 

@@ -70,10 +70,6 @@ export const menuItemsMapping: MenuItem[] = [
     url: '/bitocracy',
   },
   {
-    text: t(translations.header.nav.perimeter),
-    url: '/perimeter',
-  },
-  {
     text: t(translations.header.nav.bobGateway),
     url: '/bob-gateway',
   },

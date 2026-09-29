@@ -82,7 +82,8 @@
     "history": "History",
     "copyAddress": "Copy address",
     "disconnect": "Disconnect",
-    "portfolio": "Portfolio"
+    "portfolio": "Portfolio",
+    "perimeter": "Perimeter vault"
   },
   "header": {
     "funding": "Funding",
@@ -135,8 +136,7 @@
           "powPeg": "PowPeg",
           "powPegDescription": "Transfer between Bitcoin and RSK"
         }
-      },
-      "perimeter": "Perimeter"
+      }
     }
   },
   "footer": {

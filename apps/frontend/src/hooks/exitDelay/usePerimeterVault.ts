@@ -69,6 +69,22 @@ const QUEUE_ABI = [
   'function blockStateOf(address a) view returns (uint8)',
 ];
 
+type ActiveExitPage = { ids: BigNumber[]; nextCursor: BigNumber };
+
+type QueueRequest = {
+  amount: BigNumber;
+  createdAt: BigNumber;
+  unlockAt: BigNumber;
+  originator: string;
+  owner: string;
+  receiver: string;
+  token: string;
+  surfaceId: string;
+  subProduct: string;
+  status: number;
+  unwrapOnDelivery: boolean;
+};
+
 /** Whether a raw `blockStateOf` answer is one of the values the queue defines. */
 const isKnownBlockState = (state: number): state is BlockState =>
   state === BlockState.None ||
@@ -323,7 +339,7 @@ export const usePerimeterVault = (): PerimeterVault => {
           const ids: string[] = [];
           let cursor = BigNumber.from(0);
           for (let page = 0; page < MAX_PAGES; page++) {
-            const result = await boundedBy(
+            const result = await boundedBy<ActiveExitPage>(
               queue.getActive(account, cursor, PAGE),
               RELEASE_READ_TIMEOUT_MS,
             );
@@ -350,7 +366,10 @@ export const usePerimeterVault = (): PerimeterVault => {
           // runs every block.
           const requests = await Promise.all(
             uniqueIds.map(id =>
-              boundedBy(queue.getRequest(id), RELEASE_READ_TIMEOUT_MS),
+              boundedBy<QueueRequest>(
+                queue.getRequest(id),
+                RELEASE_READ_TIMEOUT_MS,
+              ),
             ),
           );
 

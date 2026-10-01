@@ -63,8 +63,8 @@ describe('Perimeter copy', () => {
     );
   });
 
-  it('names the account-menu entry "Perimeter" and the page "Perimeter withdraw queue"', () => {
-    expect(en.connectWalletButton.perimeter).toBe('Perimeter');
+  it('names the account-menu entry "Perimeter queue" and the page "Perimeter withdraw queue"', () => {
+    expect(en.connectWalletButton.perimeter).toBe('Perimeter queue');
     expect(en.perimeterPage.title).toBe('Perimeter withdraw queue');
     expect(en.perimeterPage.meta.title).toBe('Perimeter withdraw queue');
   });

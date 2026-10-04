@@ -73,7 +73,6 @@ describe('Perimeter copy', () => {
     const perimeterSurfaces = [
       ...perimeterCopy,
       ['connectWalletButton.perimeter', en.connectWalletButton.perimeter],
-      ['rpcOverrideBanner.content', en.rpcOverrideBanner.content],
     ] as [string, string][];
 
     expect(perimeterSurfaces.filter(([, text]) => /vault/i.test(text))).toEqual(

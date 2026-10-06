@@ -67,7 +67,7 @@ describe('ConnectWalletButton account menu', () => {
     openMenu();
 
     const entry = menuEntry('perimeter');
-    expect(entry).toHaveTextContent(/^Perimeter$/);
+    expect(entry).toHaveTextContent(/^Perimeter queue$/);
     expect(entry.closest('a')).toHaveAttribute('href', '/perimeter');
   });
 

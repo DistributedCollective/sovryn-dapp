@@ -328,6 +328,7 @@ export const usePerimeterVault = (): PerimeterVault => {
         let blockStateUnknown = false;
         let requestStatusUnknown = false;
         let ownerCodeUnknown = false;
+        let paginationUnknown = false;
 
         for (const queueAddress of queueAddresses) {
           const queue = new Contract(
@@ -349,6 +350,9 @@ export const usePerimeterVault = (): PerimeterVault => {
               break;
             }
           }
+          // A nonzero cursor means more holds remain beyond the read cap.
+          // Keep the rows read so far without presenting a complete list.
+          paginationUnknown = paginationUnknown || !cursor.isZero();
 
           // `getActive` is documented as best-effort over a mutating set: a
           // concurrent removal can repeat an id. Two rows sharing a React key
@@ -438,6 +442,7 @@ export const usePerimeterVault = (): PerimeterVault => {
           paused: Object.values(pausedByQueue).some(Boolean),
           unknown:
             pointerUnknown ||
+            paginationUnknown ||
             blockStateUnknown ||
             requestStatusUnknown ||
             ownerCodeUnknown,

@@ -210,6 +210,34 @@ describe('usePerimeterVault', () => {
     expect(result.current.unknown).toBe(false);
   });
 
+  it.each([false, true])(
+    'qualifies the read when the last bounded page has more entries: %s',
+    async moreEntries => {
+      mockGetActive.mockImplementation(
+        async (_queue: string, _party: string, cursor: BigNumber) => {
+          const end = cursor.toNumber() + 500;
+          return {
+            ids: Array.from({ length: 500 }, (_, index) =>
+              BigNumber.from(cursor.toNumber() + index + 1),
+            ),
+            nextCursor: BigNumber.from(
+              !moreEntries && end === 25_000 ? 0 : end,
+            ),
+          };
+        },
+      );
+
+      const { result } = renderHook(() => usePerimeterVault());
+      await waitFor(() => expect(result.current.exits).toHaveLength(25_000), {
+        timeout: 5_000,
+      });
+
+      expect(mockGetActive).toHaveBeenCalledTimes(50);
+      expect(result.current.unknown).toBe(moreEntries);
+    },
+    10_000,
+  );
+
   it('lists a hold for the connected account even when it is only the receiver', async () => {
     // getActive is indexed by party, and the receiver is one of the three
     // the queue records — the same page read used for an originator or

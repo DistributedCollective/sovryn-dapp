@@ -1,6 +1,6 @@
 import { renderHook, waitFor } from '@testing-library/react';
 
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 
 import {
   JsonRpcStub,
@@ -42,6 +42,8 @@ const mockBlockStateOf = jest.fn();
 const mockPaused = jest.fn();
 const mockZeroContract = jest.fn();
 const mockGetCode = jest.fn();
+const mockGetNetwork = jest.fn();
+let mockReadChain = '0x1e';
 
 jest.mock('./readPerimeterPointer', () => ({
   readPerimeterPointer: (...args: unknown[]) => mockReadPointer(...args),
@@ -73,11 +75,22 @@ jest.mock('@sovryn/contracts', () => ({
 // amount go through the real network mapping.
 jest.mock('@sovryn/ethers-provider', () => ({
   ...jest.requireActual('@sovryn/ethers-provider'),
-  getProvider: () => ({ getCode: mockGetCode }),
+  getProvider: () => ({
+    getCode: mockGetCode,
+    getNetwork: async () => ({ chainId: 30 }),
+    send: async (method: string) => {
+      if (method !== 'eth_chainId') throw new Error('Unexpected fixture RPC');
+      return jest
+        .requireActual('ethers')
+        .utils.hexValue((await mockGetNetwork()).chainId);
+    },
+  }),
 }));
 
 jest.mock('../../config/chains', () => ({
-  RSK_CHAIN_ID: '0x1e',
+  get RSK_CHAIN_ID() {
+    return mockReadChain;
+  },
 }));
 
 // Long enough to sit well above RELEASE_READ_TIMEOUT_MS below, so a test can
@@ -191,6 +204,7 @@ describe('usePerimeterVault', () => {
   afterAll(() => stub.close());
 
   beforeEach(() => {
+    mockReadChain = '0x1e';
     mockProtocolAddress = PROTOCOL;
     mockZeroContract.mockResolvedValue({ address: BORROWER_OPERATIONS });
     mockReadPointer.mockImplementation(async (_chainId, consumer: string) =>
@@ -201,6 +215,138 @@ describe('usePerimeterVault', () => {
     mockBlockStateOf.mockResolvedValue(0);
     mockGetRequest.mockResolvedValue(request());
     mockGetCode.mockResolvedValue('0x');
+    mockGetNetwork.mockResolvedValue({ chainId: 30 });
+  });
+
+  describe('deployment queue after consumer rollback', () => {
+    const CODE = '0x6001600101';
+    const HASH = utils.keccak256(CODE);
+    const keys = [
+      'REACT_APP_PERIMETER_QUEUE_RSK_MAINNET',
+      'REACT_APP_PERIMETER_QUEUE_RSK_MAINNET_RUNTIME_HASH',
+      'REACT_APP_PERIMETER_QUEUE_RSK_TESTNET',
+      'REACT_APP_PERIMETER_QUEUE_RSK_TESTNET_RUNTIME_HASH',
+    ];
+    let saved: Record<string, string | undefined>;
+    let consumer = 1000;
+
+    beforeEach(() => {
+      saved = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+      keys.forEach(key => delete process.env[key]);
+      // Each case models a fresh tab: no consumer identity was seen before.
+      mockProtocolAddress = utils.hexZeroPad(utils.hexlify(++consumer), 20);
+      mockZeroContract.mockResolvedValue({
+        address: utils.hexZeroPad(utils.hexlify(++consumer), 20),
+      });
+      mockReadPointer.mockResolvedValue(ABSENT);
+      holding(7, 8);
+      mockGetCode.mockImplementation(async (address: string) =>
+        address.toLowerCase() === QUEUE ? CODE : '0x',
+      );
+    });
+    afterEach(() =>
+      keys.forEach(key => {
+        if (saved[key] === undefined) delete process.env[key];
+        else process.env[key] = saved[key];
+      }),
+    );
+    const configure = () => {
+      process.env.REACT_APP_PERIMETER_QUEUE_RSK_MAINNET = QUEUE;
+      process.env.REACT_APP_PERIMETER_QUEUE_RSK_MAINNET_RUNTIME_HASH = HASH;
+    };
+
+    it('discovers retained requests in a fresh tab after both getters retire', async () => {
+      configure();
+      const result = await settled();
+      expect(result.current.exits.map(row => row.id)).toEqual(['7', '8']);
+      expect(result.current.unknown).toBe(false);
+      expect(mockGetNetwork).toHaveBeenCalledTimes(1);
+      expect(mockGetCode).toHaveBeenCalledWith(QUEUE);
+    });
+    it('keeps Phase 1 absence when no deployment queue is configured', async () => {
+      const result = await settled();
+      expect(result.current.exits).toEqual([]);
+      expect(result.current.unknown).toBe(false);
+      expect(mockGetNetwork).not.toHaveBeenCalled();
+    });
+    it('keeps a same-tab queue after getters retire without fallback configuration', async () => {
+      mockReadPointer.mockResolvedValue(address(QUEUE));
+      await settled();
+      mockReadPointer.mockResolvedValue(ABSENT);
+      const result = await settled();
+      expect(result.current.exits.map(row => row.id)).toEqual(['7', '8']);
+      expect(result.current.unknown).toBe(false);
+      expect(mockGetNetwork).not.toHaveBeenCalled();
+    });
+    it('keeps fallback rows while warning about an unread consumer', async () => {
+      configure();
+      mockReadPointer.mockResolvedValue(UNREADABLE);
+      const result = await settled();
+      expect(result.current.exits.map(row => row.id)).toEqual(['7', '8']);
+      expect(result.current.unknown).toBe(true);
+    });
+    it.each([
+      'wrong code',
+      'empty code',
+      'wrong chain',
+      'code failure',
+      'incomplete config',
+      'invalid address',
+      'invalid hash',
+      'network failure',
+      'network timeout',
+      'code timeout',
+    ])('warns and never reads an unverified fallback for %s', async failure => {
+      configure();
+      if (failure === 'wrong code') mockGetCode.mockResolvedValue('0x6002');
+      if (failure === 'empty code') mockGetCode.mockResolvedValue('0x');
+      if (failure === 'wrong chain')
+        mockGetNetwork.mockResolvedValue({ chainId: 31 });
+      if (failure === 'code failure')
+        mockGetCode.mockRejectedValue(new Error('Transport unavailable'));
+      if (failure === 'incomplete config')
+        delete process.env.REACT_APP_PERIMETER_QUEUE_RSK_MAINNET_RUNTIME_HASH;
+      if (failure === 'invalid address')
+        process.env.REACT_APP_PERIMETER_QUEUE_RSK_MAINNET = 'not-an-address';
+      if (failure === 'invalid hash')
+        process.env.REACT_APP_PERIMETER_QUEUE_RSK_MAINNET_RUNTIME_HASH =
+          '0x1234';
+      if (failure === 'network failure')
+        mockGetNetwork.mockRejectedValue(new Error('Transport unavailable'));
+      if (failure === 'network timeout')
+        mockGetNetwork.mockReturnValue(new Promise(() => undefined));
+      if (failure === 'code timeout')
+        mockGetCode.mockReturnValue(new Promise(() => undefined));
+      const result = await settled();
+      expect(result.current.exits).toEqual([]);
+      expect(result.current.unknown).toBe(true);
+      expect(mockGetActive).not.toHaveBeenCalled();
+    });
+    it('never reuses mainnet configuration for testnet', async () => {
+      configure();
+      mockReadChain = '0x1f';
+      const result = await settled();
+      expect(result.current.exits).toEqual([]);
+      expect(result.current.unknown).toBe(false);
+      expect(mockGetNetwork).not.toHaveBeenCalled();
+    });
+    it('uses explicitly configured testnet inputs only on testnet', async () => {
+      mockReadChain = '0x1f';
+      mockGetNetwork.mockResolvedValue({ chainId: 31 });
+      process.env.REACT_APP_PERIMETER_QUEUE_RSK_TESTNET = QUEUE;
+      process.env.REACT_APP_PERIMETER_QUEUE_RSK_TESTNET_RUNTIME_HASH = HASH;
+      const result = await settled();
+      expect(result.current.exits.map(row => row.id)).toEqual(['7', '8']);
+      expect(result.current.unknown).toBe(false);
+      expect(mockGetNetwork).toHaveBeenCalledTimes(1);
+    });
+    it('deduplicates the deployment queue and consumer-derived queue', async () => {
+      configure();
+      mockReadPointer.mockResolvedValue(address(QUEUE));
+      const result = await settled();
+      expect(result.current.exits.map(row => row.id)).toEqual(['7', '8']);
+      expect(mockGetActive).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('reports an empty queue as empty, not as unread', async () => {

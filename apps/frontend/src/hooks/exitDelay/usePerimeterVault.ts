@@ -22,6 +22,7 @@ import {
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 import { useGetProtocolContract } from '../useGetContract';
+import { readDeploymentQueue } from './configuredDeploymentQueue';
 import { boundedBy } from './rawCall';
 import { readPerimeterPointer } from './readPerimeterPointer';
 import { EXIT_DELAY_QUOTE_TIMEOUT_MS, useDeadlinePassed } from './useExitDelay';
@@ -309,10 +310,16 @@ export const usePerimeterVault = (): PerimeterVault => {
         }
 
         const resolved = await Promise.all(consumers.map(resolveQueues));
+        const deployment = await readDeploymentQueue(RSK_CHAIN_ID);
         const pointerUnknown =
-          zeroUnresolved || resolved.some(entry => entry.unknown);
+          zeroUnresolved ||
+          resolved.some(entry => entry.unknown) ||
+          deployment.kind === 'unreadable';
         const queueAddresses = [
-          ...new Set(resolved.flatMap(entry => entry.addresses)),
+          ...new Set([
+            ...resolved.flatMap(entry => entry.addresses),
+            ...(deployment.kind === 'known' ? [deployment.address] : []),
+          ]),
         ];
 
         if (queueAddresses.length === 0) {

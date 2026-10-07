@@ -12,7 +12,7 @@ const canSend = (value: unknown): value is JsonRpcSender =>
  * provider itself when it speaks JSON-RPC, or the backends of the app's
  * fallback provider, which does not.
  */
-const sendersOf = (provider: providers.Provider): JsonRpcSender[] => {
+export const sendersOf = (provider: providers.Provider): JsonRpcSender[] => {
   if (canSend(provider)) {
     return [provider];
   }

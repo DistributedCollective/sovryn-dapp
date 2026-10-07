@@ -130,6 +130,59 @@ describe('TransactionSteps', () => {
     );
   });
 
+  it('reports a release complete only after its receipt wait succeeds', async () => {
+    let mined!: () => void;
+    mockSend.mockResolvedValue({
+      hash: '0xabc',
+      wait: () =>
+        new Promise<void>(resolve => {
+          mined = resolve;
+        }),
+    });
+    const transaction = releaseTransaction(async step => step);
+    const onComplete = jest.fn();
+    transaction.onComplete = onComplete;
+    render(
+      <TransactionSteps
+        transactions={[transaction]}
+        gasPrice="0.065"
+        setTxTrigger={jest.fn()}
+      />,
+    );
+    await confirm();
+    await waitFor(() => expect(mined).toBeDefined());
+    expect(onComplete).not.toHaveBeenCalled();
+    await act(async () => mined());
+    await waitFor(() => expect(onComplete).toHaveBeenCalledWith('0xabc'));
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
+
+  it('never reports a release complete when its receipt wait rejects', async () => {
+    mockSend.mockResolvedValue({
+      hash: '0xabc',
+      wait: async () => {
+        throw new Error('Receipt reverted');
+      },
+    });
+    const transaction = releaseTransaction(async step => step);
+    const onComplete = jest.fn();
+    transaction.onComplete = onComplete;
+    render(
+      <TransactionSteps
+        transactions={[transaction]}
+        gasPrice="0.065"
+        setTxTrigger={jest.fn()}
+      />,
+    );
+    await confirm();
+    await waitFor(() =>
+      expect(
+        document.querySelector('[data-layout-id="tx-dialog-retry"]'),
+      ).toBeInTheDocument(),
+    );
+    expect(onComplete).not.toHaveBeenCalled();
+  });
+
   it('never asks the wallet when the send check refuses, and says nothing was sent and why, with Retry offered', async () => {
     const reason =
       'Withdrawal #8 was not released because the queue would refuse it.';

@@ -3,6 +3,8 @@ import { useCallback } from 'react';
 import { ethers, providers } from 'ethers';
 import { t } from 'i18next';
 
+import { RSK_CHAIN_ID } from '../../config/chains';
+
 import {
   SignTransactionRequest,
   Transaction,
@@ -53,7 +55,15 @@ const boundTo = (
   request: SignTransactionRequest,
   provider: providers.JsonRpcProvider,
   from: string,
-) => request.contract.connect(provider.getSigner(from));
+) => {
+  const signer = provider.getSigner(from);
+  const sendTransaction = signer.sendTransaction.bind(signer);
+  // Contract overrides cannot carry chainId in ethers v5. Pin it at the
+  // fresh signer's submission boundary without changing shared wallet state.
+  signer.sendTransaction = transaction =>
+    sendTransaction({ ...transaction, chainId: Number(RSK_CHAIN_ID) });
+  return request.contract.connect(signer);
+};
 
 /**
  * A gas limit the holder typed in the dialog's Advanced settings; undefined

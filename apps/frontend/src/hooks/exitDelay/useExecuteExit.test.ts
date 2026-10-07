@@ -33,6 +33,9 @@ const mockSigner = {
       _isSigner: true,
       provider: {},
       getAddress: async () => address,
+      sendTransaction: async () => {
+        throw new Error('This fixture only inspects prepared requests.');
+      },
     }),
   },
 };

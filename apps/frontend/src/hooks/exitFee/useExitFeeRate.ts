@@ -6,12 +6,16 @@ import { getProvider } from '@sovryn/ethers-provider';
 
 import { RSK_CHAIN_ID } from '../../config/chains';
 
-import { asyncCall } from '../../store/rxjs/provider-cache';
 import {
   EXIT_FEE_REFERENCE_GROSS,
   EXIT_FEE_TTL,
   ExitFeeQuote,
 } from '../../utils/exitFee';
+import { readPerimeterPointer } from '../exitDelay/readPerimeterPointer';
+import {
+  EXIT_DELAY_QUOTE_TIMEOUT_MS,
+  useDeadlinePassed,
+} from '../exitDelay/useExitDelay';
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 import { useGetProtocolContract } from '../useGetContract';
@@ -45,10 +49,6 @@ const stamped = async <T extends object>(
  */
 const UNCHARGED = { active: false, rateBps: 0, unknown: false };
 
-const CONTROLLER_GETTER_ABI = [
-  'function exitFeeController() view returns (address)',
-];
-
 const CONTROLLER_ABI = [
   'function quoteExitFee(bytes32 surfaceId, address subProduct, address actor, uint256 grossAmount) view returns (tuple(bool active, uint16 rateBps, uint256 feeAmount, uint256 netAmount, address feeReceiver, uint8 reason))',
 ];
@@ -79,45 +79,31 @@ export const useExitFeeRate = (
           return UNCHARGED;
         }
 
-        const getter = new Contract(
+        // The pointer is cached for a TTL under a key with no block
+        // dimension, and a refetch only runs on the next observed block, so
+        // at the moment the Owner pins the controller an open client can
+        // report "no fee" for up to one TTL plus one block (about 60 s on
+        // RSK) while the chain has already started charging. The window is
+        // bounded and one-time, tied to a single Owner action.
+        const pointer = await readPerimeterPointer(
+          RSK_CHAIN_ID,
           protocol.address,
-          CONTROLLER_GETTER_ABI,
-          getProvider(RSK_CHAIN_ID),
+          'exitFeeController',
         );
-
-        let controllerAddress;
-        try {
-          // Negative-cached too: while undeployed this reverts and we cache the
-          // uncharged answer.
-          //
-          // Known and accepted: the pointer is cached for EXIT_FEE_TTL under a
-          // key with no block dimension, and a refetch only runs on the next
-          // observed block, so at the moment governance pins the controller an
-          // open client can report "no fee" for up to one TTL plus one block
-          // (about 60 s on RSK) while the chain has started charging. Bounded,
-          // one-time, and covered by the release order: the dapp ships before
-          // charging is enabled, never after. Closing it properly means block-
-          // based invalidation in the shared cache, a wider change than this
-          // window justifies.
-          controllerAddress = await asyncCall(
-            `exitFee/controllerAddress/${RSK_CHAIN_ID}/${protocol.address}`,
-            () => getter.exitFeeController(),
-            { ttl: EXIT_FEE_TTL },
-          );
-        } catch (error) {
-          // The getter itself is missing or reverts, which is what a protocol
-          // without the perimeter looks like. Nothing is charged there, and the
-          // spec requires the forms to look exactly as they do today -- so this
-          // is a real answer of "no fee", not a failure to obtain one. It is
-          // also the state of mainnet until the activation SIPs execute.
+        if (pointer.kind === 'unreadable') {
+          // The node gave no answer. The rows stay hidden, but this is not a
+          // stated "no fee": the chain may well be charging.
+          return UNKNOWN;
+        }
+        if (
+          pointer.kind === 'absent' ||
+          pointer.address === constants.AddressZero
+        ) {
+          // No controller getter, or no controller pinned: the protocol
+          // charges nothing by construction, a real answer of "no fee".
           return UNCHARGED;
         }
-
-        if (!controllerAddress || controllerAddress === constants.AddressZero) {
-          // Perimeter deployed but not yet pinned: charges nothing by
-          // construction.
-          return UNCHARGED;
-        }
+        const controllerAddress = pointer.address;
 
         try {
           const controller = new Contract(
@@ -149,16 +135,27 @@ export const useExitFeeRate = (
     { ttl: EXIT_FEE_TTL },
   );
 
+  // A rate that has not arrived within the same deadline the delay quote is
+  // given is reported as unreadable, so a form waiting on it can let the user
+  // sign with the warning rather than wait on a stalled read.
+  const fresh = value.forKey === key;
+  const passed = useDeadlinePassed(
+    key,
+    fresh && !loading,
+    EXIT_DELAY_QUOTE_TIMEOUT_MS,
+  );
   return useMemo(() => {
     // A value fetched for a different key is the previous account's or
     // pool's answer. Report it as still loading, which the display treats
     // as "nothing charged" — never as that other party's fee.
-    const fresh = value.forKey === key;
+    if (!fresh && passed) {
+      return { active: false, rateBps: 0, unknown: true, loading: false };
+    }
     return {
       active: fresh ? value.active : false,
       rateBps: fresh ? value.rateBps : 0,
       unknown: fresh ? value.unknown : true,
       loading: loading || !fresh,
     };
-  }, [value, loading, key]);
+  }, [value, loading, fresh, passed]);
 };

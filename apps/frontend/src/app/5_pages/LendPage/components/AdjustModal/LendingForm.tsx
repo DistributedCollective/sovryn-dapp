@@ -18,9 +18,11 @@ import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { ExitDelayRow } from '../../../../2_molecules/ExitDelayRow/ExitDelayRow';
 import { ExitFeeRow } from '../../../../2_molecules/ExitFeeRow/ExitFeeRow';
 import { GAS_LIMIT } from '../../../../../constants/gasLimits';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
+import { useExitDelayQuote } from '../../../../../hooks/exitDelay/useExitDelayQuote';
 import { useExitFeeRate } from '../../../../../hooks/exitFee/useExitFeeRate';
 import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useWeiAmountInput } from '../../../../../hooks/useWeiAmountInput';
@@ -58,6 +60,15 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
     unknown: exitFeeUnknown,
     loading: exitFeeLoading,
   } = useExitFeeRate(
+    SURFACE_LENDING_LENDER_WITHDRAW,
+    state.poolTokenContract.address,
+  );
+
+  const {
+    delaySeconds,
+    unknown: exitDelayUnknown,
+    loading: exitDelayLoading,
+  } = useExitDelayQuote(
     SURFACE_LENDING_LENDER_WITHDRAW,
     state.poolTokenContract.address,
   );
@@ -200,20 +211,31 @@ export const LendingForm: FC<DepositProps> = ({ state, onConfirm }) => {
           }
         />
         {!isDeposit && (
-          <ExitFeeRow
-            unknown={exitFeeUnknown}
-            loading={exitFeeLoading}
-            gross={withdrawAmount}
-            rateBps={exitFeeRateBps}
-            active={exitFeeActive}
-            assetSymbol={state.tokenDetails.symbol}
-          />
+          <>
+            <ExitFeeRow
+              unknown={exitFeeUnknown}
+              loading={exitFeeLoading}
+              gross={withdrawAmount}
+              rateBps={exitFeeRateBps}
+              active={exitFeeActive}
+              assetSymbol={state.tokenDetails.symbol}
+            />
+            <ExitDelayRow
+              delaySeconds={delaySeconds}
+              unknown={exitDelayUnknown}
+              loading={exitDelayLoading}
+            />
+          </>
         )}
       </SimpleTable>
 
       <Button
         text={t(translations.common.buttons.confirm)}
-        disabled={!amountIsValid}
+        // A withdrawal waits for its delay quote: until it arrives the form
+        // cannot say whether the money is paid now or held.
+        disabled={
+          !amountIsValid || (!isDeposit && (exitDelayLoading || exitFeeLoading))
+        }
         onClick={handleSubmit}
         className="mt-8 w-full"
       />

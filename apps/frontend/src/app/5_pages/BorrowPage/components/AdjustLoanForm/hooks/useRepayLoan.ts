@@ -28,6 +28,7 @@ export const useRepayLoan = () => {
       loanId: string,
       borrowToken: string,
       isPartialRepay?: boolean,
+      onHeld?: () => void,
     ) => {
       if (!contract || !account || !signer) {
         return;
@@ -65,6 +66,7 @@ export const useRepayLoan = () => {
           value: isBorrowTokenRbtc ? weiRepayAmount : '0',
           gasLimit: GAS_LIMIT.REPAY_LOAN,
         },
+        onComplete: onHeld,
       });
 
       setTransactions(transactions);

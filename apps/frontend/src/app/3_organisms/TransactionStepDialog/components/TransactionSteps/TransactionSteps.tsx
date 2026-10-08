@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import classNames from 'classnames';
 import { BigNumber, ethers } from 'ethers';
@@ -36,8 +43,9 @@ import {
   isSignTransactionDataRequest,
   isTransactionRequest,
   isTypedDataRequest,
+  notSentReasonsOf,
 } from '../../helpers';
-import { sendOrSimulateTx } from '../../utils';
+import { resolveGasLimit, sendOrSimulateTx } from '../../utils';
 import { TransactionStep } from '../TransactionStep/TransactionStep';
 
 export type TransactionStepsProps = {
@@ -47,6 +55,8 @@ export type TransactionStepsProps = {
   gasPrice: string;
   onTxStatusChange?: (status: StatusType) => void;
   setTxTrigger: (id: string) => void;
+  /** Whether the dialog showing these steps is still open. Defaults to open. */
+  isOpen?: boolean;
 };
 
 export const TransactionSteps: FC<TransactionStepsProps> = ({
@@ -56,14 +66,32 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   gasPrice,
   onTxStatusChange,
   setTxTrigger,
+  isOpen = true,
 }) => {
   const chainId = useCurrentChain();
   const [stepData, setStepData] = useState<TransactionStepData[]>([]);
   const [step, setStep] = useState(-1);
   const [error, setError] = useState(false);
+  // Set when the failed step's send check refused it: nothing reached the
+  // wallet, for these reasons.
+  const [notSent, setNotSent] = useState<string[] | undefined>();
   const [estimatedGasFee, setEstimatedGasFee] = useState(0);
   const { balance: nativeBalance, loading } = useNativeAssetBalance(chainId);
   const { account } = useAccount();
+
+  // Read inside `submit`, so a send check that is still running when the
+  // dialog closes sees the closed state as soon as it finishes, not the open
+  // state it started with. The dialog's Overlay unmounts this component in
+  // the same commit that flips `isOpen` to false, so an unmounted component
+  // never runs this effect again with the closed value; the cleanup covers
+  // that by reading unmounting itself as closed.
+  const isOpenRef = useRef(isOpen);
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+    return () => {
+      isOpenRef.current = false;
+    };
+  }, [isOpen]);
 
   const hasEnoughBalance = useMemo(
     () => account && !loading && nativeBalance.sub(estimatedGasFee).gt(0),
@@ -100,13 +128,17 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
             args[1] = ethers.constants.MaxUint256;
           }
 
-          item.config.gasLimit =
-            gasLimit ??
-            (await contract.estimateGas[fnName](
-              ...[...args, { value: value ?? 0 }],
-            )
-              .then(gas => gas.toString())
-              .catch(() => BigNumber.from(6_000_000).toString()));
+          // A request's own `gasLimit` is a constant sized for the plain
+          // call; the Perimeter's withdrawal delay adds queue-recording cost
+          // on top of it when armed. Re-price that constant against a fresh
+          // estimate rather than trusting it outright — see resolveGasLimit.
+          item.config.gasLimit = await resolveGasLimit(
+            contract,
+            fnName,
+            args,
+            value,
+            gasLimit,
+          );
 
           item.config.gasLimit &&
             setEstimatedGasFee(
@@ -210,16 +242,35 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
   }, [stepData]);
 
   const submit = useCallback(async () => {
+    // Set when a send check refuses: nothing reached the wallet.
+    let notSentReasons: string[] | undefined;
     try {
       let i = 0;
       if (error) {
         setError(false);
+        setNotSent(undefined);
         i = step;
       }
       for (; i < transactions.length; i++) {
         setStep(i);
-        const config = stepData[i].config;
-        const { request } = transactions[i];
+        let config = stepData[i].config;
+        let { request } = transactions[i];
+        const { beforeSend } = transactions[i];
+        if (beforeSend) {
+          try {
+            ({ request, config } = await beforeSend({ request, config }));
+          } catch (refusal) {
+            notSentReasons = notSentReasonsOf(refusal);
+            throw refusal;
+          }
+          // The holder may have closed the dialog while the check above was
+          // still reading the chain. Nobody is left to see a wallet prompt,
+          // so a check that passed after that is not acted on.
+          if (!isOpenRef.current) {
+            return;
+          }
+          updateConfig(i, config);
+        }
         if (isTransactionRequest(request)) {
           const args = [...request.args];
           if (request.fnName === APPROVAL_FUNCTION) {
@@ -361,13 +412,18 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
 
       setTimeout(() => setTxTrigger(nanoid()), 1000);
     } catch (error) {
-      onTxStatusChange?.(StatusType.error);
+      // A step its send check refused was never sent, so no failed
+      // transaction is reported for it.
+      if (!notSentReasons) {
+        onTxStatusChange?.(StatusType.error);
+      }
       console.error('error:', error);
 
       transactions[0].onChangeStatus?.(StatusType.error);
 
       handleUpdates();
 
+      setNotSent(notSentReasons);
       setError(true);
     }
   }, [
@@ -375,6 +431,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
     transactions,
     step,
     stepData,
+    updateConfig,
     updateReceipt,
     onTxStatusChange,
     handleUpdates,
@@ -437,6 +494,7 @@ export const TransactionSteps: FC<TransactionStepsProps> = ({
           receipt={getReceipt(i)}
           updateConfig={(config: TransactionConfig) => updateConfig(i, config)}
           gasPrice={gasPrice}
+          notSent={i === step ? notSent : undefined}
         />
       ))}
       {!isLoading && transactions.length > step && (

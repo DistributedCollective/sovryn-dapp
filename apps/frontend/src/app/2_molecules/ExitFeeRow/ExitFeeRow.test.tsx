@@ -69,7 +69,7 @@ describe('ExitFeeRow', () => {
     expect(screen.getByText(/Perimeter fee \(0\.5%\)/)).toBeInTheDocument();
     expect(
       screen.getByText(
-        /The perimeter fee is deducted from the withdrawn amount/,
+        /The Perimeter fee is deducted from the withdrawn amount/,
       ),
     ).toBeInTheDocument();
   });

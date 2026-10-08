@@ -22,6 +22,8 @@ type SubjectState = {
   blockNumber: number;
   promise: Promise<any>;
   result: CacheCallResponse<any>;
+  /** Identifies the read this entry is currently waiting on. */
+  generation: number;
 };
 
 type SubjectMap = {
@@ -71,13 +73,17 @@ export const startCall = <T>(
     return;
   }
 
+  // Each call started for this id gets the next generation, so a completion
+  // can be told apart from one belonging to a call this one has superseded.
+  const generation = (state[id]?.generation ?? 0) + 1;
+
   const promise$ = promise()
     .then(result => {
-      completeCall(id, result, null);
+      completeCall(id, result, null, generation);
       return result;
     })
     .catch(error => {
-      completeCall(id, null, error);
+      completeCall(id, null, error, generation);
       return error;
     });
 
@@ -103,14 +109,24 @@ export const startCall = <T>(
       blockNumber: options?.blockNumber ?? 0,
       promise: promise$,
       result,
+      generation,
     },
   });
 };
 
-export const completeCall = (id: string, result: any, error: Error | null) => {
+export const completeCall = (
+  id: string,
+  result: any,
+  error: Error | null,
+  generation: number,
+) => {
   const state = store.getValue();
 
-  if (!state.hasOwnProperty(id)) {
+  // A completion belongs to the call it was started for. One that arrives
+  // after a newer call has already started on the same id is from a read
+  // this entry has moved past, and must not overwrite the newer one's
+  // bookkeeping or answer.
+  if (!state.hasOwnProperty(id) || state[id].generation !== generation) {
     return;
   }
 

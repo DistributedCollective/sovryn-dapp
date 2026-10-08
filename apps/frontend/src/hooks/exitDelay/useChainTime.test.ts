@@ -1,0 +1,222 @@
+import { act, renderHook, waitFor } from '@testing-library/react';
+
+import {
+  JsonRpcStub,
+  captureCallFailure,
+  startJsonRpcStub,
+} from '../../utils/testing/jsonRpcStub';
+import { useChainTime } from './useChainTime';
+
+/**
+ * The queue compares `block.timestamp`. A clock a couple of minutes fast flips
+ * a still-locked hold to "Ready", and the release reverts NotUnlocked — inside
+ * a batch, taking every other ready hold with it. So this hook must follow the
+ * chain and use the local clock only for the seconds elapsed since the block,
+ * and it must say when the block could not be read rather than leave callers
+ * waiting on a time that will not arrive.
+ */
+
+const BLOCK_TIMESTAMP = 1_800_000_000;
+/** The machine is an hour fast. Only the elapsed delta may survive that. */
+const LOCAL_NOW = (BLOCK_TIMESTAMP + 3_600) * 1000;
+
+const mockGetBlock = jest.fn();
+
+jest.mock('@sovryn/ethers-provider', () => ({
+  getProvider: () => ({ getBlock: (tag: string) => mockGetBlock(tag) }),
+}));
+
+// Long enough to sit well above RELEASE_READ_TIMEOUT_MS below, so a test can
+// tell the block read settling on its own bound apart from this one firing
+// instead; short enough that the deadline test below does not wait ten real
+// seconds.
+jest.mock('./useExitDelay', () => ({
+  ...jest.requireActual('./useExitDelay'),
+  EXIT_DELAY_QUOTE_TIMEOUT_MS: 500,
+}));
+
+// Short enough that the hang test below settles well inside the deadline above.
+jest.mock('../../utils/exitDelay', () => ({
+  ...jest.requireActual('../../utils/exitDelay'),
+  RELEASE_READ_TIMEOUT_MS: 50,
+}));
+
+jest.mock('../useCacheCall', () => {
+  const React = jest.requireActual('react');
+  return {
+    useCacheCall: (
+      _key: string,
+      _chainId: string,
+      fn: () => Promise<unknown>,
+      _deps: unknown[],
+      defaultValue: unknown,
+    ) => {
+      const [state, setState] = React.useState({
+        value: defaultValue,
+        // Idle at first, as the shared cache is: a result still to come must
+        // be reported by the hook under test, not by this stand-in.
+        loading: false,
+        error: null,
+      });
+      // Hold the latest fn and default without making the mount effect below
+      // re-run: their identities change every render, but this mock fetches
+      // once.
+      const fnRef = React.useRef(fn);
+      fnRef.current = fn;
+      const defaultRef = React.useRef(defaultValue);
+      defaultRef.current = defaultValue;
+      React.useEffect(() => {
+        let alive = true;
+        // Like the shared cache, a failed fetch leaves the default value and
+        // reports the error.
+        Promise.resolve(fnRef.current()).then(
+          (value: unknown) => {
+            if (alive) setState({ value, loading: false, error: null });
+          },
+          (error: unknown) => {
+            if (alive) {
+              setState({ value: defaultRef.current, loading: false, error });
+            }
+          },
+        );
+        return () => {
+          alive = false;
+        };
+      }, []);
+      return state;
+    },
+  };
+});
+
+describe('useChainTime', () => {
+  let stub: JsonRpcStub;
+  let transportFailure: unknown;
+
+  beforeAll(async () => {
+    stub = await startJsonRpcStub();
+    transportFailure = await captureCallFailure(stub, {
+      status: 503,
+      body: 'unavailable',
+    });
+  });
+
+  afterAll(async () => {
+    jest.restoreAllMocks();
+    await stub.close();
+  });
+
+  beforeEach(() => {
+    jest.spyOn(Date, 'now').mockReturnValue(LOCAL_NOW);
+    mockGetBlock.mockResolvedValue({ timestamp: BLOCK_TIMESTAMP });
+  });
+
+  it("reads the chain's clock, not the machine's", async () => {
+    const { result } = renderHook(() => useChainTime('0x1e' as never));
+
+    await waitFor(() => expect(result.current.now).toBeGreaterThan(0));
+    expect(mockGetBlock).toHaveBeenCalledWith('latest');
+    expect(result.current.now).toBe(BLOCK_TIMESTAMP);
+    expect(result.current.unreadable).toBe(false);
+  });
+
+  describe('between block reads', () => {
+    beforeEach(() => {
+      jest.useFakeTimers('modern');
+      // The machine's clock is an hour fast; only elapsed time may survive it.
+      jest.setSystemTime(LOCAL_NOW);
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    const readFirstBlock = async () => {
+      const rendered = renderHook(() => useChainTime('0x1e' as never));
+      // The block read settles over several promise hops; timers stay put.
+      await act(async () => {
+        for (let hop = 0; hop < 20; hop++) {
+          await Promise.resolve();
+        }
+      });
+      expect(rendered.result.current.now).toBeGreaterThan(0);
+      return rendered.result;
+    };
+
+    it('advances by elapsed local time, so a wrong offset cancels out', async () => {
+      const result = await readFirstBlock();
+
+      act(() => {
+        jest.advanceTimersByTime(90_000);
+      });
+
+      expect(result.current.now).toBe(BLOCK_TIMESTAMP + 90);
+      // The latest block's own timestamp does not tick: the queue compares it,
+      // so readiness is judged against it and not against the ticking clock.
+      expect(result.current.blockTime).toBe(BLOCK_TIMESTAMP);
+    });
+
+    it('ticks every 15 seconds, not every second', async () => {
+      const result = await readFirstBlock();
+
+      act(() => {
+        jest.advanceTimersByTime(5_000);
+      });
+      expect(result.current.now).toBe(BLOCK_TIMESTAMP);
+
+      act(() => {
+        jest.advanceTimersByTime(10_000);
+      });
+      expect(result.current.now).toBe(BLOCK_TIMESTAMP + 15);
+    });
+  });
+
+  it('reports 0, and not unreadable, until a block has been read', () => {
+    mockGetBlock.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = renderHook(() => useChainTime('0x1e' as never));
+
+    // Callers treat 0 as "not known yet": deciding a release against it would
+    // be deciding against the epoch.
+    expect(result.current.now).toBe(0);
+    expect(result.current.blockTime).toBe(0);
+    expect(result.current.unreadable).toBe(false);
+  });
+
+  it('reports the clock as unreadable when the block read fails', async () => {
+    mockGetBlock.mockRejectedValue(transportFailure);
+
+    const { result } = renderHook(() => useChainTime('0x1e' as never));
+
+    await waitFor(() => expect(result.current.unreadable).toBe(true));
+    expect(result.current.now).toBe(0);
+  });
+
+  it('reports the clock as unreadable, not stuck forever, once its deadline passes without a block', async () => {
+    // The block number itself failing to arrive — an RPC endpoint refusing
+    // every request — leaves the same shape as a rejected read: no block ever
+    // lands, and nothing here may wait on one that will not arrive.
+    mockGetBlock.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = renderHook(() => useChainTime('0x1e' as never));
+    expect(result.current.unreadable).toBe(false);
+
+    await waitFor(() => expect(result.current.unreadable).toBe(true));
+    expect(result.current.now).toBe(0);
+  });
+
+  it('settles on its own bound, not the outer deadline, when the block read hangs rather than failing outright', async () => {
+    // No answer ever arrives here, not even a rejection. A read with its own
+    // bound turns that into a rejection quickly, well inside
+    // EXIT_DELAY_QUOTE_TIMEOUT_MS above; one without a bound of its own is
+    // only ever caught by that outer deadline, which is why the wait below is
+    // capped well short of it.
+    mockGetBlock.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = renderHook(() => useChainTime('0x1e' as never));
+
+    await waitFor(() => expect(result.current.unreadable).toBe(true), {
+      timeout: 300,
+    });
+    expect(result.current.now).toBe(0);
+  });
+});

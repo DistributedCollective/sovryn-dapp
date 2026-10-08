@@ -4,6 +4,7 @@ import React from 'react';
 
 import { BigNumber } from 'ethers';
 import 'jest-canvas-mock';
+import { MemoryRouter } from 'react-router-dom';
 
 import { Decimal } from '@sovryn/utils';
 
@@ -23,8 +24,21 @@ jest.mock('../../../../../contexts/NotificationContext', () => {
   };
 });
 
+let mockFee: {
+  active: boolean;
+  rateBps: number;
+  loading: boolean;
+  unknown: boolean;
+};
+
 jest.mock('../../../../../hooks/exitFee/useExitFeeRate', () => ({
-  useExitFeeRate: () => ({ active: true, rateBps: 50, loading: false }),
+  useExitFeeRate: () => mockFee,
+}));
+
+let mockDelay: { delaySeconds: number; loading: boolean; unknown: boolean };
+
+jest.mock('../../../../../hooks/exitDelay/useExitDelayQuote', () => ({
+  useExitDelayQuote: () => mockDelay,
 }));
 
 jest.mock('../../../../../hooks/useMaxAssetBalance', () => {
@@ -58,10 +72,30 @@ describe('LendingForm perimeter fee', () => {
 
   beforeEach(() => {
     (asyncCall as jest.Mock).mockResolvedValue(BigNumber.from(0));
+    mockDelay = { delaySeconds: 0, loading: false, unknown: false };
+    mockFee = { active: true, rateBps: 50, loading: false, unknown: false };
   });
 
+  // The hold row links to the Perimeter page, so the form needs a router the
+  // way it has one in the app.
+  const renderForm = () =>
+    render(
+      <MemoryRouter>
+        <LendingForm state={state} onConfirm={jest.fn()} />
+      </MemoryRouter>,
+    );
+
+  /** Enter an amount on the withdraw tab, the way a lender would. */
+  const withdraw = (amount = '100') => {
+    renderForm();
+    fireEvent.click(screen.getByText('Withdraw'));
+    const input = screen.getByPlaceholderText('0');
+    fireEvent.change(input, { target: { value: amount } });
+    fireEvent.blur(input);
+  };
+
   it('shows the "You will receive" row on the withdraw tab once an amount is entered', () => {
-    render(<LendingForm state={state} onConfirm={jest.fn()} />);
+    renderForm();
     fireEvent.click(screen.getByText('Withdraw'));
     const input = screen.getByPlaceholderText('0');
     fireEvent.change(input, { target: { value: '100' } });
@@ -75,8 +109,100 @@ describe('LendingForm perimeter fee', () => {
     expect(screen.queryByText(/^Perimeter fee/)).not.toBeInTheDocument();
   });
 
+  it('tells the lender the withdrawal will be held, and for how long', () => {
+    // Pins that the hold row appears for a withdrawal with a real hold.
+    mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
+
+    withdraw();
+
+    expect(screen.getByText('Withdrawal delay')).toBeInTheDocument();
+    expect(screen.getByText('2 days')).toBeInTheDocument();
+    expect(screen.getByText(/Perimeter withdraw queue/)).toBeInTheDocument();
+  });
+
+  it('admits it could not check whether the withdrawal will be held', () => {
+    mockDelay = { delaySeconds: 0, loading: false, unknown: true };
+
+    withdraw();
+
+    expect(screen.getByText('Could not be checked')).toBeInTheDocument();
+  });
+
+  describe('Confirm and the delay quote', () => {
+    const confirm = () => screen.getByRole('button', { name: 'Confirm' });
+
+    it('waits for the delay quote on a withdrawal, and says it is checking', () => {
+      mockDelay = { delaySeconds: 0, loading: true, unknown: false };
+
+      withdraw();
+
+      expect(screen.getByText(/^Checking/)).toBeInTheDocument();
+      expect(confirm()).toBeDisabled();
+    });
+
+    it('offers Confirm once a quote arrived', () => {
+      mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
+
+      withdraw();
+
+      expect(confirm()).toBeEnabled();
+    });
+
+    it('offers Confirm when the quote could not be read, with the warning shown', () => {
+      mockDelay = { delaySeconds: 0, loading: false, unknown: true };
+
+      withdraw();
+
+      expect(screen.getByText('Could not be checked')).toBeInTheDocument();
+      expect(confirm()).toBeEnabled();
+    });
+
+    it('does not hold a deposit back for the delay quote', () => {
+      mockDelay = { delaySeconds: 0, loading: true, unknown: false };
+
+      renderForm();
+      const input = screen.getByPlaceholderText('0');
+      fireEvent.change(input, { target: { value: '100' } });
+      fireEvent.blur(input);
+
+      expect(confirm()).toBeEnabled();
+    });
+  });
+
+  describe('Confirm and the fee quote', () => {
+    const confirm = () => screen.getByRole('button', { name: 'Confirm' });
+
+    it('waits for the fee quote even once the delay has settled', () => {
+      mockFee.loading = true;
+
+      withdraw();
+
+      expect(confirm()).toBeDisabled();
+    });
+
+    it('offers Confirm once the fee quote has settled', () => {
+      mockFee.loading = false;
+
+      withdraw();
+
+      expect(confirm()).toBeEnabled();
+    });
+  });
+
+  it('shows no hold on the deposit tab, however long the hold would be', () => {
+    // Nothing leaves on a deposit, so nothing is held.
+    mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
+
+    renderForm();
+    const input = screen.getByPlaceholderText('0');
+    fireEvent.change(input, { target: { value: '100' } });
+    fireEvent.blur(input);
+
+    expect(screen.queryByText('Withdrawal delay')).not.toBeInTheDocument();
+  });
+
   it('shows no "You will receive" row on the deposit tab', () => {
-    render(<LendingForm state={state} onConfirm={jest.fn()} />);
+    renderForm();
     const input = screen.getByPlaceholderText('0');
     fireEvent.change(input, { target: { value: '100' } });
     fireEvent.blur(input);

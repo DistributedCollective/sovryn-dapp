@@ -27,9 +27,9 @@ describe('exitFee utils', () => {
     expect(SURFACE_ZERO_CLAIM_SURPLUS).toEqual(
       utils.id('PERIMETER_SURFACE_ZERO_CLAIM_SURPLUS'),
     );
-    // Pin the literals too. The preimage assertions above cannot catch a
-    // rename that rewrites the constant and its own expectation together —
-    // which is exactly how a stale `COLFEE:` prefix survived once.
+    // Pin the literals too: a rename that rewrites the constant and its own
+    // expectation together would still pass the preimage assertions above,
+    // so the literals are pinned independently.
     expect(SURFACE_LENDING_LENDER_WITHDRAW).toEqual(
       '0xd4896528a9fba849e3d3db442dea05ef8f08c93e00cc760acac34c42a7dacffe',
     );

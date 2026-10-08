@@ -16,6 +16,8 @@ export interface TransactionConfig {
   amount?: BigNumberish;
   unlimitedAmount?: boolean;
   gasLimit?: BigNumberish;
+  /** Whether `gasLimit` was typed in Advanced settings rather than prepared by the dialog. */
+  gasLimitTypedByUser?: boolean;
   gasPrice?: string;
 }
 
@@ -38,12 +40,31 @@ export type TransactionUpdateHandler = {
   ) => TransactionRequest | Promise<TransactionRequest>;
 };
 
+/** A send check's refusal: nothing was sent, for these reasons. */
+export type SendRefusal = Error & { notSentReasons: string[] };
+
+export type TransactionPreflight = {
+  /**
+   * Runs inside the send step, after the user confirms and immediately
+   * before the wallet is asked to sign. The request and config it resolves to
+   * are what is sent in place of the step's own. When it rejects, nothing is
+   * sent: the step fails saying nothing was sent, with the reasons of a
+   * `SendRefusal` it rejects with, no failed transaction is reported, and
+   * Retry runs it again.
+   */
+  beforeSend: (step: {
+    request: TransactionRequest;
+    config: TransactionConfig;
+  }) => Promise<{ request: TransactionRequest; config: TransactionConfig }>;
+};
+
 export type Transaction = {
   title: string;
   subtitle?: string;
   request: TransactionRequest;
 } & Partial<TransactionCallbacks> &
-  Partial<TransactionUpdateHandler>;
+  Partial<TransactionUpdateHandler> &
+  Partial<TransactionPreflight>;
 
 export enum TransactionType {
   signMessage = 'sign',

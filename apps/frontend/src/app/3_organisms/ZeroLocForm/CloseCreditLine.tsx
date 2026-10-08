@@ -20,9 +20,11 @@ import { Decimal } from '@sovryn/utils';
 
 import { AmountRenderer } from '../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../2_molecules/AssetRenderer/AssetRenderer';
+import { ExitDelayRow } from '../../2_molecules/ExitDelayRow/ExitDelayRow';
 import { ExitFeeTooltipContent } from '../../2_molecules/ExitFeeRow/ExitFeeRow';
 import { BITCOIN, BTC_RENDER_PRECISION } from '../../../constants/currencies';
 import { getTokenDisplayName } from '../../../constants/tokens';
+import { useZeroExitDelayQuote } from '../../../hooks/exitDelay/useZeroExitDelayQuote';
 import { useZeroExitFee } from '../../../hooks/exitFee/useZeroExitFee';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useMaintenance } from '../../../hooks/useMaintenance';
@@ -55,12 +57,22 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
   const { balance: availableBalance } = useAssetBalance(creditToken);
 
   const exitFee = useZeroExitFee(collateralValue);
+  const {
+    delaySeconds,
+    unknown: exitDelayUnknown,
+    loading: exitDelayLoading,
+  } = useZeroExitDelayQuote();
 
   const exitFeeDisplay = useMemo(
     () => getExitFeeDisplay(exitFee, exitFee.feeAmount),
     [exitFee],
   );
   const showExitFee = exitFeeDisplay === 'charged';
+  // The row itself stays hidden for an unread quote — the chain fails open,
+  // so it is not a stated fee — but the collateral figure below states the
+  // whole collateral as what the borrower will get, which needs its own
+  // qualifier when the quote never arrived.
+  const exitFeeUnknown = !showExitFee && exitFee.unknown;
 
   const collateralToReceive = useMemo(
     () => (showExitFee ? exitFee.netAmount : collateralValue),
@@ -97,9 +109,22 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
     [closeLocked, dllrLocked, creditToken],
   );
 
+  // A close always returns collateral, so it always waits for the delay and
+  // fee quotes.
   const submitButtonDisabled = useMemo(
-    () => hasError || isInMaintenance || isRecoveryMode,
-    [isInMaintenance, hasError, isRecoveryMode],
+    () =>
+      hasError ||
+      isInMaintenance ||
+      isRecoveryMode ||
+      exitDelayLoading ||
+      exitFee.loading,
+    [
+      isInMaintenance,
+      hasError,
+      isRecoveryMode,
+      exitDelayLoading,
+      exitFee.loading,
+    ],
   );
 
   const tokenOptions = useMemo(
@@ -186,6 +211,19 @@ export const CloseCreditLine: FC<CloseCreditLineProps> = ({
               collateralValueRenderer(collateralValue)
             )
           }
+        />
+        {exitFeeUnknown && (
+          <div
+            className="mt-2 text-xs text-gray-30"
+            data-test-id="exit-fee-unknown-notice"
+          >
+            {t(translations.exitFee.unknownNotice)}
+          </div>
+        )}
+        <ExitDelayRow
+          delaySeconds={delaySeconds}
+          unknown={exitDelayUnknown}
+          loading={exitDelayLoading}
         />
       </SimpleTable>
 

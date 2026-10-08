@@ -21,6 +21,7 @@ import { RSK_CHAIN_ID } from '../../../../../config/chains';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../../2_molecules/AssetRenderer/AssetRenderer';
+import { ExitDelayRow } from '../../../../2_molecules/ExitDelayRow/ExitDelayRow';
 import { ExitFeeRow } from '../../../../2_molecules/ExitFeeRow/ExitFeeRow';
 import { LabelWithTabsAndMaxButton } from '../../../../2_molecules/LabelWithTabsAndMaxButton/LabelWithTabsAndMaxButton';
 import { convertLoanTokenToSupportedAssets } from '../../../../5_pages/BorrowPage/components/OpenLoansTable/OpenLoans.utils';
@@ -32,6 +33,8 @@ import {
   MINIMUM_COLLATERAL_RATIO_LENDING_POOLS_SOV,
 } from '../../../../../constants/lending';
 import { getTokenDisplayName } from '../../../../../constants/tokens';
+import { useExitDelayQuote } from '../../../../../hooks/exitDelay/useExitDelayQuote';
+import { usePerimeterHoldToast } from '../../../../../hooks/exitDelay/usePerimeterHoldToast';
 import { useExitFeeRate } from '../../../../../hooks/exitFee/useExitFeeRate';
 import { useDecimalAmountInput } from '../../../../../hooks/useDecimalAmountInput';
 import { useLoadContract } from '../../../../../hooks/useLoadContract';
@@ -39,6 +42,7 @@ import { useMaxAssetBalance } from '../../../../../hooks/useMaxAssetBalance';
 import { useQueryRate } from '../../../../../hooks/useQueryRate';
 import { translations } from '../../../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../../../utils/asset';
+import { NO_EXIT_DELAY } from '../../../../../utils/exitDelay';
 import { SURFACE_LENDING_BORROWER_WITHDRAW } from '../../../../../utils/exitFee';
 import { areValuesIdentical } from '../../../../../utils/helpers';
 import { decimalic } from '../../../../../utils/math';
@@ -280,6 +284,11 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     loanTokenContract?.address,
   );
 
+  const exitDelay = useExitDelayQuote(
+    SURFACE_LENDING_BORROWER_WITHDRAW,
+    loanTokenContract?.address,
+  );
+
   const exitFeeGross = useMemo(
     () =>
       getBorrowerExitFeeGross({
@@ -302,6 +311,12 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
       debtSize,
       maximumRepayAmount,
     ],
+  );
+
+  // A debt-only adjust removes nothing, so it is not a withdrawal the
+  // perimeter can hold — the notice must stay silent for it either way.
+  const notifyHold = usePerimeterHoldToast(
+    exitFeeGross.gt(0) ? exitDelay : NO_EXIT_DELAY,
   );
 
   const prepaidInterest = calculatePrepaidInterestFromDuration(
@@ -450,6 +465,8 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         loan.debt.toString(),
         loan.id,
         convertLoanTokenToSupportedAssets(loan.debtAsset),
+        false,
+        notifyHold,
       );
       return;
     }
@@ -460,6 +477,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
         loan.id,
         convertLoanTokenToSupportedAssets(loan.debtAsset),
         true,
+        notifyHold,
       );
       return;
     }
@@ -486,7 +504,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     }
 
     if (isCollateralWithdrawMode) {
-      handleWithdrawCollateral(collateralAmount, loan.id);
+      handleWithdrawCollateral(collateralAmount, loan.id, notifyHold);
     }
   }, [
     collateralAmount,
@@ -496,6 +514,7 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
     debtSize,
     debtToken,
     handleBorrow,
+    notifyHold,
     handleDepositCollateral,
     handleRepay,
     handleWithdrawCollateral,
@@ -895,6 +914,13 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
             assetSymbol={collateralToken}
             precision={BTC_RENDER_PRECISION}
           />
+          {exitFeeGross.gt(0) && (
+            <ExitDelayRow
+              delaySeconds={exitDelay.delaySeconds}
+              unknown={exitDelay.unknown}
+              loading={exitDelay.loading}
+            />
+          )}
           {(isBorrowTab || isRepayTab) && (
             <SimpleTableRow
               label={t(pageTranslations.labels.newTotalDebt)}
@@ -986,7 +1012,10 @@ export const AdjustLoanForm: FC<AdjustLoanFormProps> = ({ loan }) => {
           onClick={handleFormSubmit}
           dataAttribute="adjust-loan-confirm-button"
           disabled={
-            submitButtonDisabled || (isBorrowTab && debtSize.gt(maxBorrow))
+            submitButtonDisabled ||
+            (isBorrowTab && debtSize.gt(maxBorrow)) ||
+            // Collateral leaving the protocol waits for its delay and fee figures.
+            (exitFeeGross.gt(0) && (exitDelay.loading || exitFeeLoading))
           }
         />
       </div>

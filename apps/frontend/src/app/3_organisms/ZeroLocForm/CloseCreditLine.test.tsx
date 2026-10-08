@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 import 'jest-canvas-mock';
+import { MemoryRouter } from 'react-router-dom';
 
 import { Decimal } from '@sovryn/utils';
 
@@ -15,6 +16,7 @@ const mockQuote = {
   feeAmount: Decimal.from('0.002'),
   netAmount: Decimal.from('0.398'),
   loading: false,
+  unknown: false,
 };
 
 jest.mock('nanoid', () => {
@@ -31,6 +33,12 @@ jest.mock('../../../contexts/NotificationContext', () => {
 
 jest.mock('../../../hooks/exitFee/useZeroExitFee', () => ({
   useZeroExitFee: () => mockQuote,
+}));
+
+let mockDelay: { delaySeconds: number; loading: boolean; unknown: boolean };
+
+jest.mock('../../../hooks/exitDelay/useZeroExitDelayQuote', () => ({
+  useZeroExitDelayQuote: () => mockDelay,
 }));
 
 jest.mock('./hooks/useZeroData', () => ({
@@ -53,15 +61,34 @@ describe('CloseCreditLine perimeter fee', () => {
     await i18n;
   });
 
-  it('shows the NET collateral to receive with a fee tooltip', () => {
-    const { container } = render(
-      <CloseCreditLine
-        collateralValue={Decimal.from('0.4')}
-        creditValue={Decimal.from(3000)}
-        onSubmit={jest.fn()}
-        rbtcPrice={Decimal.from(67000)}
-      />,
+  beforeEach(() => {
+    mockDelay = { delaySeconds: 0, loading: false, unknown: false };
+    Object.assign(mockQuote, {
+      active: true,
+      rateBps: 50,
+      feeAmount: Decimal.from('0.002'),
+      netAmount: Decimal.from('0.398'),
+      loading: false,
+      unknown: false,
+    });
+  });
+
+  // The hold row links to the Perimeter page, so the form needs a router the
+  // way it has one in the app.
+  const renderForm = () =>
+    render(
+      <MemoryRouter>
+        <CloseCreditLine
+          collateralValue={Decimal.from('0.4')}
+          creditValue={Decimal.from(3000)}
+          onSubmit={jest.fn()}
+          rbtcPrice={Decimal.from(67000)}
+        />
+      </MemoryRouter>,
     );
+
+  it('shows the NET collateral to receive with a fee tooltip', () => {
+    const { container } = renderForm();
     expect(screen.getByText('Collateral to receive')).toBeInTheDocument();
     expect(screen.getByText(/0\.398/)).toBeInTheDocument();
     expect(screen.queryByText(/^0\.4 /)).not.toBeInTheDocument();
@@ -78,19 +105,101 @@ describe('CloseCreditLine perimeter fee', () => {
   });
 
   it('shows the gross with no helper icon when the fee is inactive', () => {
-    Object.assign(mockQuote, { active: false, rateBps: 0 });
-    const { container } = render(
-      <CloseCreditLine
-        collateralValue={Decimal.from('0.4')}
-        creditValue={Decimal.from(3000)}
-        onSubmit={jest.fn()}
-        rbtcPrice={Decimal.from(67000)}
-      />,
-    );
+    Object.assign(mockQuote, { active: false, rateBps: 0, unknown: false });
+    const { container } = renderForm();
     expect(screen.queryByText(/Perimeter fee/)).not.toBeInTheDocument();
     expect(screen.getByText(/0\.4/)).toBeInTheDocument();
     expect(
       container.querySelector('[data-layout-id="exit-fee-helper"]'),
     ).not.toBeInTheDocument();
+    expect(
+      container.querySelector('[data-test-id="exit-fee-unknown-notice"]'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows the gross with a note when the fee could not be checked, not as a settled amount', () => {
+    Object.assign(mockQuote, { active: false, rateBps: 0, unknown: true });
+    const { container } = renderForm();
+    expect(screen.queryByText(/^Perimeter fee/)).not.toBeInTheDocument();
+    expect(screen.getByText(/0\.4/)).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-layout-id="exit-fee-helper"]'),
+    ).not.toBeInTheDocument();
+    const notice = container.querySelector(
+      '[data-test-id="exit-fee-unknown-notice"]',
+    );
+    expect(notice).toBeInTheDocument();
+    expect(notice?.textContent).toMatch(/Perimeter fee/);
+  });
+
+  it('tells the borrower the collateral will be held, and for how long', () => {
+    // A close always returns collateral, so the hold applies unconditionally.
+    mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
+
+    renderForm();
+
+    expect(screen.getByText('Withdrawal delay')).toBeInTheDocument();
+    expect(screen.getByText('2 days')).toBeInTheDocument();
+  });
+
+  it('admits it could not check whether the collateral will be held', () => {
+    mockDelay = { delaySeconds: 0, loading: false, unknown: true };
+
+    renderForm();
+
+    expect(screen.getByText('Could not be checked')).toBeInTheDocument();
+  });
+
+  describe('Confirm and the delay quote', () => {
+    const confirm = (container: HTMLElement) =>
+      container.querySelector('[data-layout-id="close-credit-line-confirm"]');
+
+    it('waits for the delay quote, and says it is checking', () => {
+      // The close form is prefilled: without this, Confirm is live before a
+      // single delay read has returned.
+      mockDelay = { delaySeconds: 0, loading: true, unknown: false };
+
+      const { container } = renderForm();
+
+      expect(screen.getByText(/^Checking/)).toBeInTheDocument();
+      expect(confirm(container)).toBeDisabled();
+    });
+
+    it('offers Confirm once a quote arrived', () => {
+      mockDelay = { delaySeconds: 172800, loading: false, unknown: false };
+
+      const { container } = renderForm();
+
+      expect(confirm(container)).toBeEnabled();
+    });
+
+    it('offers Confirm when the quote could not be read', () => {
+      mockDelay = { delaySeconds: 0, loading: false, unknown: true };
+
+      const { container } = renderForm();
+
+      expect(confirm(container)).toBeEnabled();
+    });
+  });
+
+  describe('Confirm and the fee quote', () => {
+    const confirm = (container: HTMLElement) =>
+      container.querySelector('[data-layout-id="close-credit-line-confirm"]');
+
+    it('waits for the fee quote even once the delay has settled', () => {
+      mockQuote.loading = true;
+
+      const { container } = renderForm();
+
+      expect(confirm(container)).toBeDisabled();
+    });
+
+    it('offers Confirm once the fee quote has settled', () => {
+      mockQuote.loading = false;
+
+      const { container } = renderForm();
+
+      expect(confirm(container)).toBeEnabled();
+    });
   });
 });

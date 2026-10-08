@@ -2,8 +2,19 @@ export const GAS_LIMIT = {
   MAX: 6_800_000,
   OPEN_TROVE: 1_200_000,
   ADJUST_TROVE: 4_000_000,
-  CLOSE_TROVE: 350_000,
-  CLOSE_DLLR_TROVE: 600_000,
+  // The fallback used only when a fresh gas estimate cannot be obtained —
+  // see resolveGasLimit. Zero's close-credit-line shares the same
+  // withdrawal-recording hook as Zero withdraw collateral (ADJUST_TROVE),
+  // so it is delay-armed the same way. Set to the measured delay-armed
+  // closeTrove() cost plus the same 30% margin the estimator applies to a
+  // live read (measured 588,995 gasUsed, fork rskForkedMainnetQa, delay
+  // 120s, charge on, 2026-09-19).
+  CLOSE_TROVE: 800_000,
+  // Same rationale as CLOSE_TROVE, measured against closeNueTroveWithPermit2()
+  // — the DLLR close path, which additionally verifies a Permit2 signature
+  // and pulls the repayment through it (measured 745,682 gasUsed, same fork
+  // and conditions).
+  CLOSE_DLLR_TROVE: 1_000_000,
   CONVERT: 750_000,
   STABILITY_POOL: 400_000,
   STABILITY_POOL_INC_WITHDRAW: 490_000,
@@ -14,7 +25,21 @@ export const GAS_LIMIT = {
   REWARDS_OS_FEE: 600_000,
   TRANSFER_LOC: 900_000,
   LENDING_MINT: 350_000,
-  LENDING_BURN: 450_000,
+  // The fallback used only when a fresh gas estimate cannot be obtained —
+  // see resolveGasLimit in TransactionStepDialog/utils.ts, which is what
+  // sizes a real send. Set to the withdrawal delay's own cost through
+  // ExitDelayQueue.recordERC20Exit plus the same 30% margin the estimator
+  // applies to a live read, so a failed estimate still covers the
+  // delay-armed case, not only the plain one.
+  LENDING_BURN: 800_000,
+  // The fallback used only when a fresh gas estimate cannot be obtained — see
+  // resolveGasLimit. Zero's collateral-surplus claim previously configured no
+  // gasLimit at all, so it never received the 30% margin the estimator
+  // applies to a live read; this floor closes that gap. Set to the
+  // delay-armed claimCollateral() call's measured cost (386,192 gasUsed,
+  // fork rskForkedMainnetQa, delay 120s, charge on, 2026-09-19) plus the
+  // same 30% margin, rounded up.
+  CLAIM_SURPLUS: 600_000,
   APPROVE: 60_000,
   STAKING_STAKE: 1_400_000,
   STAKING_INCREASE_STAKE: 450_000,
@@ -25,7 +50,13 @@ export const GAS_LIMIT = {
   SOV_WITHDRAW_VESTING_TEAM: 6_700_000,
   BORROW: 1_500_000,
   REPAY_LOAN: 950_000,
-  WITHDRAW_LOAN_COLLATERAL: 150_000,
+  // The fallback used only when a fresh gas estimate cannot be obtained —
+  // see resolveGasLimit. Set to the withdrawal delay's own cost through
+  // ExitDelayQueue plus the same 30% margin the estimator applies to a
+  // live read (measured 448,331 gasUsed, fork rskForkedMainnetQa, delay
+  // 120s, charge on, 2026-09-19), so a failed estimate still covers the
+  // delay-armed case, not only the plain one the old 150,000 was sized for.
+  WITHDRAW_LOAN_COLLATERAL: 600_000,
   GOVERNOR_PROPOSE: 1_500_000,
   PROPOSAL_VOTE: 300_000,
   PROPOSAL_QUEUE: 250_000,

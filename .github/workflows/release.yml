@@ -2,12 +2,12 @@ name: Release packages
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: ['develop']
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
-  id-token: write  # Required for OIDC
+  id-token: write # Required for OIDC
   contents: write
   pull-requests: write
 
@@ -27,10 +27,24 @@ jobs:
       - name: Install Dependencies
         run: yarn
 
+      - name: Build, lint and test packages
+        run: yarn turbo run build lint test --filter=./packages/*
+
+      # Keep the established build runtime above; npm OIDC needs Node >=22.14
+      # and npm >=11.5.1. Node 24 supplies a compatible publishing runtime.
+      - name: Setup publishing runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Check npm trusted-publishing support
+        run: |
+          node -e 'const v = require("child_process").execFileSync("npm", ["--version"], { encoding: "utf8" }).trim(); const [a,b,c] = v.split(".").map(Number); if (!(a > 11 || (a === 11 && (b > 5 || (b === 5 && c >= 1))))) throw new Error("npm >=11.5.1 required for trusted publishing"); console.log("Publishing with Node " + process.version + ", npm " + v);'
+
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: yarn release-packages
+          publish: node node_modules/@changesets/cli/bin.js publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

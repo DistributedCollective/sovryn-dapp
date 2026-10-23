@@ -4,6 +4,11 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DistributedCollective/sovryn-dapp.git",
+    "directory": "packages/sdk"
+  },
   "author": {
     "name": "Victor Creed",
     "email": "victor@sovryn.app"

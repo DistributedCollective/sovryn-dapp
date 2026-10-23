@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from 'react';
 
 import classNames from 'classnames';
-import { constants } from 'ethers';
 import { t } from 'i18next';
 import CountUp from 'react-countup';
 
@@ -10,6 +9,7 @@ import {
   ButtonSize,
   ButtonStyle,
   HelperButton,
+  SimpleTable,
   TooltipTrigger,
 } from '@sovryn/ui';
 import { Decimal } from '@sovryn/utils';
@@ -20,14 +20,17 @@ import {
   BTC_RENDER_PRECISION,
   TOKEN_RENDER_PRECISION,
 } from '../../../constants/currencies';
-import { useExitFeeRate } from '../../../hooks/exitFee/useExitFeeRate';
+import { useZeroExitDelayQuote } from '../../../hooks/exitDelay/useZeroExitDelayQuote';
+import { useZeroClaimExitFee } from '../../../hooks/exitFee/useZeroClaimExitFee';
+import { translations } from '../../../locales/i18n';
 import { COMMON_SYMBOLS } from '../../../utils/asset';
+import { getExitDelayDisplay } from '../../../utils/exitDelay';
 import {
   SURFACE_ZERO_CLAIM_SURPLUS,
-  getExitFeeAmount,
   getExitFeeDisplay,
 } from '../../../utils/exitFee';
 import { AmountRenderer } from '../AmountRenderer/AmountRenderer';
+import { ExitDelayRow } from '../ExitDelayRow/ExitDelayRow';
 import { ExitFeeTooltipContent } from '../ExitFeeRow/ExitFeeRow';
 import { CRatioIndicator } from './components/CRatioIndicator/CRatioIndicator';
 import { LOCStat } from './components/LOCStat/LOCStat';
@@ -60,29 +63,20 @@ export const LOCStatus: FC<LOCStatusProps> = ({
 
   const ratio = useMemo(() => parseInt(cRatio.toString()), [cRatio]);
 
-  const {
-    active: exitFeeActive,
-    rateBps: exitFeeRateBps,
-    unknown: exitFeeUnknown,
-    loading: exitFeeLoading,
-  } = useExitFeeRate(
-    SURFACE_ZERO_CLAIM_SURPLUS,
-    constants.AddressZero, // ethers constants — subProduct dimension unused for Zero
-  );
-  const surplusExitFee = useMemo(
-    () => getExitFeeAmount(withdrawalSurplus, exitFeeRateBps),
-    [withdrawalSurplus, exitFeeRateBps],
-  );
-  const exitFeeDisplay = getExitFeeDisplay(
-    {
-      active: exitFeeActive,
-      rateBps: exitFeeRateBps,
-      unknown: exitFeeUnknown,
-      loading: exitFeeLoading,
-    },
-    surplusExitFee,
-  );
-  const showSurplusExitFee = exitFeeDisplay === 'charged';
+  // The claim is a Zero exit: its fee is quoted through BorrowerOperations'
+  // own controller pointer for this surplus, and its withdrawal delay for the
+  // claim surface.
+  const claimFee = useZeroClaimExitFee(withdrawalSurplus);
+  const showSurplusExitFee =
+    getExitFeeDisplay(claimFee, claimFee.feeAmount) === 'charged';
+  // The claim's fee row stays hidden for this too — the chain fails open, so
+  // an unread quote is not a stated fee — but the figure below states the
+  // whole surplus as what the borrower will get, which needs its own
+  // qualifier when the quote never arrived.
+  const surplusFeeUnknown = !showSurplusExitFee && claimFee.unknown;
+
+  const claimDelay = useZeroExitDelayQuote(SURFACE_ZERO_CLAIM_SURPLUS);
+  const showClaimDelay = getExitDelayDisplay(claimDelay) !== 'none';
 
   return (
     <div
@@ -101,11 +95,10 @@ export const LOCStatus: FC<LOCStatusProps> = ({
                   <HelperButton
                     content={
                       <ExitFeeTooltipContent
-                        fee={surplusExitFee}
-                        rateBps={exitFeeRateBps}
+                        fee={claimFee.feeAmount}
+                        rateBps={claimFee.rateBps}
                         assetSymbol={COMMON_SYMBOLS.BTC}
                         precision={BTC_RENDER_PRECISION}
-                        approx={false}
                       />
                     }
                     trigger={TooltipTrigger.click}
@@ -119,19 +112,41 @@ export const LOCStatus: FC<LOCStatusProps> = ({
             value={
               showSurplusExitFee ? (
                 <AmountRenderer
-                  value={withdrawalSurplus.sub(surplusExitFee)}
+                  value={claimFee.netAmount}
                   suffix={BITCOIN}
                   precision={BTC_RENDER_PRECISION}
-                  // The surplus is a fixed gross, so this net is exact — no
-                  // "~", which AmountRenderer would otherwise add on its own
-                  // whenever the value carries more decimals than it shows.
+                  // The fee is set when the claim executes, so the net is
+                  // marked approximate like every other fee row.
+                  prefix="~ "
                   showRoundingPrefix={false}
                 />
               ) : (
                 `${withdrawalSurplus} ${BITCOIN}`
               )
             }
+            note={
+              surplusFeeUnknown ? (
+                <div
+                  className="mt-2 text-xs text-gray-30"
+                  data-test-id="exit-fee-unknown-notice"
+                >
+                  {t(translations.exitFee.unknownNotice)}
+                </div>
+              ) : undefined
+            }
           />
+        )}
+        {hasWithdrawalSurplus && showClaimDelay && (
+          <SimpleTable
+            className="md:min-w-60"
+            dataAttribute="loc-status-surplus-delay"
+          >
+            <ExitDelayRow
+              delaySeconds={claimDelay.delaySeconds}
+              unknown={claimDelay.unknown}
+              loading={claimDelay.loading}
+            />
+          </SimpleTable>
         )}
         {showOpenLOC && (
           <>
@@ -181,6 +196,9 @@ export const LOCStatus: FC<LOCStatusProps> = ({
             onClick={onWithdraw}
             className="flex-1"
             dataAttribute="zero-loc-surplus-withdraw"
+            // Until the delay and fee quotes arrive the card cannot say
+            // whether the claim is paid now, held, or what it costs.
+            disabled={claimDelay.loading || claimFee.loading}
           />
         )}
         {showOpenLOC && (

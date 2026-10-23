@@ -47,6 +47,7 @@ import {
   isSignTransactionDataRequest,
   isTransactionRequest,
 } from '../../helpers';
+import { resolveGasLimit } from '../../utils';
 
 export type TransactionStepProps = {
   transaction: Transaction;
@@ -57,6 +58,8 @@ export type TransactionStepProps = {
   updateConfig: (config: TransactionConfig) => void;
   gasPrice: string;
   isLoading: boolean;
+  /** Set when the step failed because its send check refused: why nothing was sent. */
+  notSent?: string[];
 };
 
 export const TransactionStep: FC<TransactionStepProps> = ({
@@ -68,6 +71,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
   gasPrice,
   updateConfig,
   isLoading,
+  notSent,
 }) => {
   const chainId = useCurrentChain();
   const chain = useMemo(() => getChainById(chainId), [chainId]);
@@ -123,13 +127,17 @@ export const TransactionStep: FC<TransactionStepProps> = ({
           gasPrice: requestGasPrice,
           value,
         } = request;
-        const gasLimit =
-          requestGasLimit ??
-          (await contract.estimateGas[fnName](
-            ...[...args, { value: value ?? 0 }],
-          )
-            .then(gas => gas.toString())
-            .catch(() => BigNumber.from(6_000_000).toString()));
+        // A request's own `gasLimit` is a constant sized for the plain call;
+        // the Perimeter's withdrawal delay adds queue-recording cost on top
+        // of it when armed. Re-price that constant against a fresh estimate
+        // rather than trusting it outright — see resolveGasLimit.
+        const gasLimit = await resolveGasLimit(
+          contract,
+          fnName,
+          args,
+          value,
+          requestGasLimit,
+        );
 
         updateConfig({
           unlimitedAmount: false,
@@ -257,7 +265,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
     <div className="flex flex-col">
       <StatusItem content={step} label={title} status={status} />
       <div className="ml-10">
-        {status === StatusType.error && (
+        {status === StatusType.error && !notSent && (
           <Paragraph className="text-error-light">
             <span className="block">
               {t(translations.transactionStep.transactionFailedTitle)}
@@ -265,6 +273,19 @@ export const TransactionStep: FC<TransactionStepProps> = ({
             <span>
               {t(translations.transactionStep.transactionFailedSubtitle)}
             </span>
+          </Paragraph>
+        )}
+        {status === StatusType.error && notSent && (
+          <Paragraph className="text-error-light">
+            <span className="block">
+              {t(translations.transactionStep.notSentTitle)}
+            </span>
+            {notSent.map(reason => (
+              <span className="block" key={reason}>
+                {reason}
+              </span>
+            ))}
+            <span>{t(translations.transactionStep.notSentSubtitle)}</span>
           </Paragraph>
         )}
         {subtitle && status !== StatusType.error && (
@@ -359,6 +380,7 @@ export const TransactionStep: FC<TransactionStepProps> = ({
                     updateConfig({
                       ...config,
                       gasLimit: e.target.value.replace(/[^0-9]/g, ''),
+                      gasLimitTypedByUser: true,
                     })
                   }
                   step="0"

@@ -104,6 +104,7 @@ export const useHandleLending = (
       amount: Decimal,
       tokenDetails: AssetDetailsData,
       poolTokenContract: Contract,
+      onHeld?: () => void,
     ) => {
       if (!account || !signer || !tokenDetails || !poolTokenContract) {
         return;
@@ -146,7 +147,11 @@ export const useHandleLending = (
           args: [account, withdrawAmount.toBigNumber().toString(), poolUsesLM],
           gasLimit: GAS_LIMIT.LENDING_BURN,
         },
-        onComplete,
+        onComplete: result => {
+          onComplete();
+          onHeld?.();
+          return result;
+        },
       });
 
       setTransactions(transactions);

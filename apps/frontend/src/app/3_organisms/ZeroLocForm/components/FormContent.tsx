@@ -25,6 +25,7 @@ import { Decimal } from '@sovryn/utils';
 import { AdvancedSettings } from '../../../2_molecules/AdvancedSettings/AdvancedSettings';
 import { AmountRenderer } from '../../../2_molecules/AmountRenderer/AmountRenderer';
 import { AssetRenderer } from '../../../2_molecules/AssetRenderer/AssetRenderer';
+import { ExitDelayRow } from '../../../2_molecules/ExitDelayRow/ExitDelayRow';
 import { ExitFeeRow } from '../../../2_molecules/ExitFeeRow/ExitFeeRow';
 import { BORROW_ASSETS } from '../../../5_pages/ZeroPage/constants';
 import { useLiquityBaseParams } from '../../../5_pages/ZeroPage/hooks/useLiquityBaseParams';
@@ -36,6 +37,7 @@ import {
 } from '../../../../constants/currencies';
 import { COLLATERAL_RATIO_THRESHOLDS } from '../../../../constants/general';
 import { WIKI_LINKS } from '../../../../constants/links';
+import { useZeroExitDelayQuote } from '../../../../hooks/exitDelay/useZeroExitDelayQuote';
 import { useZeroExitFee } from '../../../../hooks/exitFee/useZeroExitFee';
 import { useMaintenance } from '../../../../hooks/useMaintenance';
 import { translations } from '../../../../locales/i18n';
@@ -158,6 +160,11 @@ export const FormContent: FC<FormContentProps> = props => {
     unknown: exitFeeUnknown,
     loading: exitFeeLoading,
   } = useZeroExitFee();
+  const {
+    delaySeconds,
+    unknown: exitDelayUnknown,
+    loading: exitDelayLoading,
+  } = useZeroExitDelayQuote();
 
   const exitFeeGross = useMemo(
     () =>
@@ -210,7 +217,9 @@ export const FormContent: FC<FormContentProps> = props => {
       isInMaintenance ||
       (isBorrowDisabled && Number(props.debtAmount) > 0) ||
       isInvalidOriginationFee ||
-      (!props.hasTrove && !hasDisclaimerBeenChecked)
+      (!props.hasTrove && !hasDisclaimerBeenChecked) ||
+      // A collateral withdrawal waits for its delay and fee quotes.
+      (exitFeeGross.gt(0) && (exitDelayLoading || exitFeeLoading))
     );
   }, [
     props.errors,
@@ -224,6 +233,9 @@ export const FormContent: FC<FormContentProps> = props => {
     isBorrowDisabled,
     isInvalidOriginationFee,
     hasDisclaimerBeenChecked,
+    exitFeeGross,
+    exitDelayLoading,
+    exitFeeLoading,
   ]);
 
   const handleDebtTypeChange = useCallback(
@@ -515,6 +527,15 @@ export const FormContent: FC<FormContentProps> = props => {
                 assetSymbol={COMMON_SYMBOLS.BTC}
                 precision={BTC_RENDER_PRECISION}
               />
+              {/* Only a collateral withdrawal is held; a borrow or add-collateral
+                  adjust removes nothing, so the hold notice must not show for it. */}
+              {exitFeeGross.gt(0) && (
+                <ExitDelayRow
+                  delaySeconds={delaySeconds}
+                  unknown={exitDelayUnknown}
+                  loading={exitDelayLoading}
+                />
+              )}
             </>
           ) : (
             <>

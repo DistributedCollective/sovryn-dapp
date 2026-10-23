@@ -33,7 +33,7 @@ const CONTROLLER = '0x99994b4522483DE17F31a5bC010c5901AdD3440E';
 const BORROWER_OPERATIONS = '0x5B9dB4B8bdeF3e57323187a9AC2639C5DEe5FD39';
 
 const mockPreview = jest.fn();
-const mockControllerPointer = jest.fn();
+const mockReadPointer = jest.fn();
 const mockZeroContract = jest.fn();
 
 // create-react-app's jest preset sets `resetMocks: true`, which strips the
@@ -41,17 +41,19 @@ const mockZeroContract = jest.fn();
 // must be plain functions that DELEGATE to jest.fn()s wired up in beforeEach —
 // an implementation attached here would be gone by the time a test runs, and
 // the hook would fall into its catch on every case.
+jest.mock('../exitDelay/readPerimeterPointer', () => ({
+  readPerimeterPointer: (...args: unknown[]) => mockReadPointer(...args),
+}));
+
 jest.mock('ethers', () => {
   const actual = jest.requireActual('ethers');
   return {
     ...actual,
-    Contract: function (_address: string, abi: unknown) {
-      return JSON.stringify(abi).includes('previewZeroCollWithdrawExitFee')
-        ? {
-            previewZeroCollWithdrawExitFee: (...args: unknown[]) =>
-              mockPreview(...args),
-          }
-        : { exitFeeController: () => mockControllerPointer() };
+    Contract: function () {
+      return {
+        previewZeroCollWithdrawExitFee: (...args: unknown[]) =>
+          mockPreview(...args),
+      };
     },
   };
 });
@@ -66,6 +68,12 @@ jest.mock('@sovryn/ethers-provider', () => ({
 
 jest.mock('../../utils/chain', () => ({
   getRskChainId: () => '0x1e',
+}));
+
+// Short enough that the deadline test below does not wait ten real seconds.
+jest.mock('../exitDelay/useExitDelay', () => ({
+  ...jest.requireActual('../exitDelay/useExitDelay'),
+  EXIT_DELAY_QUOTE_TIMEOUT_MS: 50,
 }));
 
 jest.mock('../../store/rxjs/provider-cache', () => ({
@@ -90,11 +98,17 @@ jest.mock('../useCacheCall', () => {
     ) => {
       const [state, setState] = React.useState({
         value: defaultValue,
-        loading: true,
+        // Idle at first, as the shared cache is: a result still to come must
+        // be reported by the hook under test, not by this stand-in.
+        loading: false,
       });
+      // Holds the latest fn without making the mount effect below re-run:
+      // fn's identity changes every render, but this mock fetches once.
+      const fnRef = React.useRef(fn);
+      fnRef.current = fn;
       React.useEffect(() => {
         let alive = true;
-        Promise.resolve(fn()).then((value: unknown) => {
+        Promise.resolve(fnRef.current()).then((value: unknown) => {
           if (alive) setState({ value, loading: false });
         });
         return () => {
@@ -122,7 +136,46 @@ const previewResult = (
 describe('useZeroExitFee', () => {
   beforeEach(() => {
     mockZeroContract.mockResolvedValue({ address: BORROWER_OPERATIONS });
-    mockControllerPointer.mockResolvedValue(CONTROLLER);
+    mockReadPointer.mockResolvedValue({ kind: 'address', address: CONTROLLER });
+  });
+
+  it("reads Zero's own controller pointer", async () => {
+    mockPreview.mockResolvedValue(
+      previewResult(REASON.NONE, { netAmount: '1000000000000000000' }),
+    );
+
+    const { result } = renderHook(() => useZeroExitFee(Decimal.from(1)));
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(mockReadPointer).toHaveBeenCalledWith(
+      '0x1e',
+      BORROWER_OPERATIONS,
+      'exitFeeController',
+    );
+  });
+
+  it('reports a stated "no fee" when BorrowerOperations has no controller getter', async () => {
+    mockReadPointer.mockResolvedValue({ kind: 'absent' });
+
+    const { result } = renderHook(() => useZeroExitFee(Decimal.from(1)));
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.active).toBe(false);
+    expect(result.current.unknown).toBe(false);
+    expect(mockPreview).not.toHaveBeenCalled();
+  });
+
+  it('reports unknown when the controller pointer could not be read, and still hides the rows', async () => {
+    mockReadPointer.mockResolvedValue({ kind: 'unreadable' });
+
+    const { result } = renderHook(() => useZeroExitFee(Decimal.from(1)));
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.unknown).toBe(true);
+    expect(mockPreview).not.toHaveBeenCalled();
+    expect(getExitFeeDisplay(result.current, result.current.feeAmount)).toBe(
+      'none',
+    );
   });
 
   it('reports a live charge when the quote resolves', async () => {
@@ -141,6 +194,25 @@ describe('useZeroExitFee', () => {
     expect(result.current.active).toBe(true);
     expect(result.current.rateBps).toBe(10);
     expect(result.current.unknown).toBe(false);
+  });
+
+  it('reports unknown, not a stated no fee, when the preview does not add up', async () => {
+    // The controller derives net from gross and fee on chain; a net that
+    // does not match that arithmetic is not an answer it would ever give.
+    mockPreview.mockResolvedValue(
+      previewResult(REASON.NONE, {
+        active: true,
+        rateBps: 10,
+        feeAmount: '1000000000000000',
+        netAmount: '1000000000000000000',
+      }),
+    );
+
+    const { result } = renderHook(() => useZeroExitFee(Decimal.from(1)));
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.active).toBe(false);
+    expect(result.current.unknown).toBe(true);
   });
 
   it.each([
@@ -181,5 +253,15 @@ describe('useZeroExitFee', () => {
     expect(getExitFeeDisplay(result.current, result.current.feeAmount)).toBe(
       'none',
     );
+  });
+
+  it('reports unknown, not still loading, once its deadline passes without an answer', async () => {
+    mockPreview.mockReturnValue(new Promise(() => undefined)); // never settles
+
+    const { result } = renderHook(() => useZeroExitFee(Decimal.from(1)));
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.unknown).toBe(true);
+    expect(result.current.active).toBe(false);
   });
 });

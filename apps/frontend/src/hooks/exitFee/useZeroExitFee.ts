@@ -6,7 +6,6 @@ import { getZeroContract } from '@sovryn/contracts';
 import { getProvider } from '@sovryn/ethers-provider';
 import { Decimal } from '@sovryn/utils';
 
-import { asyncCall } from '../../store/rxjs/provider-cache';
 import { getRskChainId } from '../../utils/chain';
 import {
   EXIT_FEE_MAX_BPS,
@@ -14,6 +13,11 @@ import {
   EXIT_FEE_TTL,
   ExitFeeQuote,
 } from '../../utils/exitFee';
+import { readPerimeterPointer } from '../exitDelay/readPerimeterPointer';
+import {
+  EXIT_DELAY_QUOTE_TIMEOUT_MS,
+  useDeadlinePassed,
+} from '../exitDelay/useExitDelay';
 import { useAccount } from '../useAccount';
 import { useCacheCall } from '../useCacheCall';
 
@@ -41,11 +45,7 @@ const stamped = async <T extends object>(
   fetch: () => Promise<T>,
 ) => ({ ...(await fetch()), forKey });
 
-// The Z-1 kept preview — same _safeQuote path as the live charge hook.
-const CONTROLLER_GETTER_ABI = [
-  'function exitFeeController() view returns (address)',
-];
-
+// The preview runs the same `_safeQuote` path as the live charge.
 const PREVIEW_ABI = [
   'function previewZeroCollWithdrawExitFee(address borrower, uint256 grossColl) view returns (uint16 rateBps, uint256 feeAmount, uint256 netAmount, address feeReceiver, bool active, uint8 reason)',
 ];
@@ -82,30 +82,24 @@ export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
             getRskChainId(),
           );
           /**
-           * Same split as the lending hook. A missing or reverting
-           * `exitFeeController()` is what Zero looks like before the perimeter
-           * ships: nothing is charged, and the form must look untouched. Only
-           * once that pointer resolves does a failing preview mean we genuinely
-           * do not know the rate.
+           * Same split as the lending hook. A controller getter
+           * BorrowerOperations does not have, or no controller pinned, charges
+           * nothing: a stated "no fee", and the form looks untouched. A pointer
+           * read that did not complete is unknown. Only once the pointer
+           * resolves does a failing preview mean we genuinely do not know the
+           * rate.
            */
-          const pointer = new Contract(
+          const pointer = await readPerimeterPointer(
+            getRskChainId(),
             address,
-            CONTROLLER_GETTER_ABI,
-            getProvider(getRskChainId()),
+            'exitFeeController',
           );
-          let controllerAddress;
-          try {
-            controllerAddress = await asyncCall(
-              `exitFee/zeroController/${getRskChainId()}/${address}`,
-              () => pointer.exitFeeController(),
-              { ttl: EXIT_FEE_TTL },
-            );
-          } catch (error) {
-            return INACTIVE;
+          if (pointer.kind === 'unreadable') {
+            return { ...INACTIVE, unknown: true };
           }
           if (
-            !controllerAddress ||
-            controllerAddress === constants.AddressZero
+            pointer.kind === 'absent' ||
+            pointer.address === constants.AddressZero
           ) {
             return INACTIVE;
           }
@@ -126,18 +120,19 @@ export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
           // nothing and pays the gross. So `active=false` here IS the answer —
           // no fee is taken — and the rows stay hidden. The reason is not
           // consulted: whichever it is, the user receives the whole amount.
-          // A quote the chain itself would refuse is not one to display. The
-          // on-chain hook re-derives net from gross and fee and charges nothing
-          // when they disagree, so mirror that test here: an inconsistent
-          // preview — only a tampered RPC can produce one — hides the rows
-          // rather than printing a net the chain will not pay.
           const gross = ethers.BigNumber.from(grossWei);
+          // The controller derives net from gross and fee on chain and
+          // charges nothing when they disagree, so a preview that fails that
+          // check is not a stated answer: a mangled or truncated response
+          // from a degraded endpoint, or a rate above the maximum, produced
+          // it. Reported as unread, the same as a preview the node could not
+          // answer at all.
           if (
             result.feeAmount.gt(gross) ||
             !result.netAmount.eq(gross.sub(result.feeAmount)) ||
             Number(result.rateBps) > EXIT_FEE_MAX_BPS
           ) {
-            return INACTIVE;
+            return { ...INACTIVE, unknown: true };
           }
           return {
             active: result.active,
@@ -158,11 +153,23 @@ export const useZeroExitFee = (gross?: Decimal): ZeroExitFee => {
     { ttl: EXIT_FEE_TTL },
   );
 
+  // A quote that has not arrived within the same deadline the delay quote is
+  // given is reported as unreadable, so a form waiting on it can let the
+  // holder sign with the warning rather than wait on a stalled read.
+  const fresh = value.forKey === key;
+  const passed = useDeadlinePassed(
+    key,
+    fresh && !loading,
+    EXIT_DELAY_QUOTE_TIMEOUT_MS,
+  );
+
   return useMemo(() => {
     // A value fetched for a different key belongs to the previous account or
     // gross. Report it as still loading — displayed as nothing charged — rather
     // than showing that other quote's numbers for one frame.
-    const fresh = value.forKey === key;
+    if (!fresh && passed) {
+      return { ...INACTIVE, unknown: true, loading: false };
+    }
     return fresh ? { ...value, loading } : { ...INACTIVE, loading: true };
-  }, [value, loading, key]);
+  }, [value, loading, fresh, passed]);
 };

@@ -1,0 +1,112 @@
+import { useEffect, useMemo, useState } from 'react';
+
+import { ChainId, getProvider } from '@sovryn/ethers-provider';
+
+import { EXIT_DELAY_TTL, RELEASE_READ_TIMEOUT_MS } from '../../utils/exitDelay';
+import { useCacheCall } from '../useCacheCall';
+import { boundedBy } from './rawCall';
+import { EXIT_DELAY_QUOTE_TIMEOUT_MS, useDeadlinePassed } from './useExitDelay';
+
+type Anchor = {
+  /** Latest block timestamp, in seconds. 0 until one has been read. */
+  timestamp: number;
+  /** Local clock reading taken with it, used only for elapsed time. */
+  readAt: number;
+};
+
+const NO_ANCHOR: Anchor = { timestamp: 0, readAt: 0 };
+
+/**
+ * How often the clock advances between block reads. Every time shown from it
+ * is in whole minutes, so a tick is at most this late in showing the next
+ * minute, and the clock never runs ahead of the chain: a hold is never shown
+ * as unlocked before it is.
+ */
+const CHAIN_CLOCK_TICK_MS = 15_000;
+
+export type ChainClock = {
+  /**
+   * The chain's time in seconds, or 0 until the first block has been read.
+   * Callers must treat 0 as "not known yet" rather than as the epoch — a
+   * countdown or a release decision made against 0 would be nonsense.
+   */
+  now: number;
+  /**
+   * The latest block's own timestamp, in seconds, or 0 until one has been
+   * read. It does not tick: the queue compares it, so whether a release can
+   * pass is judged against it, not against `now`.
+   */
+  blockTime: number;
+  /**
+   * True when the block read failed and no time is known, so a caller can say
+   * it could not read instead of waiting for a time that will not arrive.
+   */
+  unreadable: boolean;
+};
+
+/**
+ * The chain's clock, advancing every CHAIN_CLOCK_TICK_MS.
+ *
+ * The queue compares `block.timestamp`, so anything decided from `Date.now()`
+ * is decided from the user's own machine: a clock a couple of minutes fast
+ * flips a still-locked hold to "Ready", and the release reverts NotUnlocked —
+ * inside a batch, taking every other ready hold down with it. A slow clock
+ * withholds a release the holder is entitled to.
+ *
+ * So the value is anchored to the latest block's timestamp, refreshed with the
+ * block, and advanced between refreshes by ELAPSED local time. A wrong local
+ * offset cancels out in the subtraction; only the machine's clock RATE could
+ * drift, and no machine drifts a second per second.
+ */
+export const useChainTime = (chainId: ChainId): ChainClock => {
+  const key = `exitDelay/chainTime/${chainId}`;
+
+  const { value: anchor, error } = useCacheCall<Anchor>(
+    key,
+    chainId,
+    async () => {
+      const block = await boundedBy(
+        getProvider(chainId).getBlock('latest'),
+        RELEASE_READ_TIMEOUT_MS,
+      );
+      return { timestamp: block.timestamp, readAt: Date.now() };
+    },
+    [chainId],
+    NO_ANCHOR,
+    { ttl: EXIT_DELAY_TTL },
+  );
+
+  const [now, setNow] = useState(0);
+
+  useEffect(() => {
+    if (!anchor.timestamp) {
+      return;
+    }
+    const advance = () =>
+      setNow(
+        anchor.timestamp +
+          Math.max(0, Math.floor((Date.now() - anchor.readAt) / 1000)),
+      );
+    advance();
+    const timer = setInterval(advance, CHAIN_CLOCK_TICK_MS);
+    return () => clearInterval(timer);
+  }, [anchor.timestamp, anchor.readAt]);
+
+  // The shared cache starts no read at all until a block number is known, so
+  // a block number that never arrives leaves no anchor AND no error, forever.
+  // Past this deadline an anchor still not read counts the same as one that
+  // failed outright, rather than a caller waiting on a block that will not
+  // come.
+  const deadlinePassed = useDeadlinePassed(
+    key,
+    !!anchor.timestamp,
+    EXIT_DELAY_QUOTE_TIMEOUT_MS,
+  );
+
+  const unreadable = !anchor.timestamp && (!!error || deadlinePassed);
+
+  return useMemo(
+    () => ({ now, blockTime: anchor.timestamp, unreadable }),
+    [now, anchor.timestamp, unreadable],
+  );
+};

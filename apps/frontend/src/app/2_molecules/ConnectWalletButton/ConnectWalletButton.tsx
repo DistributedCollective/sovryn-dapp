@@ -98,6 +98,12 @@ export const ConnectWalletButton: FC<
                   dataAttribute={`${dataAttribute}-menu-history`}
                 />
               </Link>
+              <Link to="/perimeter" className="no-underline">
+                <MenuItem
+                  text={t(translations.connectWalletButton.perimeter)}
+                  dataAttribute={`${dataAttribute}-menu-perimeter`}
+                />
+              </Link>
               <MenuItem
                 text={t(translations.connectWalletButton.notifications)}
                 onClick={handleSettingsClick}

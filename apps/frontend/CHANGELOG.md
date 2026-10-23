@@ -1,5 +1,29 @@
 # frontend
 
+## 1.2.0
+
+### Minor Changes
+
+- d748a54e: feat: Sovryn Perimeter Fee display on withdraw and close flows. Shows the fee rate, amount, and net "You will receive" on lending withdrawals, borrower exits, Zero collateral withdrawal/close, and the surplus claim. Gated purely on on-chain state and fail-hidden: nothing renders until governance activates the perimeter and charging is enabled, so current forms are unchanged until then.
+- f325bc26: Held withdrawals now say where the money went: a visible Perimeter withdraw queue notice with a link in every charged form, and a post-signature notification on the withdrawal itself. The Perimeter withdraw queue page is reached from the Perimeter entry in the account menu and gains a one-transaction release of all ready holds.
+- f325bc26: feat: Sovryn Perimeter withdrawal hold. Shows how long a withdrawal will be held before it is paid out, on lending withdrawals, borrower exits and Zero collateral withdrawal/close, and adds a Perimeter withdraw queue page at /perimeter listing the withdrawals currently held for the connected account with the state each is in and a Release action for the ones that are ready. Also corrects the on-chain surface ids after the contracts renamed them, without which the existing fee display would silently stop matching any configured policy. Gated purely on on-chain state and fail-hidden: while the perimeter is undeployed, unwired or disabled every form renders exactly as it does today and the withdraw queue page reads as empty.
+
+### Patch Changes
+
+- d23037c4: fix: state not clearing when leaving token bridge
+- a84ece08: SOV-5278: fix amm rewards estimation
+- 98aa545e: SOV-5296: zero copy changes
+- 49dbe17f: fix: ambient position amounts
+- f325bc26: Perimeter withdraw queue fixes: exclude a just-released hold from the batch release so it cannot revert the whole atomic transaction; stop showing the withdrawal-hold notice on a borrow or add-collateral adjust that removes nothing; correct the "Releasable by the owner" status label and use the full "Sovryn Perimeter withdraw queue" name in the hold notification.
+- b8bacc6a: SOV-5304 expand bridge fees by default
+- a201cebe: chore: remove spice mentions
+- bd18c4ed: fix: normalize typed-data signature v-byte (0/1 -> 27/28) before on-chain use so Permit2 flows work with Frame, Ledger and other raw-recovery-id wallets
+- Updated dependencies [6917f90c]
+- Updated dependencies [e1256a40]
+- Updated dependencies [84ced870]
+- Updated dependencies [f60cca69]
+  - @sovryn/sdk@2.0.11
+
 ## 1.1.41
 
 ### Patch Changes

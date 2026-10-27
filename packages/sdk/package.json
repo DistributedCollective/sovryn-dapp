@@ -32,7 +32,7 @@
   ],
   "dependencies": {
     "@sovryn-zero/lib-ethers": "0.2.5",
-    "@sovryn/contracts": "*",
+    "@sovryn/contracts": "^1.2.8",
     "@sovryn/ethers-provider": "*",
     "@sovryn/sdex": "*",
     "@sovryn/utils": "^0.0.3",
@@ -43,7 +43,7 @@
     "@ethersproject/abstract-provider": "*",
     "@ethersproject/providers": "*",
     "@sovryn-zero/lib-base": "*",
-    "@sovryn/contracts": "*",
+    "@sovryn/contracts": "^1.2.8",
     "ethers": "*"
   }
 }

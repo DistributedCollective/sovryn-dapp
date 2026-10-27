@@ -1,6 +1,6 @@
 {
   "name": "@sovryn/contracts",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",
@@ -34,5 +34,10 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DistributedCollective/sovryn-dapp.git",
+    "directory": "packages/contracts"
+  }
 }

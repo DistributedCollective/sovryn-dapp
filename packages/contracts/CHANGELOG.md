@@ -1,5 +1,11 @@
 # @sovryn/contracts
 
+## 1.2.8
+
+### Patch Changes
+
+- Publish the Rootstock USDT0 asset address, six-decimal metadata and icon required by the SDK AMM route.
+
 ## 1.2.7
 
 ### Patch Changes

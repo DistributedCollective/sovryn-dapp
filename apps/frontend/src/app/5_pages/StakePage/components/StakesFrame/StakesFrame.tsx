@@ -15,7 +15,9 @@ import { useGetStakes } from './hooks/useGetStakes';
 
 const pageSize = DEFAULT_PAGE_SIZE;
 
-export const StakesFrame: FC = () => {
+export const StakesFrame: FC<{ delegationOnly?: boolean }> = ({
+  delegationOnly = false,
+}) => {
   const { account } = useAccount();
   const { stakes, loading, refetch } = useGetStakes();
   const { balance } = useGetStakingBalanceOf(account);
@@ -48,7 +50,10 @@ export const StakesFrame: FC = () => {
     [loading, paginatedStakes?.length, stakes?.length],
   );
 
-  const columns = useMemo(() => COLUMNS_CONFIG(refetch), [refetch]);
+  const columns = useMemo(
+    () => COLUMNS_CONFIG(refetch, delegationOnly),
+    [refetch, delegationOnly],
+  );
 
   return (
     <div className="flex flex-col mb-10">
@@ -57,7 +62,9 @@ export const StakesFrame: FC = () => {
           {t(translations.stakePage.table.stakes)}
         </Paragraph>
         <div className="md:inline-block hidden">
-          {account && <AddStakeRenderer hasStakedValue={hasStakedValue} />}
+          {account && !delegationOnly && (
+            <AddStakeRenderer hasStakedValue={hasStakedValue} />
+          )}
         </div>
       </div>
 

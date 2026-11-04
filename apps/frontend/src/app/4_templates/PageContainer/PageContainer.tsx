@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
 import classNames from 'classnames';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useMatch } from 'react-router-dom';
 
 import { applyDataAttr } from '@sovryn/ui';
 
@@ -26,6 +26,9 @@ export const PageContainer: FC<PageContainerProps> = ({
   dataAttribute,
 }) => {
   const dappLocked = useIsDappLocked();
+  const bitocracyMatch = useMatch('/bitocracy');
+  const proposalMatch = useMatch('/bitocracy/:id');
+  const showMaintenance = dappLocked && !bitocracyMatch && !proposalMatch;
   const { account } = useAccount();
   const chainID = useCurrentChain();
   return (
@@ -33,7 +36,7 @@ export const PageContainer: FC<PageContainerProps> = ({
       className={classNames('flex flex-col flex-grow', className)}
       {...applyDataAttr(dataAttribute)}
     >
-      {dappLocked ? (
+      {showMaintenance ? (
         <DappLocked />
       ) : (
         <>

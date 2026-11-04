@@ -10,6 +10,7 @@ export type StakeFormProps = {
 export type AdjustStakeFormProps = {
   stake: StakeItem;
   onSuccess: () => void;
+  delegationOnly?: boolean;
 };
 
 export type FilteredDate = {

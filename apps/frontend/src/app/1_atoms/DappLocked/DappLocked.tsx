@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 
 import { t } from 'i18next';
+import { Link } from 'react-router-dom';
 
 import { SovrynLogo } from '../../2_molecules';
 import { NetworkPicker } from '../../2_molecules/NetworkPicker/NetworkPicker';
@@ -25,6 +26,18 @@ export const DappLocked: FC = () => (
             {t(translations.maintenanceMode.fullD2.title)}
           </div>
           {t(translations.maintenanceMode.fullD2.description)}
+          <Link
+            to="/bitocracy"
+            className="block mt-4 text-primary underline hover:no-underline"
+          >
+            {t(translations.header.nav.bitocracy)}
+          </Link>
+          <Link
+            to="/bitocracy/delegate"
+            className="block mt-4 text-primary underline hover:no-underline"
+          >
+            {t(translations.delegationPage.title)}
+          </Link>
         </div>
       </div>
     </div>

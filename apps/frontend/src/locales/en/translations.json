@@ -834,6 +834,12 @@
         },
         "collateralRatio": "collateral ratio"
     },
+    "delegationPage": {
+        "metaTitle": "Delegate voting power - Sovryn",
+        "title": "Delegate voting power",
+        "description": "Choose a delegate for your existing SOV stakes and vesting positions. To take voting power back, enter your own wallet address. Your SOV stays in its current position.",
+        "snapshotNotice": "Each proposal uses the voting power recorded when voting starts. Changing a delegate does not affect a vote already in progress."
+    },
     "bitocracyPage": {
         "meta": {
             "title": "Bitocracy - Sovryn",

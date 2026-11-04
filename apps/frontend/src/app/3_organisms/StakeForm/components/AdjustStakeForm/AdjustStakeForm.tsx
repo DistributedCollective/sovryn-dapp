@@ -20,12 +20,15 @@ import {
   Link,
 } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
+
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
 import { MaxButton } from '../../../../2_molecules/MaxButton/MaxButton';
 import {
   STAKING_DELEGATION_LEARN_MORE_LINK,
   WEIGHT_FACTOR,
 } from '../../../../5_pages/StakePage/StakePage.constants';
+import { AdjustStakeAction } from '../../../../5_pages/StakePage/StakePage.types';
 import { useGetWeight } from '../../../../5_pages/StakePage/components/StakesFrame/hooks/useGetWeight';
 import { useGetVotingPower } from '../../../../5_pages/StakePage/hooks/useGetVotingPower';
 import { useHandleAdjustStake } from '../../../../5_pages/StakePage/hooks/useHandleAdjustStake';
@@ -57,8 +60,9 @@ import {
 export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
   stake,
   onSuccess,
+  delegationOnly = false,
 }) => {
-  const { account } = useAccount();
+  const { account, signer } = useAccount();
   const [amount, setAmount] = useState('');
 
   const chainId = useCurrentChain();
@@ -71,12 +75,12 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
     () => stake.unlockDate < currentDate,
     [stake, currentDate],
   );
-  const [index, setIndex] = useState(!isTabLocked ? 0 : 1);
+  const [index, setIndex] = useState(delegationOnly ? 3 : !isTabLocked ? 0 : 1);
 
-  const isIncreaseTab = useMemo(() => index === 0, [index]);
-  const isDecreaseTab = useMemo(() => index === 1, [index]);
-  const isExtendTab = useMemo(() => index === 2, [index]);
-  const isDelegateTab = useMemo(() => index === 3, [index]);
+  const isIncreaseTab = !delegationOnly && index === 0;
+  const isDecreaseTab = !delegationOnly && index === 1;
+  const isExtendTab = !delegationOnly && index === 2;
+  const isDelegateTab = delegationOnly || index === 3;
 
   const { checkMaintenance, States } = useMaintenance();
   const fullLocked = checkMaintenance(States.STAKING_FULL);
@@ -102,8 +106,8 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
   );
 
   const hasDelegatedAddress = useMemo(
-    () => stake.delegate.length > 0,
-    [stake.delegate],
+    () => delegationOnly || stake.delegate.length > 0,
+    [delegationOnly, stake.delegate],
   );
 
   const onMaximumAmountClick = useCallback(
@@ -152,7 +156,13 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
           Number(amount) > Number(balance) ||
           increaseLocked)) ||
       (isDelegateTab &&
-        (!isValidAddress || delegateToAddress.length === 0 || delegateLocked)),
+        (!account ||
+          !signer ||
+          chainId !== RSK_CHAIN_ID ||
+          isTabLocked ||
+          !isValidAddress ||
+          delegateToAddress.length === 0 ||
+          delegateLocked)),
 
     [
       fullLocked,
@@ -170,6 +180,10 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
       isValidAddress,
       delegateToAddress.length,
       delegateLocked,
+      account,
+      signer,
+      chainId,
+      isTabLocked,
     ],
   );
 
@@ -204,10 +218,15 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
   );
 
   useEffect(() => {
-    if (adjustStakeTabs[index].disabled) {
-      setIndex(adjustStakeTabs.findIndex(tab => !tab.disabled));
+    const firstEnabledIndex = adjustStakeTabs.findIndex(tab => !tab.disabled);
+    if (
+      !delegationOnly &&
+      adjustStakeTabs[index]?.disabled &&
+      firstEnabledIndex >= 0
+    ) {
+      setIndex(firstEnabledIndex);
     }
-  }, [adjustStakeTabs, index]);
+  }, [adjustStakeTabs, index, delegationOnly]);
 
   const getPenaltyAmount = useCallback(
     () => renderPenaltyAmount(amount, penaltyAmount, isValidAmount),
@@ -275,7 +294,9 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
     onSuccess();
   }, [onSuccess]);
 
-  const action = useMemo(() => getAdjustStakeAction(index), [index]);
+  const action = delegationOnly
+    ? AdjustStakeAction.Delegate
+    : getAdjustStakeAction(index);
 
   const handleAdjustStake = useHandleAdjustStake(
     amount,
@@ -370,13 +391,15 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
         </div>
       </div>
 
-      <Tabs
-        type={TabType.secondary}
-        items={adjustStakeTabs}
-        onChange={setIndex}
-        index={index}
-        className="mb-6"
-      />
+      {!delegationOnly && (
+        <Tabs
+          type={TabType.secondary}
+          items={adjustStakeTabs}
+          onChange={setIndex}
+          index={index}
+          className="mb-6"
+        />
+      )}
 
       {isExtendTab && (
         <>
@@ -435,7 +458,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
               </Paragraph>
               <Input
                 readOnly
-                value={stake.delegate.toLowerCase()}
+                value={(stake.delegate || account || '').toLowerCase()}
                 className="mt-3 max-w-full"
               />
             </>
@@ -515,7 +538,7 @@ export const AdjustStakeForm: FC<AdjustStakeFormProps> = ({
         className="mt-6 w-full"
         dataAttribute="adjust-stake-confirm"
       />
-      {fullLocked && (
+      {(fullLocked || (isDelegateTab && delegateLocked)) && (
         <ErrorBadge
           level={ErrorLevel.Warning}
           message={t(translations.maintenanceMode.featureDisabled)}

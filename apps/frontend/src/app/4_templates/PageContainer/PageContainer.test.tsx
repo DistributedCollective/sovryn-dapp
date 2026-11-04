@@ -47,6 +47,10 @@ const renderPage = (path: string, locked = true) => {
               </>
             }
           />
+          <Route
+            path="/bitocracy/delegate"
+            element={<h1>Delegate voting power</h1>}
+          />
           <Route path="/bitocracy/:id" element={<h1>Governance proposal</h1>} />
           <Route path="*" element={<h1>Protocol activity</h1>} />
         </Route>
@@ -99,6 +103,16 @@ describe('PageContainer during maintenance', () => {
     fireEvent.click(screen.getByRole('link', { name: 'Bitocracy' }));
     expect(
       screen.getByRole('heading', { name: 'Governance proposals' }),
+    ).toBeInTheDocument();
+  });
+
+  it('opens delegation from the maintenance screen while paused', () => {
+    renderPage('/');
+    fireEvent.click(
+      screen.getByRole('link', { name: 'Delegate voting power' }),
+    );
+    expect(
+      screen.getByRole('heading', { name: 'Delegate voting power' }),
     ).toBeInTheDocument();
   });
 

@@ -2,6 +2,7 @@ import React, { FC, useCallback, useMemo } from 'react';
 
 import { t } from 'i18next';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 
 import {
   Button,
@@ -73,6 +74,13 @@ const BitocracyPage: FC = () => {
           >
             {t(pageTranslations.subtitle)}
           </Paragraph>
+
+          <Link
+            to="/bitocracy/delegate"
+            className="mb-6 text-primary underline hover:no-underline"
+          >
+            {t(translations.delegationPage.title)}
+          </Link>
 
           {account && !invalidChain && (
             <div className="flex w-full items-center sm:justify-end justify-center">

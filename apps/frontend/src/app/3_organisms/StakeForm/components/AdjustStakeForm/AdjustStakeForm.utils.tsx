@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { constants } from 'ethers';
 import { t } from 'i18next';
 
 import { AmountRenderer } from '../../../../2_molecules/AmountRenderer/AmountRenderer';
@@ -108,8 +109,10 @@ export const renderVotingPower = (votingPower: number) =>
     t(translations.common.na)
   );
 
+// Preserve Rootstock checksum casing; delegate calls normalize the hex address.
 export const isAddress = (address: string) =>
-  address.match(/^0x[a-fA-F0-9]{40}$/);
+  /^0x[a-fA-F0-9]{40}$/.test(address) &&
+  address.toLowerCase() !== constants.AddressZero;
 
 export const getAdjustStakeAction = (index: number) => {
   switch (index) {

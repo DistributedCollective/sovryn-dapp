@@ -19,11 +19,13 @@ import { StakeItem } from '../StakesFrame/StakesFrame.types';
 type AdjustStakeRendererProps = {
   stake: StakeItem;
   onSuccess: () => void;
+  delegationOnly?: boolean;
 };
 
 export const AdjustStakeRenderer: FC<AdjustStakeRendererProps> = ({
   stake,
   onSuccess,
+  delegationOnly = false,
 }) => {
   const [openCreateStakeDialog, toggleAdjustStakeDialog] = useReducer(
     v => !v,
@@ -40,7 +42,11 @@ export const AdjustStakeRenderer: FC<AdjustStakeRendererProps> = ({
       <Button
         style={ButtonStyle.secondary}
         size={ButtonSize.small}
-        text={t(translations.stakePage.table.adjustButton)}
+        text={t(
+          delegationOnly
+            ? translations.stakePage.stakeForm.delegate
+            : translations.stakePage.table.adjustButton,
+        )}
         onClick={toggleAdjustStakeDialog}
         dataAttribute="stakes-adjust-button"
         className="lg:w-auto w-full"
@@ -51,11 +57,19 @@ export const AdjustStakeRenderer: FC<AdjustStakeRendererProps> = ({
         disableFocusTrap
       >
         <DialogHeader
-          title={t(translations.stakePage.stakeForm.adjustStake)}
+          title={t(
+            delegationOnly
+              ? translations.delegationPage.title
+              : translations.stakePage.stakeForm.adjustStake,
+          )}
           onClose={toggleAdjustStakeDialog}
         />
         <DialogBody>
-          <AdjustStakeForm stake={stake} onSuccess={onAdjustSuccess} />
+          <AdjustStakeForm
+            stake={stake}
+            onSuccess={onAdjustSuccess}
+            delegationOnly={delegationOnly}
+          />
         </DialogBody>
       </Dialog>
     </div>

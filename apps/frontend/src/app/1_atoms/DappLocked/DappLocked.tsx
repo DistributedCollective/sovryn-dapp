@@ -32,6 +32,12 @@ export const DappLocked: FC = () => (
           >
             {t(translations.header.nav.bitocracy)}
           </Link>
+          <Link
+            to="/bitocracy/delegate"
+            className="block mt-4 text-primary underline hover:no-underline"
+          >
+            {t(translations.delegationPage.title)}
+          </Link>
         </div>
       </div>
     </div>

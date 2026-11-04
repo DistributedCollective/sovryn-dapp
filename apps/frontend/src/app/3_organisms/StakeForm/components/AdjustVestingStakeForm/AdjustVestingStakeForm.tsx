@@ -14,11 +14,14 @@ import {
   ParagraphSize,
 } from '@sovryn/ui';
 
+import { RSK_CHAIN_ID } from '../../../../../config/chains';
+
 import { STAKING_DELEGATION_LEARN_MORE_LINK } from '../../../../5_pages/StakePage/StakePage.constants';
 import { useGetVestingDelegateAddress } from '../../../../5_pages/StakePage/components/VestingStakesFrame/hooks/useGetVestingDelegateAddress';
 import { useGetVestingStakeStartEndDates } from '../../../../5_pages/StakePage/components/VestingStakesFrame/hooks/useGetVestingStakeStartEndDates';
 import { useHandleAdjustVestingStake } from '../../../../5_pages/StakePage/hooks/useHandleAdjustVestingStake';
 import { useAccount } from '../../../../../hooks/useAccount';
+import { useCurrentChain } from '../../../../../hooks/useChainStore';
 import { useMaintenance } from '../../../../../hooks/useMaintenance';
 import { translations } from '../../../../../locales/i18n';
 import { areAddressesEqual } from '../../../../../utils/helpers';
@@ -33,7 +36,8 @@ export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
   vestingContract,
   onSuccess,
 }) => {
-  const { account } = useAccount();
+  const { account, signer } = useAccount();
+  const chainId = useCurrentChain();
   const { endDate } = useGetVestingStakeStartEndDates(vestingContract);
   const delegatedAddress = useGetVestingDelegateAddress(
     vestingContract,
@@ -70,8 +74,21 @@ export const AdjustVestingStakeForm: FC<AdjustVestingStakeFormProps> = ({
   }, [isValidAddress, delegateToAddress, delegatedAddress, account]);
 
   const isSubmitDisabled = useMemo(
-    () => stakingLocked || !isValidAddress || delegateToAddress.length === 0,
-    [stakingLocked, isValidAddress, delegateToAddress.length],
+    () =>
+      !account ||
+      !signer ||
+      chainId !== RSK_CHAIN_ID ||
+      stakingLocked ||
+      !isValidAddress ||
+      delegateToAddress.length === 0,
+    [
+      account,
+      signer,
+      chainId,
+      stakingLocked,
+      isValidAddress,
+      delegateToAddress.length,
+    ],
   );
 
   const onTransactionSuccess = useCallback(() => {

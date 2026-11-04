@@ -55,6 +55,9 @@ const BitocracyPage = loadable(
 const ProposalPage = loadable(
   () => import('./app/5_pages/ProposalPage/ProposalPage'),
 );
+const DelegationPage = loadable(
+  () => import('./app/5_pages/DelegationPage/DelegationPage'),
+);
 const LandingPage = loadable(
   () => import('./app/5_pages/LandingPage/LandingPage'),
 );
@@ -130,6 +133,10 @@ const routes = [
       {
         path: '/bitocracy',
         element: <BitocracyPage />,
+      },
+      {
+        path: '/bitocracy/delegate',
+        element: <DelegationPage />,
       },
       {
         path: '/bitocracy/:id',
